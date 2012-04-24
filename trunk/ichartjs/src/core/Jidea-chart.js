@@ -1,4 +1,4 @@
-;(function(){
+;(function($){
 
 var inc = Math.PI/90,PI = Math.PI,PI2 = 2*Math.PI,sin=Math.sin,cos=Math.cos;
 /**
@@ -19,7 +19,7 @@ function Cans(c){
 
 Cans.prototype = {
 	css:function(attr,style){
-		if(Jidea.isDefined(style)){
+		if($.isDefined(style)){
 			this.canvas.style[attr] = style;
 		}else{
 			return this.canvas.style[attr];
@@ -61,7 +61,7 @@ Cans.prototype = {
 		var x0,y0,ccw=!!ccw,a2r=!!a2r;
 		this.ctx.save();
 		this.fillStyle(c);
-		if(!!last)//&&!Jidea.isOpera
+		if(!!last)//&&!$.isOpera
 			this.ctx.globalCompositeOperation = "destination-over";
 		if(b)
 		this.strokeStyle(bw,bc);
@@ -161,7 +161,7 @@ Cans.prototype = {
 			s = ccw&&e>PI&&s<PI?PI:s;
 			e = !ccw&&s<PI&&e>PI?PI:e;
 			var angle = s;
-			this.ctx.fillStyle = Jidea.Math.dark(color);
+			this.ctx.fillStyle = $.Math.dark(color);
 			this.ctx.moveTo(x+a*cos(s),y+(ccw?(-b*sin(s)):(b*sin(s))));
 			this.ctx.beginPath();
 			while(angle<=e){
@@ -183,7 +183,7 @@ Cans.prototype = {
 		layerDraw = function(x,y,a,b,ccw,h,A,color){
 			this.ctx.moveTo(x,y);
 			this.ctx.beginPath();
-			this.ctx.fillStyle = Jidea.Math.dark(color);
+			this.ctx.fillStyle = $.Math.dark(color);
 			this.ctx.lineTo(x,y+h);
 			var x0 = x+a*cos(A);
 			var y0 = y+h+(ccw?(-b*sin(A)):(b*sin(A)));
@@ -204,7 +204,7 @@ Cans.prototype = {
 		};
 		return function(x,y,a,b,s,e,h,c,bo,bow,boc,sw,swc,swb,swx,swy,ccw,isw){
 			//browser opera  has bug when use destination-over and shadow
-			sw = sw && !Jidea.isOpera;
+			sw = sw && !$.isOpera;
 			this.ctx.save();
 			this.ctx.globalCompositeOperation = "destination-over";
 			this.ctx.fillStyle = c;
@@ -215,7 +215,7 @@ Cans.prototype = {
 			this.ctx.globalCompositeOperation = "source-over";
 			
 			//paint top layer
-			//var g = this.avgRadialGradient(x,y,0,x,y,a,[Jidea.Math.light(c,0.1),Jidea.Math.dark(c,0.05)]);
+			//var g = this.avgRadialGradient(x,y,0,x,y,a,[$.Math.light(c,0.1),$.Math.dark(c,0.05)]);
 			this.ellipse(x,y,a,b,s,e,c,bo,bow,boc,false,swc,swb,swx,swy,ccw,true);
 			//paint outside layer
 			sPaint.call(this,x,y,a,b,s,e,ccw,h,c);
@@ -262,7 +262,7 @@ Cans.prototype = {
 		return this;
 	},
 	shadowOn:function(s,c,b,x,y){
-		if(Jidea.isString(s)){
+		if($.isString(s)){
 			y = x;x = b;b = c;c = s;c = true;
 		}
 		if(s){
@@ -354,12 +354,12 @@ Cans.prototype = {
 	},
 	//can use cube3D instead of this?
 	cube:function(x,y,xv,yv,width,height,zdeep,bg,b,bw,bc,sw,swc,swb,swx,swy){
-		x = Jidea.Math.fixDeckle(bw,x);
-		y = Jidea.Math.fixDeckle(bw,y);
+		x = $.Math.fixDeckle(bw,x);
+		y = $.Math.fixDeckle(bw,y);
 		zdeep = (zdeep&&zdeep>0)?zdeep:width;
 		var x1=x+zdeep*xv,y1=y-zdeep*yv;
-		x1 = Jidea.Math.fixDeckle(bw,x1);
-		y1 = Jidea.Math.fixDeckle(bw,y1);
+		x1 = $.Math.fixDeckle(bw,x1);
+		y1 = $.Math.fixDeckle(bw,y1);
 		//styles -> top-front-right
 		if(sw){
 			this.polygon(bg,b,bw,bc,sw,swc,swb,swx,swy,false,[x,y,x1,y1,x1+width,y1,x+width,y]);
@@ -369,9 +369,9 @@ Cans.prototype = {
 		/**
 		 * clear the shadow on the body
 		 */
-		this.polygon(Jidea.Math.dark(bg),b,bw,bc,false,swc,swb,swx,swy,false,[x,y,x1,y1,x1+width,y1,x+width,y]);
+		this.polygon($.Math.dark(bg),b,bw,bc,false,swc,swb,swx,swy,false,[x,y,x1,y1,x1+width,y1,x+width,y]);
 		this.polygon(bg,b,bw,bc,false,swc,swb,swx,swy,false,[x,y,x,y+height,x+width,y+height,x+width,y]);
-		this.polygon(Jidea.Math.dark(bg),b,bw,bc,false,swc,swb,swx,swy,false,[x+width,y,x1+width,y1,x1+width,y1+height,x+width,y+height]);
+		this.polygon($.Math.dark(bg),b,bw,bc,false,swc,swb,swx,swy,false,[x+width,y,x1+width,y1,x1+width,y1+height,x+width,y+height]);
 		return this;
 	},
 	/**
@@ -391,14 +391,14 @@ Cans.prototype = {
 	 */
 	cube3D:function(x,y,rotatex,rotatey,angle,w,h,zh,b,bw,bc,styles){
 		//styles -> 下底-底-左-右-上-前
-		x = Jidea.Math.fixDeckle(bw,x);
-		y = Jidea.Math.fixDeckle(bw,y);
+		x = $.Math.fixDeckle(bw,x);
+		y = $.Math.fixDeckle(bw,y);
 		//Deep of Z'axis
 		if(!zh||zh==0)
 			zh = w;
 		
 		if(angle){
-			var P = Jidea.Math.vectorP2P(rotatex,rotatey);
+			var P = $.Math.vectorP2P(rotatex,rotatey);
 				rotatex=x+zh*P.x,
 				rotatey=y-zh*P.y;
 		}else{
@@ -409,38 +409,38 @@ Cans.prototype = {
 		while(styles.length<6)
 			styles.push(false);
 		
-		rotatex = Jidea.Math.fixDeckle(bw,rotatex);
-		rotatey = Jidea.Math.fixDeckle(bw,rotatey);
+		rotatex = $.Math.fixDeckle(bw,rotatex);
+		rotatey = $.Math.fixDeckle(bw,rotatey);
 		
 		var side = [];
 		
 		if(rotatey<0){
-			if(Jidea.isObject(styles[4]))
-				side.push(Jidea.applyIf({points:[x,y-h,rotatex,rotatey-h,rotatex+w,rotatey-h,x+w,y-h]},styles[4]));
+			if($.isObject(styles[4]))
+				side.push($.applyIf({points:[x,y-h,rotatex,rotatey-h,rotatex+w,rotatey-h,x+w,y-h]},styles[4]));
 		}else{
-			if(Jidea.isObject(styles[0]))
-				side.push(Jidea.applyIf({points:[x,y,rotatex,rotatey,rotatex+w,rotatey,x+w,y]},styles[0]));
+			if($.isObject(styles[0]))
+				side.push($.applyIf({points:[x,y,rotatex,rotatey,rotatex+w,rotatey,x+w,y]},styles[0]));
 		}
 		
-		if(Jidea.isObject(styles[1]))
-			side.push(Jidea.applyIf({points:[rotatex,rotatey,rotatex,rotatey-h,rotatex+w,rotatey-h,rotatex+w,rotatey]},styles[1]));
+		if($.isObject(styles[1]))
+			side.push($.applyIf({points:[rotatex,rotatey,rotatex,rotatey-h,rotatex+w,rotatey-h,rotatex+w,rotatey]},styles[1]));
 		
-		if(Jidea.isObject(styles[2]))
-			side.push(Jidea.applyIf({points:[x,y,x,y-h,rotatex,rotatey-h,rotatex,rotatey]},styles[2]));
+		if($.isObject(styles[2]))
+			side.push($.applyIf({points:[x,y,x,y-h,rotatex,rotatey-h,rotatex,rotatey]},styles[2]));
 		
-		if(Jidea.isObject(styles[3]))
-			side.push(Jidea.applyIf({points:[x+w,y,x+w,y-h,rotatex+w,rotatey-h,rotatex+w,rotatey]},styles[3]));
+		if($.isObject(styles[3]))
+			side.push($.applyIf({points:[x+w,y,x+w,y-h,rotatex+w,rotatey-h,rotatex+w,rotatey]},styles[3]));
 		
 		if(rotatey<0){
-			if(Jidea.isObject(styles[0]))
-				side.push(Jidea.applyIf({points:[x,y,rotatex,rotatey,rotatex+w,rotatey,x+w,y]},styles[0]));
+			if($.isObject(styles[0]))
+				side.push($.applyIf({points:[x,y,rotatex,rotatey,rotatex+w,rotatey,x+w,y]},styles[0]));
 		}else{
-			if(Jidea.isObject(styles[4]))
-				side.push(Jidea.applyIf({points:[x,y-h,rotatex,rotatey-h,rotatex+w,rotatey-h,x+w,y-h]},styles[4]));
+			if($.isObject(styles[4]))
+				side.push($.applyIf({points:[x,y-h,rotatex,rotatey-h,rotatex+w,rotatey-h,x+w,y-h]},styles[4]));
 		}
 		
-		if(Jidea.isObject(styles[5]))
-			side.push(Jidea.applyIf({points:[x,y,x,y-h,x+w,y-h,x+w,y]},styles[5]));
+		if($.isObject(styles[5]))
+			side.push($.applyIf({points:[x,y,x,y-h,x+w,y-h,x+w,y]},styles[5]));
 				
 		for(var i=0;i<side.length;i++){
 			this.polygon(side[i].color,b,bw,bc,side[i].shadow,side[i].shadowColor,side[i].blur,side[i].sx,side[i].sy,side[i].alpha,side[i].points);
@@ -485,10 +485,10 @@ Cans.prototype = {
 		if(!!last)
 			this.ctx.globalCompositeOperation = "destination-over";
 		
-		x1 = Jidea.Math.fixDeckle(w,x1);
-		y1 = Jidea.Math.fixDeckle(w,y1);
-		x2 = Jidea.Math.fixDeckle(w,x2);
-		y2 = Jidea.Math.fixDeckle(w,y2);
+		x1 = $.Math.fixDeckle(w,x1);
+		y1 = $.Math.fixDeckle(w,y1);
+		x2 = $.Math.fixDeckle(w,x2);
+		y2 = $.Math.fixDeckle(w,y2);
 		
 		this.ctx.beginPath();
 		this.strokeStyle(w,c).moveTo(x1,y1).lineTo(x2,y2).ctx.stroke();
@@ -521,13 +521,13 @@ Cans.prototype = {
 	},
 	rectangle:function(x,y,w,h,bgcolor,border,linewidth,bcolor,sw,swc,swb,swx,swy){
 		this.ctx.save();
-		x = Jidea.Math.fixDeckle(linewidth,x);
-		y = Jidea.Math.fixDeckle(linewidth,y);
+		x = $.Math.fixDeckle(linewidth,x);
+		y = $.Math.fixDeckle(linewidth,y);
 		this.ctx.translate(x,y);
 		this.ctx.beginPath();
 		this.ctx.fillStyle = bgcolor;
 		this.shadowOn(sw,swc,swb,swx,swy);
-		if(border&&Jidea.isNumber(linewidth)){
+		if(border&&$.isNumber(linewidth)){
 			this.ctx.lineWidth = linewidth;
 			this.ctx.strokeStyle = bcolor;
 			this.ctx.strokeRect(0,0,w,h);
@@ -535,7 +535,7 @@ Cans.prototype = {
 		
 		this.ctx.fillRect(0,0,w,h);
 		
-		if(border&&Jidea.isArray(linewidth)){
+		if(border&&$.isArray(linewidth)){
 			this.ctx.strokeStyle = bcolor;
 			this.line(0,0,w,0,linewidth[0],bcolor);
 			this.line(w,0,w,h,linewidth[1],bcolor);
@@ -555,8 +555,8 @@ Cans.prototype = {
 	},
 	drawBorder:function(x,y,w,h,line,color,round,bgcolor,last,shadow,scolor,blur,offsetx,offsety){
 		this.ctx.save();
-		var x0 = Jidea.Math.fixDeckle(line,x);
-		var y0 = Jidea.Math.fixDeckle(line,y);
+		var x0 = $.Math.fixDeckle(line,x);
+		var y0 = $.Math.fixDeckle(line,y);
 		if(x0!=x){
 			x = x0;w -=1;
 		}
@@ -573,7 +573,7 @@ Cans.prototype = {
 		if(bgcolor){
 			this.ctx.fillStyle = bgcolor;
 		}
-		if(Jidea.isArray(round)){//draw a round corners border
+		if($.isArray(round)){//draw a round corners border
 			this.ctx.beginPath();
 			this.ctx.moveTo(round[0],0);
 			this.ctx.lineTo(w-round[1],0);
@@ -610,7 +610,7 @@ Cans.prototype = {
 		return this.canvas.toDataURL("image/png");
 	},
 	addEvent:function(type,fn,useCapture){
-		Jidea.Event.addEvent(this.canvas,type,fn,useCapture);
+		$.Event.addEvent(this.canvas,type,fn,useCapture);
 	}
 	
 	
@@ -619,7 +619,7 @@ Cans.prototype = {
 
 //window.Cans = Cans;
 
-Jidea.Chart = Jidea.extend(Jidea.Painter,{
+$.Chart = $.extend($.Painter,{
 		/**
 		 * @cfg {TypeName} 
 		 */
@@ -692,7 +692,7 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 				 /**
 				 * @cfg {Function} the custom funtion for animation
 				 */
-				 doAnimationFn:Jidea.emptyFn,
+				 doAnimationFn:$.emptyFn,
 				 /**
 				 * @cfg {String} (default to 'ease-in-out')
 				 * Available value are:
@@ -745,7 +745,7 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 			
 		},
 		pushComponent:function(c,b){
-			if(Jidea.isArray(c)){
+			if($.isArray(c)){
 				if(!!b)
 					this.components = c.concat(this.components);
 				else
@@ -787,7 +787,7 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 				//fill the background
 				self.resetCanvas();
 				if(self.variable.animation.time<self.duration){
-					self.variable.animation.time++;setTimeout(function(){self.animation(self)},Jidea.INTERVAL)}
+					self.variable.animation.time++;setTimeout(function(){self.animation(self)},$.INTERVAL)}
 				else{
 					setTimeout(function(){
 						self.variable.animation.time = 0;
@@ -795,7 +795,7 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 						self.draw();
 						self.processAnimation = false;
 						self.fireEvent(this,'afterAnimation',[this]);	
-					},Jidea.INTERVAL);
+					},$.INTERVAL);
 				}
 				//console.timeEnd('Test for animation');
 			}
@@ -804,16 +804,16 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 			this.get('doAnimationFn').call(this,t,d);
 		},
 		commonDraw:function(){
-			Jidea.Assert.isTrue(this.rendered,this.type+' has not rendered.');
-			Jidea.Assert.isTrue(this.initialization,this.type+' has initialize failed.');
-			Jidea.Assert.gtZero(this.data.length,this.type+'\'data is empty.');
+			$.Assert.isTrue(this.rendered,this.type+' has not rendered.');
+			$.Assert.isTrue(this.initialization,this.type+' has initialize failed.');
+			$.Assert.gtZero(this.data.length,this.type+'\'data is empty.');
 			
 			//console.time('Test for draw');
 			
 			if(!this.redraw){
 				this.drawTitle();
 				if(this.get('border.enable')){
-					this.target.drawBorder(0,0,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:Jidea.Math.parseBorder(this.get('border.radius')),this.get('background_color'),true);
+					this.target.drawBorder(0,0,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:$.Math.parseBorder(this.get('border.radius')),this.get('background_color'),true);
 				}else{
 					this.target.backgound(0,0,this.width,this.height,this.get('background_color'));
 				}
@@ -861,7 +861,7 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 				this.target.textBaseline(this.get('title_valign'));
 				
 			}
-			this.target.textFont(Jidea.getFont(this.get('title_fontweight'),this.get('title_fontsize'),this.get('title_font')));
+			this.target.textFont($.getFont(this.get('title_fontweight'),this.get('title_fontsize'),this.get('title_font')));
 			this.target.fillText(this.get('title'),this.get('title_originx'),this.get('title_originy'),this.get('client_width'),this.get('title_color'));
 		},
 		create:function(shell){
@@ -872,8 +872,8 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 			
 			
 			
-			var id = Jidea.Math.iGather(this.type);
-			this.shellid = Jidea.Math.iGather(this.type+"-shell");
+			var id = $.Math.iGather(this.type);
+			this.shellid = $.Math.iGather(this.type+"-shell");
 			var html  = "<div id='"+this.shellid+"' style='"+style+"'>" +
 							"<canvas id= '"+id+"'  width='"+this.width+"' height="+this.height+"'>" +
 								"<p>Your browser does not support the canvas element</p>" +
@@ -906,13 +906,13 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 			}
 			
 			if(this.get('data').length>0&&this.rendered&&!this.initialization){
-				Jidea.Interface.parser.call(this);
+				$.Interface.parser.call(this);
 				this.doConfig();
 				this.initialization = true;
 			}
 		},
 		doConfig:function(){
-			Jidea.Chart.superclass.doConfig.call(this);
+			$.Chart.superclass.doConfig.call(this);
 			
 			if(this.get('debug')){
 				this.on('beforedraw',function(e){
@@ -929,22 +929,22 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 			
 			if(this.get('animation')){
 				this.processAnimation = this.get('animation');
-				this.duration = Math.ceil(this.get('duration_animation_duration')*Jidea.FRAME/1000);
+				this.duration = Math.ceil(this.get('duration_animation_duration')*$.FRAME/1000);
 				this.variable.animation = {time:0};
-				this.animationArithmetic = Jidea.getAnimationArithmetic(this.get('animation_timing_function'));
+				this.animationArithmetic = $.getAnimationArithmetic(this.get('animation_timing_function'));
 			}
 			
 			if(this.is3D()){
-				Jidea.Interface._3D.call(this);
+				$.Interface._3D.call(this);
 			}
 			
 			this.target.strokeStyle(this.get('brushsize'),this.get('strokeStyle'),this.get('lineJoin'));
 			
 			var self = this;
 			
-			this.target.addEvent('click',function(e){self.fireEvent(self,'click',[Jidea.Event.fix(e)]);},false);
+			this.target.addEvent('click',function(e){self.fireEvent(self,'click',[$.Event.fix(e)]);},false);
 			
-			this.target.addEvent('mousemove',function(e){self.fireEvent(self,'mousemove',[Jidea.Event.fix(e)]);},false);
+			this.target.addEvent('mousemove',function(e){self.fireEvent(self,'mousemove',[$.Event.fix(e)]);},false);
 			
 			this.on('click',function(e){
 				if(this.processAnimation)return;
@@ -996,7 +996,7 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 				}
 				//console.timeEnd('Test for doMouseMove');
 			});
-			Jidea.Assert.isArray(this.data);
+			$.Assert.isArray(this.data);
 			
 			this.push('l_originx',this.get('padding_left'));
 			this.push('r_originx',this.width - this.get('padding_right'));
@@ -1044,7 +1044,7 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 			this.push('centery',this.get('t_originy')+this.get('client_height')/2);
 			
 			if(this.get('border.enable')){
-				var round = Jidea.Math.parseBorder(this.get('border.radius'));
+				var round = $.Math.parseBorder(this.get('border.radius'));
 				this.push('radius_top',round[0]);
 				this.push('radius_right',round[1]);
 				this.push('radius_bottom',round[2]);
@@ -1055,7 +1055,7 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 			 * legend
 			 */
 			if(this.get('legend.enable')){
-				this.legend = new Jidea.Legend(Jidea.apply({
+				this.legend = new $.Legend($.apply({
 				 	 maxwidth:this.get('client_width'),
 				 	 data:this.data
 				},this.get('legend')),this);
@@ -1074,4 +1074,4 @@ Jidea.Chart = Jidea.extend(Jidea.Painter,{
 			this.data = d;
 		}
 });
-})();
+})(Jidea);
