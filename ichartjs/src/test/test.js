@@ -297,6 +297,40 @@ function test(){
 		});
 	});
 	
+	unit.push(function(){
+		return new Jidea.Bar2D({
+				render :canvas,
+				debug : true,
+				title : 'Test Bar2d',
+				coordinate:{
+					width:600,
+					height:400
+				},
+				legend:{
+					enable:true
+				},
+				width : 800,
+				height : 600
+		});
+	});
+	
+	unit.push(function(){
+		return new Jidea.BarMulti2D({
+			render :canvas,
+			debug : true,
+			title : 'Test BarMulti2D',
+			data: data9,
+			columnKeys:columnKeys1,
+			align:'center',
+			coordinate:{
+				kedu:{
+					 position:'bottom',	
+					 end_scale:150,
+					 scale:30
+				}
+			}
+		});
+	});
 	/**
 	 * start Test
 	 */
