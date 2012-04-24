@@ -1,0 +1,29 @@
+//将要实现的
+1.enhance event all-sided
+6.配置资源文件以备进行国际化-所以注释利用国际化资源文件ID进行标注、also uer for bulid API-Document
+4.barmuti2d鼠标移动鼠标样式-cause by the sequence of event invoking
+
+创意无限:
+画一个ipad,然后在ipad上画charts
+制作一个天平,将筹码放入使其平衡
+立方体上写字
+
+guitar调音器
+make a draggable bulider-must show a cool animation
+//简单、高效、美观//simple effective amazed
+
+Animation cost of firefox8.0(avg/estimated value):
+coloumn2d:30ms
+coloumn3d:40ms
+pie2d:25ms
+pie3d:25ms
+baseline2d:20ms-50ms(lie on the number of points)
+area2d:25ms-55ms(lie on the number of points)
+
+Animation cost of Opera11.62(avg/estimated value):
+coloumn2d:30ms
+coloumn3d:50ms
+pie2d:30ms
+pie3d:800ms because of 'destination-over'
+baseline2d:20ms-40ms(lie on the number of points)
+area2d:25ms-55ms(lie on the number of points)
