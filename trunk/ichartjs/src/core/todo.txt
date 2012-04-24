@@ -1,7 +1,9 @@
 //将要实现的
 1.enhance event all-sided
-6.配置资源文件以备进行国际化-所以注释利用国际化资源文件ID进行标注、also uer for bulid API-Document
-4.barmuti2d鼠标移动鼠标样式-cause by the sequence of event invoking
+2.配置资源文件以备进行国际化-所以注释利用国际化资源文件ID进行标注、also uer for bulid API-Document
+3.barmuti2d鼠标移动鼠标样式-cause by the sequence of event invoking
+
+
 
 创意无限:
 画一个ipad,然后在ipad上画charts
