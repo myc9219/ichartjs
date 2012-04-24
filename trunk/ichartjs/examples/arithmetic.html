@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>test</title>
+		<meta name="Description" content="" />
+		<meta name="Keywords" content="" />
+		
+		<script type="text/javascript" src="../core/Jidea-arithmetic.js"></script>
+		<script type="text/javascript">
+			var b=50,c=200,d=100,t=0,$div;
+			function Run(){
+			    $div.style.left = Math.ceil(Jidea.Arithmetic.Quad.easeOut(t,b,c,d)) + "px";
+			    if(t<d){ t++; setTimeout(Run, 10); }
+			}
+			function test(){
+				$div = document.getElementById("hello");
+				Run();
+			}
+		</script>
+		<style type="text/css">
+			#hello{
+				position: absolute;
+				left:50px;
+				top:100px;
+				width:50px;
+				height:50px;
+				background-color:#efefef;
+				border:1px solid green;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<br />
+		<div id="hello" onclick="test();"></div>
+	</body>
+</html>

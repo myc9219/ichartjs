@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>test</title>
+		<meta name="Description" content="" />
+		<meta name="Keywords" content="" />
+
+		<script type="text/javascript" src="../core/Jidea-core.js"></script>
+		<script type="text/javascript" src="../core/Jidea-event.js"></script>
+		<script type="text/javascript" src="../core/Jidea-math.js"></script>
+		<script type="text/javascript" src="../core/Jidea-arithmetic.js"></script>
+		<script type="text/javascript" src="../core/Jidea-painter.js"></script>
+		<script type="text/javascript" src="../core/Jidea-component.js"></script>
+		<script type="text/javascript" src="../core/Jidea-interface.js"></script>
+		<script type="text/javascript" src="../core/Jidea-legend.js"></script>
+		<script type="text/javascript" src="../core/Jidea-label.js"></script>
+		<script type="text/javascript" src="../core/Jidea-style.js"></script>
+		<script type="text/javascript" src="../core/Jidea-chart.js"></script>
+		<script type="text/javascript" src="../core/Jidea-sector.js"></script>
+		<script type="text/javascript" src="../core/Jidea-sector2d.js"></script>
+		<script type="text/javascript" src="../core/Jidea-element.js"></script>
+		<script type="text/javascript" src="../core/Jidea-tip.js"></script>
+		<script type="text/javascript" src="../core/Jidea-pie.js"></script>
+		<script type="text/javascript" src="../core/Jidea-pie2d.js"></script>
+		<script type="text/javascript" src="data.js"></script>
+	<style type="text/css">
+		body{
+			margin-top:10px;
+			text-align: center;
+		}
+		#myCanvas div{
+			margin:0px auto;
+		}
+	</style>
+	<script type="text/javascript">
+			$(function(){
+				var pie2d = new Jidea.Pie2D({
+					render : 'myCanvas',
+					data: data,
+					title : 'HTML 5 Sample Pie2D Mutex',
+					width : 700,
+					height : 500,
+					radius:140,
+					mutex:true,
+					label:{
+						enable:false
+					},
+					tip:{
+						enable:true,
+						shadow:true
+					}
+				});
+				pie2d.draw();
+				var style = $("myCanvas").style;			
+			});
+		</script>
+	</head>
+	<body>
+		<div><a href="../index.html">Home</a>&nbsp;Sample</div>
+		<br>
+		<div id='myCanvas'></div>
+	</body>
+</html>
