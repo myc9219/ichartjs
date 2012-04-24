@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>test</title>
+		<meta name="Description" content="" />
+		<meta name="Keywords" content="" />
+
+		<script type="text/javascript" src="../core/Jidea-core.js"></script>
+		<script type="text/javascript" src="../core/Jidea-event.js"></script>
+		<script type="text/javascript" src="../core/Jidea-math.js"></script>
+		<script type="text/javascript" src="../core/Jidea-arithmetic.js"></script>
+		<script type="text/javascript" src="../core/Jidea-painter.js"></script>
+		<script type="text/javascript" src="../core/Jidea-component.js"></script>
+		<script type="text/javascript" src="../core/Jidea-interface.js"></script>
+		<script type="text/javascript" src="../core/Jidea-legend.js"></script>
+		<script type="text/javascript" src="../core/Jidea-label.js"></script>
+		<script type="text/javascript" src="../core/Jidea-chart.js"></script>
+		<script type="text/javascript" src="../core/Jidea-sector.js"></script>
+		<script type="text/javascript" src="../core/Jidea-sector3d.js"></script>
+		<script type="text/javascript" src="../core/Jidea-element.js"></script>
+		<script type="text/javascript" src="../core/Jidea-tip.js"></script>
+		<script type="text/javascript" src="../core/Jidea-pie.js"></script>
+		<script type="text/javascript" src="../core/Jidea-pie3d.js"></script>
+		<script type="text/javascript" src="data.js"></script>
+	<style type="text/css">
+		body{
+			margin-top:10px;
+			text-align: center;
+		}
+		#myCanvas div{
+			margin:0px auto;
+		}
+	</style>
+	<script type="text/javascript">
+			$(function(){
+				var pie3d = new Jidea.Pie3D({
+					render : 'myCanvas',
+					data : data,
+					animation:true,
+					title : 'HTML 5 Sample Pie3D',
+					width : 800,
+					height : 600,
+					padding : '10',
+					radius:240,
+					yHeight:30,
+					zRotate:45,
+					align : 'center',
+					title_align : 'center',
+					title_valign : 'top',
+					offsetx : 0,
+					offsety : 0,
+					debug : true,
+					showpercent:true,
+					legend:{
+						enable:true
+					}
+				});
+				pie3d.draw();
+			});
+		</script>
+	</head>
+	<body>
+		<div><a href="../index.html">Home</a>&nbsp;sample</div>
+		<div id='myCanvas'></div>
+	</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>BaseLine Sample</title>
+		<meta name="Description" content="" />
+		<meta name="Keywords" content="" />
+
+		<script type="text/javascript" src="../core/Jidea-core.js"></script>
+		<script type="text/javascript" src="../core/Jidea-event.js"></script>
+		<script type="text/javascript" src="../core/Jidea-math.js"></script>
+		<script type="text/javascript" src="../core/Jidea-assert.js"></script>
+		<script type="text/javascript" src="../core/Jidea-painter.js"></script>
+		<script type="text/javascript" src="../core/Jidea-component.js"></script>
+		<script type="text/javascript" src="../core/Jidea-interface.js"></script>
+		<script type="text/javascript" src="../core/Jidea-legend.js"></script>
+		<script type="text/javascript" src="../core/Jidea-label.js"></script>
+		<script type="text/javascript" src="../core/Jidea-style.js"></script>
+		<script type="text/javascript" src="../core/Jidea-chart.js"></script>
+		<script type="text/javascript" src="../core/Jidea-coordinate.js"></script>
+		<script type="text/javascript" src="../core/Jidea-element.js"></script>
+		<script type="text/javascript" src="../core/Jidea-crosshair.js"></script>
+		<script type="text/javascript" src="../core/Jidea-tip.js"></script>
+		<script type="text/javascript" src="../core/Jidea-linesegment.js"></script>
+		<script type="text/javascript" src="../core/Jidea-line.js"></script>
+		<script type="text/javascript" src="../core/Jidea-linebasic2d.js"></script>
+		<script type="text/javascript" src="data.js"></script>
+		<style type="text/css">
+			body{
+				margin-top:10px;
+				text-align: center;
+			}
+			#myCanvas div{
+			margin:0px auto;
+		}
+		</style>
+		<script type="text/javascript">
+			$(function(){
+					var line = new Jidea.LineBasic2D({
+						render : 'myCanvas',
+						data: data4,
+						align:'center',
+						title : 'Average Temperature Of 2012',
+						width : 800,
+						height : 400,
+						coordinate:{
+							crosshair:{
+								enable:true
+							},
+							width:640,
+							height:260,
+							valid_width:600,
+							axis:{
+								color:'#07575a',
+								width:[0,0,2,2]
+							},
+							grids:{
+								vertical:{
+									way:'share_alike',
+							 		value:12
+								}
+							},
+							kedu:[{
+								 position:'left',	
+								 start_scale:0,
+								 end_scale:36,
+								 scale_line_enable:false,
+								 scale:4,
+								 listeners:{
+									parseText:function(t,x,y){
+										return {text:t+"℃"}
+									}
+								}
+							},{
+								 position:'right',
+								 kedu2grid:false,
+								 scale_line_enable:false,
+								 textAlign:'right',
+								 start_scale:0,
+								 end_scale:40,
+								 distanceOne:4,
+								 listeners:{
+									parseText:function(t,x,y){
+										return {text:t+"℃"}
+									}
+								}
+							},{
+								 position:'bottom',	
+								 scale_line_enable:false,
+								 //kedu2grid:false,
+								 start_scale:1,
+								 end_scale:12,
+								 parseText:function(t,x,y){
+									return {textY:y+10}
+								 },
+								 labels:lineLabels1
+							}]
+						},
+						listeners:{
+							parsePoint:function(v,x,y){
+								return {value:v+"℃"}
+							}
+						}
+					});
+				
+				//开始画图
+				line.draw();
+				});
+				
+			</script>
+		</head>
+		<body>
+			<div><a href="../index.html">Home</a>&nbsp; Sample</div>
+			<br>
+			<div id='myCanvas'></div>
+		</body>
+</html>
