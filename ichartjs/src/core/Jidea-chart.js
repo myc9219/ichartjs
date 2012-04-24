@@ -125,11 +125,11 @@ Cans.prototype = {
 	},
 	/**
 	 * draw sector
-	 * @param {Number} x 圆心x
-	 * @param {Number} y 圆心y
-	 * @param {Number} r 半径
-	 * @param {Number} s 起始弧度
-	 * @param {Number} e 结束弧度
+	 * @param {Number} x round x
+	 * @param {Number} yround y
+	 * @param {Number} r radius
+	 * @param {Number} s start radian
+	 * @param {Number} e end radian
 	 * @param {String} c fill color
 	 * @param {Boolean} b border enable
 	 * @param {Number} bw border's width
@@ -139,7 +139,7 @@ Cans.prototype = {
 	 * @param {Number} swb shadow blur
 	 * @param {Number} swx shadow's offsetx
 	 * @param {Number} swy shadow's offsety
-	 * @param {Boolean} ccw 方向
+	 * @param {Boolean} ccw direction
 	 */
 	sector:function(x,y,r,s,e,c,b,bw,bc,sw,swc,swb,swx,swy,ccw){
 		if(sw){
