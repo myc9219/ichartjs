@@ -302,6 +302,7 @@ function test(){
 				render :canvas,
 				debug : true,
 				title : 'Test Bar2d',
+				data:data,
 				coordinate:{
 					width:600,
 					height:400
