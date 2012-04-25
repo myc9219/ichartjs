@@ -70,7 +70,6 @@ function start(){
 	},300)
 }
 /////////////////////上面的写成一个测试的js//////////////////////
-
 function test(){
 	resultList.innerHTML = Html;
 	total=success=fail=0;
