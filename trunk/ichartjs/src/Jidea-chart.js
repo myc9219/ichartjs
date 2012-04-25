@@ -1,7 +1,7 @@
 ;(function($){
 
 var inc = Math.PI/90,PI = Math.PI,PI2 = 2*Math.PI,sin=Math.sin,cos=Math.cos;
-
+ 
 /**
  * @private support an improved API for drawing in canvas
  */
