@@ -1,19 +1,11 @@
-    /**
-    * ☆-----------------------------------------------------------------------------☆
-    * | This file is base class of the Jidea - use for  			 ...             |
-    * |  画图的基类、其他组件要继承此组件                                              |
-    * |                                                                              |
-    * |                                                                              |
-    * |                                                                              |
-    * |                                                                              |
-    * | 																		     |
-    * |                                                                              |
-    * |                      email: wanghetommy@163.com                              |
-    * ☆------------------------------------------------------------------------------☆
-    * 
-    * 
-    * 
-    */
+/**
+ * This file is base class of the Jidea - use for
+ * 画图的基类、其他组件要继承此组件
+ * 
+ * @author wanghe
+ * @component#Jidea.Painter
+ * @extend#Object
+ */
 Jidea.Painter = function(config){
 	
 	/**
@@ -32,7 +24,6 @@ Jidea.Painter = function(config){
 	 * All of the configuration will in this property
 	 */
 	this.configurations = {};
-	
 	this.configuration({
 		 /**
 		  * @cfg {String} The unique id of this module (defaults to an auto-assigned id). 

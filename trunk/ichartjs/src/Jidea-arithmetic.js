@@ -4,6 +4,7 @@
  * b: beginning value;
  * c: change in value;
  * d: duration;
+ * 
  */
 Jidea.Arithmetic = {
 	/**
