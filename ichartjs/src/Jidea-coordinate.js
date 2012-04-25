@@ -1,4 +1,9 @@
 ;(function(){
+	/**
+	 * @author wanghe
+	 * @component#innerClassOfCoordinate
+	 * @extend#Jidea.Component
+	 */
 	var KeDu = Jidea.extend(Jidea.Component,{
 			configure:function(){
 				/**
@@ -19,6 +24,9 @@
 					  * @Option 'v' :vertical
 					 */
 					 which:'h',
+					 /**
+					 * @inner {Number}
+					 */
 					 distance:undefined,
 					 start_scale:0,
 					 end_scale:undefined,
@@ -218,6 +226,10 @@
 			}
 	});
 	
+	/**
+	 * @component#Jidea.Coordinate2D
+	 * @extend#Jidea.Component
+	 */
 	Jidea.Coordinate2D = Jidea.extend(Jidea.Component,{
 		configure:function(){
 			/**
@@ -546,7 +558,10 @@
 			
 		}
 });
-
+/**
+ * @component#Jidea.Coordinate3D
+ * @extend#Jidea.Coordinate2D
+ */
 Jidea.Coordinate3D = Jidea.extend(Jidea.Coordinate2D,{
 		configure:function(){
 			/**
