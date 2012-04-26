@@ -1,6 +1,6 @@
 	Jidea.Pie2D = Jidea.extend(Jidea.Pie,{
 		/**
-		 * initialize the context for the pie
+		 * initialize the context for the pie2d
 		 */
 		configure:function(config){
 			/**

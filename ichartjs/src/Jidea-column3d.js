@@ -1,6 +1,6 @@
 	Jidea.Column3D = Jidea.extend(Jidea.Column,{
 		/**
-		 * initialize the context for the pie
+		 * initialize the context for the Column3D 
 		 */
 		configure:function(config){
 			/**

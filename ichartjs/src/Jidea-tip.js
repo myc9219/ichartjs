@@ -1,4 +1,4 @@
-
+ 
 Jidea.Tip = Jidea.extend(Jidea.Element,{
 		configure:function(T){
 			/**
