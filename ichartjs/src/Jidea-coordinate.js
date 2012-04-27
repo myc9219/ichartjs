@@ -1,7 +1,7 @@
 ;(function(){
 	/**
 	 * @author wanghe
-	 * @component#innerClassOfCoordinate
+	 * @component#KeDu
 	 * @extend#Jidea.Component
 	 */
 	var KeDu = Jidea.extend(Jidea.Component,{
@@ -297,6 +297,9 @@
 				 },
 				 width:undefined,
 				 height:undefined,
+				 /**
+				  *@cfg {Object} rounded to two digit
+			 	  */
 				 axis:{
 					enable:true,
 					color:'#666666',
