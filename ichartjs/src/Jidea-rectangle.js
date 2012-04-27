@@ -1,4 +1,9 @@
-Jidea.Rectangle = Jidea.extend(Jidea.Component,{
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Rectangle
+	 * @extend#Jidea.Component
+	 */
+	Jidea.Rectangle = Jidea.extend(Jidea.Component,{
 		configure:function(){
 			/**
 			 * invoked the super class's  configuration

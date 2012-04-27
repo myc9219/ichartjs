@@ -1,4 +1,9 @@
-Jidea.Sector3D = Jidea.extend(Jidea.Sector,{
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Sector3D
+	 * @extend#Jidea.Sector
+	 */
+	Jidea.Sector3D = Jidea.extend(Jidea.Sector,{
 		configure:function(){
 			/**
 			 * invoked the super class's  configuration

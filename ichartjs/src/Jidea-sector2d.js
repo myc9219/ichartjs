@@ -1,8 +1,9 @@
-/**
- * 
- * 整合到pie里可能更符合设计思想-作为pie的innerClass
- */
-Jidea.Sector2D = Jidea.extend(Jidea.Sector,{
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Sector2D
+	 * @extend#Jidea.Sector
+	 */
+	Jidea.Sector2D = Jidea.extend(Jidea.Sector,{
 		configure:function(){
 			/**
 			 * invoked the super class's  configuration

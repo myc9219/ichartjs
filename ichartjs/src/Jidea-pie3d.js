@@ -1,4 +1,9 @@
-Jidea.Pie3D = Jidea.extend(Jidea.Pie,{
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Pie3D
+	 * @extend#Jidea.Pie
+	 */
+	Jidea.Pie3D = Jidea.extend(Jidea.Pie,{
 		configure:function(){
 			/**
 			 * invoked the super class's  configuration

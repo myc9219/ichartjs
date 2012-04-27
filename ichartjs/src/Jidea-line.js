@@ -1,3 +1,8 @@
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Line
+	 * @extend#Jidea.Chart
+	 */
 	Jidea.Line = Jidea.extend(Jidea.Chart,{
 		/**
 		 * initialize the context for the line

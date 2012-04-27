@@ -619,7 +619,11 @@ Cans.prototype = {
 
 
 //window.Cans = Cans;
-
+/**
+ * @author wanghe
+ * @component#Jidea.Chart
+ * @extend#Jidea.Painter
+ */
 $.Chart = $.extend($.Painter,{
 		/**
 		 * @cfg {TypeName} 

@@ -1,5 +1,11 @@
 ;(function(){
-Jidea.Element = function(config){
+
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Element
+	 * @extend#Object
+	 */
+	Jidea.Element = function(config){
 		/**
 		 * indicate the legend's type
 		 */

@@ -1,4 +1,8 @@
-	
+	/**
+	 * @author wanghe
+	 * @component#Jidea.LineBasic2D
+	 * @extend#Jidea.Line
+	 */
 	Jidea.LineBasic2D = Jidea.extend(Jidea.Line,{
 		/**
 		 * initialize the context for the LineBasic2D

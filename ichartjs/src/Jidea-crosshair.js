@@ -1,4 +1,10 @@
-Jidea.CrossHair = Jidea.extend(Jidea.Element,{
+
+	/**
+	 * @author wanghe
+	 * @component#Jidea.CrossHair
+	 * @extend#Jidea.Element
+	 */
+	Jidea.CrossHair = Jidea.extend(Jidea.Element,{
 		configure:function(T){
 			/**
 			 * indicate the component's type

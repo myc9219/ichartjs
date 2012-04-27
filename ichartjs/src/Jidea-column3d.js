@@ -1,3 +1,8 @@
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Column3D
+	 * @extend#Jidea.Column
+	 */
 	Jidea.Column3D = Jidea.extend(Jidea.Column,{
 		/**
 		 * initialize the context for the Column3D 

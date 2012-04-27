@@ -1,4 +1,9 @@
-Jidea.Pie = Jidea.extend(Jidea.Chart, {
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Pie
+	 * @extend#Jidea.Chart
+	 */
+	Jidea.Pie = Jidea.extend(Jidea.Chart, {
 	/**
 	 * initialize the context for the pie
 	 */

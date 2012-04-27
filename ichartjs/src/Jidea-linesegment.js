@@ -1,4 +1,10 @@
-Jidea.LineSegment = Jidea.extend(Jidea.Component,{
+	/**
+	 * Line ability for real-time show 
+	 * @author wanghe
+	 * @component#Jidea.LineSegment
+	 * @extend#Jidea.Component
+	 */
+	Jidea.LineSegment = Jidea.extend(Jidea.Component,{
 		configure:function(){
 			/**
 			 * invoked the super class's  configuration

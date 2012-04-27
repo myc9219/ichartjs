@@ -259,9 +259,9 @@
 				 /**
 				  * @cfg {Object} this is  grid config for custom.the detailed like this:
 				  * way:the manner calculate grid-line (default to 'share_alike')
-				  *   * Available property are:
-					  * @Option share_alike 
-					  * @Option given_value 
+				  *   *   Available property are:
+					  *   @Option share_alike 
+					  *   @Option given_value 
 			 	  * value: way-share_alike:the number of way-share.given_value:the distance each grid line(unit:pixel)
 				  * {
 				  *  horizontal:

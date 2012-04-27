@@ -1,3 +1,9 @@
+
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Bar
+	 * @extend#Jidea.Column
+	 */
 	Jidea.Bar = Jidea.extend(Jidea.Column,{
 		/**
 		 * initialize the context for the bar

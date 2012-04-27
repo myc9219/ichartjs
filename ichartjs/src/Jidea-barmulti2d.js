@@ -1,4 +1,9 @@
-		Jidea.BarMulti2D = Jidea.extend(Jidea.Bar,{
+	/**
+	 * @author wanghe
+	 * @component#Jidea.BarMulti2D
+	 * @extend#Jidea.Bar
+	 */
+	Jidea.BarMulti2D = Jidea.extend(Jidea.Bar,{
 			/**
 			 * initialize the context for the BarMulti2D
 			 */
