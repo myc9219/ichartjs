@@ -1,4 +1,9 @@
-Jidea.Custom = Jidea.extend(Jidea.Component,{
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Custom
+	 * @extend#Jidea.Component
+	 */
+	Jidea.Custom = Jidea.extend(Jidea.Component,{
 		configure:function(){
 			/**
 			 * invoked the super class's  configuration

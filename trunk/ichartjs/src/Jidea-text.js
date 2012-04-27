@@ -1,4 +1,9 @@
-Jidea.Text = Jidea.extend(Jidea.Component,{
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Text
+	 * @extend#Jidea.Component
+	 */
+	Jidea.Text = Jidea.extend(Jidea.Component,{
 		configure:function(){
 			/**
 			 * invoked the super class's  configuration

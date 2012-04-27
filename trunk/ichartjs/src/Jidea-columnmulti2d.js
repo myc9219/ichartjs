@@ -1,3 +1,8 @@
+	/**
+	 * @author wanghe
+	 * @component#Jidea.ColumnMulti2D
+	 * @extend#Jidea.Column
+	 */
 	Jidea.ColumnMulti2D = Jidea.extend(Jidea.Column,{
 		/**
 		 * initialize the context for the ColumnMulti2D

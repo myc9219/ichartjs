@@ -1,5 +1,9 @@
- 
-Jidea.Tip = Jidea.extend(Jidea.Element,{
+ 	/**
+	 * @author wanghe
+	 * @component#Jidea.Tip
+	 * @extend#Jidea.Element
+	 */
+	Jidea.Tip = Jidea.extend(Jidea.Element,{
 		configure:function(T){
 			/**
 			 * indicate the legend's type

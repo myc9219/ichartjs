@@ -38,6 +38,9 @@
 	
 	/**
 	 * Line ability for real-time show 
+	 * @author wanghe
+	 * @component#Jidea.LineMonitor2D
+	 * @extend#Jidea.Line
 	 */
 	Jidea.LineMonitor2D = Jidea.extend(Jidea.Line,{
 		/**

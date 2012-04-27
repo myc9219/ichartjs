@@ -1,4 +1,8 @@
-	
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Area2D
+	 * @extend#Jidea.LineBasic2D
+	 */
 	Jidea.Area2D = Jidea.extend(Jidea.LineBasic2D,{
 		/**
 		 * initialize the context for the area2d

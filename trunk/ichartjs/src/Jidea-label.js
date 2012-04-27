@@ -1,4 +1,9 @@
-Jidea.Label = Jidea.extend(Jidea.Component,{
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Label
+	 * @extend#Jidea.Component
+	 */
+	Jidea.Label = Jidea.extend(Jidea.Component,{
 		configure:function(){
 			/**
 			 * invoked the super class's  configuration

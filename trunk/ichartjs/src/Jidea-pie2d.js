@@ -1,3 +1,8 @@
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Pie2D
+	 * @extend#Jidea.Pie
+	 */
 	Jidea.Pie2D = Jidea.extend(Jidea.Pie,{
 		/**
 		 * initialize the context for the pie2d

@@ -1,6 +1,10 @@
 	
-
-Jidea.Legend = Jidea.extend(Jidea.Component,{
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Legend
+	 * @extend#Jidea.Component
+	 */
+	Jidea.Legend = Jidea.extend(Jidea.Component,{
 		configure:function(){
 			/**
 			 * invoked the super class's  configuration

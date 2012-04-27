@@ -1,3 +1,9 @@
+	
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Bar2D
+	 * @extend#Jidea.Bar
+	 */
 	Jidea.Bar2D = Jidea.extend(Jidea.Bar,{
 		/**
 		 * initialize the context for the pie

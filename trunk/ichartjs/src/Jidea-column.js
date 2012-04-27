@@ -1,3 +1,8 @@
+	/**
+	 * @author wanghe
+	 * @component#Jidea.Column
+	 * @extend#Jidea.Chart
+	 */
 	Jidea.Column = Jidea.extend(Jidea.Chart,{
 		/**
 		 * initialize the context for the Column
