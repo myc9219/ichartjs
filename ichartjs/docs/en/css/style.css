@@ -4,6 +4,7 @@ body {
 	margin:0px;
 	text-align: left;
 	font-family:'微软雅黑',Trebuchet MS,Verdana,Helvetica,Arial,sans-serif;
+	background-color: #f9f9f9;
 }
 
 .ichartjs_top{
@@ -52,7 +53,7 @@ body {
 	font-size:24px;
 	font-weight:600;
 	color:#006100;
-	text-shadow:0px 2px 2px #121417;
+	text-shadow:0px 1px 1px #024d02;
 }
 
 .ichartjs_overview{
@@ -197,34 +198,6 @@ a:ACTIVE{
 	color:#238bcf;
 }
 
-#ichart-header-menu{
-	width:980px;
-	height:50px;
-	margin:0px auto;
-	height:50px;
-	background-color:#2c2d2e;
-	border-bottom: 1px solid #838484;
-	border-left:  1px solid #838484;
-	border-right:  1px solid #838484;
-	-moz-border-radius-bottomleft:8px;
-	-moz-border-radius-bottomright:8px;
-	-webkit-border-bottom-left-radius:8px;
-	-webkit-border-bottom-right-radius:8px;
-	-khtml-border-radius-bottomleft:8px;
-	-khtml-border-radius-bottomright:8px;
-	border-bottom-left-radius:8px;
-	border-bottom-right-radius:8px; 
-	-webkit-box-shadow:0px 1px 2px #26303e;
-	-moz-box-shadow:0px 1px 2px #26303e;
-	box-shadow:0px 1px 2px #26303e;
-}
-#ichart-info-separator{
-	width:5px;
-	height:240px;
-	float:left;
-	background:url(../images/ichart_info_separator.png);
-	background-repeat:no-repeat;	
-}
 #ichart-info-what{
 	padding:0px 20px;
 	height:50px;
@@ -232,73 +205,13 @@ a:ACTIVE{
 	font-size:42px;
 	line-height:50px;
 	font-weight:500;
-	text-shadow:0px 1px 1px #0f436f;
+	text-shadow:0px 1px 1px #043c53;
 }
 .ichart-content-desc{
 	color:#303030;
 	padding:0px 20px;
 	text-indent: 20px;
 	line-height: 24px;
-}
-#ichart-info-btns{
-	margin-top:10px;
-	height:50px;
-	position:relative;
-}
-.ichart-info-btn{
-	position:absolute;
-	height:33px;
-	line-height:33px;
-	text-align:center;
-	font-size:13px;
-	font-weight:600;
-	width:100px;
-	cursor:pointer;
-	text-shadow:0px 1px 1px #4f799c;
-	background:url(../images/ichart_info_btn_bg.png);
-	background-repeat:no-repeat;
-}
-.ichart-info-btn a{
-	text-decoration: none;
-}
-#ichart-info-download{
-	right:260px;
-	top:5px;
-	background-position: 0px 0px;	
-}
-#ichart-info-download a:LINK{
-	color:#FEFEFE;
-}
-#ichart-info-download a:VISITED{
-	color:#FEFEFE;
-}
-#ichart-info-download a:HOVER{
-	color:#313e4f;
-}
-#ichart-info-download a:ACTIVE{
-	color:#3b5576;
-}
-#ichart-info-learn{
-	right:140px;
-	top:5px;
-	background-position: 0px -33px;	
-}
-#ichart-info-learn a:LINK{
-	color:#2a3646;
-}
-#ichart-info-learn a:VISITED{
-	color:#2a3646;
-}
-#ichart-info-learn a:HOVER{
-	color:#2a651a;
-}
-#ichart-info-learn a:ACTIVE{
-	color:#377f23;
-}
-#ichart-info-source{
-	right:20px;
-	top:5px;
-	background-position: 0px -66px;	
 }
 
 #ichart-footer{
