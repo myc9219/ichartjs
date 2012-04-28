@@ -6,9 +6,22 @@ body {
 	font-family:'微软雅黑',Trebuchet MS,Verdana,Helvetica,Arial,sans-serif;
 }
 
-.ichartjs_logo{
-	height:40px;
+.ichartjs_top{
+	height:50px;
+	margin:5px;
+	background-color: #0d506c;
 }
+.ichartjs_logo{
+	margin-left:5px;
+	cursor:pointer;
+	height:50px;
+	width:200px;
+	float:left;
+	background:url(../resources/ichart_ipa_logo.png);
+	background-repeat:no-repeat;
+}
+
+
 .ichartjs_right{
 	text-align:right;
 }
