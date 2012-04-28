@@ -1,5 +1,5 @@
 	/**
-	 * @author wanghe
+	 * @overview this component use for abc
 	 * @component#Jidea.ColumnMulti2D
 	 * @extend#Jidea.Column
 	 */

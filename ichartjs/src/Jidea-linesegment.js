@@ -1,6 +1,6 @@
 	/**
 	 * Line ability for real-time show 
-	 * @author wanghe
+	 * @overview this component use for abc
 	 * @component#Jidea.LineSegment
 	 * @extend#Jidea.Component
 	 */

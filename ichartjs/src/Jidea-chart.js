@@ -620,7 +620,7 @@ Cans.prototype = {
 
 //window.Cans = Cans;
 /**
- * @author wanghe
+ * @overview this component use for abc
  * @component#Jidea.Chart
  * @extend#Jidea.Painter
  */

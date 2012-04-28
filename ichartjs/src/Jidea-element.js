@@ -1,7 +1,7 @@
 ;(function(){
 
 	/**
-	 * @author wanghe
+	 * @overview this component use for abc
 	 * @component#Jidea.Element
 	 * @extend#Object
 	 */

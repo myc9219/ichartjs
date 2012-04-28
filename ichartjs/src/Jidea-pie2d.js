@@ -1,5 +1,5 @@
 	/**
-	 * @author wanghe
+	 * @overview this component use for abc
 	 * @component#Jidea.Pie2D
 	 * @extend#Jidea.Pie
 	 */

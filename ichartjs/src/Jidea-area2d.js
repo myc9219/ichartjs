@@ -1,5 +1,5 @@
 	/**
-	 * @author wanghe
+	 * @overview this component use for abc
 	 * @component#Jidea.Area2D
 	 * @extend#Jidea.LineBasic2D
 	 */

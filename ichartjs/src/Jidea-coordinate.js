@@ -1,6 +1,8 @@
 ;(function(){
 	/**
-	 * @author wanghe
+	 * @overview
+	 * this is inner use for axis
+	 * 用于坐标系上坐标刻度的配置
 	 * @component#KeDu
 	 * @extend#Jidea.Component
 	 */
