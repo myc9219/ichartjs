@@ -1,6 +1,6 @@
 	
 	/**
-	 * @author wanghe
+	 * @overview this component use for abc
 	 * @component#Jidea.Bar2D
 	 * @extend#Jidea.Bar
 	 */

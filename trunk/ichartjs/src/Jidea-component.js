@@ -1,5 +1,5 @@
 /**
- * @author wanghe
+ * @overview this component use for abc
  * @component#Jidea.Component
  * @extend#Jidea.Painter
  */
@@ -11,7 +11,7 @@ Jidea.Component = Jidea.extend(Jidea.Painter, {
 		 */
 		this.type = 'component';
 
-		this.configuration( {
+		this.configuration({
 			/**
 			 * @cfg {Boolean} indicate whether there has a effect of color gradient
 			 */

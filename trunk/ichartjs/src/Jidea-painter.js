@@ -2,7 +2,7 @@
  * This file is base class of the Jidea - use for
  * 画图的基类、其他组件要继承此组件
  * 
- * @author wanghe
+ * @overview this component use for abc
  * @component#Jidea.Painter
  * @extend#Object
  */

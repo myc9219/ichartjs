@@ -1,5 +1,5 @@
 	/**
-	 * @author wanghe
+	 * @overview this component use for abc
 	 * @component#Jidea.Sector2D
 	 * @extend#Jidea.Sector
 	 */

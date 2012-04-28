@@ -38,7 +38,7 @@
 	
 	/**
 	 * Line ability for real-time show 
-	 * @author wanghe
+	 * @overview this component use for abc
 	 * @component#Jidea.LineMonitor2D
 	 * @extend#Jidea.Line
 	 */
