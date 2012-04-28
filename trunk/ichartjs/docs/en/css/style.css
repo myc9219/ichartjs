@@ -22,6 +22,64 @@ body {
 	background-repeat:no-repeat;
 }
 
+.ichartjs_api{
+	cursor:pointer;
+	height:50px;
+	line-height:60px;
+	font-size:14px;
+	font-weight:600;
+	color:#f9f9f9;
+	float:left;
+}
+.ichartjs_code{
+	padding:10px;
+	margin:10px;
+	color:#286a86;
+	background-color: #f3f3f3;
+	border:1px solid #dfdfdf;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	-khtml-border-radius:5px;
+	border-radius:5px
+}
+
+.ichartjs_hierarchy{
+	padding:10px;
+	margin:10px;
+	color:#286a86;
+	display:inline-block;
+	background-color: #f3f3f3;
+	border:1px solid #dfdfdf;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	-khtml-border-radius:5px;
+	border-radius:5px
+}
+.ichartjs_hierarchy_title{
+	color:#0d506c;
+	font-weight:600;
+	height:25px;
+	line-height:25px;
+}
+.ichartjs_hierarchy_item{
+	height:20px;
+	line-height:20px;
+}
+.ichartjs_hierarchy_indent{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	position: relative;
+}
+.ichartjs_hierarchy_tree{
+	width:12px;
+	height:12px;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	border-left:1px dashed #567d8d;
+	border-bottom:1px dashed #567d8d;
+}
 
 .ichartjs_right{
 	text-align:right;
@@ -53,7 +111,6 @@ body {
 	font-size:24px;
 	font-weight:600;
 	color:#006100;
-	text-shadow:0px 1px 1px #024d02;
 }
 
 .ichartjs_overview{
