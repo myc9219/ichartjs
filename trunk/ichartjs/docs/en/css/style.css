@@ -22,6 +22,29 @@ body {
 	background-repeat:no-repeat;
 }
 
+#ichartjs_join_us{
+	float: right;
+	margin-right:20px;
+	height:50px;
+	line-height:50px;
+}
+
+#ichartjs_join_us:LINK{
+	color:#f9f9f9;
+	text-decoration: none;
+}
+#ichartjs_join_us:VISITED{
+	color:#f9f9f9;
+}
+#ichartjs_join_us:HOVER{
+	color:#f1f1f1;
+	text-decoration:underline;
+}
+#ichartjs_join_us:ACTIVE{
+	color:#f0f0f0;
+}
+
+
 .ichartjs_api{
 	cursor:pointer;
 	height:50px;
@@ -41,6 +64,26 @@ body {
 	-webkit-border-radius:5px;
 	-khtml-border-radius:5px;
 	border-radius:5px
+}
+.ichartjs_home_overview{
+	padding:10px;
+	margin:10px;
+}
+.ichartjs_home_box{
+	padding:10px;
+	margin:10px;
+	color:#286a86;
+	background-color: #f3f3f3;
+	border:1px solid #dfdfdf;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	-khtml-border-radius:5px;
+	border-radius:5px
+}
+.ichartjs_home_box_t{
+	color:green;
+	font-size:20px;
+	font-weight: 600;
 }
 
 .ichartjs_hierarchy{
