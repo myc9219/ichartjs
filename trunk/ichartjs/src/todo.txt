@@ -3,6 +3,7 @@
 2.配置资源文件以备进行国际化-所以注释利用国际化资源文件ID进行标注、also uer for bulid API-Document
 3.barmuti2d鼠标移动鼠标样式-cause by the sequence of event invoking
 4.进一步压缩js大小**
+5.完善doc
 
 
 创意无限:
