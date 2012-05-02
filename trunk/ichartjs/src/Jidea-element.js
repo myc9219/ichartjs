@@ -1,5 +1,4 @@
 ;(function(){
-
 	/**
 	 * @overview this component use for abc
 	 * @component#Jidea.Element
@@ -104,7 +103,6 @@ Jidea.Element.prototype = {
 	},
 	width:function(){
 		return this.dom.offsetWidth;
-		this.height  = this.dom.offsetHeight;
 	},
 	height:function(){
 		return this.dom.offsetHeight;
