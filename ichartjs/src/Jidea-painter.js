@@ -54,7 +54,8 @@ Jidea.Painter = function(config){
 			enable:true,
 			color:'#BCBCBC',
 			width:1,
-			style:''
+			style:'',
+			radius:5
 		 },
 		 background_color:'#fDfDfD',
 		 /**

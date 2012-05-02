@@ -722,9 +722,6 @@ $.Chart = $.extend($.Painter,{
 				  */
 				 tip:{
 					enable:false
-				 },
-				 border:{
-					radius:5
 				 }
 			});
 				

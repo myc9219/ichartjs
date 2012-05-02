@@ -1,8 +1,8 @@
-/*!
+/**
  * Jidea-core Library
  * version:0.9
  * 
- * email:wanghetommy@163.com
+ * email:wanghetommy@gmail.com
  */
 ;(function(window){
 window.undefined = window.undefined;
@@ -36,8 +36,8 @@ var ua = navigator.userAgent.toLowerCase(),
         isMac = mc(/macintosh|mac os x/),
         isLinux = mc(/linux/),
         INFO = {
-			version : "0.9",
-			email : 'wanghetommy@163.com'
+			version : "1.0",
+			email : 'wanghetommy@gmail.com'
 		},
 		arithmetic = {
 			Linear: function(t,b,c,d){ return c*t/d + b; },
@@ -369,13 +369,10 @@ var Jidea_ = (function(window) {//spirit from jquery
 					throw new Error("Cannot instantiate the type '"+H.type+"'.you must implements it with method '"+M+"'.");
 			},
 			getAnimationArithmetic:function(tf){
-				if(tf=='linear'){
+				if(tf=='linear')
 					return arithmetic.Linear;
-				}
-				if(tf=='bounce'){
+				if(tf=='bounce')
 					return arithmetic.Bounce.easeOut;
-				}
-				
 				if(tf=='easeInOut'||tf=='easeIn'||tf=='easeOut')
 				return arithmetic[_.DefaultAnimationArithmetic][tf];
 				return arithmetic.Linear;                                   
@@ -414,55 +411,48 @@ var Jidea_ = (function(window) {//spirit from jquery
 			INTERVAL:30,
 			DefaultAnimationArithmetic:'Cubic'
 		});
+		
+		_.Assert = {
+			gtZero:function (v,n){
+				_.Assert.gt(v,0,n);
+			},
+			gt:function (v,c,n){
+				if(!_.isNumber(v)&&v>=c)
+					throw new Error(n+ " required a type Number gt "+c+",given:"+v);
+			},
+			isNumber:function(v,n){
+				if(!_.isNumber(v))
+					throw new Error(n+ " required a type Number,given:"+v);
+			},
+			isNotEmpty:function(v,cause){
+				if(!v||v==''){
+					throw new Error("it has required not empty.cause:"+cause);
+				}	
+				if(_.isArray(v)&&v.length==0){
+					throw new Error("required must has one element at least.cause:"+cause);
+				}
+			},
+			isArray:function(v,n){
+				if(!_.isArray(v))
+					throw new Error(n +" required a type Array,given:"+v);
+			},
+			isFunction:function(v,n){
+				if(!_.isFunction(v))
+					throw new Error(n +" required a type Function,given:"+v);
+			},
+			isTrue:function(v,cause){
+				if(v!==true)
+					throw new Error(cause);
+			},
+			equal:function(v1,v2,cause){
+				if(v1!==v2)
+					throw new Error(cause);
+			}
+		};
 	return _;
 	
 })(window);
 
-Jidea_.Assert = {
-	gtZero:function (v,n){
-		if(!Jidea.isNumber(v)&&v>=0){
-			throw new Error(n+ " has required a type Number gt zero,but given:"+v);
-		}
-	},
-	gt:function (v,c,n){
-		if(!Jidea.isNumber(v)&&v>=c){
-			throw new Error(n+ " has required a type Number gt "+c+",but given:"+v);
-		}
-	},
-	isNumber:function(v,n){
-		if(!Jidea.isNumber(v)){
-			throw new Error(n+ " has required a type Number,but given:"+v);
-		}
-	},
-	isNotEmpty:function(v,cause){
-		if(!v||v==''){
-			throw new Error("it has required not empty.cause:"+cause);
-		}	
-		if(Jidea.isArray(v)&&v.length==0){
-			throw new Error("Array has required must has one element at least.cause:"+cause);
-		}
-	},
-	isArray:function(v,n){
-		if(!Jidea.isArray(v)){
-			throw new Error(n +" has required a type Array,but given:"+v);
-		}
-	},
-	isFunction:function(v,n){
-		if(!Jidea.isFunction(v)){
-			throw new Error(n +" has required a type Function,but given:"+v);
-		}
-	},
-	isTrue:function(v,cause){
-		if(v!==true){
-			throw new Error(cause);
-		}
-	},
-	equal:function(v1,v2,cause){
-		if(v1!==v2){
-			throw new Error(cause);
-		}
-	}
-}
 
 if(!String.prototype.trim){
 	String.prototype.trim = function() {
