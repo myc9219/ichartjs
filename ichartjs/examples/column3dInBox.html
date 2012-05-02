@@ -5,27 +5,27 @@
 		<title>Column3d sample in the Box</title>
 		<meta name="Description" content="" />
 		<meta name="Keywords" content="" />
-		<script type="text/javascript" src="../src/Jidea-core.js"></script>
-		<script type="text/javascript" src="../src/Jidea-event.js"></script>
-		<script type="text/javascript" src="../src/Jidea-math.js"></script>
-		<script type="text/javascript" src="../src/Jidea-assert.js"></script>
-		<script type="text/javascript" src="../src/Jidea-painter.js"></script>
-		<script type="text/javascript" src="../src/Jidea-component.js"></script>
-		<script type="text/javascript" src="../src/Jidea-interface.js"></script>
-		<script type="text/javascript" src="../src/Jidea-legend.js"></script>
-		<script type="text/javascript" src="../src/Jidea-label.js"></script>
-		<script type="text/javascript" src="../src/Jidea-style.js"></script>
-		<script type="text/javascript" src="../src/Jidea-chart.js"></script>
-		<script type="text/javascript" src="../src/Jidea-coordinate.js"></script>
-		<script type="text/javascript" src="../src/Jidea-element.js"></script>
-		<script type="text/javascript" src="../src/Jidea-crosshair.js"></script>
-		<script type="text/javascript" src="../src/Jidea-text.js"></script>
-		<script type="text/javascript" src="../src/Jidea-tip.js"></script>
-		<script type="text/javascript" src="../src/Jidea-rectangle.js"></script>
-		<script type="text/javascript" src="../src/Jidea-rectangle3d.js"></script>
-		<script type="text/javascript" src="../src/Jidea-column.js"></script>
-		<script type="text/javascript" src="../src/Jidea-column3d.js"></script>
-		<script type="text/javascript" src="../src/Jidea-custom.js"></script>
+		<script type="text/javascript" src="../src/iChart-core.js"></script>
+		<script type="text/javascript" src="../src/iChart-event.js"></script>
+		<script type="text/javascript" src="../src/iChart-math.js"></script>
+		<script type="text/javascript" src="../src/iChart-assert.js"></script>
+		<script type="text/javascript" src="../src/iChart-painter.js"></script>
+		<script type="text/javascript" src="../src/iChart-component.js"></script>
+		<script type="text/javascript" src="../src/iChart-interface.js"></script>
+		<script type="text/javascript" src="../src/iChart-legend.js"></script>
+		<script type="text/javascript" src="../src/iChart-label.js"></script>
+		<script type="text/javascript" src="../src/iChart-style.js"></script>
+		<script type="text/javascript" src="../src/iChart-chart.js"></script>
+		<script type="text/javascript" src="../src/iChart-coordinate.js"></script>
+		<script type="text/javascript" src="../src/iChart-element.js"></script>
+		<script type="text/javascript" src="../src/iChart-crosshair.js"></script>
+		<script type="text/javascript" src="../src/iChart-text.js"></script>
+		<script type="text/javascript" src="../src/iChart-tip.js"></script>
+		<script type="text/javascript" src="../src/iChart-rectangle.js"></script>
+		<script type="text/javascript" src="../src/iChart-rectangle3d.js"></script>
+		<script type="text/javascript" src="../src/iChart-column.js"></script>
+		<script type="text/javascript" src="../src/iChart-column3d.js"></script>
+		<script type="text/javascript" src="../src/iChart-custom.js"></script>
 		<script type="text/javascript" src="data.js"></script>
 		<style type="text/css">
 			body{
@@ -38,18 +38,18 @@
 		</style>
 		<script type="text/javascript">
 					$(function(){
-						var bg = '#d6dbd2',dc = Jidea.Math.dark(bg,0.1),
+						var bg = '#d6dbd2',dc = iChart.Math.dark(bg,0.1),
 						bg1 = 'rgba(214,219,210,0.4)';
 						
 						
 						//下底-底-左-右-上-前
 						var wall = [
-								{color:Jidea.Math.dark(bg1,0.12)},
-								{color:Jidea.Math.dark(bg1,0.14)},
-								{color:Jidea.Math.dark(bg1,0.2)}
+								{color:iChart.Math.dark(bg1,0.12)},
+								{color:iChart.Math.dark(bg1,0.14)},
+								{color:iChart.Math.dark(bg1,0.2)}
 							];
 						
-						var column3d = new Jidea.Column3D({
+						var column3d = new iChart.Column3D({
 							render : 'myCanvas',
 							data: data,
 							align:'center',

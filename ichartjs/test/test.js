@@ -75,7 +75,7 @@ function test(){
 	total=success=fail=0;
 	unit = [];
 	unit.push(function(){
-		return new Jidea.Pie2D({
+		return new iChart.Pie2D({
 			render :canvas,
 			debug : true,
 			title : 'Test Pie2D',
@@ -86,7 +86,7 @@ function test(){
 	});
 	
 	unit.push(function(){
-		return new Jidea.Pie3D({
+		return new iChart.Pie3D({
 			render :canvas,
 			debug : true,
 			title : 'Test Pie3D',
@@ -106,7 +106,7 @@ function test(){
 	});
 	
 	unit.push(function(){
-		return new Jidea.Column2D({
+		return new iChart.Column2D({
 			render :canvas,
 			debug : true,
 			title : 'Test Column2D',
@@ -128,7 +128,7 @@ function test(){
 	});
 	
 	unit.push(function(){
-		return new Jidea.Column3D({
+		return new iChart.Column3D({
 			render :canvas,
 			debug : true,
 			title : 'Test Column3D',
@@ -152,7 +152,7 @@ function test(){
 	});
 	
 	unit.push(function(){
-		return new Jidea.Bar2D({
+		return new iChart.Bar2D({
 			render :canvas,
 			debug : true,
 			title : 'Test Bar2D',
@@ -175,7 +175,7 @@ function test(){
 	});
 	
 	unit.push(function(){
-		return new Jidea.ColumnMulti2D({
+		return new iChart.ColumnMulti2D({
 			render :canvas,
 			debug : true,
 			title : 'Test ColumnMulti2D',
@@ -204,7 +204,7 @@ function test(){
 	
 	
 	unit.push(function(){
-		return new Jidea.LineBasic2D({
+		return new iChart.LineBasic2D({
 			render :canvas,
 			debug : true,
 			title : 'Test LineBasic2D',
@@ -220,7 +220,7 @@ function test(){
 	});
 	
 	unit.push(function(){
-		return new Jidea.LineBasic2D({
+		return new iChart.LineBasic2D({
 			render :canvas,
 			debug : true,
 			title : 'Test LineBasic2D More Point',
@@ -278,7 +278,7 @@ function test(){
 	
 	
 	unit.push(function(){
-		var iChart = Jidea.noConflict();
+		var iChart = iChart.noConflict();
 		return new iChart.Area2D({
 			render :canvas,
 			debug : true,
@@ -297,7 +297,7 @@ function test(){
 	});
 	
 	unit.push(function(){
-		return new Jidea.Bar2D({
+		return new iChart.Bar2D({
 				render :canvas,
 				debug : true,
 				title : 'Test Bar2d',
@@ -315,7 +315,7 @@ function test(){
 	});
 	
 	unit.push(function(){
-		return new Jidea.BarMulti2D({
+		return new iChart.BarMulti2D({
 			render :canvas,
 			debug : true,
 			title : 'Test BarMulti2D',
