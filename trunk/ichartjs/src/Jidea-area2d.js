@@ -1,4 +1,3 @@
-
 	/**
 	 * @overview this component use for abc
 	 * @component#@chart#Jidea.Area2D

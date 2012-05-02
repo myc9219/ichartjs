@@ -54,7 +54,7 @@
 
 			this.type = 'linemonitor2d';
 
-			this.configuration( {
+			this.configuration({
 				/**
 				 * @cfg {String} the direction of line run (default 'left')
 				 * Available value are:
