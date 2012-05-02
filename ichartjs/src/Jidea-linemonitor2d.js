@@ -39,7 +39,7 @@
 	/**
 	 * Line ability for real-time show 
 	 * @overview this component use for abc
-	 * @component#Jidea.LineMonitor2D
+	 * @component#@chart#Jidea.LineMonitor2D
 	 * @extend#Jidea.Line
 	 */
 	Jidea.LineMonitor2D = Jidea.extend(Jidea.Line,{

@@ -1,7 +1,7 @@
 	
 	/**
 	 * @overview this component use for abc
-	 * @component#Jidea.Bar2D
+	 * @component#@chart#Jidea.Bar2D
 	 * @extend#Jidea.Bar
 	 */
 	Jidea.Bar2D = Jidea.extend(Jidea.Bar,{
