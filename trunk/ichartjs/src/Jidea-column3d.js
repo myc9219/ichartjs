@@ -1,6 +1,6 @@
 	/**
 	 * @overview this component use for abc
-	 * @component#Jidea.Column3D
+	 * @component#@chart#Jidea.Column3D
 	 * @extend#Jidea.Column
 	 */
 	Jidea.Column3D = Jidea.extend(Jidea.Column,{

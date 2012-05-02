@@ -1,6 +1,6 @@
 	/**
 	 * @overview this component use for abc
-	 * @component#Jidea.Pie3D
+	 * @component#@chart#Jidea.Pie3D
 	 * @extend#Jidea.Pie
 	 */
 	Jidea.Pie3D = Jidea.extend(Jidea.Pie,{

@@ -1,6 +1,7 @@
+
 	/**
 	 * @overview this component use for abc
-	 * @component#Jidea.Area2D
+	 * @component#@chart#Jidea.Area2D
 	 * @extend#Jidea.LineBasic2D
 	 */
 	Jidea.Area2D = Jidea.extend(Jidea.LineBasic2D,{
@@ -19,6 +20,7 @@
 				area:true,
 				area_opacity:0.3
 			});
+			
 			this.registerEvent();
 			
 		},

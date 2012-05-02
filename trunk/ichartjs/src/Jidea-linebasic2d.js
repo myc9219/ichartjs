@@ -1,6 +1,6 @@
 	/**
 	 * @overview this component use for abc
-	 * @component#Jidea.LineBasic2D
+	 * @component#@chart#Jidea.LineBasic2D
 	 * @extend#Jidea.Line
 	 */
 	Jidea.LineBasic2D = Jidea.extend(Jidea.Line,{
