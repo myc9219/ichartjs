@@ -6,11 +6,11 @@
 		<meta name="Description" content="" />
 		<meta name="Keywords" content="" />
 		
-		<script type="text/javascript" src="../src/Jidea-arithmetic.js"></script>
+		<script type="text/javascript" src="../src/iChart-arithmetic.js"></script>
 		<script type="text/javascript">
 			var b=50,c=200,d=100,t=0,$div;
 			function Run(){
-			    $div.style.left = Math.ceil(Jidea.Arithmetic.Quad.easeOut(t,b,c,d)) + "px";
+			    $div.style.left = Math.ceil(iChart.Arithmetic.Quad.easeOut(t,b,c,d)) + "px";
 			    if(t<d){ t++; setTimeout(Run, 10); }
 			}
 			function test(){
