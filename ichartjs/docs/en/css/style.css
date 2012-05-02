@@ -70,7 +70,7 @@ body {
 	margin:10px;
 }
 .ichartjs_home_box{
-	padding:10px;
+	padding:5px;
 	margin:10px;
 	color:#286a86;
 	background-color: #f3f3f3;
@@ -84,6 +84,17 @@ body {
 	color:green;
 	font-size:20px;
 	font-weight: 600;
+}
+.ichartjs_home_box_chart{
+	margin:4px;
+	padding:2px 8px;
+	display:inline-block;
+	background-color: #eeeeee;
+	border:1px solid #dedede;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	-khtml-border-radius:5px;
+	border-radius:5px
 }
 
 .ichartjs_hierarchy{
