@@ -26,6 +26,7 @@ Cans.prototype = {
 			return this.canvas.style[attr];
 		}
 	},
+	/* it seem not improve the speed
 	isPointInPathArc:function(x,y,radius,s,e,color,ccw,a2r,x0,y0){
 		var angle = s,x0,y0,ccw=!!ccw,a2r=!!a2r;
 			if(!a2r)
@@ -37,6 +38,7 @@ Cans.prototype = {
 			this.ctx.lineTo(x,y);
 			return this.ctx.isPointInPath(x0,y0);
 	},
+	/*
 	/**
 	 * draw arc API
 	 * @param {Number} x 圆心x

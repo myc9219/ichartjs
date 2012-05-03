@@ -16,9 +16,7 @@
 			this.type = 'column';
 			
 			this.configuration({
-				coordinate:{
-					brushsize:1
-				},
+				coordinate:{},
 				hiswidth:undefined,
 				shadow:true,
 				text_space:6,
@@ -59,7 +57,7 @@
 		},
 		doAnimation:function(t,d){
 			var r,h;
-			this.coordinate.draw();
+			this.coo.draw();
 			for(var i=0;i<this.rectangles.length;i++){
 				r = this.rectangles[i]; 
 				this.fireEvent(this,'beforeRectangleAnimation',[this,r]);

@@ -61,22 +61,24 @@
 			this.push('coordinate.zHeight',this.get('zHeight')*this.get('bottom_scale'));
 			
 			//use option create a coordinate
-			this.coordinate = iChart.Interface.coordinate3d.call(this);
+			this.coo = iChart.Interface.coordinate3d.call(this);
 			
-			this.pushComponent(this.coordinate,true);
+			this.pushComponent(this.coo,true);
 			
 			/**
 			 * initialize rectangles
 			 */
 			//get the max/min scale of this coordinate for calculated the height
-			var coo = this.coordinate,
+			var coo = this.coo,
 				S = coo.getScale(this.get('keduAlign')),
 				Le = this.get('label.enable'),
 				Te = this.get('tip.enable'),
 				zh = this.get('zHeight')*(this.get('bottom_scale')-1)/2*this.get('yAngle_'),
 				t,lt,tt,h,text,value,
 				gw = this.get('hiswidth')+this.get('hispace'),
-				H = this.get('coordinate.height');
+				H = this.coo.get('height');
+			
+			
 			
 			/**
 			 * quick config to all rectangle

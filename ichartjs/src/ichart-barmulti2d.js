@@ -25,7 +25,7 @@
 			},
 			doAnimation:function(t,d){
 				var r,h;
-				this.coordinate.draw();
+				this.coo.draw();
 				for(var i=0;i<this.labels.length;i++){
 					this.labels[i].draw();
 				}
@@ -60,14 +60,14 @@
 				
 				
 				//use option create a coordinate
-				this.coordinate = iChart.Interface.coordinate2d.call(this);
+				this.coo = iChart.Interface.coordinate2d.call(this);
 							
-				this.pushComponent(this.coordinate,true);
+				this.pushComponent(this.coo,true);
 				
 				//get the max/min scale of this coordinate for calculated the height
-				var S = this.coordinate.getScale(this.get('keduAlign')),
-					bs = this.get('coordinate.brushsize'),
-					W = this.get('coordinate.width'),
+				var S = this.coo.getScale(this.get('keduAlign')),
+					bs = this.coo.get('brushsize'),
+					W = this.coo.get('width'),
 					Le = this.get('label.enable'),
 					Te = this.get('tip.enable'),
 					gw = this.data.length*this.get('barheight')+this.get('barspace'),
@@ -77,7 +77,7 @@
 				 * quick config to all rectangle
 				 */
 				this.push('rectangle.height',this.get('barheight'));
-				this.push('rectangle.originx',this.x + this.get('coordinate.brushsize'));
+				this.push('rectangle.originx',this.x + this.coo.get('brushsize'));
 				this.push('rectangle.valueAlign','right');
 				this.push('rectangle.tipAlign','right');
 				

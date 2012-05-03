@@ -486,7 +486,6 @@
 				}
  				this.kedu.push(new KeDu(kd,this.container));
 			}
-			console.log(this.kedu.length);
 			
 			this.push('ignoreOverlap',this.get('ignoreOverlap')&&this.get('axis.enable')||this.get('ignoreEdge'));
 			

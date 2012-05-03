@@ -25,7 +25,7 @@
 		},
 		doAnimation:function(t,d){
 			var l,p;
-			this.coordinate.draw();
+			this.coo.draw();
 			for(var i=0;i<this.lines.length;i++){
 				l = this.lines[i]; 
 				this.fireEvent(this,'beforeLineAnimation',[this,l]);
@@ -43,7 +43,7 @@
 		doConfig:function(){
 			iChart.LineBasic2D.superclass.doConfig.call(this);
 			
-			this.coordinate = new iChart.Coordinate2D(iChart.merge({
+			this.coo = new iChart.Coordinate2D(iChart.merge({
 					kedu:[{
 						 position:this.get('keduAlign'),	
 						 max_scale:this.get('maxValue')
@@ -61,15 +61,15 @@
 				},this.get('coordinate')),this);
 			
 			
-			this.pushComponent(this.coordinate,true);
+			this.pushComponent(this.coo,true);
 			
 			this.push('segment_style.tip.showType','follow');
-			this.push('segment_style.coordinate',this.coordinate);
+			this.push('segment_style.coordinate',this.coo);
 			this.push('segment_style.tipInvokeHeap',this.tipInvokeHeap);
 			
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coordinate.getScale(this.get('keduAlign')),
+			var S = this.coo.getScale(this.get('keduAlign')),
 				H=this.get('coordinate.valid_height'),
 				sp=this.get('label_spacing'),
 				points,x,y;
