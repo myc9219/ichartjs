@@ -4,7 +4,7 @@
 	 * @component#iChart.CrossHair
 	 * @extend#iChart.Element
 	 */
-	iChart.CrossHair = iChart.extend(iChart.Element,{
+	iChart.CrossHair = iChart.extend(iChart.Html,{
 		configure:function(T){
 			/**
 			 * indicate the component's type

@@ -3,7 +3,7 @@
 	 * @component#iChart.Tip
 	 * @extend#iChart.Element
 	 */
-	iChart.Tip = iChart.extend(iChart.Element,{
+	iChart.Tip = iChart.extend(iChart.Html,{
 		configure:function(T){
 			/**
 			 * indicate the legend's type
