@@ -7,13 +7,13 @@
  * @extend#Object
  */
 iChart.Painter = function(config){
-	
 	/**
 	 * indicate the module's type
 	 */
 	this.type = 'painter';
 	
 	this.dimension = iChart.Math._2D;
+	
 	/**
 	 * define interface method
 	 */
