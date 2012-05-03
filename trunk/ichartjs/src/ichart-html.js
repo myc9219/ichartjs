@@ -7,6 +7,7 @@
  */
 iChart.Html = iChart.extend(iChart.Element,{
 	configure : function(T) {
+		
 		/**
 		 * indicate the element's type
 		 */
@@ -52,11 +53,12 @@ iChart.Html = iChart.extend(iChart.Element,{
 		if(this._default_c.style){
 			this._default_c.style = this.get('style')+";"+this._default_c.style;
 		}
-		
 		this.transitions = "";
-		
 	},
 	afterConfiguration:function(){
+		this.initialize();
+	},
+	initialize:function(){
 		//the element's wrap
 		this.wrap = this.get('wrap');
 		this.dom = document.createElement("div");

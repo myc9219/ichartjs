@@ -146,7 +146,7 @@ iChart.Painter = iChart.extend(iChart.Element,{
 		}
 		return r;
 	},
-	on : function(name, fn) {
+	on:function(name, fn) {
 		if (iChart.isString(name) && iChart.isFunction(fn))
 			this.events[name].push(fn);
 		return this;

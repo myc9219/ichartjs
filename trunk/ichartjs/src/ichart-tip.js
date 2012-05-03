@@ -4,7 +4,13 @@
 	 * @extend#iChart.Element
 	 */
 	iChart.Tip = iChart.extend(iChart.Html,{
-		configure:function(T){
+		configure:function(){
+			
+			/**
+			 * invoked the super class's  configuration
+			 */
+			iChart.Tip.superclass.configure.apply(this,arguments);
+			
 			/**
 			 * indicate the legend's type
 			 */
@@ -34,7 +40,6 @@
 				 },
 				 delay:200
 			});
-			this.target = T;
 		},
 		follow:function(e,m){
 			if(this.get('invokeOffsetDynamic')){
