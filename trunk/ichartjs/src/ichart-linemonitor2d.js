@@ -97,7 +97,7 @@
 				});
 			}
 			
-			this.coordinate = new iChart.Coordinate2D(iChart.merge( {
+			this.coo = new iChart.Coordinate2D(iChart.merge( {
 				kedu : [ {
 					position : this.get('keduAlign'),
 					max_scale : this.get('maxValue')
@@ -114,7 +114,7 @@
 				}
 			}, this.get('coordinate')), this);
 
-			this.pushComponent(this.coordinate, true);
+			this.pushComponent(this.coo, true);
 			
 			this.push('label_spacing',this.get('coordinate.valid_width')/(this.get('queue_size')-1));
 			
@@ -125,13 +125,13 @@
 			}
 
 			this.push('segment_style.tip.showType','follow');
-			this.push('segment_style.coordinate',this.coordinate);
+			this.push('segment_style.coordinate',this.coo);
 			this.push('segment_style.keep_with_coordinate',true);
 			
 			
 			
 			//get the max/min scale of this coordinate for calculated the height
-			this.S = this.coordinate.getScale(this.get('keduAlign'));
+			this.S = this.coo.getScale(this.get('keduAlign'));
 			this.S.uh = this.get('coordinate.valid_height')/ this.S.distance;
 			
 

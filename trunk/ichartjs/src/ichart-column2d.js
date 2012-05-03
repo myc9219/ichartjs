@@ -34,14 +34,14 @@
 			this.push('hispace',(this.get('coordinate.width') - this.get('hiswidth')*this.data.length)/(this.data.length+1));
 			
 			//use option create a coordinate
-			this.coordinate = iChart.Interface.coordinate2d.call(this);
+			this.coo = iChart.Interface.coordinate2d.call(this);
 			
-			this.pushComponent(this.coordinate,true);
+			this.pushComponent(this.coo,true);
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coordinate.getScale(this.get('keduAlign')),
-				bs = this.get('coordinate.brushsize'),
-				H = this.get('coordinate.height'),
+			var S = this.coo.getScale(this.get('keduAlign')),
+				bs = this.coo.get('brushsize'),
+				H = this.coo.get('height'),
 				Le = this.get('label.enable'),
 				Te = this.get('tip.enable'),
 				gw = this.get('hiswidth')+this.get('hispace'),

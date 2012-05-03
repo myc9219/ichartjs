@@ -17,9 +17,7 @@
 			this.type = 'bar';
 			
 			this.configuration({
-					coordinate:{
-					brushsize:1
-				},
+				coordinate:{},
 				barheight:undefined,
 				shadow:true,
 				text_space:6,
@@ -60,7 +58,7 @@
 		},
 		doAnimation:function(t,d){
 			var r;
-			this.coordinate.draw();
+			this.coo.draw();
 			for(var i=0;i<this.rectangles.length;i++){
 				r = this.rectangles[i]; 
 				this.fireEvent(this,'beforeRectangleAnimation',[this,r]);

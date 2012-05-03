@@ -36,13 +36,13 @@
 			this.push('barspace',(this.get('coordinate.height') - this.get('barheight')*this.data.length)/(this.data.length+1));
 			
 			//use option create a coordinate
-			this.coordinate = iChart.Interface.coordinate2d.call(this);
+			this.coo = iChart.Interface.coordinate2d.call(this);
 			
-			this.pushComponent(this.coordinate,true);
+			this.pushComponent(this.coo,true);
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coordinate.getScale(this.get('keduAlign')),
-				W = this.get('coordinate.width'),
+			var S = this.coo.getScale(this.get('keduAlign')),
+				W = this.coo.get('width'),
 				Le = this.get('label.enable'),
 				Te = this.get('tip.enable'),
 				gw = this.get('barheight')+this.get('barspace'),
@@ -54,7 +54,7 @@
 			this.push('rectangle.height',this.get('barheight'));
 			this.push('rectangle.valueAlign','right');
 			this.push('rectangle.tipAlign','right');
-			this.push('rectangle.originx',this.x + this.get('coordinate.brushsize'));
+			this.push('rectangle.originx',this.x + this.coo.get('brushsize'));
 			
 			for(var i=0;i<this.data.length;i++){
 				

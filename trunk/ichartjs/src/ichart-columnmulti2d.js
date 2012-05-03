@@ -24,7 +24,7 @@
 		},
 		doAnimation:function(t,d){
 			var r,h;
-			this.coordinate.draw();
+			this.coo.draw();
 			for(var i=0;i<this.labels.length;i++){
 				this.labels[i].draw();
 			}
@@ -54,12 +54,12 @@
 			this.push('hispace',(this.get('coordinate.width') - this.get('hiswidth')*total)/(this.columnKeys.length+1));
 			
 			//use option create a coordinate
-			this.coordinate = iChart.Interface.coordinate2d.call(this);
+			this.coo = iChart.Interface.coordinate2d.call(this);
 						
-			this.pushComponent(this.coordinate,true);
+			this.pushComponent(this.coo,true);
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coordinate.getScale(this.get('keduAlign')),
+			var S = this.coo.getScale(this.get('keduAlign')),
 				bs = this.get('coordinate.brushsize'),
 				H = this.get('coordinate.height'),
 				Le = this.get('label.enable'),
