@@ -60,8 +60,8 @@
 			
 			//get the max/min scale of this coordinate for calculated the height
 			var S = this.coo.getScale(this.get('keduAlign')),
-				bs = this.get('coordinate.brushsize'),
-				H = this.get('coordinate.height'),
+				bs = this.coo.get('brushsize'),
+				H = this.coo.get('height'),
 				Le = this.get('label.enable'),
 				Te = this.get('tip.enable'),
 				gw = this.data.length*this.get('hiswidth')+this.get('hispace'),
