@@ -321,7 +321,6 @@ function test(){
 			title : 'Test BarMulti2D',
 			data: data9,
 			columnKeys:columnKeys1,
-			align:'center',
 			coordinate:{
 				kedu:{
 					 position:'bottom',	
