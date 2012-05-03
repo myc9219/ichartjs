@@ -278,8 +278,8 @@ function test(){
 	
 	
 	unit.push(function(){
-		var iChart = iChart.noConflict();
-		return new iChart.Area2D({
+		var myChart = iChart.noConflict();
+		return new myChart.Area2D({
 			render :canvas,
 			debug : true,
 			title : 'Test Area2D',
