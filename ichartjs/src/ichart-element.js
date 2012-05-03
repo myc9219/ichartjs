@@ -1,164 +1,118 @@
-;(function(){
+/**
+ * @overview this is base class of all component.All must extend this so that has ability for configuration
+ * @component#iChart.Element
+ * @extend#Object
+ */
+iChart.Element = function(config){
 	/**
-	 * @overview this component use for abc
-	 * @component#iChart.Element
-	 * @extend#Object
+	 * indicate the element's type
 	 */
-	iChart.Element = function(config){
-		/**
-		 * indicate the legend's type
+	this.type = 'element';
+	
+	/**
+	 * define abstract method
+	 */
+	iChart.DefineAbstract('configure',this);
+	
+	/**
+	 * All of the configuration will in this property
+	 */
+	this.configurations = {};
+	
+	
+	this.configuration({
+		 /**
+		  * @cfg {String} The unique id of this module (defaults to an auto-assigned id). 
+		  */
+		 id:'',
+		 /**
+		  * @cfg {Number} Specifies the font size of this component in pixels.(default to 12)
+		  */
+		 fontsize:12,
+		 /**
+		  * @cfg {String} Specifies the font of this component.(default to 'Verdana')
+		  */
+ 		 font:'Verdana',
+ 		/**
+		  * @cfg {String} Specifies the font weight of this component.(default to 'normal')
+		  */
+ 		 fontweight:'normal',
+		 /**
+		  * @cfg {Object} Specifies the border for this component
+		  */
+		 border:{
+			enable:false,
+			color:'#BCBCBC',
+			style:'solid',
+			width:1,
+			radius:5
+		 },
+		 /**
+		  *@cfg {Boolean} Specifies whether the component should be show a shadow.(default to false)
 		 */
-		this.type = 'element';
-		/**
-		 * define interface method
+		 shadow:false,
+		 /**
+		  *@cfg {String} Specifies the color of your shadow is.(default to '#666666')
 		 */
-		iChart.DefineAbstract('configure',this);
-		iChart.DefineAbstract('beforeshow',this);
-		/**
-		 * All of the configuration will in this property
+		 shadow_color:'#666666',
+		 /**
+		  *@cfg {Number} How blur you want your shadow to be.(default to 4)
 		 */
-		this._config_ = {};
-		this.configuration({
-			 border:{
-				enable:false,
-				width:1,
-				style:'solid',
-				color:'#BCBCBC',
-				radius:5
-			 },
-			 animation:true,
-			 /**
-			  *@cfg {Boolean} 是否阴影效果
-			 */
-			 shadow:false,
-			 /**
-			  *@cfg {String} 
-			 */
-			 shadow_color:'#666666',
-			 /**
-			  *@cfg {Number} 
-			 */
-			 shadow_blur:4,
-			 /**
-			  *@cfg {Number} 
-			 */
-			 shadow_offsetx:0,
-			 /**
-			  *@cfg {Number} 
-			 */
-			 shadow_offsety:0,
-			 width:0,
-			 height:0,
-			 style:'',
-			 index:999,
-			 offset_top:0,
-			 offset_left:0
-		});
-		
-		this._default_c = config || {};
-		
-		/**
-		 * 初始化配置、事件注册
-		 * @memberOf {Painter} 
+		 shadow_blur:4,
+		 /**
+		  *@cfg {Number} Horizontal distance (x-axis) between the shadow and the shape in pixel.(default to 0)
 		 */
-		this.configure.apply(this,Array.prototype.slice.call(arguments,1));
-		
-		//merge style
-		if(this._default_c.style){
-			this._default_c.style = this.get('style')+";"+this._default_c.style;
-		}
-		
-		this.transitions = "";
-		
-		this.variable = {};
-		
-		/**
-		 * 与自定义参数进行整合
-		 * @memberOf {Painter} 
+		 shadow_offsetx:0,
+		 /**
+		  *@cfg {Number} Vertical distance (y-axis) between the shadow and the shape in pixel.(default to 0)
 		 */
-		this.configuration(this._default_c);
-		
-		/**
-		 * 用已经配置好的参数进行进一步配置
-		 * @memberOf {Painter} 
-		 */
-		this.initialize();
-		
-		this.applyStyle();
-	};
+		 shadow_offsety:0,
+		 /**
+		  * @inner {Boolean} inner use 
+		  */
+		 debug:false
+	});
+	
+	/**
+	 * the running variable cache
+	 */
+	this.variable = {};
+	
+	/**
+	 * the container of all events
+	 */
+	this.events = {};
+	this.preventEvent = false;
+	this.initialization = false;
+	
+	this._default_c = config || {};//if use this._default_c may be need to clone config
+	
+	/**
+	 * inititalize configure
+	 */
+	this.configure.apply(this,Array.prototype.slice.call(arguments,1));
+	
+	/**
+	 * megre customize config
+	 */
+	this.configuration(this._default_c);
+	
+	this.afterConfiguration();
+}
+
 iChart.Element.prototype = {
-	initialize:function(){
-		//the element's wrap
-		this.wrap = this.get('wrap');
-		this.dom = document.createElement("div");
-		
-		if(this.get('shadow')){
-			this.css('boxShadow',this.get('shadow_offsetx')+'px '+this.get('shadow_offsety')+'px '+this.get('shadow_blur')+'px '+this.get('shadow_color'));
-		}
-		if(this.get('border.enable')){
-			this.css('border',this.get('border.width')+"px "+this.get('border.style')+" "+this.get('border.color'));
-			this.css('borderRadius',this.get('border.radius')+"px");
-		}
-		this.css('zIndex',this.get('index'));
-	},
-	width:function(){
-		return this.dom.offsetWidth;
-	},
-	height:function(){
-		return this.dom.offsetHeight;
-	},
-	onTransitionEnd:function(fn,useCapture){
-		var type = 'transitionend';
-		if(iChart.isWebKit){
-			type = 'webkitTransitionEnd';
-		}else if(iChart.isOpera){
-			type = 'oTransitionEnd';
-		}
-		iChart.Event.addEvent(this.dom,type,fn,useCapture);
-	},
-	transition:function(v){
-		this.transitions = this.transitions==''?v:this.transitions+','+v;
-		if(iChart.isWebKit){
-			this.css('WebkitTransition',this.transitions);
-		}else if(iChart.isGecko){
-			this.css('MozTransition',this.transitions);
-		}else if(iChart.isOpera){
-			this.css('OTransition',this.transitions);
-		}else{
-			this.css('transition',this.transitions);
-		}
-	},
-	show:function(e,m){
-		this.beforeshow(e,m);
-		this.css('visibility','visible');
-	},
-	hidden:function(e){
-		this.css('visibility','hidden');
-	},
-	getDom:function(){
-		return this.dom;
-	},
-	css:function(k,v){
-		if(iChart.isString(k))if(iChart.isDefined(v))this.dom.style[k]=v;else return this.dom.style[k];
-	},
-	applyStyle:function(){
-		var styles  = this.get('style').split(";"),style;
-		for(var i = 0;i< styles.length;i++){
-			style = styles[i].split(":");
-			if(style.length>1)this.css(style[0],style[1]);
-		}
-	},
 	configuration:function(C){
 		if(iChart.isObject(C)){
-			iChart.merge(this._config_,C);
+			iChart.merge(this.configurations,C);
 		}
 	},
+	afterConfiguration:function(){},
     /**
      * average write speed about 0.013ms
      */
     push:function(name, value)
     {
-		var A = name.split("."),V = this._config_;
+		var A = name.split("."),V = this.configurations;
 		for(i=0;i<A.length-1;i++){
 			if(!V[A[i]])V[A[i]] = {};V = V[A[i]];
 		}
@@ -170,7 +124,7 @@ iChart.Element.prototype = {
      */
     get:function(name)
     {
-        var A = name.split("."),V = this._config_[A[0]];
+        var A = name.split("."),V = this.configurations[A[0]];
 		for(i=1;i<A.length;i++){
 			if(!V)
 		        return null;
@@ -179,4 +133,3 @@ iChart.Element.prototype = {
 		return V;
     }
 }
-})();

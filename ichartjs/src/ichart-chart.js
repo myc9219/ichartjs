@@ -630,7 +630,12 @@ $.Chart = $.extend($.Painter,{
 		 */
 		configure:function(){
 			/**
-			 * indicate the module's type
+			 * invoked the super class's  configuration
+			 */
+			$.Chart.superclass.configure.apply(this,arguments);
+			
+			/**
+			 * indicate the element's type
 			 */
 			this.type = 'chart';
 			
@@ -738,7 +743,6 @@ $.Chart = $.extend($.Painter,{
 			
 			this.target = null;
 			this.rendered = false;
-			this.autoInitialized = false;
 			
 			this.animationed = false;
 			
