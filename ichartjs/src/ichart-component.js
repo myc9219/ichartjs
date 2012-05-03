@@ -9,7 +9,7 @@
 			/**
 			 * invoked the super class's configuration
 			 */
-			iChart.Component.superclass.configure.apply(this, arguments);
+			iChart.Component.superclass.configure.apply(this,arguments);
 	
 			/**
 			 * indicate the element's type

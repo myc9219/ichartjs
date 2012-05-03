@@ -19,7 +19,6 @@ iChart.Element = function(config){
 	 */
 	this.configurations = {};
 	
-	
 	this.configuration({
 		 /**
 		  * @cfg {String} The unique id of this module (defaults to an auto-assigned id). 

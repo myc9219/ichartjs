@@ -6,6 +6,12 @@
 	 */
 	iChart.CrossHair = iChart.extend(iChart.Html,{
 		configure:function(T){
+		
+			/**
+			 * invoked the super class's  configuration
+			 */
+			iChart.CrossHair.superclass.configure.apply(this,arguments);
+			
 			/**
 			 * indicate the component's type
 			 */
