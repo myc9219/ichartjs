@@ -7,7 +7,7 @@
 	/**
 	 * initialize the context for the pie
 	 */
-	configure : function(config) {
+	configure : function() {
 		/**
 		 * invoked the super class's  configuration
 		 */
@@ -76,9 +76,6 @@
 					width:2,
 					radius:5
 				}
-			},
-			border : {
-				color : '#EDEDED'
 			}
 		});
 		
@@ -132,8 +129,7 @@
 		/**
 		 * calculate  pie chart's increment 
 		 */
-		if(!this.get('increment'))
-			this.push('increment',iChart.Math.lowTo(5,this.get('radius')/8));
+		this.pushIf('increment',iChart.Math.lowTo(5,this.get('radius')/8));
 		
 		/**
 		 * calculate pie chart's alignment

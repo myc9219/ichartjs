@@ -83,17 +83,6 @@ iChart.Sector = iChart.extend(iChart.Component,{
 		doConfig:function(){
 			iChart.Sector.superclass.doConfig.call(this);
 			
-//			this.final_parameter = 
-//				iChart.clone([
-//				             'startAngle',
-//				             'middleAngle',
-//				             'endAngle',
-//				             'originx',
-//				             'originy',
-//				             'border',
-//				             'shadow',
-//				             'counterclockwise'
-//				             ],this.options,true);
 			
 			this.push('totalAngle',this.get('endAngle')-this.get('startAngle'));
 			

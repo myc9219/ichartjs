@@ -123,8 +123,7 @@
 			this.h = this.get('cylinder_height');
 			
 			
-			if(!this.get('increment'))
-				this.push('increment',iChart.Math.lowTo(5,this.a/8));
+			this.pushIf('increment',iChart.Math.lowTo(5,this.a/8));
 			
 			this.inc = Math.PI/180,ccw = this.get('counterclockwise');
 			
@@ -140,9 +139,7 @@
 			this.eA = toAngle.call(this,this.get('endAngle'));
 			
 			if(this.get('label.enable')){
-				if(!this.get('label.linelength')){
-					this.push('label.linelength',iChart.Math.lowTo(10,this.a/8));
-				}
+				this.pushIf('label.linelength',iChart.Math.lowTo(10,this.a/8));
 				
 				this.Z = this.get('label.linelength')/this.a+1;
 				

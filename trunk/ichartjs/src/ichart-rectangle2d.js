@@ -16,11 +16,8 @@
 			this.type = 'rectangle2d';
 			
 			this.set({
-					shadow_offsety:-2,
-					border:{
-						color:'#BCBCBC'
-					}
-				});
+				shadow_offsety:-2
+			});
 			
 			this.registerEvent();
 			

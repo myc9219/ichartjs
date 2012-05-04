@@ -55,6 +55,7 @@
 		 * originy
 		 */
 		this.y = this.get('originy');
+		
 		/**
 		 * if have evaluate it
 		 */
@@ -65,11 +66,11 @@
 		}
 	
 		if (this.get('tip.enable')) {
-			if (!this.get('tip.border.color'))
-				/**
-				 * make tip's border in accord with sector
-				 */
-				this.push('tip.border.color', this.get('background_color'));
+			
+			/**
+			 * make tip's border in accord with sector
+			 */
+			this.pushIf('tip.border.color', this.get('background_color'));
 	
 			if (!iChart.isFunction(this.get('tip.invokeOffset')))
 				/**

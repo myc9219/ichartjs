@@ -5,7 +5,6 @@
  * email:wanghetommy@gmail.com
  */
 ;(function(window){
-window.undefined = window.undefined;
 var ua = navigator.userAgent.toLowerCase(),
 	mc = function(e) {
 		return e.test(ua)
