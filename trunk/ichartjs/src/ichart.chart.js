@@ -1,18 +1,19 @@
 ;(function($){
 
-var inc = Math.PI/90,PI = Math.PI,PI2 = 2*Math.PI,sin=Math.sin,cos=Math.cos;
- 
+var inc = Math.PI/90,PI = Math.PI,PI2 = 2*Math.PI,sin=Math.sin,cos=Math.cos,
+	fd=function(w,c){
+		return w<=1?(Math.floor(c)+0.5):Math.floor(c);
+	};
 /**
  * @private support an improved API for drawing in canvas
  */
 function Cans(c){
 	if (typeof c === "string")
         c = document.getElementById(c);
-	if(!c||!c['tagName']||c['tagName'].toLowerCase()!='canvas'){
-		throw new Error("there not a canvas element;can't use it");
-	}
-	this.canvas = c;
+	if(!c||!c['tagName']||c['tagName'].toLowerCase()!='canvas')
+		throw new Error("there not a canvas element");
 	
+	this.canvas = c;
 	this.ctx = this.canvas.getContext("2d");
 	this.width = this.canvas.width;
 	this.height = this.canvas.height;
@@ -20,11 +21,10 @@ function Cans(c){
 
 Cans.prototype = {
 	css:function(attr,style){
-		if($.isDefined(style)){
+		if($.isDefined(style))
 			this.canvas.style[attr] = style;
-		}else{
+		else
 			return this.canvas.style[attr];
-		}
 	},
 	/* it seem not improve the speed
 	isPointInPathArc:function(x,y,radius,s,e,color,ccw,a2r,x0,y0){
@@ -63,26 +63,20 @@ Cans.prototype = {
 	arc:function(x,y,r,s,e,c,b,bw,bc,sw,swc,swb,swx,swy,ccw,a2r,last){
 		var x0,y0,ccw=!!ccw,a2r=!!a2r;
 		this.ctx.save();
-		this.fillStyle(c);
 		if(!!last)//&&!$.isOpera
 			this.ctx.globalCompositeOperation = "destination-over";
 		if(b)
-		this.strokeStyle(bw,bc);
-		
-		this.shadowOn(sw,swc,swb,swx,swy);
-		
+			this.strokeStyle(bw,bc);
+		this.shadowOn(sw,swc,swb,swx,swy).fillStyle(c);
 		this.ctx.moveTo(x,y);
 		this.ctx.beginPath();
-		
 		this.ctx.arc(x,y,r,s,e,ccw);
-		if(a2r){
+		if(a2r)
 			this.ctx.lineTo(x,y);
-		}
 		this.ctx.closePath();
-		
 	    this.ctx.fill();   
 	    if(b)
-	    this.ctx.stroke();
+	    	this.ctx.stroke();
 	    this.ctx.restore();
 		return this;
 	},
@@ -102,17 +96,15 @@ Cans.prototype = {
 		var angle = s,ccw=!!ccw,a2r=!!a2r;
 			this.ctx.save();
 			if(!!last)
-			this.ctx.globalCompositeOperation = "destination-over";
+				this.ctx.globalCompositeOperation = "destination-over";
 			if(b)
-			this.strokeStyle(bow,boc);
-			this.shadowOn(sw,swc,swb,swx,swy);
+				this.strokeStyle(bow,boc);
+			this.shadowOn(sw,swc,swb,swx,swy).fillStyle(c);
 			
 			this.ctx.moveTo(x,y);
 			this.ctx.beginPath();
-			if(a2r){
+			if(a2r)
 				this.ctx.moveTo(x,y);
-			}
-			this.fillStyle(c);
 			
 			while(angle<=e){
 				this.ctx.lineTo(x+a*cos(angle),y+(ccw?(-b*sin(angle)):(b*sin(angle))));
@@ -164,7 +156,7 @@ Cans.prototype = {
 			s = ccw&&e>PI&&s<PI?PI:s;
 			e = !ccw&&s<PI&&e>PI?PI:e;
 			var angle = s;
-			this.ctx.fillStyle = $.Math.dark(color);
+			this.ctx.fillStyle = $.dark(color);
 			this.ctx.moveTo(x+a*cos(s),y+(ccw?(-b*sin(s)):(b*sin(s))));
 			this.ctx.beginPath();
 			while(angle<=e){
@@ -186,7 +178,7 @@ Cans.prototype = {
 		layerDraw = function(x,y,a,b,ccw,h,A,color){
 			this.ctx.moveTo(x,y);
 			this.ctx.beginPath();
-			this.ctx.fillStyle = $.Math.dark(color);
+			this.ctx.fillStyle = $.dark(color);
 			this.ctx.lineTo(x,y+h);
 			var x0 = x+a*cos(A);
 			var y0 = y+h+(ccw?(-b*sin(A)):(b*sin(A)));
@@ -218,7 +210,7 @@ Cans.prototype = {
 			this.ctx.globalCompositeOperation = "source-over";
 			
 			//paint top layer
-			//var g = this.avgRadialGradient(x,y,0,x,y,a,[$.Math.light(c,0.1),$.Math.dark(c,0.05)]);
+			//var g = this.avgRadialGradient(x,y,0,x,y,a,[$.light(c,0.1),$.dark(c,0.05)]);
 			this.ellipse(x,y,a,b,s,e,c,bo,bow,boc,false,swc,swb,swx,swy,ccw,true);
 			//paint outside layer
 			sPaint.call(this,x,y,a,b,s,e,ccw,h,c);
@@ -227,8 +219,8 @@ Cans.prototype = {
 			return this;
 		}
 	}(),
-	textStyle:function(align,line,font){
-		return this.textAlign(align).textBaseline(line).textFont(font);
+	textStyle:function(a,l,f){
+		return this.textAlign(a).textBaseline(l).textFont(f);
 	},
 	strokeStyle:function(w,c,j){
 		if(w)
@@ -249,14 +241,14 @@ Cans.prototype = {
 		this.ctx.fillStyle = c;
 		return this;
 	},
-	textAlign:function(align){
-		if(align)
-		this.ctx.textAlign =align;
+	textAlign:function(a){
+		if(a)
+		this.ctx.textAlign =a;
 		return this;
 	},
-	textBaseline:function(line){
-		if(line)
-		this.ctx.textBaseline =line;
+	textBaseline:function(l){
+		if(l)
+		this.ctx.textBaseline =l;
 		return this;
 	},
 	textFont:function(font){
@@ -298,16 +290,16 @@ Cans.prototype = {
 	createRadialGradient:function(xs, ys,rs,xe, ye,re){
 		return this.ctx.createRadialGradient(xs, ys,rs,xe, ye,re);    
 	},
-	fillText:function(text,x,y,maxwidth,color,mode,lineheight){
-		text = text+"";
-		maxwidth = maxwidth || false;
+	fillText:function(t,x,y,max,color,mode,lineheight){
+		t = t+"";
+		max = max || false;
 		mode = mode || 'lr'; 
 		lineheight = lineheight || 16;
 		this.fillStyle(color);
-		var T = text.split(mode=='tb'?"":"\n");
+		var T = t.split(mode=='tb'?"":"\n");
 		for(var i =0;i<T.length;i++){
-			if(maxwidth){
-				this.ctx.fillText(T[i],x,y,maxwidth);
+			if(max){
+				this.ctx.fillText(T[i],x,y,max);
 			}else{
 				this.ctx.fillText(T[i],x,y);
 			}
@@ -348,21 +340,21 @@ Cans.prototype = {
 		this.ctx.fill();
 		return this;
 	},
-	text:function(text,x,y,maxwidth,color,align,line,font,mode,lineheight){
+	text:function(text,x,y,max,color,align,line,font,mode,lineheight){
 		this.ctx.save();
 		this.textStyle(align,line,font);
-		this.fillText(text,x,y,maxwidth,color,mode,lineheight);
+		this.fillText(text,x,y,max,color,mode,lineheight);
 		this.ctx.restore();
 		return this;
 	},
 	//can use cube3D instead of this?
 	cube:function(x,y,xv,yv,width,height,zdeep,bg,b,bw,bc,sw,swc,swb,swx,swy){
-		x = $.Math.fixDeckle(bw,x);
-		y = $.Math.fixDeckle(bw,y);
+		x = fd(bw,x);
+		y = fd(bw,y);
 		zdeep = (zdeep&&zdeep>0)?zdeep:width;
 		var x1=x+zdeep*xv,y1=y-zdeep*yv;
-		x1 = $.Math.fixDeckle(bw,x1);
-		y1 = $.Math.fixDeckle(bw,y1);
+		x1 = fd(bw,x1);
+		y1 = fd(bw,y1);
 		//styles -> top-front-right
 		if(sw){
 			this.polygon(bg,b,bw,bc,sw,swc,swb,swx,swy,false,[x,y,x1,y1,x1+width,y1,x+width,y]);
@@ -372,9 +364,9 @@ Cans.prototype = {
 		/**
 		 * clear the shadow on the body
 		 */
-		this.polygon($.Math.dark(bg),b,bw,bc,false,swc,swb,swx,swy,false,[x,y,x1,y1,x1+width,y1,x+width,y]);
+		this.polygon($.dark(bg),b,bw,bc,false,swc,swb,swx,swy,false,[x,y,x1,y1,x1+width,y1,x+width,y]);
 		this.polygon(bg,b,bw,bc,false,swc,swb,swx,swy,false,[x,y,x,y+height,x+width,y+height,x+width,y]);
-		this.polygon($.Math.dark(bg),b,bw,bc,false,swc,swb,swx,swy,false,[x+width,y,x1+width,y1,x1+width,y1+height,x+width,y+height]);
+		this.polygon($.dark(bg),b,bw,bc,false,swc,swb,swx,swy,false,[x+width,y,x1+width,y1,x1+width,y1+height,x+width,y+height]);
 		return this;
 	},
 	/**
@@ -394,14 +386,13 @@ Cans.prototype = {
 	 */
 	cube3D:function(x,y,rotatex,rotatey,angle,w,h,zh,b,bw,bc,styles){
 		//styles -> 下底-底-左-右-上-前
-		x = $.Math.fixDeckle(bw,x);
-		y = $.Math.fixDeckle(bw,y);
+		x = fd(bw,x);
+		y = fd(bw,y);
 		//Deep of Z'axis
-		if(!zh||zh==0)
-			zh = w;
+		zh = (!zh||zh==0)?w:zh;
 		
 		if(angle){
-			var P = $.Math.vectorP2P(rotatex,rotatey);
+			var P = $.vectorP2P(rotatex,rotatey);
 				rotatex=x+zh*P.x,
 				rotatey=y-zh*P.y;
 		}else{
@@ -412,8 +403,8 @@ Cans.prototype = {
 		while(styles.length<6)
 			styles.push(false);
 		
-		rotatex = $.Math.fixDeckle(bw,rotatex);
-		rotatey = $.Math.fixDeckle(bw,rotatey);
+		rotatex = fd(bw,rotatex);
+		rotatey = fd(bw,rotatey);
 		
 		var side = [];
 		
@@ -470,14 +461,11 @@ Cans.prototype = {
 			.globalAlpha(alpham)
 			.shadowOn(sw,swc,swb,swx,swy)
 			.moveTo(points[0],points[1]);
-		
-		for(var i=2;i<points.length;i+=2){
+		for(var i=2;i<points.length;i+=2)
 			this.lineTo(points[i],points[i+1]);
-		}
 		this.ctx.closePath();
-		if(b){
+		if(b)
 			this.ctx.stroke();
-		}
 		this.ctx.fill();
 		this.ctx.restore();
 		return this;
@@ -488,10 +476,10 @@ Cans.prototype = {
 		if(!!last)
 			this.ctx.globalCompositeOperation = "destination-over";
 		
-		x1 = $.Math.fixDeckle(w,x1);
-		y1 = $.Math.fixDeckle(w,y1);
-		x2 = $.Math.fixDeckle(w,x2);
-		y2 = $.Math.fixDeckle(w,y2);
+		x1 = fd(w,x1);
+		y1 = fd(w,y1);
+		x2 = fd(w,x2);
+		y2 = fd(w,y2);
 		
 		this.ctx.beginPath();
 		this.strokeStyle(w,c).moveTo(x1,y1).lineTo(x2,y2).ctx.stroke();
@@ -524,8 +512,8 @@ Cans.prototype = {
 	},
 	rectangle:function(x,y,w,h,bgcolor,border,linewidth,bcolor,sw,swc,swb,swx,swy){
 		this.ctx.save();
-		x = $.Math.fixDeckle(linewidth,x);
-		y = $.Math.fixDeckle(linewidth,y);
+		x = fd(linewidth,x);
+		y = fd(linewidth,y);
 		this.ctx.translate(x,y);
 		this.ctx.beginPath();
 		this.ctx.fillStyle = bgcolor;
@@ -558,8 +546,8 @@ Cans.prototype = {
 	},
 	drawBorder:function(x,y,w,h,line,color,round,bgcolor,last,shadow,scolor,blur,offsetx,offsety){
 		this.ctx.save();
-		var x0 = $.Math.fixDeckle(line,x);
-		var y0 = $.Math.fixDeckle(line,y);
+		var x0 = fd(line,x);
+		var y0 = fd(line,y);
 		if(x0!=x){
 			x = x0;w -=1;
 		}
@@ -821,7 +809,7 @@ $.Chart = $.extend($.Painter,{
 			if(!this.redraw){
 				this.title();
 				if(this.get('border.enable')){
-					this.target.drawBorder(0,0,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:$.Math.parseBorder(this.get('border.radius')),this.get('background_color'),true);
+					this.target.drawBorder(0,0,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:$.parseBorder(this.get('border.radius')),this.get('background_color'),true);
 				}else{
 					this.target.backgound(0,0,this.width,this.height,this.get('background_color'));
 				}
@@ -880,8 +868,8 @@ $.Chart = $.extend($.Painter,{
 			
 			
 			
-			var id = $.Math.iGather(this.type);
-			this.shellid = $.Math.iGather(this.type+"-shell");
+			var id = $.iGather(this.type);
+			this.shellid = $.iGather(this.type+"-shell");
 			var html  = "<div id='"+this.shellid+"' style='"+style+"'>" +
 							"<canvas id= '"+id+"'  width='"+this.width+"' height="+this.height+"'>" +
 								"<p>Your browser does not support the canvas element</p>" +
@@ -1039,7 +1027,7 @@ $.Chart = $.extend($.Painter,{
 			this.push('centery',this.get('t_originy')+this.get('client_height')/2);
 			
 			if(this.get('border.enable')){
-				var round = $.Math.parseBorder(this.get('border.radius'));
+				var round = $.parseBorder(this.get('border.radius'));
 				this.push('radius_top',round[0]);
 				this.push('radius_right',round[1]);
 				this.push('radius_bottom',round[2]);

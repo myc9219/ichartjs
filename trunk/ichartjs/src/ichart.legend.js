@@ -124,7 +124,7 @@
 				this.height,
 				this.get('border.width'),
 				this.get('border.color'),
-				this.get('border.radius')==0?0:iChart.Math.parseBorder(this.get('border.radius')),
+				this.get('border.radius')==0?0:iChart.parseBorder(this.get('border.radius')),
                 this.get('background_color'),
                 false,
                 this.get('shadow'),

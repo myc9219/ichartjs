@@ -84,155 +84,6 @@ var ua = navigator.userAgent.toLowerCase(),
 					}
 				}
 			}
-		},
-		sin = Math.sin, cos = Math.cos, tan = Math.tan,
-		acos = Math.acos, sqrt = Math.sqrt, abs = Math.abs,
-		pi = Math.PI, pi2 = 2*Math.PI,ceil=Math.ceil,round = Math.round,
-		floor=Math.floor,
-		parseParam =  function(s,d) {
-				if(iChart.isNumber(s))
-					return new Array(s,s,s,s);
-				s = s.trim().replace(/\s{2,}/g,/\s/).replace(/\s/g,',').split(",");
-				if(s.length==1){
-					s[0] = s[1] = s[2] = s[3] = parseFloat(s[0])||d;
-				}else if(s.length==2){
-					s[0] = s[2] = parseFloat(s[0])||d;
-					s[1] = s[3] = parseFloat(s[1])||d;
-				}else if(s.length==3){
-					s[0] = parseFloat(s[0])||d;
-					s[1] = s[3] = parseFloat(s[1])||d;
-					s[2] = parseFloat(s[2])||d;
-				}else{
-					s[0] = parseFloat(s[0])||d;
-					s[1] = parseFloat(s[1])||d;
-					s[2] = parseFloat(s[2])||d;
-					s[3] = parseFloat(s[3])||d;
-				}
-			return s;
-		},
-		factor = function(v){
-			if(v==0)return v;
-			var f = v/10,i=0;
-				while(f<1){
-					f *= 10;
-					i++;
-				}
-				while(f/10>1){
-					f /= 10;
-					i--;
-				}
-				f = Math.floor(f);
-				while(i>0){
-					f /=10;
-					i--;
-				}
-				while(i<0){
-					f *=10;
-					i++;
-				}
-			return f;
-		},
-		innerColor  = ["navy","olive","silver","gold","lime","fuchsia","aqua","green","red","blue","pink","purple","yellow","maroon","black","gray","white"],	
-		colors = {
-			aqua:'rgb(0,255,255)',
-			azure:'rgb(240,255,255)',
-			beige:'rgb(245,245,220)',
-			black:'rgb(0,0,0)',
-			blue:'rgb(0,0,255)',
-			brown:'rgb(165,42,42)',
-			cyan:'rgb(0,255,255)',
-			darkblue:'rgb(0,0,139)',
-			darkcyan:'rgb(0,139,139)',
-			darkgrey:'rgb(169,169,169)',
-			darkgreen:'rgb(0,100,0)',
-			darkkhaki:'rgb(189,183,107)',
-			darkmagenta:'rgb(139,0,139)',
-			darkolivegreen:'rgb(85,107,47)',
-			darkorange:'rgb(255,140,0)',
-			darkorchid:'rgb(153,50,204)',
-			darkred:'rgb(139,0,0)',
-			darksalmon:'rgb(233,150,122)',
-			darkviolet:'rgb(148,0,211)',
-			fuchsia:'rgb(255,0,255)',
-			gold:'rgb(255,215,0)',
-			green:'rgb(0,128,0)',
-			indigo:'rgb(75,0,130)',
-			khaki:'rgb(240,230,140)',
-			lightblue:'rgb(173,216,230)',
-			lightcyan:'rgb(224,255,255)',
-			lightgreen:'rgb(144,238,144)',
-			lightgrey:'rgb(211,211,211)',
-			lightpink:'rgb(255,182,193)',
-			lightyellow:'rgb(255,255,224)',
-			lime:'rgb(0,255,0)',
-			magenta:'rgb(255,0,255)',
-			maroon:'rgb(128,0,0)',
-			navy:'rgb(0,0,128)',
-			olive:'rgb(128,128,0)',
-			orange:'rgb(255,165,0)',
-			pink:'rgb(255,192,203)',
-			purple:'rgb(128,0,128)',
-			violet:'rgb(128,0,128)',
-			red:'rgb(255,0,0)',
-			silver:'rgb(192,192,192)',
-			white:'rgb(255,255,255)',
-			yellow:'rgb(255,255,0)',
-			transparent: 'rgb(255,255,255)'
-		},
-		hexToRgb = function(hex) {
-			hex = hex.replace(/#/g,"").replace(/^(\w)(\w)(\w)$/,"$1$1$2$2$3$3");
-			return  'rgb(' + parseInt(hex.substring(0, 2), 16) + ','
-					+ parseInt(hex.substring(2, 4), 16) + ','
-					+ parseInt(hex.substring(4, 6), 16) + ')';
-		},
-		rgbToHex=function(rgb) {
-			var matches = rgb.match(/rgb\((\d+),(\d+),(\d+)\)/);
-			if (!matches) {
-				return;
-			}
-			return ('#' + iChart.Math.iToHex(matches[1]) + iChart.Math.iToHex(matches[2]) + iChart.Math.iToHex(matches[3])).toUpperCase();
-		},
-		iToHex=function (N) {
-			return ('0'+parseInt(N).toString(16)).slice(-2);
-		},
-		//the increment of s(v) of hsv model
-		s_inc = 0,
-		v_inc = 0.14,
-		/**
-		 * 当目标值>0.1时:以增量iv为上限、随着目标值的减小增量减小
-		 * 当目标值<=0.1时:若指定的增量大于目标值则直接返回其1/2、否则返回增量值
-		 */
-		increament = function(v,iv){
-			iv = iv || v_inc;
-			if(v>0.5){
-				return iv - (1-v)/10;
-			}else if(v>0.1){
-				return iv - 0.16 + v/5;
-			}else{
-				return v>iv?iv:v/2;
-			}
-		},
-		/**
-		 * 变色龙
-		 * @param {Boolean} d true为变深,false为变浅
-		 * @param {Object} rgb
-		 * @param {Number} iv 明度(0-1)
-		 * @param {Number} is 纯度(0-1)
-		 */
-		anole = function (d,rgb,iv,is) {
-			rgb = iChart.Math.cToArray(iChart.Math.toRgb(rgb));
-			var hsv = iChart.Math.toHsv(rgb);
-			hsv[1] -=is||s_inc;
-			if(d){
-				hsv[2] -=increament(hsv[2],iv);
-				hsv[1] = iChart.Math.upTo(hsv[1],1);
-				hsv[2] = iChart.Math.lowTo(hsv[2],0);
-			}else{
-				hsv[2] +=increament((1-hsv[2]),iv);
-				hsv[1] = iChart.Math.lowTo(hsv[1],0);
-				hsv[2] = iChart.Math.upTo(hsv[2],1);
-			}
-			return iChart.Math.hsvToRgb(hsv,rgb[3]);
 		};
 		
 var iChart_ = (function(window) {//spirit from jquery
@@ -455,6 +306,241 @@ var iChart_ = (function(window) {//spirit from jquery
 				}
 		}();
 		
+		//*******************Math************************
+		var sin = Math.sin, cos = Math.cos, atan=Math.atan,tan = Math.tan,acos = Math.acos,
+			sqrt = Math.sqrt, abs = Math.abs,pi = Math.PI, pi2 = 2*pi,
+			ceil=Math.ceil,round = Math.round,floor=Math.floor,max=Math.max,min=Math.min,
+			parseParam =  function(s,d) {
+				if(_.isNumber(s))
+					return new Array(s,s,s,s);
+				s = s.trim().replace(/\s{2,}/g,/\s/).replace(/\s/g,',').split(",");
+				if(s.length==1){
+					s[0] = s[1] = s[2] = s[3] = parseFloat(s[0])||d;
+				}else if(s.length==2){
+					s[0] = s[2] = parseFloat(s[0])||d;
+					s[1] = s[3] = parseFloat(s[1])||d;
+				}else if(s.length==3){
+					s[0] = parseFloat(s[0])||d;
+					s[1] = s[3] = parseFloat(s[1])||d;
+					s[2] = parseFloat(s[2])||d;
+				}else{
+					s[0] = parseFloat(s[0])||d;
+					s[1] = parseFloat(s[1])||d;
+					s[2] = parseFloat(s[2])||d;
+					s[3] = parseFloat(s[3])||d;
+				}
+			return s;
+		},
+		factor = function(v){
+			if(v==0)return v;
+			var f = v/10,i=0;
+				while(f<1){
+					f *= 10;i++;
+				}
+				while(f/10>1){
+					f /= 10;i--;
+				}
+				f = floor(f);
+				while(i>0){
+					f /=10;i--;
+				}
+				while(i<0){
+					f *=10;i++;
+				}
+			return f;
+		},
+		innerColor  = ["navy","olive","silver","gold","lime","fuchsia","aqua","green","red","blue","pink","purple","yellow","maroon","black","gray","white"],	
+		colors = {
+			aqua:'rgb(0,255,255)',
+			azure:'rgb(240,255,255)',
+			beige:'rgb(245,245,220)',
+			black:'rgb(0,0,0)',
+			blue:'rgb(0,0,255)',
+			brown:'rgb(165,42,42)',
+			cyan:'rgb(0,255,255)',
+			darkblue:'rgb(0,0,139)',
+			darkcyan:'rgb(0,139,139)',
+			darkgrey:'rgb(169,169,169)',
+			darkgreen:'rgb(0,100,0)',
+			darkkhaki:'rgb(189,183,107)',
+			darkmagenta:'rgb(139,0,139)',
+			darkolivegreen:'rgb(85,107,47)',
+			darkorange:'rgb(255,140,0)',
+			darkorchid:'rgb(153,50,204)',
+			darkred:'rgb(139,0,0)',
+			darksalmon:'rgb(233,150,122)',
+			darkviolet:'rgb(148,0,211)',
+			fuchsia:'rgb(255,0,255)',
+			gold:'rgb(255,215,0)',
+			green:'rgb(0,128,0)',
+			indigo:'rgb(75,0,130)',
+			khaki:'rgb(240,230,140)',
+			lightblue:'rgb(173,216,230)',
+			lightcyan:'rgb(224,255,255)',
+			lightgreen:'rgb(144,238,144)',
+			lightgrey:'rgb(211,211,211)',
+			lightpink:'rgb(255,182,193)',
+			lightyellow:'rgb(255,255,224)',
+			lime:'rgb(0,255,0)',
+			magenta:'rgb(255,0,255)',
+			maroon:'rgb(128,0,0)',
+			navy:'rgb(0,0,128)',
+			olive:'rgb(128,128,0)',
+			orange:'rgb(255,165,0)',
+			pink:'rgb(255,192,203)',
+			purple:'rgb(128,0,128)',
+			violet:'rgb(128,0,128)',
+			red:'rgb(255,0,0)',
+			silver:'rgb(192,192,192)',
+			white:'rgb(255,255,255)',
+			yellow:'rgb(255,255,0)',
+			transparent: 'rgb(255,255,255)'
+		},
+		hex2Rgb = function(hex) {
+			hex = hex.replace(/#/g,"").replace(/^(\w)(\w)(\w)$/,"$1$1$2$2$3$3");
+			return  'rgb(' + parseInt(hex.substring(0, 2), 16) + ','
+					+ parseInt(hex.substring(2, 4), 16) + ','
+					+ parseInt(hex.substring(4, 6), 16) + ')';
+		},
+		i2hex=function (N) {
+			return ('0'+parseInt(N).toString(16)).slice(-2);
+		},
+		rgb2Hex=function(rgb) {
+			var m = rgb.match(/rgb\((\d+),(\d+),(\d+)\)/);
+			return m?('#' + i2hex(m[1]) + i2hex(m[2]) + i2hex(m[3])).toUpperCase():null;
+		},
+		c2a=function(rgb){
+			var result =  /rgb\((\w*),(\w*),(\w*)\)/.exec(rgb);
+			if(result){
+				return new Array(result[1],result[2],result[3]);
+			}
+			result =  /rgba\((\w*),(\w*),(\w*),(.*)\)/.exec(rgb);
+			if(result){
+				return new Array(result[1],result[2],result[3],result[4]);
+			}
+			throw new Error("invalid colors value '"+rgb+"'");
+		},
+		toHsv=function(r,g,b){
+			if(_.isArray(r)){
+				g = r[1];
+				b = r[2];
+				r = r[0];
+			}
+			r = r/255;
+			g = g/255;
+			b = b/255;
+			var m  = max(max(r,g),b),
+				mi  = min(min(r,g),b),
+				dv = m - mi;
+			if(dv == 0){
+				return new Array(0,0,m);
+			}
+			var h;
+			if(r==m){
+				h = (g-b)/dv;
+			}else if(g==m){
+				h = (b-r)/dv + 2;
+			}else if(b==m){
+				h = (r-g)/dv + 4;
+			}
+			h*=60;
+			if(h<0)h+=360;
+			return new Array(h,dv/m,m);
+		},
+		toRgb=function (color) {
+			color = color.replace(/\s/g,'').toLowerCase();
+			//  Look for rgb(255,255,255)
+			if (/rgb\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3}\)/.exec(color)){
+				return color;
+			}
+			
+			//Look for rgba(255,255,255,0.3)
+			if (/rgba\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3},(0(\.[0-9])?|1(\.0)?)\)/.exec(color)){
+				return color;
+			}
+			
+			// Look for #a0b1c2 or #fff
+			if (/#(([a-fA-F0-9]{6})|([a-fA-F0-9]{3}))/.exec(color))
+				return hex2Rgb(color);
+			if(colors[color])
+				return colors[color];
+			throw new Error("invalid colors value '"+color+"'");
+		},
+		hsv2Rgb=function(h,s,v,a){
+			if(_.isArray(h)){
+				a = s;
+				s = h[1];
+				v = h[2];
+				h = h[0];
+			}
+			var r,g,b,hi,f;
+				hi = floor(h/60)%6;
+				f = h/60 - hi;
+				p = v*(1-s);
+			    q = v*(1-s*f);
+			    t = v*(1-s*(1-f));
+				 switch(hi) {
+			      case 0:
+			        r = v; g = t; b = p;
+			        break;
+			      case 1:
+			        r = q; g = v; b = p;
+			        break;
+			      case 2:
+			        r = p; g = v; b = t;
+			        break;
+			      case 3:
+			        r = p; g = q; b = v;
+			        break;
+			      case 4:
+			        r = t; g = p; b = v;
+			        break;
+			      case 5:
+			        r = v; g = p; b = q;
+			        break;
+			    }
+			return 'rgb'+(a?'a':'')+'('+round(r*255)+','+round(g*255)+','+round(b*255)+(a?','+a+')':')');
+		},
+		//the increment of s(v) of hsv model
+		s_inc = 0,
+		v_inc = 0.14,
+		/**
+		 * 当目标值>0.1时:以增量iv为上限、随着目标值的减小增量减小
+		 * 当目标值<=0.1时:若指定的增量大于目标值则直接返回其1/2、否则返回增量值
+		 */
+		inc = function(v,iv){
+			iv = iv || v_inc;
+			if(v>0.5){
+				return iv - (1-v)/10;
+			}else if(v>0.1){
+				return iv - 0.16 + v/5;
+			}else{
+				return v>iv?iv:v/2;
+			}
+		},
+		/**
+		 * 变色龙
+		 * @param {Boolean} d true为变深,false为变浅
+		 * @param {Object} rgb
+		 * @param {Number} iv 明度(0-1)
+		 * @param {Number} is 纯度(0-1)
+		 */
+		anole = function (d,rgb,iv,is) {
+			rgb = c2a(toRgb(rgb));
+			var hsv = toHsv(rgb);
+			hsv[1] -=is||s_inc;
+			if(d){
+				hsv[2] -=inc(hsv[2],iv);
+				hsv[1] = _.upTo(hsv[1],1);
+				hsv[2] = _.lowTo(hsv[2],0);
+			}else{
+				hsv[2] +=inc((1-hsv[2]),iv);
+				hsv[1] = _.lowTo(hsv[1],0);
+				hsv[2] = _.upTo(hsv[2],1);
+			}
+			return hsv2Rgb(hsv,rgb[3]);
+		};
+		
 		_.apply(_,{
 			version : "1.0",
 			email : 'wanghetommy@gmail.com',
@@ -525,6 +611,168 @@ var iChart_ = (function(window) {//spirit from jquery
 			noConflict: function( deep ) {
 				return iChart_;
 			},
+			parseBorder:function(s,d) {
+				return parseParam(s,d);	
+			},
+			parsePadding:function(s,d) {
+				return parseParam(s,d);	
+			},
+			/**
+			 * the distance of two point
+			 */
+			distanceP2P:function(x1,y1,x2,y2){
+				return sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+			},
+			/**
+			 * the angle of two line that two point and x-axis positive direction,anticlockwise
+			atanToAngle:function(ox,oy,x,y){
+				if(ox==x){
+					if(y>oy)return 90;
+					return 270;
+				}
+				var quadrant = _.quadrant(ox,oy,x,y);
+				var angle = _.radian2Angle(atan(abs((oy-y)/(ox-x))));
+				if(quadrant==1){
+					angle = 180 - angle;
+				}else if(quadrant==2){
+					angle = 180 + angle;
+				}else if(quadrant==3){
+					angle = 360 - angle;
+				}
+				return angle;
+			},*/
+			atan2Radian:function(ox,oy,x,y){
+				if(ox==x){
+					if(y>oy)return pi/2;
+					return pi*3/2;
+				}
+				var q = _.quadrant(ox,oy,x,y);
+				var r = atan(abs((oy-y)/(ox-x)));
+				if(q==1){
+					r = pi - r;
+				}else if(q==2){
+					r = pi + r;
+				}else if(q==3){
+					r = pi2 - r;
+				}
+				return r;
+			},
+			angle2Radian:function(a){
+				return a*pi/180;
+			},
+			radian2Angle:function(r){
+				return r*180/pi;
+			},
+			/**
+			 * indicate angle in which quadrant,and it different from math's concept.this will return 0 if it in first quadrant(other eg.0,1,2,3)
+			 * @param {Number} ox
+			 * @param {Number} oy
+			 * @param {Number} x
+			 * @param {Number} y
+			 * @return {Number} 
+			 */
+			quadrant:function (ox,oy,x,y){
+				if(ox<x){if(oy<y){return 3;}else{return 0;}}else{if(oy<y){return 2;}else{return 1;}}
+			},
+			quadrantd:function(a){
+				a = 2*(a%(pi*2));
+				return ceil(a/pi);
+			},
+			upTo:function (u,v){
+				return v>u?u:v;
+			},
+			lowTo:function (l,v){
+				return v<l?l:v;
+			},
+			between:function(l,u,v){
+				return v>u?u:v<l?l:v;
+			},
+			inRange:function(l,u,v){
+				return u>v&&l<v;
+			},
+			angleInRange:function(l,u,v){
+				l = l%pi2;
+				u  =  u%pi2;
+				if(u>l){
+					return u>v&&l<v;
+				}
+				if(u<l){
+					return v <u || v >l;
+				}
+				return v ==u;
+			},
+			inRangeClosed:function(l,u,v){
+				return u>=v&&l<=v;
+			},
+			inEllipse:function(x,y,a,b){
+				return (x*x/a/a+y*y/b/b)<=1;
+			},
+			p2Point:function(x,y,a,C){
+				return {
+					x:x + cos(a)*C,
+					y:y + sin(a)*C
+				}
+			},
+			/**
+			 * 计算空间点坐标矢量
+			 * @param {Number} x
+			 * @param {Number} y
+			 */
+			vectorP2P:function(x,y,radian){
+				if(!radian){
+					y = _.angle2Radian(y);
+					x = _.angle2Radian(x);
+				}
+				y = sin(y);
+				return {
+					x:y*sin(x),
+					y:y*cos(x)
+				}
+			},
+			iGather : function(P){
+				return (P||'magic') + '-'+new Date().getTime().toString();
+			},
+			toPercent:function(v,d){
+				return '('+(v*100).toFixed(d)+'%)';
+			},
+			parseFloat:function(v,d){
+				if(!_.isNumber(v)){
+					v = parseFloat(v);
+					if(!_.isNumber(v)){
+						throw new Error("'"+d+"'is not a valid number.");
+					}
+				}
+				return v;
+			},
+			/**
+			 * 返回向上靠近一个最小数量级的数
+			 */
+			ceil:function(max){
+				return max+factor(max);
+			},
+			/**
+			 * 返回向下靠近一个最小数量级的数 NEXT
+			 */
+			floor:function(max){
+				return max-factor(max);
+			},
+			get:function(i){
+			  return innerColor[i%16];
+			},
+			_2D:'2d',
+			_3D:'3d',
+			light:function (rgb,iv,is) {
+				return anole(false,rgb,iv,is);
+			},
+			dark:function (rgb,iv,is) {
+				return anole(true,rgb,iv,is);				
+			},
+			fixPixel: function(v) {
+				return _.isNumber(v)?v:parseFloat(v.replace('px',""))||0 ;
+			},
+			toPixel: function(v) {
+				return _.isNumber(v)?v+'px':_.fixPixel(v)+'px';
+			},
 			emptyFn:function(){return true;},
 			supportCanvas:supportCanvas,
 			isOpera : isOpera,
@@ -592,269 +840,7 @@ var iChart_ = (function(window) {//spirit from jquery
 					throw new Error(cause);
 			}
 		};
-		/**
-		 * defined Math
-		 */
-		_.Math = {
-				parseBorder:function(s,d) {
-					return parseParam(s,d);	
-				},
-				parsePadding:function(s,d) {
-					return parseParam(s,d);	
-				},
-				/**
-				 * the distance of two point
-				 */
-				distanceP2P:function(x1,y1,x2,y2){
-					return Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
-				},
-				/**
-				 * the angle of two line that two point and x-axis positive direction,anticlockwise
-				 */
-				atanToAngle:function(ox,oy,x,y){
-					if(ox==x){
-						if(y>oy)return 90;
-						return 270;
-					}
-					var quadrant = _.Math.quadrant(ox,oy,x,y);
-					var angle = _.Math.radianToAngle(Math.atan(Math.abs((oy-y)/(ox-x))));
-					if(quadrant==1){
-						angle = 180 - angle;
-					}else if(quadrant==2){
-						angle = 180 + angle;
-					}else if(quadrant==3){
-						angle = 360 - angle;
-					}
-					return angle;
-				},
-				atanToRadian:function(ox,oy,x,y){
-					if(ox==x){
-						if(y>oy)return Math.PI/2;
-						return Math.PI*3/2;
-					}
-					var quadrant = _.Math.quadrant(ox,oy,x,y);
-					var radian = Math.atan(Math.abs((oy-y)/(ox-x)));
-					if(quadrant==1){
-						radian = Math.PI - radian;
-					}else if(quadrant==2){
-						radian = Math.PI + radian;
-					}else if(quadrant==3){
-						radian = 2*Math.PI - radian;
-					}
-					return radian;
-				},
-				angleToRadian:function(angle){
-					return angle*Math.PI/180;
-				},
-				radianToAngle:function(radian){
-					return radian*180/Math.PI;
-				},
-				/**
-				 * indicate angle in which quadrant,and it different from math's concept.this will return 0 if it in first quadrant(other eg.0,1,2,3)
-				 * @param {Number} ox
-				 * @param {Number} oy
-				 * @param {Number} x
-				 * @param {Number} y
-				 * @return {Number} 
-				 */
-				quadrant:function (ox,oy,x,y){
-					if(ox<x){if(oy<y){return 3;}else{return 0;}}else{if(oy<y){return 2;}else{return 1;}}
-				},
-				quadrantd:function(angle){
-					angle = 2*(angle%(Math.PI*2));
-					return ceil(angle/Math.PI);
-				},
-				upTo:function (u,v){
-					return v>u?u:v;
-				},
-				lowTo:function (low,value){
-					return value<low?low:value;
-				},
-				between:function(low,up,value){
-					return _.Math.lowTo(low,_.Math.upTo(up,value));
-				},
-				inRange:function(low,up,value){
-					return up>value&&low<value;
-				},
-				angleInRange:function(low,up,value){
-					low = low%pi2;
-					up  =  up%pi2;
-					if(up>low){
-						return up>value&&low<value;
-					}
-					if(up<low){
-						return value <up || value >low;
-					}
-					return value ==up;
-				},
-				inRangeClosed:function(low,up,value){
-					return up>=value&&low<=value;
-				},
-				inEllipse:function(x,y,a,b){
-					return (x*x/a/a+y*y/b/b)<=1;
-				},
-				pToPoint:function(x,y,a,C){
-					return {
-						x:x + cos(a)*C,
-						y:y + sin(a)*C
-					}
-				},
-				/**
-				 * 计算空间点坐标矢量
-				 * @param {Number} x
-				 * @param {Number} y
-				 */
-				vectorP2P:function(x,y,radian){
-					if(!radian){
-						y = _.Math.angleToRadian(y);
-						x = _.Math.angleToRadian(x);
-					}
-					y = Math.sin(y);
-					return {
-						x:y*Math.sin(x),
-						y:y*Math.cos(x)
-					}
-				},
-				fixDeckle:function(w,c){
-					return w<=1?(Math.floor(c)+0.5):Math.floor(c);
-				},
-				iGather : function(P){
-					return (P||'magic') + '-'+new Date().getTime().toString();
-				},
-				toPercent:function(v,d){
-					return '('+(v*100).toFixed(d)+'%)';
-				},
-				parseFloat:function(v,d){
-					if(!_.isNumber(v)){
-						v = parseFloat(v);
-						if(!_.isNumber(v)){
-							throw new Error("'"+d+"'is not a valid number.");
-						}
-					}
-					return v;
-				},
-				/**
-				 * 返回向上靠近一个最小数量级的数
-				 */
-				ceil:function(max){
-					return max+factor(max);
-				},
-				/**
-				 * 返回向下靠近一个最小数量级的数 NEXT
-				 */
-				floor:function(max){
-					return max-factor(max);
-				},
-				get:function(i){
-				  return innerColor[i%16];
-				},
-				_2D:'2d',
-				_3D:'3d',
-				toRgb:function (color) {
-					color = color.replace(/\s/g,'').toLowerCase();
-					//  Look for rgb(255,255,255)
-					if (/rgb\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3}\)/.exec(color)){
-						return color;
-					}
-					
-					//Look for rgba(255,255,255,0.3)
-					if (/rgba\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3},(0(\.[0-9])?|1(\.0)?)\)/.exec(color)){
-						return color;
-					}
-					
-					// Look for #a0b1c2 or #fff
-					if (/#(([a-fA-F0-9]{6})|([a-fA-F0-9]{3}))/.exec(color))
-						return hexToRgb(color);
-					if(colors[color])
-						return colors[color];
-					throw new Error("invalid colors value '"+color+"'");
-				},
-				light:function (rgb,iv,is) {
-					return anole(false,rgb,iv,is);
-				},
-				dark:function (rgb,iv,is) {
-					return anole(true,rgb,iv,is);				
-				},
-				cToArray:function(rgb){
-					var result =  /rgb\((\w*),(\w*),(\w*)\)/.exec(rgb);
-					if(result){
-						return new Array(result[1],result[2],result[3]);
-					}
-					result =  /rgba\((\w*),(\w*),(\w*),(.*)\)/.exec(rgb);
-					if(result){
-						return new Array(result[1],result[2],result[3],result[4]);
-					}
-					throw new Error("invalid colors value '"+rgb+"'");
-				},
-				toHsv:function(r,g,b){
-					if(_.isArray(r)){
-						g = r[1];
-						b = r[2];
-						r = r[0];
-					}
-					r = r/255;
-					g = g/255;
-					b = b/255;
-					var max  = Math.max(Math.max(r,g),b),
-						min  = Math.min(Math.min(r,g),b),
-						dv = max - min;
-					if(dv == 0){
-						return new Array(0,0,max);
-					}
-					var h;
-					if(r==max){
-						h = (g-b)/dv;
-					}else if(g==max){
-						h = (b-r)/dv + 2;
-					}else if(b==max){
-						h = (r-g)/dv + 4;
-					}
-					h*=60;
-					if(h<0)h+=360;
-					return new Array(h,dv/max,max);
-				},
-				hsvToRgb:function(h,s,v,a){
-					if(_.isArray(h)){
-						a = s;
-						s = h[1];
-						v = h[2];
-						h = h[0];
-					}
-					var r,g,b,hi,f;
-						hi = floor(h/60)%6;//5
-						f = h/60 - hi;//0
-						p = v*(1-s);//0
-					    q = v*(1-s*f);//0.8		 v:1
-					    t = v*(1-s*(1-f));//0    v://0.8
-						 switch(hi) {
-					      case 0:
-					        r = v; g = t; b = p;
-					        break;
-					      case 1:
-					        r = q; g = v; b = p;
-					        break;
-					      case 2:
-					        r = p; g = v; b = t;
-					        break;
-					      case 3:
-					        r = p; g = q; b = v;
-					        break;
-					      case 4:
-					        r = t; g = p; b = v;
-					        break;
-					      case 5:
-					        r = v; g = p; b = q;
-					        break;
-					    }
-					return 'rgb'+(a?'a':'')+'('+round(r*255)+','+round(g*255)+','+round(b*255)+(a?','+a+')':')');
-				},
-				fixPixel: function(v) {
-					return _.isNumber(v)?v:parseFloat(v.replace('px',""))||0 ;
-				},
-				toPixel: function(v) {
-					return _.isNumber(v)?v+'px':_.Math.fixPixel(v)+'px';
-				}
-			};
+		
 		/**
 		 * defined Event
 		 */
@@ -1090,7 +1076,7 @@ $.Painter = $.extend($.Element,{
 		 */
 		this.type = 'painter';
 
-		this.dimension = $.Math._2D;
+		this.dimension = $._2D;
 
 		/**
 		 * define abstract method
@@ -1194,7 +1180,7 @@ $.Painter = $.extend($.Element,{
 		}
 	},
 	is3D : function() {
-		return this.dimension == $.Math._3D;
+		return this.dimension == $._3D;
 	},
 	draw : function(opts) {
 		this.init();
@@ -1234,7 +1220,7 @@ $.Painter = $.extend($.Element,{
 		return this;
 	},
 	doConfig : function() {
-		var padding = $.Math.parsePadding(this.get('padding'));
+		var padding = $.parsePadding(this.get('padding'));
 		this.push('padding_top', padding[0]);
 		this.push('padding_right', padding[1]);
 		this.push('padding_bottom', padding[2]);
@@ -1246,14 +1232,14 @@ $.Painter = $.extend($.Element,{
 				.get('fontsize'), this.get('font')));
 
 		this.push('fill_color', this.get('background_color'));
-		this.push("light_color", $.Math.light(
+		this.push("light_color", $.light(
 				this.get('background_color'), this.get('color_factor')));
-		this.push("dark_color", $.Math.dark(this.get('background_color'),
+		this.push("dark_color", $.dark(this.get('background_color'),
 				this.get('color_factor')));
 
-		this.push("light_color2", $.Math.light(this
+		this.push("light_color2", $.light(this
 				.get('background_color'), this.get('color_factor') * 2));
-		this.push("dark_color2", $.Math.dark(this.get('background_color'),
+		this.push("dark_color2", $.dark(this.get('background_color'),
 				this.get('color_factor')) * 2);
 
 		this.id = this.get('id');
@@ -1509,10 +1495,10 @@ $.Html = $.extend($.Element,{
 			for(var i=0;i<this.data.length;i++){
 				$.merge(this.data[i],this.fireEvent(this,'parseData',[this.data[i],i]));
 				if(!this.data[i].color)
-				this.data[i].color = $.Math.get(i);
+				this.data[i].color = $.get(i);
 				V  = this.data[i].value;
 				if($.isNumber(V)){
-					V = $.Math.parseFloat(V,this.type+':data['+i+']');
+					V = $.parseFloat(V,this.type+':data['+i+']');
 					this.data[i].value = V;
 					this.total+=V;
 					M = V>M?V:M;
@@ -1556,9 +1542,9 @@ $.Html = $.extend($.Element,{
 				var item = [];
 				for(var j=0;j<this.data.length;j++){
 					V = this.data[j].value[i];
-					this.data[j].value[i] = $.Math.parseFloat(V,this.type+':data['+j+','+i+']');
+					this.data[j].value[i] = $.parseFloat(V,this.type+':data['+j+','+i+']');
 					if(!this.data[j].color)
-					this.data[j].color = $.Math.get(j);
+					this.data[j].color = $.get(j);
 					//NEXT 此总数需考虑?
 					this.total+=V;
 					M = V>M?V:M;
@@ -1583,7 +1569,7 @@ $.Html = $.extend($.Element,{
 		return {
 			_3D:function(){
 				if(!$.isDefined(this.get('xAngle_'))||!$.isDefined(this.get('xAngle_'))){
-					var P = $.Math.vectorP2P(this.get('xAngle'),this.get('yAngle'));
+					var P = $.vectorP2P(this.get('xAngle'),this.get('yAngle'));
 					this.push('xAngle_',P.x);
 					this.push('yAngle_',P.y);
 				}
@@ -1847,29 +1833,29 @@ $.Html = $.extend($.Element,{
 		initialize:function(){
 			$.CrossHair.superclass.initialize.call(this);
 			
-			this.top = $.Math.fixPixel(this.get('top'));
-			this.left = $.Math.fixPixel(this.get('left'));
+			this.top = $.fixPixel(this.get('top'));
+			this.left = $.fixPixel(this.get('left'));
 			
 			this.dom = document.createElement("div");
 			this.dom.style.zIndex=this.get('index');
 			this.dom.style.position="absolute";
 			//set size zero make  integration with vertical and horizontal
-			this.dom.style.width= $.Math.toPixel(0);
-			this.dom.style.height=$.Math.toPixel(0);
-			this.dom.style.top=$.Math.toPixel(this.get('top'));
-			this.dom.style.left=$.Math.toPixel(this.get('left'));
+			this.dom.style.width= $.toPixel(0);
+			this.dom.style.height=$.toPixel(0);
+			this.dom.style.top=$.toPixel(this.get('top'));
+			this.dom.style.left=$.toPixel(this.get('left'));
 			this.css('visibility','hidden');
 			
 			this.horizontal = document.createElement("div");
 			this.vertical = document.createElement("div");
 			
-			this.horizontal.style.width= $.Math.toPixel(this.get('width'));
-			this.horizontal.style.height= $.Math.toPixel(this.get('line_width'));
+			this.horizontal.style.width= $.toPixel(this.get('width'));
+			this.horizontal.style.height= $.toPixel(this.get('line_width'));
 			this.horizontal.style.backgroundColor = this.get('line_color');
 			this.horizontal.style.position="absolute";
 			
-			this.vertical.style.width= $.Math.toPixel(this.get('line_width'));
-			this.vertical.style.height = $.Math.toPixel(this.get('height'));
+			this.vertical.style.width= $.toPixel(this.get('line_width'));
+			this.vertical.style.height = $.toPixel(this.get('height'));
 			this.vertical.style.backgroundColor = this.get('line_color');
 			this.vertical.style.position="absolute";
 			this.dom.appendChild(this.horizontal);
@@ -2020,7 +2006,7 @@ $.Html = $.extend($.Element,{
 				this.height,
 				this.get('border.width'),
 				this.get('border.color'),
-				this.get('border.radius')==0?0:$.Math.parseBorder(this.get('border.radius')),
+				this.get('border.radius')==0?0:$.parseBorder(this.get('border.radius')),
                 this.get('background_color'),
                 false,
                 this.get('shadow'),
@@ -2195,11 +2181,11 @@ $.Html = $.extend($.Element,{
 		},
 		drawBorder:function(){
 			this.lineFn.call(this);
-			this.target.drawBorder(this.labelx,this.labely,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:$.Math.parseBorder(this.get('border.radius')),this.get('background_color'),false,this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
+			this.target.drawBorder(this.labelx,this.labely,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:$.parseBorder(this.get('border.radius')),this.get('background_color'),false,this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
 			
 		},
 		isEventValid:function(e){ 
-			return {valid:$.Math.inRange(this.labelx,this.labelx+this.width,e.offsetX)&&$.Math.inRange(this.labely,this.labely+this.height,e.offsetY)};
+			return {valid:$.inRange(this.labelx,this.labelx+this.width,e.offsetX)&&$.inRange(this.labely,this.labely+this.height,e.offsetY)};
 		},
 		doDraw:function(opts){
 			opts = opts || {};
@@ -2305,19 +2291,20 @@ $.Html = $.extend($.Element,{
 		}
 });;(function($){
 
-var inc = Math.PI/90,PI = Math.PI,PI2 = 2*Math.PI,sin=Math.sin,cos=Math.cos;
- 
+var inc = Math.PI/90,PI = Math.PI,PI2 = 2*Math.PI,sin=Math.sin,cos=Math.cos,
+	fd=function(w,c){
+		return w<=1?(Math.floor(c)+0.5):Math.floor(c);
+	};
 /**
  * @private support an improved API for drawing in canvas
  */
 function Cans(c){
 	if (typeof c === "string")
         c = document.getElementById(c);
-	if(!c||!c['tagName']||c['tagName'].toLowerCase()!='canvas'){
-		throw new Error("there not a canvas element;can't use it");
-	}
-	this.canvas = c;
+	if(!c||!c['tagName']||c['tagName'].toLowerCase()!='canvas')
+		throw new Error("there not a canvas element");
 	
+	this.canvas = c;
 	this.ctx = this.canvas.getContext("2d");
 	this.width = this.canvas.width;
 	this.height = this.canvas.height;
@@ -2325,11 +2312,10 @@ function Cans(c){
 
 Cans.prototype = {
 	css:function(attr,style){
-		if($.isDefined(style)){
+		if($.isDefined(style))
 			this.canvas.style[attr] = style;
-		}else{
+		else
 			return this.canvas.style[attr];
-		}
 	},
 	/* it seem not improve the speed
 	isPointInPathArc:function(x,y,radius,s,e,color,ccw,a2r,x0,y0){
@@ -2368,26 +2354,20 @@ Cans.prototype = {
 	arc:function(x,y,r,s,e,c,b,bw,bc,sw,swc,swb,swx,swy,ccw,a2r,last){
 		var x0,y0,ccw=!!ccw,a2r=!!a2r;
 		this.ctx.save();
-		this.fillStyle(c);
 		if(!!last)//&&!$.isOpera
 			this.ctx.globalCompositeOperation = "destination-over";
 		if(b)
-		this.strokeStyle(bw,bc);
-		
-		this.shadowOn(sw,swc,swb,swx,swy);
-		
+			this.strokeStyle(bw,bc);
+		this.shadowOn(sw,swc,swb,swx,swy).fillStyle(c);
 		this.ctx.moveTo(x,y);
 		this.ctx.beginPath();
-		
 		this.ctx.arc(x,y,r,s,e,ccw);
-		if(a2r){
+		if(a2r)
 			this.ctx.lineTo(x,y);
-		}
 		this.ctx.closePath();
-		
 	    this.ctx.fill();   
 	    if(b)
-	    this.ctx.stroke();
+	    	this.ctx.stroke();
 	    this.ctx.restore();
 		return this;
 	},
@@ -2407,17 +2387,15 @@ Cans.prototype = {
 		var angle = s,ccw=!!ccw,a2r=!!a2r;
 			this.ctx.save();
 			if(!!last)
-			this.ctx.globalCompositeOperation = "destination-over";
+				this.ctx.globalCompositeOperation = "destination-over";
 			if(b)
-			this.strokeStyle(bow,boc);
-			this.shadowOn(sw,swc,swb,swx,swy);
+				this.strokeStyle(bow,boc);
+			this.shadowOn(sw,swc,swb,swx,swy).fillStyle(c);
 			
 			this.ctx.moveTo(x,y);
 			this.ctx.beginPath();
-			if(a2r){
+			if(a2r)
 				this.ctx.moveTo(x,y);
-			}
-			this.fillStyle(c);
 			
 			while(angle<=e){
 				this.ctx.lineTo(x+a*cos(angle),y+(ccw?(-b*sin(angle)):(b*sin(angle))));
@@ -2469,7 +2447,7 @@ Cans.prototype = {
 			s = ccw&&e>PI&&s<PI?PI:s;
 			e = !ccw&&s<PI&&e>PI?PI:e;
 			var angle = s;
-			this.ctx.fillStyle = $.Math.dark(color);
+			this.ctx.fillStyle = $.dark(color);
 			this.ctx.moveTo(x+a*cos(s),y+(ccw?(-b*sin(s)):(b*sin(s))));
 			this.ctx.beginPath();
 			while(angle<=e){
@@ -2491,7 +2469,7 @@ Cans.prototype = {
 		layerDraw = function(x,y,a,b,ccw,h,A,color){
 			this.ctx.moveTo(x,y);
 			this.ctx.beginPath();
-			this.ctx.fillStyle = $.Math.dark(color);
+			this.ctx.fillStyle = $.dark(color);
 			this.ctx.lineTo(x,y+h);
 			var x0 = x+a*cos(A);
 			var y0 = y+h+(ccw?(-b*sin(A)):(b*sin(A)));
@@ -2523,7 +2501,7 @@ Cans.prototype = {
 			this.ctx.globalCompositeOperation = "source-over";
 			
 			//paint top layer
-			//var g = this.avgRadialGradient(x,y,0,x,y,a,[$.Math.light(c,0.1),$.Math.dark(c,0.05)]);
+			//var g = this.avgRadialGradient(x,y,0,x,y,a,[$.light(c,0.1),$.dark(c,0.05)]);
 			this.ellipse(x,y,a,b,s,e,c,bo,bow,boc,false,swc,swb,swx,swy,ccw,true);
 			//paint outside layer
 			sPaint.call(this,x,y,a,b,s,e,ccw,h,c);
@@ -2532,8 +2510,8 @@ Cans.prototype = {
 			return this;
 		}
 	}(),
-	textStyle:function(align,line,font){
-		return this.textAlign(align).textBaseline(line).textFont(font);
+	textStyle:function(a,l,f){
+		return this.textAlign(a).textBaseline(l).textFont(f);
 	},
 	strokeStyle:function(w,c,j){
 		if(w)
@@ -2554,14 +2532,14 @@ Cans.prototype = {
 		this.ctx.fillStyle = c;
 		return this;
 	},
-	textAlign:function(align){
-		if(align)
-		this.ctx.textAlign =align;
+	textAlign:function(a){
+		if(a)
+		this.ctx.textAlign =a;
 		return this;
 	},
-	textBaseline:function(line){
-		if(line)
-		this.ctx.textBaseline =line;
+	textBaseline:function(l){
+		if(l)
+		this.ctx.textBaseline =l;
 		return this;
 	},
 	textFont:function(font){
@@ -2603,16 +2581,16 @@ Cans.prototype = {
 	createRadialGradient:function(xs, ys,rs,xe, ye,re){
 		return this.ctx.createRadialGradient(xs, ys,rs,xe, ye,re);    
 	},
-	fillText:function(text,x,y,maxwidth,color,mode,lineheight){
-		text = text+"";
-		maxwidth = maxwidth || false;
+	fillText:function(t,x,y,max,color,mode,lineheight){
+		t = t+"";
+		max = max || false;
 		mode = mode || 'lr'; 
 		lineheight = lineheight || 16;
 		this.fillStyle(color);
-		var T = text.split(mode=='tb'?"":"\n");
+		var T = t.split(mode=='tb'?"":"\n");
 		for(var i =0;i<T.length;i++){
-			if(maxwidth){
-				this.ctx.fillText(T[i],x,y,maxwidth);
+			if(max){
+				this.ctx.fillText(T[i],x,y,max);
 			}else{
 				this.ctx.fillText(T[i],x,y);
 			}
@@ -2653,21 +2631,21 @@ Cans.prototype = {
 		this.ctx.fill();
 		return this;
 	},
-	text:function(text,x,y,maxwidth,color,align,line,font,mode,lineheight){
+	text:function(text,x,y,max,color,align,line,font,mode,lineheight){
 		this.ctx.save();
 		this.textStyle(align,line,font);
-		this.fillText(text,x,y,maxwidth,color,mode,lineheight);
+		this.fillText(text,x,y,max,color,mode,lineheight);
 		this.ctx.restore();
 		return this;
 	},
 	//can use cube3D instead of this?
 	cube:function(x,y,xv,yv,width,height,zdeep,bg,b,bw,bc,sw,swc,swb,swx,swy){
-		x = $.Math.fixDeckle(bw,x);
-		y = $.Math.fixDeckle(bw,y);
+		x = fd(bw,x);
+		y = fd(bw,y);
 		zdeep = (zdeep&&zdeep>0)?zdeep:width;
 		var x1=x+zdeep*xv,y1=y-zdeep*yv;
-		x1 = $.Math.fixDeckle(bw,x1);
-		y1 = $.Math.fixDeckle(bw,y1);
+		x1 = fd(bw,x1);
+		y1 = fd(bw,y1);
 		//styles -> top-front-right
 		if(sw){
 			this.polygon(bg,b,bw,bc,sw,swc,swb,swx,swy,false,[x,y,x1,y1,x1+width,y1,x+width,y]);
@@ -2677,9 +2655,9 @@ Cans.prototype = {
 		/**
 		 * clear the shadow on the body
 		 */
-		this.polygon($.Math.dark(bg),b,bw,bc,false,swc,swb,swx,swy,false,[x,y,x1,y1,x1+width,y1,x+width,y]);
+		this.polygon($.dark(bg),b,bw,bc,false,swc,swb,swx,swy,false,[x,y,x1,y1,x1+width,y1,x+width,y]);
 		this.polygon(bg,b,bw,bc,false,swc,swb,swx,swy,false,[x,y,x,y+height,x+width,y+height,x+width,y]);
-		this.polygon($.Math.dark(bg),b,bw,bc,false,swc,swb,swx,swy,false,[x+width,y,x1+width,y1,x1+width,y1+height,x+width,y+height]);
+		this.polygon($.dark(bg),b,bw,bc,false,swc,swb,swx,swy,false,[x+width,y,x1+width,y1,x1+width,y1+height,x+width,y+height]);
 		return this;
 	},
 	/**
@@ -2699,14 +2677,13 @@ Cans.prototype = {
 	 */
 	cube3D:function(x,y,rotatex,rotatey,angle,w,h,zh,b,bw,bc,styles){
 		//styles -> 下底-底-左-右-上-前
-		x = $.Math.fixDeckle(bw,x);
-		y = $.Math.fixDeckle(bw,y);
+		x = fd(bw,x);
+		y = fd(bw,y);
 		//Deep of Z'axis
-		if(!zh||zh==0)
-			zh = w;
+		zh = (!zh||zh==0)?w:zh;
 		
 		if(angle){
-			var P = $.Math.vectorP2P(rotatex,rotatey);
+			var P = $.vectorP2P(rotatex,rotatey);
 				rotatex=x+zh*P.x,
 				rotatey=y-zh*P.y;
 		}else{
@@ -2717,8 +2694,8 @@ Cans.prototype = {
 		while(styles.length<6)
 			styles.push(false);
 		
-		rotatex = $.Math.fixDeckle(bw,rotatex);
-		rotatey = $.Math.fixDeckle(bw,rotatey);
+		rotatex = fd(bw,rotatex);
+		rotatey = fd(bw,rotatey);
 		
 		var side = [];
 		
@@ -2775,14 +2752,11 @@ Cans.prototype = {
 			.globalAlpha(alpham)
 			.shadowOn(sw,swc,swb,swx,swy)
 			.moveTo(points[0],points[1]);
-		
-		for(var i=2;i<points.length;i+=2){
+		for(var i=2;i<points.length;i+=2)
 			this.lineTo(points[i],points[i+1]);
-		}
 		this.ctx.closePath();
-		if(b){
+		if(b)
 			this.ctx.stroke();
-		}
 		this.ctx.fill();
 		this.ctx.restore();
 		return this;
@@ -2793,10 +2767,10 @@ Cans.prototype = {
 		if(!!last)
 			this.ctx.globalCompositeOperation = "destination-over";
 		
-		x1 = $.Math.fixDeckle(w,x1);
-		y1 = $.Math.fixDeckle(w,y1);
-		x2 = $.Math.fixDeckle(w,x2);
-		y2 = $.Math.fixDeckle(w,y2);
+		x1 = fd(w,x1);
+		y1 = fd(w,y1);
+		x2 = fd(w,x2);
+		y2 = fd(w,y2);
 		
 		this.ctx.beginPath();
 		this.strokeStyle(w,c).moveTo(x1,y1).lineTo(x2,y2).ctx.stroke();
@@ -2829,8 +2803,8 @@ Cans.prototype = {
 	},
 	rectangle:function(x,y,w,h,bgcolor,border,linewidth,bcolor,sw,swc,swb,swx,swy){
 		this.ctx.save();
-		x = $.Math.fixDeckle(linewidth,x);
-		y = $.Math.fixDeckle(linewidth,y);
+		x = fd(linewidth,x);
+		y = fd(linewidth,y);
 		this.ctx.translate(x,y);
 		this.ctx.beginPath();
 		this.ctx.fillStyle = bgcolor;
@@ -2863,8 +2837,8 @@ Cans.prototype = {
 	},
 	drawBorder:function(x,y,w,h,line,color,round,bgcolor,last,shadow,scolor,blur,offsetx,offsety){
 		this.ctx.save();
-		var x0 = $.Math.fixDeckle(line,x);
-		var y0 = $.Math.fixDeckle(line,y);
+		var x0 = fd(line,x);
+		var y0 = fd(line,y);
 		if(x0!=x){
 			x = x0;w -=1;
 		}
@@ -3126,7 +3100,7 @@ $.Chart = $.extend($.Painter,{
 			if(!this.redraw){
 				this.title();
 				if(this.get('border.enable')){
-					this.target.drawBorder(0,0,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:$.Math.parseBorder(this.get('border.radius')),this.get('background_color'),true);
+					this.target.drawBorder(0,0,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:$.parseBorder(this.get('border.radius')),this.get('background_color'),true);
 				}else{
 					this.target.backgound(0,0,this.width,this.height,this.get('background_color'));
 				}
@@ -3185,8 +3159,8 @@ $.Chart = $.extend($.Painter,{
 			
 			
 			
-			var id = $.Math.iGather(this.type);
-			this.shellid = $.Math.iGather(this.type+"-shell");
+			var id = $.iGather(this.type);
+			this.shellid = $.iGather(this.type+"-shell");
 			var html  = "<div id='"+this.shellid+"' style='"+style+"'>" +
 							"<canvas id= '"+id+"'  width='"+this.width+"' height="+this.height+"'>" +
 								"<p>Your browser does not support the canvas element</p>" +
@@ -3344,7 +3318,7 @@ $.Chart = $.extend($.Painter,{
 			this.push('centery',this.get('t_originy')+this.get('client_height')/2);
 			
 			if(this.get('border.enable')){
-				var round = $.Math.parseBorder(this.get('border.radius'));
+				var round = $.parseBorder(this.get('border.radius'));
 				this.push('radius_top',round[0]);
 				this.push('radius_right',round[1]);
 				this.push('radius_bottom',round[2]);
@@ -3569,11 +3543,11 @@ $.Chart = $.extend($.Painter,{
 					
 					//end_scale must greater than maxScale
 					if(!this.get('end_scale')||this.get('end_scale')<this.get('max_scale')){
-						this.push('end_scale',$.Math.ceil(this.get('max_scale')));
+						this.push('end_scale',$.ceil(this.get('max_scale')));
 					}
 					//startScale must less than minScale
 					if(this.get('start_scale')>this.get('min_scale')){
-						this.push('start_scale',$.Math.floor(this.get('min_scale')));
+						this.push('start_scale',$.floor(this.get('min_scale')));
 					}
 					
 					if(this.get('scale')&&this.get('scale')<this.get('end_scale')-this.get('start_scale')){
@@ -3764,7 +3738,7 @@ $.Chart = $.extend($.Painter,{
 				var x,y,
 					f = false,
 					axis =[0,0,0,0],
-					c = $.Math.dark(this.get('background_color'),0.04);
+					c = $.dark(this.get('background_color'),0.04);
 				if(this.get('axis.enable')){
 					axis = this.get('axis.width');
 				}
@@ -3989,7 +3963,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			 * indicate the component's type
 			 */
 			this.type = 'coordinate3d';
-			this.dimension = $.Math._3D;
+			this.dimension = $._3D;
 			
 			this.set({
 				 xAngle:60,
@@ -4087,7 +4061,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			$.Coordinate3D.superclass.doConfig.call(this);
 			
 			var bg = this.get('background_color'),
-				dark_color = $.Math.dark(bg,0.1),
+				dark_color = $.dark(bg,0.1),
 				h = this.get('height'),
 				w = this.get('width');
 			
@@ -4342,7 +4316,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			 * indicate the component's type
 			 */
 			this.type = 'rectangle3d';
-			this.dimension = $.Math._3D;
+			this.dimension = $._3D;
 			
 			this.set({
 				zHeight:undefined,
@@ -4595,24 +4569,24 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 				if(this.label.isEventValid(e).valid)
 					return {valid:true};
 			}
-			if((this.r)<$.Math.distanceP2P(this.x,this.y,e.offsetX,e.offsetY)){
+			if((this.r)<$.distanceP2P(this.x,this.y,e.offsetX,e.offsetY)){
 				return {valid:false};
 			}
 			/**
 			 * 与x轴正方向形成的夹角、x轴逆时针的角度、并转换弧度参照 
 			 */
-			if($.Math.angleInRange(this.get('startAngle'),this.get('endAngle'),(2*Math.PI - $.Math.atanToRadian(this.x,this.y,e.offsetX,e.offsetY)))){
+			if($.angleInRange(this.get('startAngle'),this.get('endAngle'),(2*Math.PI - $.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
 				return {valid:true};
 			}
 			return {valid:false};
 		},
 		tipInvoke:function(){
 			var A = this.get('middleAngle'),
-				Q  = $.Math.quadrantd(A),
+				Q  = $.quadrantd(A),
 				self = this,
 				r = this.get('radius');
 			return function(w,h){
-				var P = $.Math.pToPoint(self.x,self.y,A,r*0.8);
+				var P = $.p2Point(self.x,self.y,A,r*0.8);
 				return {
 					left:(Q>=2&&Q<=3)?(P.x - w):P.x,
 					top:Q>=3?(P.y - h):P.y
@@ -4621,9 +4595,9 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 		},
 		labelInvoke:function(x,y){
 			var A = this.get('middleAngle');
-			var P = $.Math.pToPoint(x,y,A,this.r + this.get('label.linelength'));
-			var P2 = $.Math.pToPoint(x,y,A,this.r/2);
-			var Q  = $.Math.quadrantd(A);
+			var P = $.p2Point(x,y,A,this.r + this.get('label.linelength'));
+			var P2 = $.p2Point(x,y,A,this.r/2);
+			var Q  = $.quadrantd(A);
 			return {
 				origin:{
 					x:P2.x,
@@ -4651,10 +4625,10 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 				this.push('fill_color',this.target.avgRadialGradient(this.x,this.y,0,this.x,this.y,this.r,[this.get('light_color'),this.get('dark_color')]));
 			}
 			
-			this.pushIf('increment',$.Math.lowTo(5,this.r/8));
+			this.pushIf('increment',$.lowTo(5,this.r/8));
 			
 			if(this.get('label.enable')){
-				this.pushIf('label.linelength',$.Math.lowTo(10,this.r/8));
+				this.pushIf('label.linelength',$.lowTo(10,this.r/8));
 				this.label = new $.Label(this.get('label'),this);
 			}
 		}
@@ -4674,7 +4648,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			 * indicate the component's type
 			 */
 			this.type = 'sector3d';
-			this.dimension = $.Math._3D;
+			this.dimension = $._3D;
 			
 			this.set({
 				/**
@@ -4723,10 +4697,10 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 				if(this.label.isEventValid(e).valid)
 					return {valid:true};
 			}
-			if(!$.Math.inEllipse(e.offsetX - this.x,e.offsetY-this.y,this.get('semi_major_axis'),this.get('semi_minor_axis'))){
+			if(!$.inEllipse(e.offsetX - this.x,e.offsetY-this.y,this.get('semi_major_axis'),this.get('semi_minor_axis'))){
 				return {valid:false};
 			}
-			if($.Math.inRange(this.sA,this.eA,(2*Math.PI - $.Math.atanToRadian(this.x,this.y,e.offsetX,e.offsetY)))){
+			if($.inRange(this.sA,this.eA,(2*Math.PI - $.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
 				return {valid:true};
 			}
 			return {valid:false};
@@ -4739,7 +4713,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 		},
 		tipInvoke:function(){
 			var A = this.get('middleAngle'),
-				Q  = $.Math.quadrantd(A),
+				Q  = $.quadrantd(A),
 				self =  this;
 			return function(w,h){
 				var P = self.p2p(self.x,self.y,A,0.6);
@@ -4753,7 +4727,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			var A = this.get('middleAngle'),
 				P = this.p2p(x,y,A,this.Z),
 				P2 = this.p2p(x,y,A,1),
-				Q  = $.Math.quadrantd(A),
+				Q  = $.quadrantd(A),
 				self = this,
 				ccw = this.get('counterclockwise');
 				return {
@@ -4783,12 +4757,12 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			this.h = this.get('cylinder_height');
 			
 			
-			this.pushIf('increment',$.Math.lowTo(5,this.a/8));
+			this.pushIf('increment',$.lowTo(5,this.a/8));
 			
 			this.inc = Math.PI/180,ccw = this.get('counterclockwise');
 			
 			var toAngle = function(A){
-				var t = $.Math.atanToRadian(0,0,this.a*Math.cos(A),ccw?(-this.b*Math.sin(A)):(this.b*Math.sin(A)));
+				var t = $.atan2Radian(0,0,this.a*Math.cos(A),ccw?(-this.b*Math.sin(A)):(this.b*Math.sin(A)));
 				if(!ccw&&t!=0){
 					t = 2*Math.PI - t;
 				}
@@ -4799,7 +4773,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			this.eA = toAngle.call(this,this.get('endAngle'));
 			
 			if(this.get('label.enable')){
-				this.pushIf('label.linelength',$.Math.lowTo(10,this.a/8));
+				this.pushIf('label.linelength',$.lowTo(10,this.a/8));
 				
 				this.Z = this.get('label.linelength')/this.a+1;
 				
@@ -4911,7 +4885,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 		$.Pie.superclass.doConfig.call(this);
 		$.Assert.gtZero(this.total, 'this.total');
 
-		var endAngle = startAngle = this.offsetAngle = $.Math.angleToRadian(this.get('offsetAngle'));
+		var endAngle = startAngle = this.offsetAngle = $.angle2Radian(this.get('offsetAngle'));
 		/**
 		 * calculate  pie chart's angle 
 		 */
@@ -4937,7 +4911,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 		/**
 		 * calculate  pie chart's increment 
 		 */
-		this.pushIf('increment',$.Math.lowTo(5,this.get('radius')/8));
+		this.pushIf('increment',$.lowTo(5,this.get('radius')/8));
 		
 		/**
 		 * calculate pie chart's alignment
@@ -5007,7 +4981,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			var t,lt,tt,Le = this.get('label.enable'),Te = this.get('tip.enable');
 			for(var i=0;i<this.data.length;i++){
 				
-				t = this.data[i].name+(this.get('showpercent')?$.Math.toPercent(this.data[i].value/this.total,this.get('decimalsnum')):'');
+				t = this.data[i].name+(this.get('showpercent')?$.toPercent(this.data[i].value/this.total,this.get('decimalsnum')):'');
 				
 				if(Le){
 					lt = this.fireEvent(this,'parseLabelText',[this.data[i],i]);
@@ -5042,7 +5016,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			 * indicate the legend's type
 			 */
 			this.type = 'pie3d';
-			this.dimension = $.Math._3D;
+			this.dimension = $._3D;
 			this.dataType = 'simple';
 			
 			this.set({
@@ -5060,16 +5034,16 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 		},
 		doConfig:function(){
 			$.Pie3D.superclass.doConfig.call(this);
-			this.push('zRotate',$.Math.between(0,90,90-this.get('zRotate')));
+			this.push('zRotate',$.between(0,90,90-this.get('zRotate')));
 			
 			var t,lt,tt;
 			this.sector_config.semi_major_axis = this.get('radius');
 			this.sector_config.semi_minor_axis = this.get('radius')*this.get('zRotate')/90;
-			this.sector_config.cylinder_height = this.get('yHeight')*Math.cos($.Math.angleToRadian(this.get('zRotate')));
+			this.sector_config.cylinder_height = this.get('yHeight')*Math.cos($.angle2Radian(this.get('zRotate')));
 			
 			var t,lt,tt,Le = this.get('label.enable'),Te = this.get('tip.enable');
 			for(var i=0;i<this.data.length;i++){
-				t = this.data[i].name+(this.get('showpercent')?$.Math.toPercent(this.data[i].value/this.total,this.get('decimalsnum')):'');
+				t = this.data[i].name+(this.get('showpercent')?$.toPercent(this.data[i].value/this.total,this.get('decimalsnum')):'');
 				if(Le){
 					lt = this.fireEvent(this,'parseLabelText',[this.data[i],i]);
 					this.sector_config.label.text = $.isString(lt)?lt:t;
@@ -5300,7 +5274,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			
 			this.type = 'column3d';
 			this.dataType = 'simple';
-			this.dimension = $.Math._3D;
+			this.dimension = $._3D;
 			
 			this.set({
 				xAngle:60,
@@ -6015,7 +5989,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			if(this.get('event_range_x')==0){
 				this.push('event_range_x',Math.floor(sp/2));
 			}else{
-				this.push('event_range_x',$.Math.between(1,Math.floor(sp/2),this.get('event_range_x')));
+				this.push('event_range_x',$.between(1,Math.floor(sp/2),this.get('event_range_x')));
 			}
 			if(this.get('event_range_y')==0){
 				this.push('event_range_y',Math.floor(this.get('point_size')));
@@ -6063,7 +6037,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 				}
 				var ii = Math.floor((e.offsetX-self.x)/sp);
 				if(ii<0||ii>=(this.points.length-1)){
-					ii = $.Math.between(0,this.points.length-1,ii);
+					ii = $.between(0,this.points.length-1,ii);
 					if(valid(ii,e.offsetX,e.offsetY))
 						return to(ii);
 					else
@@ -6344,7 +6318,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 				
 				x = this.direction=='left'?(this.end - this.space * j):(this.space * j);
 				
-				y = ($.Math.between(this.target.S.start,this.target.S.end,v[j]) - this.target.S.start)*this.target.S.uh;
+				y = ($.between(this.target.S.start,this.target.S.end,v[j]) - this.target.S.start)*this.target.S.uh;
 				
 				this.line.points.push($.merge({x : x,y : y,value : v[j]},this.target.fireEvent(this.target, 'parsePoint', [v[j], x, y, j ])));
 			}

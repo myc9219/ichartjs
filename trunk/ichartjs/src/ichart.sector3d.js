@@ -14,7 +14,7 @@
 			 * indicate the component's type
 			 */
 			this.type = 'sector3d';
-			this.dimension = iChart.Math._3D;
+			this.dimension = iChart._3D;
 			
 			this.set({
 				/**
@@ -63,10 +63,10 @@
 				if(this.label.isEventValid(e).valid)
 					return {valid:true};
 			}
-			if(!iChart.Math.inEllipse(e.offsetX - this.x,e.offsetY-this.y,this.get('semi_major_axis'),this.get('semi_minor_axis'))){
+			if(!iChart.inEllipse(e.offsetX - this.x,e.offsetY-this.y,this.get('semi_major_axis'),this.get('semi_minor_axis'))){
 				return {valid:false};
 			}
-			if(iChart.Math.inRange(this.sA,this.eA,(2*Math.PI - iChart.Math.atanToRadian(this.x,this.y,e.offsetX,e.offsetY)))){
+			if(iChart.inRange(this.sA,this.eA,(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
 				return {valid:true};
 			}
 			return {valid:false};
@@ -79,7 +79,7 @@
 		},
 		tipInvoke:function(){
 			var A = this.get('middleAngle'),
-				Q  = iChart.Math.quadrantd(A),
+				Q  = iChart.quadrantd(A),
 				self =  this;
 			return function(w,h){
 				var P = self.p2p(self.x,self.y,A,0.6);
@@ -93,7 +93,7 @@
 			var A = this.get('middleAngle'),
 				P = this.p2p(x,y,A,this.Z),
 				P2 = this.p2p(x,y,A,1),
-				Q  = iChart.Math.quadrantd(A),
+				Q  = iChart.quadrantd(A),
 				self = this,
 				ccw = this.get('counterclockwise');
 				return {
@@ -123,12 +123,12 @@
 			this.h = this.get('cylinder_height');
 			
 			
-			this.pushIf('increment',iChart.Math.lowTo(5,this.a/8));
+			this.pushIf('increment',iChart.lowTo(5,this.a/8));
 			
 			this.inc = Math.PI/180,ccw = this.get('counterclockwise');
 			
 			var toAngle = function(A){
-				var t = iChart.Math.atanToRadian(0,0,this.a*Math.cos(A),ccw?(-this.b*Math.sin(A)):(this.b*Math.sin(A)));
+				var t = iChart.atan2Radian(0,0,this.a*Math.cos(A),ccw?(-this.b*Math.sin(A)):(this.b*Math.sin(A)));
 				if(!ccw&&t!=0){
 					t = 2*Math.PI - t;
 				}
@@ -139,7 +139,7 @@
 			this.eA = toAngle.call(this,this.get('endAngle'));
 			
 			if(this.get('label.enable')){
-				this.pushIf('label.linelength',iChart.Math.lowTo(10,this.a/8));
+				this.pushIf('label.linelength',iChart.lowTo(10,this.a/8));
 				
 				this.Z = this.get('label.linelength')/this.a+1;
 				

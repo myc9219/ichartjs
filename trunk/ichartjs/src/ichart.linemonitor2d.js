@@ -29,7 +29,7 @@
 				
 				x = this.direction=='left'?(this.end - this.space * j):(this.space * j);
 				
-				y = (iChart.Math.between(this.target.S.start,this.target.S.end,v[j]) - this.target.S.start)*this.target.S.uh;
+				y = (iChart.between(this.target.S.start,this.target.S.end,v[j]) - this.target.S.start)*this.target.S.uh;
 				
 				this.line.points.push(iChart.merge({x : x,y : y,value : v[j]},this.target.fireEvent(this.target, 'parsePoint', [v[j], x, y, j ])));
 			}

@@ -12,7 +12,7 @@ iChart.Painter = iChart.extend(iChart.Element,{
 		 */
 		this.type = 'painter';
 
-		this.dimension = iChart.Math._2D;
+		this.dimension = iChart._2D;
 
 		/**
 		 * define abstract method
@@ -116,7 +116,7 @@ iChart.Painter = iChart.extend(iChart.Element,{
 		}
 	},
 	is3D : function() {
-		return this.dimension == iChart.Math._3D;
+		return this.dimension == iChart._3D;
 	},
 	draw : function(opts) {
 		this.init();
@@ -156,7 +156,7 @@ iChart.Painter = iChart.extend(iChart.Element,{
 		return this;
 	},
 	doConfig : function() {
-		var padding = iChart.Math.parsePadding(this.get('padding'));
+		var padding = iChart.parsePadding(this.get('padding'));
 		this.push('padding_top', padding[0]);
 		this.push('padding_right', padding[1]);
 		this.push('padding_bottom', padding[2]);
@@ -168,14 +168,14 @@ iChart.Painter = iChart.extend(iChart.Element,{
 				.get('fontsize'), this.get('font')));
 
 		this.push('fill_color', this.get('background_color'));
-		this.push("light_color", iChart.Math.light(
+		this.push("light_color", iChart.light(
 				this.get('background_color'), this.get('color_factor')));
-		this.push("dark_color", iChart.Math.dark(this.get('background_color'),
+		this.push("dark_color", iChart.dark(this.get('background_color'),
 				this.get('color_factor')));
 
-		this.push("light_color2", iChart.Math.light(this
+		this.push("light_color2", iChart.light(this
 				.get('background_color'), this.get('color_factor') * 2));
-		this.push("dark_color2", iChart.Math.dark(this.get('background_color'),
+		this.push("dark_color2", iChart.dark(this.get('background_color'),
 				this.get('color_factor')) * 2);
 
 		this.id = this.get('id');

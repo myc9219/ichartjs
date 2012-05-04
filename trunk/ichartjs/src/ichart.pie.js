@@ -103,7 +103,7 @@
 		iChart.Pie.superclass.doConfig.call(this);
 		iChart.Assert.gtZero(this.total, 'this.total');
 
-		var endAngle = startAngle = this.offsetAngle = iChart.Math.angleToRadian(this.get('offsetAngle'));
+		var endAngle = startAngle = this.offsetAngle = iChart.angle2Radian(this.get('offsetAngle'));
 		/**
 		 * calculate  pie chart's angle 
 		 */
@@ -129,7 +129,7 @@
 		/**
 		 * calculate  pie chart's increment 
 		 */
-		this.pushIf('increment',iChart.Math.lowTo(5,this.get('radius')/8));
+		this.pushIf('increment',iChart.lowTo(5,this.get('radius')/8));
 		
 		/**
 		 * calculate pie chart's alignment

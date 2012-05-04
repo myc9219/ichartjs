@@ -48,24 +48,24 @@
 				if(this.label.isEventValid(e).valid)
 					return {valid:true};
 			}
-			if((this.r)<iChart.Math.distanceP2P(this.x,this.y,e.offsetX,e.offsetY)){
+			if((this.r)<iChart.distanceP2P(this.x,this.y,e.offsetX,e.offsetY)){
 				return {valid:false};
 			}
 			/**
 			 * 与x轴正方向形成的夹角、x轴逆时针的角度、并转换弧度参照 
 			 */
-			if(iChart.Math.angleInRange(this.get('startAngle'),this.get('endAngle'),(2*Math.PI - iChart.Math.atanToRadian(this.x,this.y,e.offsetX,e.offsetY)))){
+			if(iChart.angleInRange(this.get('startAngle'),this.get('endAngle'),(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
 				return {valid:true};
 			}
 			return {valid:false};
 		},
 		tipInvoke:function(){
 			var A = this.get('middleAngle'),
-				Q  = iChart.Math.quadrantd(A),
+				Q  = iChart.quadrantd(A),
 				self = this,
 				r = this.get('radius');
 			return function(w,h){
-				var P = iChart.Math.pToPoint(self.x,self.y,A,r*0.8);
+				var P = iChart.p2Point(self.x,self.y,A,r*0.8);
 				return {
 					left:(Q>=2&&Q<=3)?(P.x - w):P.x,
 					top:Q>=3?(P.y - h):P.y
@@ -74,9 +74,9 @@
 		},
 		labelInvoke:function(x,y){
 			var A = this.get('middleAngle');
-			var P = iChart.Math.pToPoint(x,y,A,this.r + this.get('label.linelength'));
-			var P2 = iChart.Math.pToPoint(x,y,A,this.r/2);
-			var Q  = iChart.Math.quadrantd(A);
+			var P = iChart.p2Point(x,y,A,this.r + this.get('label.linelength'));
+			var P2 = iChart.p2Point(x,y,A,this.r/2);
+			var Q  = iChart.quadrantd(A);
 			return {
 				origin:{
 					x:P2.x,
@@ -104,10 +104,10 @@
 				this.push('fill_color',this.target.avgRadialGradient(this.x,this.y,0,this.x,this.y,this.r,[this.get('light_color'),this.get('dark_color')]));
 			}
 			
-			this.pushIf('increment',iChart.Math.lowTo(5,this.r/8));
+			this.pushIf('increment',iChart.lowTo(5,this.r/8));
 			
 			if(this.get('label.enable')){
-				this.pushIf('label.linelength',iChart.Math.lowTo(10,this.r/8));
+				this.pushIf('label.linelength',iChart.lowTo(10,this.r/8));
 				this.label = new iChart.Label(this.get('label'),this);
 			}
 		}
