@@ -18,7 +18,7 @@
 			
 			this.dataType = 'simple';
 			
-			this.configuration({
+			this.set({
 				coordinate:{grid_color:'#CDCDCD',background_color:'#FEFEFE'}
 			});
 		},

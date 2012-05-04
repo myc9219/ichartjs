@@ -17,7 +17,7 @@
 			
 			this.dataType='simple';
 				
-			this.configuration({
+			this.set({
 				coordinate:{},
 				/**
 				  *@cfg {String} 

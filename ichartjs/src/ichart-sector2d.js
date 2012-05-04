@@ -15,7 +15,7 @@
 			 */
 			this.type = 'sector2d';
 			
-			this.configuration({
+			this.set({
 				radius:0
 			});
 			

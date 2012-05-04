@@ -641,7 +641,7 @@ $.Chart = $.extend($.Painter,{
 			 */
 			this.type = 'chart';
 			
-			this.configuration({
+			this.set({
 				 render:'',
 				 data:[],
 				 /**
@@ -819,7 +819,7 @@ $.Chart = $.extend($.Painter,{
 			//console.time('Test for draw');
 			
 			if(!this.redraw){
-				this.drawTitle();
+				this.title();
 				if(this.get('border.enable')){
 					this.target.drawBorder(0,0,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:$.Math.parseBorder(this.get('border.radius')),this.get('background_color'),true);
 				}else{
@@ -847,7 +847,7 @@ $.Chart = $.extend($.Painter,{
 		/**
 		 * Draw the title when title not empty
 		 */
-		drawTitle:function(){
+		title:function(){
 			if(this.get('title')=='')
 				return;
 			if(this.get('title_writingmode')=='tb'){
@@ -901,6 +901,7 @@ $.Chart = $.extend($.Painter,{
 			
 			this.rendered  = true;
 		},
+		
 		render:function(id){
 			this.push('render',id);
 		},

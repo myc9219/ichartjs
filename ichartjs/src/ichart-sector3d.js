@@ -16,7 +16,7 @@
 			this.type = 'sector3d';
 			this.dimension = iChart.Math._3D;
 			
-			this.configuration({
+			this.set({
 				/**
 				 * @cfg {Number}  major semiaxis of ellipse
 				 */

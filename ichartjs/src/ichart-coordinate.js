@@ -18,7 +18,7 @@
 				 */
 				this.type = 'kedu';
 				
-				this.configuration({
+				this.set({
 					 /**
 					  * @cfg {String} the axis's type(default to 'h')
 					  * Available value are:
@@ -244,7 +244,7 @@
 			 */
 			this.type = 'coordinate2d';
 			
-			this.configuration({
+			this.set({
 				 sign_size:12,
 				 sign_space:5,
 				 kedu:[],
@@ -580,7 +580,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 			this.type = 'coordinate3d';
 			this.dimension = iChart.Math._3D;
 			
-			this.configuration({
+			this.set({
 				 xAngle:60,
 				 yAngle:20,
 				 xAngle_:undefined,

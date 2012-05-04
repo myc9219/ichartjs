@@ -17,7 +17,7 @@
 			this.dimension = iChart.Math._3D;
 			this.dataType = 'simple';
 			
-			this.configuration({
+			this.set({
 				 /**
 				 * @cfg {Float} {range:(0~90]} z轴旋转角度
 				 */

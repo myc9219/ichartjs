@@ -16,7 +16,7 @@
 			 */
 			this.type = 'tip';
 			
-			this.configuration({
+			this.set({
 				 text:'',
 				 /**
 				  * 

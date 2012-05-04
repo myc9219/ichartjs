@@ -10,7 +10,7 @@ iChart.Sector = iChart.extend(iChart.Component,{
 			 */
 			this.type = 'sector';
 			
-			this.configuration({
+			this.set({
 				 counterclockwise:false,
 				 startAngle:0,
 				 middleAngle:0,
@@ -93,7 +93,7 @@ iChart.Sector = iChart.extend(iChart.Component,{
 //				             'border',
 //				             'shadow',
 //				             'counterclockwise'
-//				             ],this.configurations,true);
+//				             ],this.options,true);
 			
 			this.push('totalAngle',this.get('endAngle')-this.get('startAngle'));
 			

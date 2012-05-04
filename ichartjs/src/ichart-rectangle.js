@@ -15,7 +15,7 @@
 			 */
 			this.type = 'rectangle';
 			
-			this.configuration({
+			this.set({
 				width:0,
 				height:0,
 				value_space:10,

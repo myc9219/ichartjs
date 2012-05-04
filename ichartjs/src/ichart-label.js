@@ -15,7 +15,7 @@
 			 */
 			this.type = 'legend';
 			
-			this.configuration({
+			this.set({
 				 text:'',
 				 line_height:16,
 				 /**

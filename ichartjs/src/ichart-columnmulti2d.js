@@ -16,7 +16,7 @@
 			this.type = 'columnmulti2d';
 			this.dataType = 'complex';
 			
-			this.configuration({
+			this.set({
 				
 			});
 			//this.registerEvent();

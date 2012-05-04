@@ -16,7 +16,7 @@
 			
 			this.type = 'bar';
 			
-			this.configuration({
+			this.set({
 				coordinate:{},
 				barheight:undefined,
 				shadow:true,
@@ -77,7 +77,7 @@
 			/**
 			 * quick config to all rectangle
 			 */
-			iChart.applyIf(this.get('rectangle'),iChart.clone(['label','tip','border'],this.configurations));
+			iChart.applyIf(this.get('rectangle'),iChart.clone(['label','tip','border'],this.options));
 			
 			/**
 			 * register event

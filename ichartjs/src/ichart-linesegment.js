@@ -16,7 +16,7 @@
 			 */
 			this.type = 'linesegment';
 			
-			this.configuration({
+			this.set({
 				 /**
 				  * @cfg {Boolean} if highlight the point when Line-line intersection(default to true)
 				  */
