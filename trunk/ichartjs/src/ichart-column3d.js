@@ -7,7 +7,7 @@
 		/**
 		 * initialize the context for the Column3D 
 		 */
-		configure:function(config){
+		configure:function(){
 			/**
 			 * invoked the super class's  configuration
 			 */
@@ -33,6 +33,7 @@
 		doConfig:function(){
 			iChart.Column3D.superclass.doConfig.call(this);
 			
+			var L = this.data.length,W = this.get('coordinate.width');
 			/**
 			 * common config
 			 */
@@ -40,23 +41,22 @@
 				this.push('bottom_scale',1);
 			}
 			
-			if(!this.get('hiswidth')){
-				this.push('hiswidth',this.get('coordinate.width')/(this.data.length*2+1));
-			}
+			this.pushIf('hiswidth',W/(L*2+1));
 			
-			if(this.get('hiswidth')*this.data.length>this.get('coordinate.width')){
-				this.push('hiswidth',this.get('coordinate.width')/this.data.length/1.2);
+			if(this.get('hiswidth')*L>W){
+				this.push('hiswidth',W/L/1.2);
 			}
 			
 			this.push('zHeight',this.get('hiswidth')*this.get('zScale'));
 			
-			this.push('hispace',(this.get('coordinate.width') - this.get('hiswidth')*this.data.length)/(this.data.length+1));
+			this.push('hispace',(W - this.get('hiswidth')*L)/(L+1));
 			
 			/**
 			 * initialize coordinate
 			 */
 			this.push('coordinate.xAngle_',this.get('xAngle_'));
 			this.push('coordinate.yAngle_',this.get('yAngle_'));
+			
 			//the Coordinate' Z is same as long as the column's
 			this.push('coordinate.zHeight',this.get('zHeight')*this.get('bottom_scale'));
 			
@@ -69,8 +69,7 @@
 			 * initialize rectangles
 			 */
 			//get the max/min scale of this coordinate for calculated the height
-			var coo = this.coo,
-				S = coo.getScale(this.get('keduAlign')),
+			var S = this.coo.getScale(this.get('keduAlign')),
 				Le = this.get('label.enable'),
 				Te = this.get('tip.enable'),
 				zh = this.get('zHeight')*(this.get('bottom_scale')-1)/2*this.get('yAngle_'),
@@ -79,30 +78,30 @@
 				H = this.coo.get('height');
 			
 			
-			
 			/**
 			 * quick config to all rectangle
 			 */
 			this.push('rectangle.xAngle_',this.get('xAngle_'));
 			this.push('rectangle.yAngle_',this.get('yAngle_'));
 			this.push('rectangle.width',this.get('hiswidth'));
-			this.push('rectangle.magic',coo.magic);
 			
-			for(var i=0;i<this.data.length;i++){
-				t = this.data[i].name+":"+this.data[i].value;
+			for(var i=0;i<L;i++){
+				text = this.data[i].name;
+				value = this.data[i].value;
+				t = text+":"+value;
 				h = (this.data[i].value-S.start)*H/S.distance;
+				
 				if(Le){
-					lt = this.fireEvent(this,'parseLabelText',[this.data[i],i]);
-					this.push('rectangle.label.text',iChart.isString(lt)?lt:t);
+					this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[this.data[i],i],t));
 				}
+				
 				if(Te){
-					tt = this.fireEvent(this,'parseTipText',[this.data[i],i]);
-					this.push('rectangle.tip.text',iChart.isString(tt)?tt:t);
+					this.push('rectangle.tip.text',this.fireString(this,'parseTipText',[this.data[i],i],t));
 				}
-				text = this.fireEvent(this,'parseText',[this.data[i],i]);
-				value = this.fireEvent(this,'parseValue',[this.data[i],i]);
-				text = iChart.isString(text)?text:this.data[i].name;
-				value = iChart.isString(value)?value:this.data[i].value;
+				
+				text = this.fireString(this,'parseText',[this.data[i],i],text);
+				value = this.fireString(this,'parseValue',[this.data[i],i],value);
+				
 				/**
 				 * x = this.x + space*(i+1) + width*i
 				 */
@@ -128,13 +127,6 @@
 			}
 			this.pushComponent(this.labels);
 			this.pushComponent(this.rectangles);
-			
-			if(coo.magic)
-				this.pushComponent(new iChart.Custom({
-					drawFn:function(){
-						coo.box();
-					}
-			},this));
 			
 			
 			

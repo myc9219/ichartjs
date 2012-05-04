@@ -22,8 +22,6 @@
 				yAngle:20,//有范围限制
 				xAngle_:undefined,
 				yAngle_:undefined,
-				magic:false,
-				shadow_blur:4,
 				shadow_offsetx:2
 			});
 			
@@ -82,7 +80,6 @@
 			
 			this.topCenterY=this.y-this.get('width')*this.get('yAngle_')/2;
 			
-			this.preventEvent = this.get('magic');
 			
 			
 		}

@@ -901,7 +901,6 @@ $.Chart = $.extend($.Painter,{
 			
 			this.rendered  = true;
 		},
-		
 		render:function(id){
 			this.push('render',id);
 		},
@@ -922,19 +921,6 @@ $.Chart = $.extend($.Painter,{
 		},
 		doConfig:function(){
 			$.Chart.superclass.doConfig.call(this);
-			
-			if(this.get('debug')){
-				this.on('beforedraw',function(e){
-					this.START_RUN_TIME = new Date().getTime();
-					return true;
-				});
-				
-				this.on('draw',function(e){
-					this.END_RUN_TIME = new Date().getTime();
-					this.RUN_TIME_COST = this.END_RUN_TIME - this.START_RUN_TIME;
-				});
-				
-			}
 			
 			if(this.get('animation')){
 				this.processAnimation = this.get('animation');

@@ -61,6 +61,17 @@ function start(){
 				return;
 			}
 			chart = unit.shift()();
+			
+			chart.on('beforedraw',function(e){
+				chart.START_RUN_TIME = new Date().getTime();
+				return true;
+			});
+			
+			chart.on('draw',function(e){
+				chart.END_RUN_TIME = new Date().getTime();
+				chart.RUN_TIME_COST = chart.END_RUN_TIME - chart.START_RUN_TIME;
+			});
+			
 			chart.draw();
 			result(true,chart.get('title') || chart.type,chart.RUN_TIME_COST);
 		} catch (e) {
@@ -77,7 +88,6 @@ function test(){
 	unit.push(function(){
 		return new iChart.Pie2D({
 			render :canvas,
-			debug : true,
 			title : 'Test Pie2D',
 			data:data,
 			radius:140,
@@ -88,7 +98,6 @@ function test(){
 	unit.push(function(){
 		return new iChart.Pie3D({
 			render :canvas,
-			debug : true,
 			title : 'Test Pie3D',
 			data : data,
 			padding : '10',
@@ -108,7 +117,6 @@ function test(){
 	unit.push(function(){
 		return new iChart.Column2D({
 			render :canvas,
-			debug : true,
 			title : 'Test Column2D',
 			data: data,
 			align:'center',
@@ -130,7 +138,6 @@ function test(){
 	unit.push(function(){
 		return new iChart.Column3D({
 			render :canvas,
-			debug : true,
 			title : 'Test Column3D',
 			data: data,
 			align:'center',
@@ -154,7 +161,6 @@ function test(){
 	unit.push(function(){
 		return new iChart.Bar2D({
 			render :canvas,
-			debug : true,
 			title : 'Test Bar2D',
 			data: data,
 			align:'center',
@@ -177,7 +183,6 @@ function test(){
 	unit.push(function(){
 		return new iChart.ColumnMulti2D({
 			render :canvas,
-			debug : true,
 			title : 'Test ColumnMulti2D',
 			data: data2,
 			columnKeys:columnKeys,
@@ -206,7 +211,6 @@ function test(){
 	unit.push(function(){
 		return new iChart.LineBasic2D({
 			render :canvas,
-			debug : true,
 			title : 'Test LineBasic2D',
 			data: data4,
 			align:'center',
@@ -222,7 +226,6 @@ function test(){
 	unit.push(function(){
 		return new iChart.LineBasic2D({
 			render :canvas,
-			debug : true,
 			title : 'Test LineBasic2D More Point',
 			data: data6,
 			align:'center',
@@ -281,7 +284,6 @@ function test(){
 		var myChart = iChart.noConflict();
 		return new myChart.Area2D({
 			render :canvas,
-			debug : true,
 			title : 'Test Area2D',
 			data: data7,
 			align:'center',
@@ -299,7 +301,6 @@ function test(){
 	unit.push(function(){
 		return new iChart.Bar2D({
 				render :canvas,
-				debug : true,
 				title : 'Test Bar2d',
 				data:data,
 				coordinate:{
@@ -317,7 +318,6 @@ function test(){
 	unit.push(function(){
 		return new iChart.BarMulti2D({
 			render :canvas,
-			debug : true,
 			title : 'Test BarMulti2D',
 			data: data9,
 			columnKeys:columnKeys1,
