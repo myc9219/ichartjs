@@ -45,7 +45,7 @@
 			if(this.get('invokeOffsetDynamic')){
 				if(m.hit){
 					if(iChart.isString(m.text)||iChart.isNumber(m.text)){
-						this.dom.innerHTML =  "Today:"+m.text+"<br>Good Morning";
+						this.dom.innerHTML =  m.text;
 					}
 					var o = this.get('invokeOffset')(this.width(),this.height(),m);
 					
