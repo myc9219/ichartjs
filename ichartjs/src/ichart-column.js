@@ -23,7 +23,8 @@
 				/**
 				  *@cfg {String} 
 				  * Available value are:
-				  * @Option 'left,'right'
+				  * @Option 'left'
+				  * @Option 'right'
 			 	 */
 				keduAlign:'left',
 				/**

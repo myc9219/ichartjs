@@ -43,21 +43,20 @@
 				iChart.BarMulti2D.superclass.doConfig.call(this);
 				
 				var total = this.columnKeys.length*this.data.length;
+				var L = this.data.length,W = this.get('coordinate.width'),H = this.get('coordinate.height');
 				
-				
-				this.push('barspace',(this.get('coordinate.width') - this.get('barheight')*total)/(this.columnKeys.length+1));
+				this.push('barspace',(W - this.get('barheight')*total)/(this.columnKeys.length+1));
 				
 				//bar's height 
 				if(!this.get('barheight')){
-					this.push('barheight',this.get('coordinate.height')/(this.columnKeys.length+1+total));
+					this.push('barheight',H/(this.columnKeys.length+1+total));
 				}
 				
-				if(this.get('barheight')*this.data.length>this.get('coordinate.height')){
-					this.push('barheight',this.get('coordinate.height')/this.data.length/1.2);
+				if(this.get('barheight')*this.data.length>H){
+					this.push('barheight',H/this.data.length/1.2);
 				}
 				//the space of two bar
-				this.push('barspace',(this.get('coordinate.height') - this.get('barheight')*total)/(this.columnKeys.length+1));
-				
+				this.push('barspace',(H - this.get('barheight')*total)/(this.columnKeys.length+1));
 				
 				//use option create a coordinate
 				this.coo = iChart.Interface.coordinate2d.call(this);
@@ -67,7 +66,6 @@
 				//get the max/min scale of this coordinate for calculated the height
 				var S = this.coo.getScale(this.get('keduAlign')),
 					bs = this.coo.get('brushsize'),
-					W = this.coo.get('width'),
 					Le = this.get('label.enable'),
 					Te = this.get('tip.enable'),
 					gw = this.data.length*this.get('barheight')+this.get('barspace'),

@@ -8,7 +8,7 @@
 		/**
 		 * initialize the context for the pie
 		 */
-		configure:function(config){
+		configure:function(){
 			/**
 			 * invoked the super class's  configuration
 			 */
@@ -24,21 +24,23 @@
 		},
 		doConfig:function(){
 			iChart.Bar2D.superclass.doConfig.call(this);
+			var L = this.data.length,H = this.get('coordinate.height');
+			
 			//bar's height 
-			if(!this.get('barheight')){
-				this.push('barheight',this.get('coordinate.height')/(this.data.length*2+1));
+			this.pushIf('barheight',H/(L*2+1));
+			
+			if(this.get('barheight')*L>H){
+				this.push('barheight',H/(L*2+1));
 			}
 			
-			if(this.get('barheight')*this.data.length>this.get('coordinate.height')){
-				this.push('barheight',this.get('coordinate.height')/this.data.length/1.2);
-			}
 			//the space of two bar
-			this.push('barspace',(this.get('coordinate.height') - this.get('barheight')*this.data.length)/(this.data.length+1));
+			this.push('barspace',(H - this.get('barheight')*L)/(L+1));
 			
 			//use option create a coordinate
 			this.coo = iChart.Interface.coordinate2d.call(this);
-			
 			this.pushComponent(this.coo,true);
+			
+			
 			
 			//get the max/min scale of this coordinate for calculated the height
 			var S = this.coo.getScale(this.get('keduAlign')),
@@ -46,7 +48,7 @@
 				Le = this.get('label.enable'),
 				Te = this.get('tip.enable'),
 				gw = this.get('barheight')+this.get('barspace'),
-				t,lt,tt,w,text,value;
+				t,w,text,value;
 				
 			/**
 			 * quick config to all rectangle
@@ -56,24 +58,22 @@
 			this.push('rectangle.tipAlign','right');
 			this.push('rectangle.originx',this.x + this.coo.get('brushsize'));
 			
-			for(var i=0;i<this.data.length;i++){
-				
-				t = this.data[i].name+":"+this.data[i].value;
+			for(var i=0;i<L;i++){
+				text = this.data[i].name;
+				value = this.data[i].value;
+				t = text+":"+value;
 				
 				w = (this.data[i].value-S.start)*W/S.distance;
 				
 				if(Le){
-					lt = this.fireEvent(this,'parseLabelText',[this.data[i],i]);
-					this.push('rectangle.label.text',iChart.isString(lt)?lt:t);
+					this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[this.data[i],i],t));
 				}
 				if(Te){
-					tt = this.fireEvent(this,'parseTipText',[this.data[i],i]);
-					this.push('rectangle.tip.text',iChart.isString(tt)?tt:t);
+					this.push('rectangle.tip.text',this.fireString(this,'parseTipText',[this.data[i],i],t));
 				}
-				text = this.fireEvent(this,'parseText',[this.data[i],i]);
-				value = this.fireEvent(this,'parseValue',[this.data[i],i]);
-				text = iChart.isString(text)?text:this.data[i].name;
-				value = iChart.isString(value)?value:this.data[i].value;
+				
+				text = this.fireString(this,'parseText',[this.data[i],i],text);
+				value = this.fireString(this,'parseValue',[this.data[i],i],value);
 				
 				/**
 				 * y = this.y + brushsize + h

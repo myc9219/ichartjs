@@ -3,7 +3,7 @@
 	 * @component#iChart.Component
 	 * @extend#iChart.Painter
 	 */
-	iChart.Component = iChart.extend(iChart.Painter, {
+	iChart.Component = iChart.extend(iChart.Painter,{
 	
 		configure : function(c) {
 			/**
@@ -16,7 +16,7 @@
 			 */
 			this.type = 'component';
 	
-			this.configuration( {
+			this.set({
 				/**
 				 * @cfg {Boolean} indicate whether there has a effect of color gradient
 				 */

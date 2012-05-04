@@ -60,11 +60,7 @@
 				  * @Option 'middle'  Only applies when align = 'left|right'
 				  * @Option 'bottom' 
 				  */
-				 valign:'middle',
-				 border:{
-					width:1,
-					radius:5
-				 }
+				 valign:'middle'
 			});
 			
 			this.registerEvent(
