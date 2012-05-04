@@ -1,0 +1,1 @@
+iChart.Area2D=iChart.extend(iChart.LineBasic2D,{configure:function(){iChart.Area2D.superclass.configure.call(this);this.type="area2d";this.set({area:!0,area_opacity:0.3});this.registerEvent()},doConfig:function(){this.push("segment_style.area",!0);this.push("segment_style.area_opacity",this.get("area_opacity"));iChart.Area2D.superclass.doConfig.call(this)}});
