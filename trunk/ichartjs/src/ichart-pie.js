@@ -15,7 +15,7 @@
 
 		this.type = 'pie';
 
-		this.configuration({
+		this.set({
 			/**
 			 *@cfg {Float (0~)} the pie's radius
 			 */
@@ -166,7 +166,7 @@
 				'color_factor',
 				'label',
 				'tip',
-				'border'],this.configurations);
+				'border'],this.options);
 
 
 	}

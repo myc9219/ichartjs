@@ -17,7 +17,7 @@
 			 */
 			this.type = 'crosshair';
 			
-			this.configuration({
+			this.set({
 				 text:'',
 				 top:0,
 				 left:0,

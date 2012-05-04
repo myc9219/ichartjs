@@ -17,7 +17,7 @@
 			this.dataType = 'simple';
 			this.dimension = iChart.Math._3D;
 			
-			this.configuration({
+			this.set({
 				xAngle:60,
 				yAngle:20,
 				/**

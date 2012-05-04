@@ -15,7 +15,7 @@
 			
 			this.type = 'basicline2d';
 			
-			this.configuration({
+			this.set({
 				
 			});
 			 

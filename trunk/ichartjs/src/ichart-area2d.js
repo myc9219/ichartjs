@@ -15,7 +15,7 @@
 			
 			this.type = 'area2d';
 			
-			this.configuration({
+			this.set({
 				area:true,
 				area_opacity:0.3
 			});

@@ -15,7 +15,7 @@
 			 */
 			this.type = 'custom';
 			
-			this.configuration({
+			this.set({
 				drawFn:iChart.emptyFn,
 				eventValid:null	
 			});

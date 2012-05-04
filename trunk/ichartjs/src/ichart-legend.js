@@ -16,7 +16,7 @@
 			 */
 			this.type = 'legend';
 			
-			this.configuration({
+			this.set({
 				 data:undefined,
 				 width:'auto',
 				 column:1,

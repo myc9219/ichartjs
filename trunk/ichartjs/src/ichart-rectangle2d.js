@@ -15,7 +15,7 @@
 			 */
 			this.type = 'rectangle2d';
 			
-			this.configuration({
+			this.set({
 					shadow_offsety:-2,
 					border:{
 						color:'#BCBCBC'

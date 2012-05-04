@@ -15,7 +15,7 @@
 			 */
 			this.type = 'text';
 			
-			this.configuration({
+			this.set({
 				text:'',
 				//textAlign：文字水平对齐方式。可取属性值: start, end, left,right, center。默认值:
 				textAlign:'center',

@@ -16,7 +16,7 @@
 			this.type = 'column2d';
 			this.dataType = 'simple';
 			
-			this.configuration({
+			this.set({
 				coordinate:{grid_color:'#c4dede',background_color:'#FEFEFE'}
 			});
 		},

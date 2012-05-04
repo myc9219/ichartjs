@@ -16,7 +16,7 @@
 			this.type = 'rectangle3d';
 			this.dimension = iChart.Math._3D;
 			
-			this.configuration({
+			this.set({
 				zHeight:undefined,
 				xAngle:60,//有范围限制
 				yAngle:20,//有范围限制

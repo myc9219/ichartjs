@@ -17,9 +17,9 @@ iChart.Element = function(config){
 	/**
 	 * All of the configuration will in this property
 	 */
-	this.configurations = {};
+	this.options = {};
 	
-	this.configuration({
+	this.set({
 		 /**
 		  * @cfg {String} The unique id of this module (defaults to an auto-assigned id). 
 		  */
@@ -100,9 +100,9 @@ iChart.Element = function(config){
 }
 
 iChart.Element.prototype = {
-	configuration:function(C){
-		if(iChart.isObject(C)){
-			iChart.merge(this.configurations,C);
+	set:function(c){
+		if(iChart.isObject(c)){
+			iChart.merge(this.options,c);
 		}
 	},
 	afterConfiguration:function(){},
@@ -111,7 +111,7 @@ iChart.Element.prototype = {
      */
     push:function(name, value)
     {
-		var A = name.split("."),V = this.configurations;
+		var A = name.split("."),V = this.options;
 		for(i=0;i<A.length-1;i++){
 			if(!V[A[i]])V[A[i]] = {};V = V[A[i]];
 		}
@@ -123,7 +123,7 @@ iChart.Element.prototype = {
      */
     get:function(name)
     {
-        var A = name.split("."),V = this.configurations[A[0]];
+        var A = name.split("."),V = this.options[A[0]];
 		for(i=1;i<A.length;i++){
 			if(!V)
 		        return null;

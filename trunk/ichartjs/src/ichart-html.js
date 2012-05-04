@@ -20,7 +20,7 @@ iChart.Html = iChart.extend(iChart.Element,{
 		 */
 		iChart.DefineAbstract('beforeshow',this);
 		
-		this.configuration({
+		this.set({
 			 animation:true,
 			 /**
 			  * @inner The width of this element in pixels.
