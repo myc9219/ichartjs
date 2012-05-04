@@ -7,7 +7,7 @@
 			/**
 			 * initialize the context for the BarMulti2D
 			 */
-			configure:function(config){
+			configure:function(){
 				/**
 				 * invoked the super class's  configuration
 				 */
@@ -42,21 +42,23 @@
 			doConfig:function(){
 				iChart.BarMulti2D.superclass.doConfig.call(this);
 				
-				var total = this.columnKeys.length*this.data.length;
-				var L = this.data.length,W = this.get('coordinate.width'),H = this.get('coordinate.height');
+				var L = this.data.length,
+					KL= this.columnKeys.length,
+					W = this.get('coordinate.width'),
+					H = this.get('coordinate.height'),
+					total = KL*L;
 				
-				this.push('barspace',(W - this.get('barheight')*total)/(this.columnKeys.length+1));
+				this.push('barspace',(W - this.get('barheight')*total)/(KL+1));
 				
 				//bar's height 
-				if(!this.get('barheight')){
-					this.push('barheight',H/(this.columnKeys.length+1+total));
+				this.pushIf('barheight',H/(KL+1+total));
+				
+				if(this.get('barheight')*L>H){
+					this.push('barheight',H/(KL+1+total));
 				}
 				
-				if(this.get('barheight')*this.data.length>H){
-					this.push('barheight',H/this.data.length/1.2);
-				}
 				//the space of two bar
-				this.push('barspace',(H - this.get('barheight')*total)/(this.columnKeys.length+1));
+				this.push('barspace',(H - this.get('barheight')*total)/(KL+1));
 				
 				//use option create a coordinate
 				this.coo = iChart.Interface.coordinate2d.call(this);
@@ -65,11 +67,10 @@
 				
 				//get the max/min scale of this coordinate for calculated the height
 				var S = this.coo.getScale(this.get('keduAlign')),
-					bs = this.coo.get('brushsize'),
 					Le = this.get('label.enable'),
 					Te = this.get('tip.enable'),
-					gw = this.data.length*this.get('barheight')+this.get('barspace'),
-					item,t,lt,tt,w,text,value;
+					gw = L*this.get('barheight')+this.get('barspace'),
+					item,t,w,text,value;
 				
 				/**
 				 * quick config to all rectangle
@@ -82,23 +83,18 @@
 				for(var i=0;i<this.columns.length;i++){
 					item  = this.columns[i].item;
 					
-					text = this.fireEvent(this,'parseText',[this.columns[i],i]);
-					text = iChart.isString(text)?text:this.columns[i].name;
+					text = this.fireString(this,'parseText',[this.columns[i],i],this.columns[i].name);
 					
 					for(var j=0;j<item.length;j++){
 						w = (item[j].value-S.start)*W/S.distance;
 						t = item[j].name+":"+item[j].value;
-						if(Le){
-							lt = this.fireEvent(this,'parseLabelText',[item[j],i]);
-							this.push('rectangle.label.text',iChart.isString(lt)?lt:t);
-						}
-						if(Te){
-							tt = this.fireEvent(this,'parseTipText',[item[j],i]);
-							this.push('rectangle.tip.text',iChart.isString(tt)?tt:t);
-						}
+						if(Le)
+							this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[item[j],i],t));
 						
-						value = this.fireEvent(this,'parseValue',[item[j],i]);
-						value = iChart.isString(value)?value:item[j].value;
+						if(Te)
+							this.push('rectangle.tip.text',this.fireString(this,'parseTipText',[item[j],i],t));
+						
+						value = this.fireString(this,'parseValue',[item[j],i],item[j].value);
 						
 						/**
 						 * y = this.y + brushsize + h

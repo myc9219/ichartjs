@@ -65,11 +65,7 @@ iChart.Element = function(config){
 		 /**
 		  *@cfg {Number} Vertical distance (y-axis) between the shadow and the shape in pixel.(default to 0)
 		 */
-		 shadow_offsety:0,
-		 /**
-		  * @inner {Boolean} inner use 
-		  */
-		 debug:false
+		 shadow_offsety:0
 	});
 	
 	/**

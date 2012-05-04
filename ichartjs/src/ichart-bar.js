@@ -8,7 +8,7 @@
 		/**
 		 * initialize the context for the bar
 		 */
-		configure:function(config){
+		configure:function(){
 			/**
 			 * invoked the super class's  configuration
 			 */

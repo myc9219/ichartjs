@@ -7,7 +7,7 @@
 		/**
 		 * initialize the context for the Column2D
 		 */
-		configure:function(config){
+		configure:function(){
 			/**
 			 * invoked the super class's  configuration
 			 */

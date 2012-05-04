@@ -592,7 +592,6 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 				 ignoreEdge:true,
 				 alternate_color:false,
 				 shadow:true,
-				 shadow_blur:4,
 				 grid_color:'#7a8d44',
 				 background_color:'#d6dbd2',
 				 shadow_offsetx:4,
@@ -604,29 +603,10 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 				  * @Option alpha the opacity of wall
 			 	  */
 				 wall_style:[],
-				 magical_shell:[],
 				 axis:{
 					enable:false
 				 }
 			});
-		},
-		box:function(){
-			if(this.get('magical_shell').length==6){
-				this.target.cube3D(
-						this.x,
-						this.y+this.get('height'),
-						this.get('xAngle_'),
-						this.get('yAngle_'),
-						false,
-						this.get('width'),
-						this.get('height'),
-						this.get('zHeight'),
-						this.get('axis.enable'),
-						this.get('axis.width'),
-						this.get('axis.color'),
-						this.get('magical_shell')
-					);
-			}
 		},
 		doDraw:function(opts){
 			/**
@@ -708,24 +688,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 				]);
 			}
 			
-			if(this.get('magical_shell').length==3){
-				if(this.get('gradient')){
-					var color = this.get('magical_shell')[2].color,
-						lc = iChart.Math.light(color,0.3);
-					this.get('magical_shell')[2].color = this.target.avgLinearGradient(this.x,this.y,this.x+w,this.y,[color,lc,lc,lc,lc,color]);
-					color = this.get('magical_shell')[1].color,
-					lc = iChart.Math.light(color,0.3);
-					this.get('magical_shell')[1].color = this.target.avgLinearGradient(this.x,this.y,this.x,this.y-this.get('yAngle_')*this.get('zHeight'),[color,iChart.Math.light(color,0.3)]);
-					
-				}
-				
-				this.push('magical_shell',[false,false,false].concat(this.get('magical_shell')));
-			}
-			
-			this.magic = this.get('magical_shell').length==6;
-			
 			var dark = this.get('wall_style')[0].color;
-			
 			
 			//右-前
 			this.push('bottom_style',[
