@@ -23,11 +23,7 @@
 				textBaseline:'top'
 			});
 			
-			this.registerEvent(
-				'beforepop',
-				'analysing',
-				'drawRow'
-			);
+			this.registerEvent();
 			/**
 			 * indicate this component not need support event
 			 */

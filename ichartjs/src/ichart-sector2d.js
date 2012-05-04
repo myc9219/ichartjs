@@ -104,16 +104,10 @@
 				this.push('fill_color',this.target.avgRadialGradient(this.x,this.y,0,this.x,this.y,this.r,[this.get('light_color'),this.get('dark_color')]));
 			}
 			
-//			this.final_parameter['radius'] = this.r;
-//			this.final_parameter['fill_color'] = this.get('fill_color');
-			
-			if(!this.get('increment'))
-				this.push('increment',iChart.Math.lowTo(5,this.r/8));
+			this.pushIf('increment',iChart.Math.lowTo(5,this.r/8));
 			
 			if(this.get('label.enable')){
-				if(!this.get('label.linelength')){
-					this.push('label.linelength',iChart.Math.lowTo(10,this.r/8));
-				}
+				this.pushIf('label.linelength',iChart.Math.lowTo(10,this.r/8));
 				this.label = new iChart.Label(this.get('label'),this);
 			}
 		}

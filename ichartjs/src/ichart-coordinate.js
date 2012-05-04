@@ -1,17 +1,16 @@
-;(function(){
 	/**
 	 * @overview
 	 * this is inner use for axis
 	 * 用于坐标系上坐标刻度的配置
-	 * @component#KeDu
+	 * @component#iChart.KeDu
 	 * @extend#iChart.Component
 	 */
-	var KeDu = iChart.extend(iChart.Component,{
+	iChart.KeDu = iChart.extend(iChart.Component,{
 			configure:function(){
 				/**
 				 * invoked the super class's  configuration
 				 */
-				KeDu.superclass.configure.apply(this,arguments);
+				iChart.KeDu.superclass.configure.apply(this,arguments);
 				
 				/**
 				 * indicate the component's type
@@ -146,7 +145,7 @@
 				}
 			},
 			doConfig:function(){
-				KeDu.superclass.doConfig.call(this);
+				iChart.KeDu.superclass.doConfig.call(this);
 				iChart.Assert.isNumber(this.get('distance'),'distance');
 				
 				var customLabel = this.get('labels').length>0;
@@ -229,6 +228,7 @@
 	});
 	
 	/**
+	 * @overview this component use for abc
 	 * @component#iChart.Coordinate2D
 	 * @extend#iChart.Component
 	 */
@@ -314,9 +314,6 @@
 			
 			this.kedu = [];
 			this.gridlines = [];
-		},
-		getX:function(){
-			return this.x;
 		},
 		getScale:function(p){
 			for(var i=0;i<this.kedu.length;i++){
@@ -484,7 +481,7 @@
 					kd['distance'] = h;
 					kd['valid_distance'] = vh;
 				}
- 				this.kedu.push(new KeDu(kd,this.container));
+ 				this.kedu.push(new iChart.KeDu(kd,this.container));
 			}
 			
 			this.push('ignoreOverlap',this.get('ignoreOverlap')&&this.get('axis.enable')||this.get('ignoreEdge'));
@@ -564,6 +561,7 @@
 		}
 });
 /**
+ * @overview this component use for abc
  * @component#iChart.Coordinate3D
  * @extend#iChart.Coordinate2D
  */
@@ -704,7 +702,6 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 			this.push('board_style',[
 				 false,false,false,{color:dark},{color:bg},false
 			]);
-			
 			//下底-底-左-右-上-前
 			if(this.get('gradient')){
 				var offx = this.get('xAngle_')*this.get('zHeight'),
@@ -715,21 +712,15 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 				if(iChart.isString(ws[0].color)){
 					ws[0].color = this.target.avgLinearGradient(this.x,this.y+h,this.x+w,this.y+h,[dark,this.get('dark_color')]);
 				}
-				
 				if(iChart.isString(ws[1].color)){
 					ws[1].color = this.target.avgLinearGradient(this.x+offx,this.y-offy,this.x+offx,this.y+h-offy,[this.get('dark_color'),this.get('light_color')]);
 				}
-				
 				if(iChart.isString(ws[2].color)){
 					ws[2].color = this.target.avgLinearGradient(this.x,this.y,this.x,this.y+h,[bg,this.get('dark_color')]);
 				}
-				
 				bs[5].color = this.target.avgLinearGradient(this.x,this.y+h,this.x,this.y+h+this.get('pedestal_height'),[bg,dark_color]);
-								
-				
 			}
 			
 			
 		}
 });
-})();

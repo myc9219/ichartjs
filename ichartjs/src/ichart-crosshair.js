@@ -5,7 +5,7 @@
 	 * @extend#iChart.Element
 	 */
 	iChart.CrossHair = iChart.extend(iChart.Html,{
-		configure:function(T){
+		configure:function(){
 		
 			/**
 			 * invoked the super class's  configuration
@@ -35,7 +35,6 @@
 				 shadow_color:'#dedede',
 				 delay:200
 			});
-			this.target = T;
 		},
 		//this function will implement at every target object,and this just default effect
 		follow:function(e,m){

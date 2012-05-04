@@ -7,7 +7,7 @@
 		/**
 		 * initialize the context for the pie2d
 		 */
-		configure:function(config){
+		configure:function(){
 			/**
 			 * invoked the super class's  configuration
 			 */

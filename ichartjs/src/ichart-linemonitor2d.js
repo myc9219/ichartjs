@@ -129,7 +129,6 @@
 			this.push('segment_style.keep_with_coordinate',true);
 			
 			
-			
 			//get the max/min scale of this coordinate for calculated the height
 			this.S = this.coo.getScale(this.get('keduAlign'));
 			this.S.uh = this.get('coordinate.valid_height')/ this.S.distance;

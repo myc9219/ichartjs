@@ -71,9 +71,8 @@
 		doConfig:function(){
 			iChart.Rectangle3D.superclass.doConfig.call(this);
 			
-			if(!this.get('zHeight')){
-				this.push("zHeight",this.get('width'));
-			}
+			this.pushIf("zHeight",this.get('width'));
+			
 			this.centerX=this.x+this.get('width')/2;
 			
 			this.topCenterX=this.x+(this.get('width')+this.get('width')*this.get('xAngle_'))/2;
