@@ -5034,6 +5034,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 		},
 		doConfig:function(){
 			$.Pie3D.superclass.doConfig.call(this);
+			
 			this.push('zRotate',$.between(0,90,90-this.get('zRotate')));
 			
 			var t,lt,tt;
