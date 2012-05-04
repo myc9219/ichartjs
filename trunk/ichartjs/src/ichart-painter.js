@@ -20,7 +20,7 @@ iChart.Painter = iChart.extend(iChart.Element,{
 		iChart.DefineAbstract('commonDraw', this);
 		iChart.DefineAbstract('initialize', this);
 
-		this.configuration( {
+		this.set({
 			/**
 			 * @cfg {Number} Specifies the default linewidth of the canvas's context in this element.(defaults to 1)
 			 */
@@ -135,6 +135,10 @@ iChart.Painter = iChart.extend(iChart.Element,{
 		 * fire the draw event
 		 */
 		this.fireEvent(this, 'draw');
+	},
+	fireString : function(socpe, name, args,s) {
+		var t = this.fireEvent(socpe, name, args);
+		return iChart.isString(t)?t:s;
 	},
 	fireEvent : function(socpe, name, args) {
 		var L = this.events[name].length;

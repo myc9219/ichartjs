@@ -49,10 +49,7 @@ iChart.Html = iChart.extend(iChart.Element,{
 			 offset_left:0
 		});
 		
-		//merge style
-		if(this._default_c.style){
-			this._default_c.style = this.get('style')+";"+this._default_c.style;
-		}
+		
 		this.transitions = "";
 	},
 	afterConfiguration:function(){

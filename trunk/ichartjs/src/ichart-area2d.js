@@ -33,11 +33,5 @@
 			iChart.Area2D.superclass.doConfig.call(this);
 			
 			
-			
-			
-			
-			
-			
 		}
-		
-});
+	});

@@ -22,16 +22,18 @@
 		},
 		doConfig:function(){
 			iChart.Column2D.superclass.doConfig.call(this);
+			
+			var L = this.data.length,W = this.get('coordinate.width');
+			
 			//column's width 
-			if(!this.get('hiswidth')){
-				this.push('hiswidth',this.get('coordinate.width')/(this.data.length*2+1));
+			this.pushIf('hiswidth',W/(L*2+1));
+			
+			if(this.get('hiswidth')*L>W){
+				this.push('hiswidth',W/(L*2+1));
 			}
 			
-			if(this.get('hiswidth')*this.data.length>this.get('coordinate.width')){
-				this.push('hiswidth',this.get('coordinate.width')/this.data.length/1.2);
-			}
 			//the space of two column
-			this.push('hispace',(this.get('coordinate.width') - this.get('hiswidth')*this.data.length)/(this.data.length+1));
+			this.push('hispace',(W - this.get('hiswidth')*L)/(L+1));
 			
 			//use option create a coordinate
 			this.coo = iChart.Interface.coordinate2d.call(this);
@@ -45,39 +47,38 @@
 				Le = this.get('label.enable'),
 				Te = this.get('tip.enable'),
 				gw = this.get('hiswidth')+this.get('hispace'),
-				t,lt,tt,h,text,value;
+				t,h,text,value;
 				
 			/**
 			 * quick config to all rectangle
 			 */
 			this.push('rectangle.width',this.get('hiswidth'));
 			
-			for(var i=0;i<this.data.length;i++){
-				
-				t = this.data[i].name+":"+this.data[i].value;
-				
+			for(var i=0;i<L;i++){
+				text = this.data[i].name;
+				value = this.data[i].value;
+				t = text+":"+value;
 				h = (this.data[i].value-S.start)*H/S.distance;
 				
 				if(Le){
-					lt = this.fireEvent(this,'parseLabelText',[this.data[i],i]);
-					this.push('rectangle.label.text',iChart.isString(lt)?lt:t);
+					this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[this.data[i],i],t));
 				}
+				
 				if(Te){
-					tt = this.fireEvent(this,'parseTipText',[this.data[i],i]);
-					this.push('rectangle.tip.text',iChart.isString(tt)?tt:t);
+					this.push('rectangle.tip.text',this.fireString(this,'parseTipText',[this.data[i],i],t));
 				}
-				text = this.fireEvent(this,'parseText',[this.data[i],i]);
-				value = this.fireEvent(this,'parseValue',[this.data[i],i]);
-				text = iChart.isString(text)?text:this.data[i].name;
-				value = iChart.isString(value)?value:this.data[i].value;
+				
+				text = this.fireString(this,'parseText',[this.data[i],i],text);
+				value = this.fireString(this,'parseValue',[this.data[i],i],value);
+				
 				/**
 				 * x = this.x + space*(i+1) + width*i
 				 */
-				this.push('rectangle.originx',this.x+this.get('hispace')+i*gw);//+this.get('xAngle_')*this.get('hiswidth')/2
+				this.push('rectangle.originx',this.x+this.get('hispace')+i*gw);
 				/**
 				 * y = this.y + brushsize + h
 				 */
-				this.push('rectangle.originy',this.get('originy') + H - h - bs);
+				this.push('rectangle.originy',this.y + H - h - bs);
 				this.push('rectangle.value',value);
 				this.push('rectangle.height',h);
 				this.push('rectangle.background_color',this.data[i].color);

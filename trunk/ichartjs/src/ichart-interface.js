@@ -107,11 +107,8 @@
 				/**
 				 * calculate  chart's measurement
 				 */
-				if(!this.get('coordinate.width'))
-					this.push('coordinate.width',this.get('client_width')*0.8);
-				
-				if(!this.get('coordinate.height'))
-					this.push('coordinate.height',this.get('client_height')*0.8);
+				this.pushIf('coordinate.width',this.get('client_width')*0.8);
+				this.pushIf('coordinate.height',this.get('client_height')*0.8);
 				
 				/**
 				 * calculate chart's alignment
@@ -136,9 +133,6 @@
 					this.push('coordinate.valid_height',this.get('coordinate.height'));
 				}
 				
-				this.push('coordinate.originx',this.get('originx'));
-				this.push('coordinate.originy',this.get('originy'));
-				
 				/**
 				 * originx
 				 */
@@ -148,6 +142,9 @@
 				 * originy 
 				 */
 				this.y = this.get('originy');
+				
+				this.push('coordinate.originx',this.x);
+				this.push('coordinate.originy',this.y);
 				
 			},
 			parser:function() {

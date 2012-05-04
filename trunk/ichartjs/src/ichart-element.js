@@ -1,5 +1,5 @@
 /**
- * @overview this is base class of all component.All must extend this so that has ability for configuration
+ * @overview this is base class of all element.All must extend this so that has ability for configuration
  * @component#iChart.Element
  * @extend#Object
  */
@@ -21,23 +21,23 @@ iChart.Element = function(config){
 	
 	this.set({
 		 /**
-		  * @cfg {String} The unique id of this module (defaults to an auto-assigned id). 
+		  * @inner {String} The unique id of this element (defaults to an auto-assigned id). 
 		  */
 		 id:'',
 		 /**
-		  * @cfg {Number} Specifies the font size of this component in pixels.(default to 12)
+		  * @cfg {Number} Specifies the font size of this element in pixels.(default to 12)
 		  */
 		 fontsize:12,
 		 /**
-		  * @cfg {String} Specifies the font of this component.(default to 'Verdana')
+		  * @cfg {String} Specifies the font of this element.(default to 'Verdana')
 		  */
  		 font:'Verdana',
  		/**
-		  * @cfg {String} Specifies the font weight of this component.(default to 'normal')
+		  * @cfg {String} Specifies the font weight of this element.(default to 'normal')
 		  */
  		 fontweight:'normal',
 		 /**
-		  * @cfg {Object} Specifies the border for this component
+		  * @cfg {Object} Specifies the border for this element
 		  */
 		 border:{
 			enable:false,
@@ -47,7 +47,7 @@ iChart.Element = function(config){
 			radius:5
 		 },
 		 /**
-		  *@cfg {Boolean} Specifies whether the component should be show a shadow.(default to false)
+		  *@cfg {Boolean} Specifies whether the element should be show a shadow.(default to false)
 		 */
 		 shadow:false,
 		 /**
@@ -84,8 +84,6 @@ iChart.Element = function(config){
 	this.preventEvent = false;
 	this.initialization = false;
 	
-	this._default_c = config || {};//if use this._default_c may be need to clone config
-	
 	/**
 	 * inititalize configure
 	 */
@@ -94,7 +92,7 @@ iChart.Element = function(config){
 	/**
 	 * megre customize config
 	 */
-	this.configuration(this._default_c);
+	this.set(config);
 	
 	this.afterConfiguration();
 }
@@ -106,6 +104,12 @@ iChart.Element.prototype = {
 		}
 	},
 	afterConfiguration:function(){},
+	pushIf:function(name, value)
+    {
+		if(!this.get(name)){
+			this.push(name, value);
+		}
+    },
     /**
      * average write speed about 0.013ms
      */
