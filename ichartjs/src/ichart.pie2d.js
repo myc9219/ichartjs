@@ -30,7 +30,7 @@
 			var t,lt,tt,Le = this.get('label.enable'),Te = this.get('tip.enable');
 			for(var i=0;i<this.data.length;i++){
 				
-				t = this.data[i].name+(this.get('showpercent')?iChart.Math.toPercent(this.data[i].value/this.total,this.get('decimalsnum')):'');
+				t = this.data[i].name+(this.get('showpercent')?iChart.toPercent(this.data[i].value/this.total,this.get('decimalsnum')):'');
 				
 				if(Le){
 					lt = this.fireEvent(this,'parseLabelText',[this.data[i],i]);

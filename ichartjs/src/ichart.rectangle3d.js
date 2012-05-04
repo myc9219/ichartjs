@@ -14,7 +14,7 @@
 			 * indicate the component's type
 			 */
 			this.type = 'rectangle3d';
-			this.dimension = iChart.Math._3D;
+			this.dimension = iChart._3D;
 			
 			this.set({
 				zHeight:undefined,

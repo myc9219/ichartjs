@@ -14,7 +14,7 @@
 			 * indicate the legend's type
 			 */
 			this.type = 'pie3d';
-			this.dimension = iChart.Math._3D;
+			this.dimension = iChart._3D;
 			this.dataType = 'simple';
 			
 			this.set({
@@ -32,16 +32,17 @@
 		},
 		doConfig:function(){
 			iChart.Pie3D.superclass.doConfig.call(this);
-			this.push('zRotate',iChart.Math.between(0,90,90-this.get('zRotate')));
+			
+			this.push('zRotate',iChart.between(0,90,90-this.get('zRotate')));
 			
 			var t,lt,tt;
 			this.sector_config.semi_major_axis = this.get('radius');
 			this.sector_config.semi_minor_axis = this.get('radius')*this.get('zRotate')/90;
-			this.sector_config.cylinder_height = this.get('yHeight')*Math.cos(iChart.Math.angleToRadian(this.get('zRotate')));
+			this.sector_config.cylinder_height = this.get('yHeight')*Math.cos(iChart.angle2Radian(this.get('zRotate')));
 			
 			var t,lt,tt,Le = this.get('label.enable'),Te = this.get('tip.enable');
 			for(var i=0;i<this.data.length;i++){
-				t = this.data[i].name+(this.get('showpercent')?iChart.Math.toPercent(this.data[i].value/this.total,this.get('decimalsnum')):'');
+				t = this.data[i].name+(this.get('showpercent')?iChart.toPercent(this.data[i].value/this.total,this.get('decimalsnum')):'');
 				if(Le){
 					lt = this.fireEvent(this,'parseLabelText',[this.data[i],i]);
 					this.sector_config.label.text = iChart.isString(lt)?lt:t;

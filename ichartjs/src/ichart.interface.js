@@ -4,10 +4,10 @@
 			for(var i=0;i<this.data.length;i++){
 				iChart.merge(this.data[i],this.fireEvent(this,'parseData',[this.data[i],i]));
 				if(!this.data[i].color)
-				this.data[i].color = iChart.Math.get(i);
+				this.data[i].color = iChart.get(i);
 				V  = this.data[i].value;
 				if(iChart.isNumber(V)){
-					V = iChart.Math.parseFloat(V,this.type+':data['+i+']');
+					V = iChart.parseFloat(V,this.type+':data['+i+']');
 					this.data[i].value = V;
 					this.total+=V;
 					M = V>M?V:M;
@@ -51,9 +51,9 @@
 				var item = [];
 				for(var j=0;j<this.data.length;j++){
 					V = this.data[j].value[i];
-					this.data[j].value[i] = iChart.Math.parseFloat(V,this.type+':data['+j+','+i+']');
+					this.data[j].value[i] = iChart.parseFloat(V,this.type+':data['+j+','+i+']');
 					if(!this.data[j].color)
-					this.data[j].color = iChart.Math.get(j);
+					this.data[j].color = iChart.get(j);
 					//NEXT 此总数需考虑?
 					this.total+=V;
 					M = V>M?V:M;
@@ -78,7 +78,7 @@
 		return {
 			_3D:function(){
 				if(!iChart.isDefined(this.get('xAngle_'))||!iChart.isDefined(this.get('xAngle_'))){
-					var P = iChart.Math.vectorP2P(this.get('xAngle'),this.get('yAngle'));
+					var P = iChart.vectorP2P(this.get('xAngle'),this.get('yAngle'));
 					this.push('xAngle_',P.x);
 					this.push('yAngle_',P.y);
 				}

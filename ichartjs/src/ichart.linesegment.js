@@ -157,7 +157,7 @@
 			if(this.get('event_range_x')==0){
 				this.push('event_range_x',Math.floor(sp/2));
 			}else{
-				this.push('event_range_x',iChart.Math.between(1,Math.floor(sp/2),this.get('event_range_x')));
+				this.push('event_range_x',iChart.between(1,Math.floor(sp/2),this.get('event_range_x')));
 			}
 			if(this.get('event_range_y')==0){
 				this.push('event_range_y',Math.floor(this.get('point_size')));
@@ -205,7 +205,7 @@
 				}
 				var ii = Math.floor((e.offsetX-self.x)/sp);
 				if(ii<0||ii>=(this.points.length-1)){
-					ii = iChart.Math.between(0,this.points.length-1,ii);
+					ii = iChart.between(0,this.points.length-1,ii);
 					if(valid(ii,e.offsetX,e.offsetY))
 						return to(ii);
 					else

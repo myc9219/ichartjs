@@ -51,11 +51,11 @@
 		},
 		drawBorder:function(){
 			this.lineFn.call(this);
-			this.target.drawBorder(this.labelx,this.labely,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:iChart.Math.parseBorder(this.get('border.radius')),this.get('background_color'),false,this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
+			this.target.drawBorder(this.labelx,this.labely,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:iChart.parseBorder(this.get('border.radius')),this.get('background_color'),false,this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
 			
 		},
 		isEventValid:function(e){ 
-			return {valid:iChart.Math.inRange(this.labelx,this.labelx+this.width,e.offsetX)&&iChart.Math.inRange(this.labely,this.labely+this.height,e.offsetY)};
+			return {valid:iChart.inRange(this.labelx,this.labelx+this.width,e.offsetX)&&iChart.inRange(this.labely,this.labely+this.height,e.offsetY)};
 		},
 		doDraw:function(opts){
 			opts = opts || {};

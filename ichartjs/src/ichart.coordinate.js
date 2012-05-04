@@ -156,11 +156,11 @@
 					
 					//end_scale must greater than maxScale
 					if(!this.get('end_scale')||this.get('end_scale')<this.get('max_scale')){
-						this.push('end_scale',iChart.Math.ceil(this.get('max_scale')));
+						this.push('end_scale',iChart.ceil(this.get('max_scale')));
 					}
 					//startScale must less than minScale
 					if(this.get('start_scale')>this.get('min_scale')){
-						this.push('start_scale',iChart.Math.floor(this.get('min_scale')));
+						this.push('start_scale',iChart.floor(this.get('min_scale')));
 					}
 					
 					if(this.get('scale')&&this.get('scale')<this.get('end_scale')-this.get('start_scale')){
@@ -351,7 +351,7 @@
 				var x,y,
 					f = false,
 					axis =[0,0,0,0],
-					c = iChart.Math.dark(this.get('background_color'),0.04);
+					c = iChart.dark(this.get('background_color'),0.04);
 				if(this.get('axis.enable')){
 					axis = this.get('axis.width');
 				}
@@ -576,7 +576,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 			 * indicate the component's type
 			 */
 			this.type = 'coordinate3d';
-			this.dimension = iChart.Math._3D;
+			this.dimension = iChart._3D;
 			
 			this.set({
 				 xAngle:60,
@@ -674,7 +674,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 			iChart.Coordinate3D.superclass.doConfig.call(this);
 			
 			var bg = this.get('background_color'),
-				dark_color = iChart.Math.dark(bg,0.1),
+				dark_color = iChart.dark(bg,0.1),
 				h = this.get('height'),
 				w = this.get('width');
 			

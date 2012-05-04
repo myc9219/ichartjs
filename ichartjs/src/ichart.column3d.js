@@ -15,7 +15,7 @@
 			
 			this.type = 'column3d';
 			this.dataType = 'simple';
-			this.dimension = iChart.Math._3D;
+			this.dimension = iChart._3D;
 			
 			this.set({
 				xAngle:60,

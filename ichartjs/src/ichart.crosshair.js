@@ -56,29 +56,29 @@
 		initialize:function(){
 			iChart.CrossHair.superclass.initialize.call(this);
 			
-			this.top = iChart.Math.fixPixel(this.get('top'));
-			this.left = iChart.Math.fixPixel(this.get('left'));
+			this.top = iChart.fixPixel(this.get('top'));
+			this.left = iChart.fixPixel(this.get('left'));
 			
 			this.dom = document.createElement("div");
 			this.dom.style.zIndex=this.get('index');
 			this.dom.style.position="absolute";
 			//set size zero make  integration with vertical and horizontal
-			this.dom.style.width= iChart.Math.toPixel(0);
-			this.dom.style.height=iChart.Math.toPixel(0);
-			this.dom.style.top=iChart.Math.toPixel(this.get('top'));
-			this.dom.style.left=iChart.Math.toPixel(this.get('left'));
+			this.dom.style.width= iChart.toPixel(0);
+			this.dom.style.height=iChart.toPixel(0);
+			this.dom.style.top=iChart.toPixel(this.get('top'));
+			this.dom.style.left=iChart.toPixel(this.get('left'));
 			this.css('visibility','hidden');
 			
 			this.horizontal = document.createElement("div");
 			this.vertical = document.createElement("div");
 			
-			this.horizontal.style.width= iChart.Math.toPixel(this.get('width'));
-			this.horizontal.style.height= iChart.Math.toPixel(this.get('line_width'));
+			this.horizontal.style.width= iChart.toPixel(this.get('width'));
+			this.horizontal.style.height= iChart.toPixel(this.get('line_width'));
 			this.horizontal.style.backgroundColor = this.get('line_color');
 			this.horizontal.style.position="absolute";
 			
-			this.vertical.style.width= iChart.Math.toPixel(this.get('line_width'));
-			this.vertical.style.height = iChart.Math.toPixel(this.get('height'));
+			this.vertical.style.width= iChart.toPixel(this.get('line_width'));
+			this.vertical.style.height = iChart.toPixel(this.get('height'));
 			this.vertical.style.backgroundColor = this.get('line_color');
 			this.vertical.style.position="absolute";
 			this.dom.appendChild(this.horizontal);
