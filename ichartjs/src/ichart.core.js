@@ -313,7 +313,7 @@ var iChart_ = (function(window) {//spirit from jquery
 			parseParam =  function(s,d) {
 				if(_.isNumber(s))
 					return new Array(s,s,s,s);
-				s = s.trim().replace(/\s{2,}/g,/\s/).replace(/\s/g,',').split(",");
+				s = s.replace( /^\s+|\s+$/g,"").replace(/\s{2,}/g,/\s/).replace(/\s/g,',').split(",");
 				if(s.length==1){
 					s[0] = s[1] = s[2] = s[3] = parseFloat(s[0])||d;
 				}else if(s.length==2){
@@ -846,14 +846,12 @@ var iChart_ = (function(window) {//spirit from jquery
 		 */
 		_.Event = {
 				addEvent:function(ele,type,fn,useCapture){
-				 	if (ele.addEventListener) {
+				 	if (ele.addEventListener) 
 					 	ele.addEventListener(type,fn,useCapture);
-				 	}
-				 	else if (ele.attachEvent) {
+				 	else if (ele.attachEvent) 
 				 		ele.attachEvent('on' + type, fn);
-				 	}else {
+				 	else 
 				 		ele['on' + type] = fn;
-				 	}
 				},
 			    fix: function( e ) { //inspire by jquery
 					// Fix event for mise
@@ -920,11 +918,6 @@ var iChart_ = (function(window) {//spirit from jquery
 })(window);
 
 
-if(!String.prototype.trim){
-	String.prototype.trim = function() {
-		return (this || "").replace( /^\s+|\s+$/g, "");
-	}
-}
 window.iChart = window.$ = iChart_;
 
 })(window);
