@@ -34,10 +34,10 @@
 		},
 		drawValue:function(){
 			if(this.get('value')!='')
-			this.target.text(this.get('value'),this.centerX,this.topCenterY + this.get('value_space'),false,this.get('color'),'center','top',this.get('fontStyle'));
+			this.T.text(this.get('value'),this.centerX,this.topCenterY + this.get('value_space'),false,this.get('color'),'center','top',this.get('fontStyle'));
 		},
 		drawRectangle:function(){
-			this.target.cube(
+			this.T.cube(
 				this.get('originx'),
 				this.get('originy'),
 				this.get('xAngle_'),

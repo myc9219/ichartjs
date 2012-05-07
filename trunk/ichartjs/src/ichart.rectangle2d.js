@@ -24,11 +24,11 @@
 		},
 		drawValue:function(){
 			if(this.get('value')!=''){
-				this.target.text(this.get('value'),this.get('value_x'),this.get('value_y'),false,this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
+				this.T.text(this.get('value'),this.get('value_x'),this.get('value_y'),false,this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
 			}
 		},
 		drawRectangle:function(){
-			this.target.rectangle(
+			this.T.rectangle(
 				this.get('originx'),
 				this.get('originy'),
 				this.get('width'),

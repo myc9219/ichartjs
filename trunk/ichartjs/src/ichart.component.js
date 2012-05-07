@@ -87,21 +87,21 @@
 		this.container.draw();
 	},
 	commonDraw : function(opts) {
-		// this.target.save();
+		// this.T.save();
 		// 转换中心坐标至当前目标坐标中心
-		// this.target.ctx.translate(this.x,this.y);
+		// this.T.ctx.translate(this.x,this.y);
 		/**
 		 * execute the doDraw() that the subClass implement
 		 */
 		this.doDraw.call(this, opts);
 	
-		// this.target.restore();
+		// this.T.restore();
 	
 	},
 	inject : function(c) {
 		if (c) {
 			this.container = c;
-			this.target = c.target;
+			this.T = this.T = c.T;
 		}
 	},
 	getC : function(name) {

@@ -26,7 +26,7 @@
 			);
 		},
 		drawSector:function(){
-			this.target.sector(
+			this.T.sector(
 					this.x,
 					this.y,
 					this.r,
@@ -83,7 +83,7 @@
 					y:P2.y
 				},
 				lineFn:function(){
-					this.target.line(P2.x,P2.y,P.x,P.y,this.get('border.width'),this.get('border.color'));
+					this.T.line(P2.x,P2.y,P.x,P.y,this.get('border.width'),this.get('border.color'));
 				},
 				labelXY:function(){
 					return {
@@ -101,7 +101,7 @@
 			
 			
 			if(this.get('gradient')){
-				this.push('fill_color',this.target.avgRadialGradient(this.x,this.y,0,this.x,this.y,this.r,[this.get('light_color'),this.get('dark_color')]));
+				this.push('fill_color',this.T.avgRadialGradient(this.x,this.y,0,this.x,this.y,this.r,[this.get('light_color'),this.get('dark_color')]));
 			}
 			
 			this.pushIf('increment',iChart.lowTo(5,this.r/8));

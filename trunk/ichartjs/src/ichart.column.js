@@ -86,10 +86,10 @@
 			 * register event
 			 */
 			this.on('rectangleover',function(e,r){
-				this.target.css("cursor","pointer");
+				this.T.css("cursor","pointer");
 				
 			}).on('rectanglemouseout',function(e,r){
-				this.target.css("cursor","default");
+				this.T.css("cursor","default");
 			});
 			
 		}

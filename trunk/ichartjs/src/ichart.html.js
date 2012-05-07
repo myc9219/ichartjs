@@ -13,7 +13,7 @@ iChart.Html = iChart.extend(iChart.Element,{
 		 */
 		this.type = 'html';
 		
-		this.target = T;
+		this.T = T;
 		
 		/**
 		 * define abstract method
