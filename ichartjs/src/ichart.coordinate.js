@@ -253,9 +253,6 @@
 	 */
 	iChart.Coordinate2D = iChart.extend(iChart.Component,{
 		configure:function(){
-			
-			
-			
 			/**
 			 * invoked the super class's  configurationuration
 			 */

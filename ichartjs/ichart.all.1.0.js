@@ -1237,14 +1237,6 @@ $.Painter = $.extend($.Element,{
 
 		this.id = this.get('id');
 
-	},
-	shadowOn : function() {
-		this.T.shadowOn(this.get('shadow'), this.get('shadow_color'), this
-				.get('shadow_blur'), this.get('shadow_offsetx'), this
-				.get('shadow_offsety'));
-	},
-	shadowOff : function() {
-		this.T.shadowOff();
 	}
 });
 
@@ -3190,7 +3182,8 @@ $.Chart = $.extend($.Painter,{
 		},
 		doConfig:function(){
 			$.Chart.superclass.doConfig.call(this);
-			var self = this,E=this.variable.event;
+			//for compress
+			var self = this,E=self.variable.event;
 			
 			if(self.get('animation')){
 				self.processAnimation = self.get('animation');
@@ -3331,9 +3324,6 @@ $.Chart = $.extend($.Painter,{
 				self.push('tip.wrap',self.shell);
 			}
 			
-		},
-		setData:function(d) { 
-			this.data = d;
 		}
 });
 })($);
@@ -3382,6 +3372,7 @@ $.Chart = $.extend($.Painter,{
 	 */
 	$.KeDu = $.extend($.Component,{
 			configure:function(){
+				
 				/**
 				 * invoked the super class's  configuration
 				 */
@@ -3471,40 +3462,45 @@ $.Chart = $.extend($.Painter,{
 			 * 按照从左自右,从上至下原则
 			 */
 			doDraw:function(){
-				var x=y=x0=y0=tx=ty=0,w = this.get('scale_width'),w2 = this.get('scale_width')/2;
+				var x=y=x0=y0=tx=ty=0,
+					w = this.get('scale_width'),
+					w2 = w/2,
+					sa=this.get('scaleAlign'),
+					ta=this.get('textAlign'),
+					ts=this.get('text_space');
 				if(this.isHorizontal){
-					if(this.get('scaleAlign')=='top'){
+					if(sa=='top'){
 						y = -w;
-					}else if(this.get('scaleAlign')=='center'){
+					}else if(sa=='center'){
 						y = - w2;
 						y0 = w2;
 					}else{
 						y0 =w;
 					}
 					this.T.textAlign('center');
-					if(this.get('textAlign')=='top'){
-						ty = -this.get('text_space');
+					if(ta=='top'){
+						ty = -ts;
 						this.T.textBaseline('bottom');
 					}else{
-						ty = this.get('text_space');
+						ty = ts;
 						this.T.textBaseline('top');
 					}
 				}else{
-					if(this.get('scaleAlign')=='left'){
+					if(sa=='left'){
 						x = -w;
-					}else if(this.get('scaleAlign')=='center'){
+					}else if(sa=='center'){
 						x = - w2;
 						x0 = w2;
 					}else{
 						x0 = w;
 					}
 					this.T.textBaseline('middle');
-					if(this.get('textAlign')=='right'){
+					if(ta=='right'){
 						this.T.textAlign('left');
-						tx = this.get('text_space');	
+						tx = ts;	
 					}else{
 						this.T.textAlign('right');
-						tx = -this.get('text_space');
+						tx = -ts;
 					}
 				}
 				//将上述的配置部分转移到config中?
@@ -3523,28 +3519,35 @@ $.Chart = $.extend($.Painter,{
 				$.KeDu.superclass.doConfig.call(this);
 				$.Assert.isNumber(this.get('distance'),'distance');
 				
-				var customLabel = this.get('labels').length>0;
-				if(customLabel){
-					this.number = this.get('labels').length-1;
+				var customLabel = this.get('labels').length,
+					min_scale = this.get('min_scale'),
+					max_scale = this.get('max_scale'),
+					scale = this.get('scale'),
+					end_scale = this.get('end_scale'),
+					start_scale = this.get('start_scale');
+				
+				
+				if(customLabel>0){
+					this.number = customLabel-1;
 				}else{
-					$.Assert.isTrue($.isNumber(this.get('max_scale'))||$.isNumber(this.get('end_scale')),'max_scale&end_scale');
+					$.Assert.isTrue($.isNumber(max_scale)||$.isNumber(end_scale),'max_scale&end_scale');
 					
 					//end_scale must greater than maxScale
-					if(!this.get('end_scale')||this.get('end_scale')<this.get('max_scale')){
-						this.push('end_scale',$.ceil(this.get('max_scale')));
+					if(!end_scale||end_scale<max_scale){
+						end_scale =  this.push('end_scale',$.ceil(max_scale));
 					}
 					//startScale must less than minScale
-					if(this.get('start_scale')>this.get('min_scale')){
-						this.push('start_scale',$.floor(this.get('min_scale')));
+					if(start_scale>min_scale){
+						this.push('start_scale',$.floor(min_scale));
 					}
 					
-					if(this.get('scale')&&this.get('scale')<this.get('end_scale')-this.get('start_scale')){
-						this.push('scale_share',(this.get('end_scale')-this.get('start_scale'))/this.get('scale'));
+					if(scale&&scale<end_scale-start_scale){
+						this.push('scale_share',(end_scale-start_scale)/scale);
 					}
 					
 					//value of each scale
-					if(!this.get('scale')||this.get('scale')>this.get('end_scale')-this.get('start_scale')){
-						this.push('scale',(this.get('end_scale')-this.get('start_scale'))/this.get('scale_share'));
+					if(!scale||scale>end_scale-start_scale){
+						scale = this.push('scale',(end_scale-start_scale)/this.get('scale_share'));
 					}
 					
 					this.number = this.get('scale_share');
@@ -3561,7 +3564,7 @@ $.Chart = $.extend($.Painter,{
 				
 				//有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
 				for(var i=0;i<=this.number;i++){
-					text = customLabel?this.get('labels')[i]:(this.get('scale')*i+this.get('start_scale')).toFixed(this.get('decimalsnum'));
+					text = customLabel?this.get('labels')[i]:(scale*i+start_scale).toFixed(this.get('decimalsnum'));
 					x = this.isHorizontal?this.get('valid_x')+i*this.get('distanceOne'):this.x;
 					y = this.isHorizontal?this.y:this.get('valid_y')+this.get('distance')-i*this.get('distanceOne');
 					this.items.push($.merge({text:text,x:x,y:y,textX:x,textY:y},this.fireEvent(this,'parseText',[text,x,y,i])));
@@ -3569,34 +3572,40 @@ $.Chart = $.extend($.Painter,{
 				}
 				
 				//what does follow code doing?
-				this.left = this.right = this.top =this.bottom = 0;
+				this.left = this.right = this.top =this.bottom = 0,
+				ts=this.get('text_space');
+				ta=this.get('textAlign');
+				sa=this.get('scaleAlign'),
+				w = this.get('scale_width'),
+				w2 = w/2;
+				
 				if(this.isHorizontal){
-					if(this.get('scaleAlign')=='top'){
-						this.top = this.get('scale_width');
-					}else if(this.get('scaleAlign')=='center'){
-						this.top = this.get('scale_width')/2;
+					if(sa=='top'){
+						this.top = w;
+					}else if(sa=='center'){
+						this.top = w2;
 					}else{
 						this.top = 0;
 					}
-					this.bottom = this.get('scale_width') - this.top;
-					if(this.get('textAlign')=='top'){
-						this.top +=this.get('text_height') + this.get('text_space');
+					this.bottom = w - this.top;
+					if(ta=='top'){
+						this.top +=this.get('text_height') + ts;
 					}else{
-						this.bottom +=this.get('text_height') + this.get('text_space');
+						this.bottom +=this.get('text_height') + ts;
 					}
 				}else{
-					if(this.get('scaleAlign')=='left'){
-						this.left = this.get('scale_width');
-					}else if(this.get('scaleAlign')=='center'){
-						this.left = this.get('scale_width')/2;
+					if(sa=='left'){
+						this.left = w;
+					}else if(sa=='center'){
+						this.left = w2;
 					}else{
 						this.left = 0;
 					}
-					this.right = this.get('scale_width') - this.left;
-					if(this.get('textAlign')=='left'){
-						this.left += maxwidth + this.get('text_space');
+					this.right = w - this.left;
+					if(ta=='left'){
+						this.left += maxwidth + ts;
 					}else{
-						this.right +=maxwidth + this.get('text_space');
+						this.right +=maxwidth + ts;
 					}
 				}
 			}
@@ -3687,12 +3696,14 @@ $.Chart = $.extend($.Painter,{
 			this.gridlines = [];
 		},
 		getScale:function(p){
+			
 			for(var i=0;i<this.kedu.length;i++){
-				if(this.kedu[i].get('position')==p){
+				var k = this.kedu[i];
+				if(k.get('position')==p){
 					return {
-						start:this.kedu[i].get('start_scale'),
-						end:this.kedu[i].get('end_scale'),
-						distance:this.kedu[i].get('end_scale')-this.kedu[i].get('start_scale')
+						start:k.get('start_scale'),
+						end:k.get('end_scale'),
+						distance:k.get('end_scale')-k.get('start_scale')
 					};
 				}
 			}
@@ -3702,6 +3713,7 @@ $.Chart = $.extend($.Painter,{
 			return {valid:e.offsetX>this.x&&e.offsetX<(this.x+this.get('width'))&&e.offsetY<this.y+this.get('height')&&e.offsetY>this.y};
 		},
 		doDraw:function(opts){
+			
 			this.T.rectangle(
 						this.x,
 						this.y,
@@ -3727,32 +3739,33 @@ $.Chart = $.extend($.Painter,{
 					axis = this.get('axis.width');
 				}
 			}
-			for(var i=0;i<this.gridlines.length;i++){
-				this.gridlines[i].x1 = Math.round(this.gridlines[i].x1);
-				this.gridlines[i].y1 = Math.round(this.gridlines[i].y1);
-				this.gridlines[i].x2 = Math.round(this.gridlines[i].x2);
-				this.gridlines[i].y2 = Math.round(this.gridlines[i].y2);
+			var gl = this.gridlines;
+			for(var i=0;i<gl.length;i++){
+				gl[i].x1 = Math.round(gl[i].x1);
+				gl[i].y1 = Math.round(gl[i].y1);
+				gl[i].x2 = Math.round(gl[i].x2);
+				gl[i].y2 = Math.round(gl[i].y2);
 				if(this.get('alternate_color')){
 					//vertical
-					if(this.gridlines[i].x1==this.gridlines[i].x2){
+					if(gl[i].x1==gl[i].x2){
 						//next to do
 					}
 					//horizontal
-					if(this.gridlines[i].y1==this.gridlines[i].y2){
+					if(gl[i].y1==gl[i].y2){
 						if(f){
 							this.T.rectangle(
-								this.gridlines[i].x1+axis[3],
-								this.gridlines[i].y1+this.get('grid_line_width'),
-								this.gridlines[i].x2-this.gridlines[i].x1-axis[3]-axis[1],
-								y-this.gridlines[i].y1-this.get('grid_line_width'),
+								gl[i].x1+axis[3],
+								gl[i].y1+this.get('grid_line_width'),
+								gl[i].x2-gl[i].x1-axis[3]-axis[1],
+								y-gl[i].y1-this.get('grid_line_width'),
 								c);
 						}
-						x = this.gridlines[i].x1;
-						y = this.gridlines[i].y1;
+						x = gl[i].x1;
+						y = gl[i].y1;
 						f = !f;
 					}
 				}
-				this.T.line(this.gridlines[i].x1,this.gridlines[i].y1,this.gridlines[i].x2,this.gridlines[i].y2,this.get('grid_line_width'),this.get('grid_color'));
+				this.T.line(gl[i].x1,gl[i].y1,gl[i].x2,gl[i].y2,this.get('grid_line_width'),this.get('grid_color'));
 			}
 			for(var i=0;i<this.kedu.length;i++){
 				this.kedu[i].draw();
@@ -3763,6 +3776,7 @@ $.Chart = $.extend($.Painter,{
 			$.Assert.isNumber(this.get('width'),'width');
 			$.Assert.isNumber(this.get('height'),'height');
 			//console.log(this.get('wall_style'));
+			
 			
 			this.on('mouseover',function(e){
 				this.T.css("cursor","default");
@@ -3855,9 +3869,9 @@ $.Chart = $.extend($.Painter,{
  				this.kedu.push(new $.KeDu(kd,this.container));
 			}
 			
-			this.push('ignoreOverlap',this.get('ignoreOverlap')&&this.get('axis.enable')||this.get('ignoreEdge'));
+			var iol = this.push('ignoreOverlap',this.get('ignoreOverlap')&&this.get('axis.enable')||this.get('ignoreEdge'));
 			
-			if(this.get('ignoreOverlap')){
+			if(iol){
 				if(this.get('ignoreEdge')){
 					var ignoreOverlap = function(w,x,y){
 						return w=='v'?(y==this.y)||(y==this.y+h):(x==this.x)||(x==this.x+w);
@@ -3877,7 +3891,7 @@ $.Chart = $.extend($.Painter,{
  					if($.isFalse(kedu.get('kedu2grid'))||hg&&kedu.get('which') == 'v'||vg&&kedu.get('which') == 'h'){
  						continue;
 		 					}
- 			x = y = 0;
+ 					x = y = 0;
 					if(kedu.get('position')=='top'){
 						y = h;
 					}else if(kedu.get('position')=='right'){
@@ -3888,7 +3902,7 @@ $.Chart = $.extend($.Painter,{
 						x = w;
 					}
 					for(var j =0;j<kedu.items.length;j++){
-						if(this.get('ignoreOverlap'))
+						if(iol)
 							if(ignoreOverlap.call(this,kedu.get('which'),kedu.items[j].x,kedu.items[j].y))continue;
 						this.gridlines.push({x1:kedu.items[j].x,y1:kedu.items[j].y,x2:kedu.items[j].x+x,y2:kedu.items[j].y+y});
 					}
@@ -3906,7 +3920,7 @@ $.Chart = $.extend($.Painter,{
 				}
 				
 				for(var i = 0;i<=n;i++){
-					if(this.get('ignoreOverlap'))
+					if(iol)
 						if(ignoreOverlap.call(this,'h',this.x+i*d,this.y))continue;
 					this.gridlines.push({x1:this.x+i*d,y1:this.y,x2:this.x+i*d,y2:this.y+h});
 				}
@@ -3923,7 +3937,7 @@ $.Chart = $.extend($.Painter,{
 				}
 				
 				for(var i = 0;i<=n;i++){
-					if(this.get('ignoreOverlap'))
+					if(iol)
 						if(ignoreOverlap.call(this,'v',this.x,this.y+i*d))continue;
 					this.gridlines.push({x1:this.x,y1:this.y+i*d,x2:this.x+w,y2:this.y+i*d});
 				}
@@ -3978,18 +3992,27 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			});
 		},
 		doDraw:function(opts){
+			var w=this.get('width'),
+				h=this.get('height'),
+				xa=this.get('xAngle_'),
+				ya=this.get('yAngle_'),
+				zh=this.get('zHeight'),
+				offx = xa*zh,
+				offy = ya*zh,
+				gl = this.gridlines;
+			
 			/**
 			 * bottom 
 			 */
 			this.T.cube3D(
 						this.x,
-						this.y + this.get('height') + this.get('pedestal_height'),
-						this.get('xAngle_'),
-						this.get('yAngle_'),
+						this.y + h + this.get('pedestal_height'),
+						xa,
+						ya,
 						false,
-						this.get('width'),
+						w,
 						this.get('pedestal_height'),
-						this.get('zHeight')*3/2,
+						zh*3/2,
 						this.get('axis.enable'),
 						this.get('axis.width'),
 						this.get('axis.color'),
@@ -3999,14 +4022,14 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			 * board_style 
 			 */
 			this.T.cube3D(
-						this.x+this.get('board_deep')*this.get('xAngle_'),
-						this.y+ this.get('height')-this.get('board_deep')*this.get('yAngle_'),
-						this.get('xAngle_'),
-						this.get('yAngle_'),
+						this.x+this.get('board_deep')*xa,
+						this.y+ h-this.get('board_deep')*ya,
+						xa,
+						ya,
 						false,
-						this.get('width'),
-						this.get('height'),
-						this.get('zHeight'),
+						w,
+						h,
+						zh,
 						this.get('axis.enable'),
 						this.get('axis.width'),
 						this.get('axis.color'),
@@ -4015,26 +4038,22 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			
 			this.T.cube3D(
 						this.x,
-						this.y+this.get('height'),
-						this.get('xAngle_'),
-						this.get('yAngle_'),
+						this.y+h,
+						xa,
+						ya,
 						false,
-						this.get('width'),
-						this.get('height'),
-						this.get('zHeight'),
+						w,
+						h,
+						zh,
 						this.get('axis.enable'),
 						this.get('axis.width'),
 						this.get('axis.color'),
 						this.get('wall_style')
 					);
 			
-			
-			var offx = this.get('xAngle_')*this.get('zHeight'),
-				offy = this.get('yAngle_')*this.get('zHeight');
-			
-			for(var i=0;i<this.gridlines.length;i++){
-				 this.T.line(this.gridlines[i].x1,this.gridlines[i].y1,this.gridlines[i].x1+offx,this.gridlines[i].y1-offy,this.get('grid_line_width'),this.get('grid_color'));
-				 this.T.line(this.gridlines[i].x1+offx,this.gridlines[i].y1-offy,this.gridlines[i].x2+offx,this.gridlines[i].y2-offy,this.get('grid_line_width'),this.get('grid_color'));
+			for(var i=0;i<gl.length;i++){
+				 this.T.line(gl[i].x1,gl[i].y1,gl[i].x1+offx,gl[i].y1-offy,this.get('grid_line_width'),this.get('grid_color'));
+				 this.T.line(gl[i].x1+offx,gl[i].y1-offy,gl[i].x2+offx,gl[i].y2-offy,this.get('grid_line_width'),this.get('grid_color'));
 			}
 			
 			for(var i=0;i<this.kedu.length;i++){
