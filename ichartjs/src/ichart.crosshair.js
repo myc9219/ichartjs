@@ -92,7 +92,7 @@
 			
 			var self = this;
 			
-			this.target.on('mouseover',function(e,m){
+			this.T.on('mouseover',function(e,m){
 				self.show(e,m);	
 			}).on('mouseout',function(e,m){
 				self.hidden(e,m);	

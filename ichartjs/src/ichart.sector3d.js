@@ -39,7 +39,7 @@
 			
 		},
 		drawSector:function(){
-			this.target.sector3D(
+			this.T.sector3D(
 					this.x,
 					this.y,
 					this.a,
@@ -102,7 +102,7 @@
 						y:P2.y
 					},
 					lineFn:function(){
-						this.target.line(P2.x,P2.y+self.h/2,P.x,P.y+self.h/2,this.get('border.width')*4,this.get('border.color'),(ccw&&A<Math.PI)||(!ccw&&A>Math.PI));
+						this.T.line(P2.x,P2.y+self.h/2,P.x,P.y+self.h/2,this.get('border.width')*4,this.get('border.color'),(ccw&&A<Math.PI)||(!ccw&&A>Math.PI));
 					},
 					labelXY:function(){
 						return {

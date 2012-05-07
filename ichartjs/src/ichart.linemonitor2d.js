@@ -1,6 +1,6 @@
 ;(function(){
 	var Queue = function(T,L){
-		this.target = T;
+		this.T = T;
 		this.line = L;
 		this.direction = T.get('direction');
 		this.size = T.get('queue_size');
@@ -29,9 +29,9 @@
 				
 				x = this.direction=='left'?(this.end - this.space * j):(this.space * j);
 				
-				y = (iChart.between(this.target.S.start,this.target.S.end,v[j]) - this.target.S.start)*this.target.S.uh;
+				y = (iChart.between(this.T.S.start,this.T.S.end,v[j]) - this.T.S.start)*this.T.S.uh;
 				
-				this.line.points.push(iChart.merge({x : x,y : y,value : v[j]},this.target.fireEvent(this.target, 'parsePoint', [v[j], x, y, j ])));
+				this.line.points.push(iChart.merge({x : x,y : y,value : v[j]},this.T.fireEvent(this.T, 'parsePoint', [v[j], x, y, j ])));
 			}
 		}
 	}

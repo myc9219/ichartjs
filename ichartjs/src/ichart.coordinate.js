@@ -106,13 +106,13 @@
 					}else{
 						y0 =w;
 					}
-					this.target.textAlign('center');
+					this.T.textAlign('center');
 					if(this.get('textAlign')=='top'){
 						ty = -this.get('text_space');
-						this.target.textBaseline('bottom');
+						this.T.textBaseline('bottom');
 					}else{
 						ty = this.get('text_space');
-						this.target.textBaseline('top');
+						this.T.textBaseline('top');
 					}
 				}else{
 					if(this.get('scaleAlign')=='left'){
@@ -123,25 +123,25 @@
 					}else{
 						x0 = w;
 					}
-					this.target.textBaseline('middle');
+					this.T.textBaseline('middle');
 					if(this.get('textAlign')=='right'){
-						this.target.textAlign('left');
+						this.T.textAlign('left');
 						tx = this.get('text_space');	
 					}else{
-						this.target.textAlign('right');
+						this.T.textAlign('right');
 						tx = -this.get('text_space');
 					}
 				}
 				//将上述的配置部分转移到config中?
 				
 				//每一个text的个性化问题?
-				this.target.textFont(this.get('fontStyle'));
+				this.T.textFont(this.get('fontStyle'));
 				
 				for(var i =0;i<this.items.length;i++){
 					if(this.get('scale_line_enable'))
-					this.target.line(this.items[i].x+x,this.items[i].y+y,this.items[i].x+x0,this.items[i].y+y0,this.get('scale_size'),this.get('scale_color'),false);
+					this.T.line(this.items[i].x+x,this.items[i].y+y,this.items[i].x+x0,this.items[i].y+y0,this.get('scale_size'),this.get('scale_color'),false);
 					
-					this.target.fillText(this.items[i].text,this.items[i].textX+tx,this.items[i].textY+ty,false,this.get('color'),'lr',this.get('text_height'));
+					this.T.fillText(this.items[i].text,this.items[i].textX+tx,this.items[i].textY+ty,false,this.get('color'),'lr',this.get('text_height'));
 				}
 			},
 			doConfig:function(){
@@ -180,7 +180,7 @@
 				
 				var text,maxwidth =0,x,y;
 						
-				this.target.textFont(this.get('fontStyle'));
+				this.T.textFont(this.get('fontStyle'));
 				this.push('which',this.get('which').toLowerCase());
 				this.isHorizontal = this.get('which')=='h';
 				
@@ -190,7 +190,7 @@
 					x = this.isHorizontal?this.get('valid_x')+i*this.get('distanceOne'):this.x;
 					y = this.isHorizontal?this.y:this.get('valid_y')+this.get('distance')-i*this.get('distanceOne');
 					this.items.push(iChart.merge({text:text,x:x,y:y,textX:x,textY:y},this.fireEvent(this,'parseText',[text,x,y,i])));
-					maxwidth = Math.max(maxwidth,this.target.measureText(text));
+					maxwidth = Math.max(maxwidth,this.T.measureText(text));
 				}
 				
 				//what does follow code doing?
@@ -287,10 +287,6 @@
 				 gradient:false,
 				 ylabel:'',
 				 xlabel:'',
-				 /**
-				  *@cfg {Number} rounded to two digit
-			 	  */
-				 decimalsnum:0,
 				 color_factor:0.18,
 				 background_color:'#FEFEFE',
 				 alternate_color:true,
@@ -331,7 +327,7 @@
 			return {valid:e.offsetX>this.x&&e.offsetX<(this.x+this.get('width'))&&e.offsetY<this.y+this.get('height')&&e.offsetY>this.y};
 		},
 		doDraw:function(opts){
-			this.target.rectangle(
+			this.T.rectangle(
 						this.x,
 						this.y,
 						this.get('width'),
@@ -369,7 +365,7 @@
 					//horizontal
 					if(this.gridlines[i].y1==this.gridlines[i].y2){
 						if(f){
-							this.target.rectangle(
+							this.T.rectangle(
 								this.gridlines[i].x1+axis[3],
 								this.gridlines[i].y1+this.get('grid_line_width'),
 								this.gridlines[i].x2-this.gridlines[i].x1-axis[3]-axis[1],
@@ -381,7 +377,7 @@
 						f = !f;
 					}
 				}
-				this.target.line(this.gridlines[i].x1,this.gridlines[i].y1,this.gridlines[i].x2,this.gridlines[i].y2,this.get('grid_line_width'),this.get('grid_color'));
+				this.T.line(this.gridlines[i].x1,this.gridlines[i].y1,this.gridlines[i].x2,this.gridlines[i].y2,this.get('grid_line_width'),this.get('grid_color'));
 			}
 			for(var i=0;i<this.kedu.length;i++){
 				this.kedu[i].draw();
@@ -394,7 +390,7 @@
 			//console.log(this.get('wall_style'));
 			
 			this.on('mouseover',function(e){
-				this.target.css("cursor","default");
+				this.T.css("cursor","default");
 			});
 			
 			if(!this.get('valid_width')||this.get('valid_width')>this.get('width')){
@@ -408,7 +404,7 @@
 			 * apply the gradient color to fill_color
 			 */
 			if(this.get('gradient')&&iChart.isString(this.get('background_color'))){
-				this.push('fill_color',this.target.avgLinearGradient(this.x,this.y,this.x,this.y+this.get('height'),[this.get('dark_color'),this.get('light_color')]));
+				this.push('fill_color',this.T.avgLinearGradient(this.x,this.y,this.x,this.y+this.get('height'),[this.get('dark_color'),this.get('light_color')]));
 			}
 			
 			
@@ -610,7 +606,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 			/**
 			 * bottom 
 			 */
-			this.target.cube3D(
+			this.T.cube3D(
 						this.x,
 						this.y + this.get('height') + this.get('pedestal_height'),
 						this.get('xAngle_'),
@@ -627,7 +623,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 			/**
 			 * board_style 
 			 */
-			this.target.cube3D(
+			this.T.cube3D(
 						this.x+this.get('board_deep')*this.get('xAngle_'),
 						this.y+ this.get('height')-this.get('board_deep')*this.get('yAngle_'),
 						this.get('xAngle_'),
@@ -642,7 +638,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 						this.get('board_style')
 					);
 			
-			this.target.cube3D(
+			this.T.cube3D(
 						this.x,
 						this.y+this.get('height'),
 						this.get('xAngle_'),
@@ -662,8 +658,8 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 				offy = this.get('yAngle_')*this.get('zHeight');
 			
 			for(var i=0;i<this.gridlines.length;i++){
-				 this.target.line(this.gridlines[i].x1,this.gridlines[i].y1,this.gridlines[i].x1+offx,this.gridlines[i].y1-offy,this.get('grid_line_width'),this.get('grid_color'));
-				 this.target.line(this.gridlines[i].x1+offx,this.gridlines[i].y1-offy,this.gridlines[i].x2+offx,this.gridlines[i].y2-offy,this.get('grid_line_width'),this.get('grid_color'));
+				 this.T.line(this.gridlines[i].x1,this.gridlines[i].y1,this.gridlines[i].x1+offx,this.gridlines[i].y1-offy,this.get('grid_line_width'),this.get('grid_color'));
+				 this.T.line(this.gridlines[i].x1+offx,this.gridlines[i].y1-offy,this.gridlines[i].x2+offx,this.gridlines[i].y2-offy,this.get('grid_line_width'),this.get('grid_color'));
 			}
 			
 			for(var i=0;i<this.kedu.length;i++){
@@ -710,15 +706,15 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 					bs = this.get('bottom_style');
 				
 				if(iChart.isString(ws[0].color)){
-					ws[0].color = this.target.avgLinearGradient(this.x,this.y+h,this.x+w,this.y+h,[dark,this.get('dark_color')]);
+					ws[0].color = this.T.avgLinearGradient(this.x,this.y+h,this.x+w,this.y+h,[dark,this.get('dark_color')]);
 				}
 				if(iChart.isString(ws[1].color)){
-					ws[1].color = this.target.avgLinearGradient(this.x+offx,this.y-offy,this.x+offx,this.y+h-offy,[this.get('dark_color'),this.get('light_color')]);
+					ws[1].color = this.T.avgLinearGradient(this.x+offx,this.y-offy,this.x+offx,this.y+h-offy,[this.get('dark_color'),this.get('light_color')]);
 				}
 				if(iChart.isString(ws[2].color)){
-					ws[2].color = this.target.avgLinearGradient(this.x,this.y,this.x,this.y+h,[bg,this.get('dark_color')]);
+					ws[2].color = this.T.avgLinearGradient(this.x,this.y,this.x,this.y+h,[bg,this.get('dark_color')]);
 				}
-				bs[5].color = this.target.avgLinearGradient(this.x,this.y+h,this.x,this.y+h+this.get('pedestal_height'),[bg,dark_color]);
+				bs[5].color = this.T.avgLinearGradient(this.x,this.y+h,this.x,this.y+h+this.get('pedestal_height'),[bg,dark_color]);
 			}
 			
 			

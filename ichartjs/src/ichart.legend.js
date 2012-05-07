@@ -74,22 +74,22 @@
 			var s = this.get('sign_size');
 			
 			if(this.get('sign')=='round'){	
-				this.target.round(x+s/2,y+s/2,s/2,color);
+				this.T.round(x+s/2,y+s/2,s/2,color);
 			}else if(this.get('sign')=='round-bar'){		
-				this.target.rectangle(x,y+s*5/12,s,s/6,color);
-				this.target.round(x+s/2,y+s/2,s/4,color);
+				this.T.rectangle(x,y+s*5/12,s,s/6,color);
+				this.T.round(x+s/2,y+s/2,s/4,color);
 			}else if(this.get('sign')=='square-bar'){	
-				this.target.rectangle(x,y+s*5/12,s,s/6,color);
-				this.target.rectangle(x+s/4,y+s/4,s/2,s/2,color);
+				this.T.rectangle(x,y+s*5/12,s,s/6,color);
+				this.T.rectangle(x+s/4,y+s/4,s/2,s/2,color);
 			}else{				
-				this.target.rectangle(x,y,s,s,color);
+				this.T.rectangle(x,y,s,s,color);
 			}
 			
 			var textcolor = this.get('color');
 			if(this.get('text_with_sign_color')){
 				textcolor = color;
 			}
-			this.target.fillText(text,x+this.get('signwidth'),y+s/2,this.get('textwidth'),textcolor);
+			this.T.fillText(text,x+this.get('signwidth'),y+s/2,this.get('textwidth'),textcolor);
 
 			this.fireEvent(this,'drawCell',[x,y,text,color]);
 		},
@@ -117,7 +117,7 @@
 		},
 		doDraw:function(){
 			if(this.get('border.enable'))
-			this.target.drawBorder(
+			this.T.drawBorder(
 				this.x,
 				this.y,
 				this.width,
@@ -133,7 +133,7 @@
 				this.get('shadow_offsetx'),
 				this.get('shadow_offsety'));
 			
-			this.target.textStyle('left','middle',iChart.getFont(this.get('fontweight'),this.get('fontsize'),this.get('font')));
+			this.T.textStyle('left','middle',iChart.getFont(this.get('fontweight'),this.get('fontsize'),this.get('font')));
 			
 			var x = this.x+this.get('padding_left'),
 				y = this.y+this.get('padding_top'),
@@ -174,7 +174,7 @@
 			this.columnwidth = new Array(c);
 			
 			if(wauto){
-				this.target.textFont(this.get('fontStyle'));
+				this.T.textFont(this.get('fontStyle'));
 				maxwidth = 0;//行最大宽度
 			}
 			
@@ -182,7 +182,7 @@
 			for (var i=0; i<this.data.length; i++){
 				iChart.merge(this.data[i],this.fireEvent(this,'analysing',[this.data[i],i]));
 				this.data[i].text = this.data[i].text || this.data[i].name;
-				this.data[i].width = this.target.measureText(this.data[i].text);
+				this.data[i].width = this.T.measureText(this.data[i].text);
 			}
 			
 			//calculate the each column's width it will used

@@ -51,7 +51,7 @@
 		},
 		drawBorder:function(){
 			this.lineFn.call(this);
-			this.target.drawBorder(this.labelx,this.labely,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:iChart.parseBorder(this.get('border.radius')),this.get('background_color'),false,this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
+			this.T.drawBorder(this.labelx,this.labely,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:iChart.parseBorder(this.get('border.radius')),this.get('background_color'),false,this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
 			
 		},
 		isEventValid:function(e){ 
@@ -73,7 +73,7 @@
 			this.drawBorder();
 			
 			
-			this.target.textStyle('left','top',this.get('fontStyle'));
+			this.T.textStyle('left','top',this.get('fontStyle'));
 			
 			var x = this.labelx+this.get('padding_left'),
 				y = this.labely+this.get('padding_top')+this.get('offsety');
@@ -83,12 +83,12 @@
 				textcolor = this.get('scolor');
 			}
 			if(this.get('sign')=='square'){				
-				this.target.rectangle(x,y,this.get('sign_size'),this.get('sign_size'),this.get('scolor'),1);
+				this.T.rectangle(x,y,this.get('sign_size'),this.get('sign_size'),this.get('scolor'),1);
 			}else{		
-				this.target.round(x+this.get('sign_size')/2,y+this.get('sign_size')/2,this.get('sign_size')/2,this.get('scolor'),1);
+				this.T.round(x+this.get('sign_size')/2,y+this.get('sign_size')/2,this.get('sign_size')/2,this.get('scolor'),1);
 			}	
 			
-			this.target.fillText(this.get('text'),x+this.get('sign_size')+this.get('sign_space'),y,this.get('textwidth'),textcolor);
+			this.T.fillText(this.get('text'),x+this.get('sign_size')+this.get('sign_space'),y,this.get('textwidth'),textcolor);
 		},
 		updateLcb:function(L){
 			this.lineFn = L.lineFn;
@@ -102,10 +102,10 @@
 		doConfig:function(){
 			iChart.Label.superclass.doConfig.call(this);
 			
-			this.target.textFont(iChart.getFont(this.get('fontweight'),this.get('fontsize'),this.get('font')));
+			this.T.textFont(iChart.getFont(this.get('fontweight'),this.get('fontsize'),this.get('font')));
 			this.height = this.get('line_height')+this.get('vpadding');
 			
-			this.width = this.target.measureText(this.get('text'))+this.get('hpadding')+this.get('sign_size')+this.get('sign_space');
+			this.width = this.T.measureText(this.get('text'))+this.get('hpadding')+this.get('sign_size')+this.get('sign_space');
 			
 			var lcb = this.get('lineCB');
 			if(lcb){

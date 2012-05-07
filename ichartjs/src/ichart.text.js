@@ -31,7 +31,7 @@
 		},
 		doDraw:function(opts){
 			if(this.get('text')!='')
-			this.target.text(this.get('text'),this.x,this.y,false,this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
+			this.T.text(this.get('text'),this.x,this.y,false,this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
 		},
 		doConfig:function(){
 			iChart.Text.superclass.doConfig.call(this);

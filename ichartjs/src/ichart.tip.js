@@ -107,14 +107,14 @@
 			this.wrap.appendChild(this.dom);
 			var self = this;
 			
-			this.target.on('mouseover',function(e,m){
+			this.T.on('mouseover',function(e,m){
 				self.show(e,m);	
 			}).on('mouseout',function(e,m){
 				self.hidden(e);	
 			});
 			
 			if(this.get('showType')=='follow'){
-				this.target.on('mousemove',function(e,m){
+				this.T.on('mousemove',function(e,m){
 					if(self.target.variable.event.mouseover){
 						setTimeout(function(){
 							if(self.target.variable.event.mouseover)

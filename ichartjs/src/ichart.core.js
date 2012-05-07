@@ -310,24 +310,25 @@ var iChart_ = (function(window) {//spirit from jquery
 		var sin = Math.sin, cos = Math.cos, atan=Math.atan,tan = Math.tan,acos = Math.acos,
 			sqrt = Math.sqrt, abs = Math.abs,pi = Math.PI, pi2 = 2*pi,
 			ceil=Math.ceil,round = Math.round,floor=Math.floor,max=Math.max,min=Math.min,
+			pF = parseFloat,
 			parseParam =  function(s,d) {
 				if(_.isNumber(s))
 					return new Array(s,s,s,s);
 				s = s.replace( /^\s+|\s+$/g,"").replace(/\s{2,}/g,/\s/).replace(/\s/g,',').split(",");
 				if(s.length==1){
-					s[0] = s[1] = s[2] = s[3] = parseFloat(s[0])||d;
+					s[0] = s[1] = s[2] = s[3] = pF(s[0])||d;
 				}else if(s.length==2){
-					s[0] = s[2] = parseFloat(s[0])||d;
-					s[1] = s[3] = parseFloat(s[1])||d;
+					s[0] = s[2] = pF(s[0])||d;
+					s[1] = s[3] = pF(s[1])||d;
 				}else if(s.length==3){
-					s[0] = parseFloat(s[0])||d;
-					s[1] = s[3] = parseFloat(s[1])||d;
-					s[2] = parseFloat(s[2])||d;
+					s[0] = pF(s[0])||d;
+					s[1] = s[3] = pF(s[1])||d;
+					s[2] = pF(s[2])||d;
 				}else{
-					s[0] = parseFloat(s[0])||d;
-					s[1] = parseFloat(s[1])||d;
-					s[2] = parseFloat(s[2])||d;
-					s[3] = parseFloat(s[3])||d;
+					s[0] = pF(s[0])||d;
+					s[1] = pF(s[1])||d;
+					s[2] = pF(s[2])||d;
+					s[3] = pF(s[3])||d;
 				}
 			return s;
 		},
@@ -351,11 +352,25 @@ var iChart_ = (function(window) {//spirit from jquery
 		},
 		innerColor  = ["navy","olive","silver","gold","lime","fuchsia","aqua","green","red","blue","pink","purple","yellow","maroon","black","gray","white"],	
 		colors = {
+			navy:'rgb(0,0,128)',
+			olive:'rgb(128,128,0)',
+			orange:'rgb(255,165,0)',
+			silver:'rgb(192,192,192)',
+			white:'rgb(255,255,255)',
+			gold:'rgb(255,215,0)',
+			lime:'rgb(0,255,0)',
+			fuchsia:'rgb(255,0,255)',
 			aqua:'rgb(0,255,255)',
+			green:'rgb(0,128,0)',
+			red:'rgb(255,0,0)',
+			blue:'rgb(0,0,255)',
+			pink:'rgb(255,192,203)',
+			purple:'rgb(128,0,128)',
+			yellow:'rgb(255,255,0)',
+			maroon:'rgb(128,0,0)',
+			black:'rgb(0,0,0)',
 			azure:'rgb(240,255,255)',
 			beige:'rgb(245,245,220)',
-			black:'rgb(0,0,0)',
-			blue:'rgb(0,0,255)',
 			brown:'rgb(165,42,42)',
 			cyan:'rgb(0,255,255)',
 			darkblue:'rgb(0,0,139)',
@@ -370,9 +385,6 @@ var iChart_ = (function(window) {//spirit from jquery
 			darkred:'rgb(139,0,0)',
 			darksalmon:'rgb(233,150,122)',
 			darkviolet:'rgb(148,0,211)',
-			fuchsia:'rgb(255,0,255)',
-			gold:'rgb(255,215,0)',
-			green:'rgb(0,128,0)',
 			indigo:'rgb(75,0,130)',
 			khaki:'rgb(240,230,140)',
 			lightblue:'rgb(173,216,230)',
@@ -381,20 +393,8 @@ var iChart_ = (function(window) {//spirit from jquery
 			lightgrey:'rgb(211,211,211)',
 			lightpink:'rgb(255,182,193)',
 			lightyellow:'rgb(255,255,224)',
-			lime:'rgb(0,255,0)',
 			magenta:'rgb(255,0,255)',
-			maroon:'rgb(128,0,0)',
-			navy:'rgb(0,0,128)',
-			olive:'rgb(128,128,0)',
-			orange:'rgb(255,165,0)',
-			pink:'rgb(255,192,203)',
-			purple:'rgb(128,0,128)',
-			violet:'rgb(128,0,128)',
-			red:'rgb(255,0,0)',
-			silver:'rgb(192,192,192)',
-			white:'rgb(255,255,255)',
-			yellow:'rgb(255,255,0)',
-			transparent: 'rgb(255,255,255)'
+			violet:'rgb(128,0,128)'
 		},
 		hex2Rgb = function(hex) {
 			hex = hex.replace(/#/g,"").replace(/^(\w)(\w)(\w)$/,"$1$1$2$2$3$3");
@@ -462,6 +462,7 @@ var iChart_ = (function(window) {//spirit from jquery
 			// Look for #a0b1c2 or #fff
 			if (/#(([a-fA-F0-9]{6})|([a-fA-F0-9]{3}))/.exec(color))
 				return hex2Rgb(color);
+			// Look a string  for green
 			if(colors[color])
 				return colors[color];
 			throw new Error("invalid colors value '"+color+"'");
@@ -730,17 +731,16 @@ var iChart_ = (function(window) {//spirit from jquery
 				}
 			},
 			iGather : function(P){
-				return (P||'magic') + '-'+new Date().getTime().toString();
+				return (P||'ichartjs') + '-'+new Date().getTime().toString();
 			},
 			toPercent:function(v,d){
 				return '('+(v*100).toFixed(d)+'%)';
 			},
 			parseFloat:function(v,d){
 				if(!_.isNumber(v)){
-					v = parseFloat(v);
-					if(!_.isNumber(v)){
+					v = pF(v);
+					if(!_.isNumber(v))
 						throw new Error("'"+d+"'is not a valid number.");
-					}
 				}
 				return v;
 			},
@@ -768,7 +768,7 @@ var iChart_ = (function(window) {//spirit from jquery
 				return anole(true,rgb,iv,is);				
 			},
 			fixPixel: function(v) {
-				return _.isNumber(v)?v:parseFloat(v.replace('px',""))||0 ;
+				return _.isNumber(v)?v:pF(v.replace('px',""))||0 ;
 			},
 			toPixel: function(v) {
 				return _.isNumber(v)?v+'px':_.fixPixel(v)+'px';
@@ -809,15 +809,15 @@ var iChart_ = (function(window) {//spirit from jquery
 			},
 			gt:function (v,c,n){
 				if(!_.isNumber(v)&&v>=c)
-					throw new Error(n+ " required a type Number gt "+c+",given:"+v);
+					throw new Error(n+ " required Number gt "+c+",given:"+v);
 			},
 			isNumber:function(v,n){
 				if(!_.isNumber(v))
-					throw new Error(n+ " required a type Number,given:"+v);
+					throw new Error(n+ " required Number,given:"+v);
 			},
 			isNotEmpty:function(v,cause){
 				if(!v||v==''){
-					throw new Error("it has required not empty.cause:"+cause);
+					throw new Error(" required not empty.cause:"+cause);
 				}	
 				if(_.isArray(v)&&v.length==0){
 					throw new Error("required must has one element at least.cause:"+cause);
@@ -825,11 +825,11 @@ var iChart_ = (function(window) {//spirit from jquery
 			},
 			isArray:function(v,n){
 				if(!_.isArray(v))
-					throw new Error(n +" required a type Array,given:"+v);
+					throw new Error(n +" required Array,given:"+v);
 			},
 			isFunction:function(v,n){
 				if(!_.isFunction(v))
-					throw new Error(n +" required a type Function,given:"+v);
+					throw new Error(n +" required Function,given:"+v);
 			},
 			isTrue:function(v,cause){
 				if(v!==true)

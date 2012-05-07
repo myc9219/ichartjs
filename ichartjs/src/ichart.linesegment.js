@@ -72,13 +72,13 @@
 		drawLabel:function(){
 			if(this.get('intersection')&&this.get('label')){
 				for(var i=0;i<this.points.length;i++){
-					this.target.textStyle('center','bottom',iChart.getFont(this.get('fontweight'),this.get('fontsize'),this.get('font')));
-					this.target.fillText(this.points[i].value,this.x+this.points[i].x,this.y-this.points[i].y-this.get('point_size')*3/2,false,this.get('background_color'),'lr',16);
+					this.T.textStyle('center','bottom',iChart.getFont(this.get('fontweight'),this.get('fontsize'),this.get('font')));
+					this.T.fillText(this.points[i].value,this.x+this.points[i].x,this.y-this.points[i].y-this.get('point_size')*3/2,false,this.get('background_color'),'lr',16);
 				}
 			}
 		},
 		drawLineSegment:function(){
-			this.target.shadowOn(this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
+			this.T.shadowOn(this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
 			
 			if(this.get('area')){
 				var polygons = [this.x,this.y];
@@ -90,29 +90,29 @@
 				polygons.push(this.y);
 				var bg = this.get('light_color');
 				if(this.get('gradient')){
-					bg = this.target.avgLinearGradient(this.x,this.y-this.get('height'),this.x,this.y,[this.get('light_color2'),bg]);
+					bg = this.T.avgLinearGradient(this.x,this.y-this.get('height'),this.x,this.y,[this.get('light_color2'),bg]);
 				}
 				//NEXT Config the area polygon
-				this.target.polygon(bg,false,1,'',false,'',0,0,0,this.get('area_opacity'),polygons);
+				this.T.polygon(bg,false,1,'',false,'',0,0,0,this.get('area_opacity'),polygons);
 			}
 			
 			
 			for(var i=0;i<this.points.length-1;i++){
-				this.target.line(this.x+this.points[i].x,this.y-this.points[i].y,this.x+this.points[i+1].x,this.y-this.points[i+1].y,this.get('brushsize'),this.get('fill_color'),false);
+				this.T.line(this.x+this.points[i].x,this.y-this.points[i].y,this.x+this.points[i+1].x,this.y-this.points[i+1].y,this.get('brushsize'),this.get('fill_color'),false);
 			}
 			
 			if(this.get('intersection')){
 				for(var i=0;i<this.points.length;i++){
 					if(this.get('point_hollow')){
-						this.target.round(this.x+this.points[i].x,this.y-this.points[i].y,this.get('point_size'),'#FEFEFE',this.get('brushsize'),this.get('fill_color'));
+						this.T.round(this.x+this.points[i].x,this.y-this.points[i].y,this.get('point_size'),'#FEFEFE',this.get('brushsize'),this.get('fill_color'));
 					}else{
-						this.target.round(this.x+this.points[i].x,this.y-this.points[i].y,this.get('point_size'),this.get('fill_color'));
+						this.T.round(this.x+this.points[i].x,this.y-this.points[i].y,this.get('point_size'),this.get('fill_color'));
 					}
 				}
 			}
 			
 			if(this.get('shadow')){
-		    	this.target.shadowOff();
+		    	this.T.shadowOff();
 		    }
 		},
 		doDraw:function(opts){
