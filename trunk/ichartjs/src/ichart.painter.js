@@ -180,13 +180,5 @@ iChart.Painter = iChart.extend(iChart.Element,{
 
 		this.id = this.get('id');
 
-	},
-	shadowOn : function() {
-		this.T.shadowOn(this.get('shadow'), this.get('shadow_color'), this
-				.get('shadow_blur'), this.get('shadow_offsetx'), this
-				.get('shadow_offsety'));
-	},
-	shadowOff : function() {
-		this.T.shadowOff();
 	}
 });
