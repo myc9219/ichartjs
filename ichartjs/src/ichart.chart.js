@@ -907,7 +907,7 @@ $.Chart = $.extend($.Painter,{
 		doConfig:function(){
 			$.Chart.superclass.doConfig.call(this);
 			//for compress
-			var self = this,E=this.variable.event;
+			var self = this,E=self.variable.event;
 			
 			if(self.get('animation')){
 				self.processAnimation = self.get('animation');
