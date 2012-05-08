@@ -129,11 +129,11 @@
 				y = this.y,
 				o = this.get('tip_offset'),
 				s = this.get('point_size')+o,
-				self = this;
+				_ = this;
 			return function(w,h,m){
 				var l = m.left,t = m.top;
-				l = ((self.tipPosition<3&&(m.left-w-x-o>0))||(self.tipPosition>2&&(m.left-w-x-o<0)))?l-(w+o):l+o;
-				t = self.tipPosition%2==0?m.top+s:m.top-h-s;
+				l = ((_.tipPosition<3&&(m.left-w-x-o>0))||(_.tipPosition>2&&(m.left-w-x-o<0)))?l-(w+o):l+o;
+				t = _.tipPosition%2==0?m.top+s:m.top-h-s;
 				return {
 					left:l,
 					top:t
@@ -144,13 +144,13 @@
 			iChart.LineSegment.superclass.doConfig.call(this);
 			iChart.Assert.gtZero(this.get('spacing'),'spacing');
 			
-			var self = this,
+			var _ = this,
 				sp = this.get('spacing'),
-				ry = self.get('event_range_y'),
-				rx = self.get('event_range_x'),
-				heap = self.get('tipInvokeHeap'),
-				p = self.get('points');
-			self.points = p;
+				ry = _.get('event_range_y'),
+				rx = _.get('event_range_x'),
+				heap = _.get('tipInvokeHeap'),
+				p = _.get('points');
+			_.points = p;
 			
 			for(var i=0;i<p.length;i++){
 				p[i].width = p[i].x;
@@ -158,48 +158,48 @@
 			}
 			
 			if(rx==0){
-				rx = self.push('event_range_x',Math.floor(sp/2));
+				rx = _.push('event_range_x',Math.floor(sp/2));
 			}else{
-				rx = self.push('event_range_x',iChart.between(1,Math.floor(sp/2),rx));
+				rx = _.push('event_range_x',iChart.between(1,Math.floor(sp/2),rx));
 			}
 			if(ry==0){
-				ry = self.push('event_range_y',Math.floor(self.get('point_size')));
+				ry = _.push('event_range_y',Math.floor(_.get('point_size')));
 			}
 			
-			if(self.get('tip.enable')){
-				//self use for tip coincidence
-				self.on('mouseover',function(e,m){
-					heap.push(self);
-					self.tipPosition = heap.length;
+			if(_.get('tip.enable')){
+				//_ use for tip coincidence
+				_.on('mouseover',function(e,m){
+					heap.push(_);
+					_.tipPosition = heap.length;
 				}).on('mouseout',function(e,m){
 					heap.pop();
 				});
-				self.push('tip.invokeOffsetDynamic',true);
-				self.tip = new iChart.Tip(self.get('tip'),self);
+				_.push('tip.invokeOffsetDynamic',true);
+				_.tip = new iChart.Tip(_.get('tip'),_);
 			}
 			
-			var c = self.get('coordinate'),
-				ly = self.get('limit_y'),
-				k = self.get('keep_with_coordinate'),
+			var c = _.get('coordinate'),
+				ly = _.get('limit_y'),
+				k = _.get('keep_with_coordinate'),
 				valid =function(i,x,y){
-					if(Math.abs(x-(self.x+p[i].x))<rx&&(!ly||(ly&&Math.abs(y-(self.y-p[i].y))<ry))){
+					if(Math.abs(x-(_.x+p[i].x))<rx&&(!ly||(ly&&Math.abs(y-(_.y-p[i].y))<ry))){
 						return true;
 					}
 					return false;
 				},
 				to = function(i){
-					return {valid:true,text:p[i].value,top:self.y-p[i].y,left:self.x+p[i].x,hit:true};
+					return {valid:true,text:p[i].value,top:_.y-p[i].y,left:_.x+p[i].x,hit:true};
 				};
 			
 			/**
 			 * override the default method
 			 */
-			self.isEventValid =  function(e){
+			_.isEventValid =  function(e){
 				//console.time('mouseover');
 				if(c&&!c.isEventValid(e).valid){
 					return {valid:false};
 				}
-				var ii = Math.floor((e.offsetX-self.x)/sp);
+				var ii = Math.floor((e.offsetX-_.x)/sp);
 				if(ii<0||ii>=(p.length-1)){
 					ii = iChart.between(0,p.length-1,ii);
 					if(valid(ii,e.offsetX,e.offsetY))

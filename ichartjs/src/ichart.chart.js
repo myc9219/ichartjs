@@ -20,11 +20,11 @@ function Cans(c){
 }
 
 Cans.prototype = {
-	css:function(attr,style){
-		if($.isDefined(style))
-			this.canvas.style[attr] = style;
+	css:function(a,s){
+		if($.isDefined(s))
+			this.canvas.style[a] = s;
 		else
-			return this.canvas.style[attr];
+			return this.canvas.style[a];
 	},
 	/* it seem not improve the speed
 	isPointInPathArc:function(x,y,radius,s,e,color,ccw,a2r,x0,y0){
@@ -774,23 +774,23 @@ $.Chart = $.extend($.Painter,{
 					this.get('background_color'));
 		},
 		animation:function(){
-			return function(self){
+			return function(_){
 				//console.time('Test for animation');
 				//clear the part of canvas
-				self.segmentRect();
+				_.segmentRect();
 				//doAnimation of implement
-				self.doAnimation(self.variable.animation.time,self.duration);
+				_.doAnimation(_.variable.animation.time,_.duration);
 				//fill the background
-				self.resetCanvas();
-				if(self.variable.animation.time<self.duration){
-					self.variable.animation.time++;setTimeout(function(){self.animation(self)},$.INTERVAL)}
+				_.resetCanvas();
+				if(_.variable.animation.time<_.duration){
+					_.variable.animation.time++;setTimeout(function(){_.animation(_)},$.INTERVAL)}
 				else{
 					setTimeout(function(){
-						self.variable.animation.time = 0;
-						self.animationed = true;
-						self.draw();
-						self.processAnimation = false;
-						self.fireEvent(this,'afterAnimation',[this]);	
+						_.variable.animation.time = 0;
+						_.animationed = true;
+						_.draw();
+						_.processAnimation = false;
+						_.fireEvent(this,'afterAnimation',[this]);	
 					},$.INTERVAL);
 				}
 				//console.timeEnd('Test for animation');
@@ -910,53 +910,53 @@ $.Chart = $.extend($.Painter,{
 		doConfig:function(){
 			$.Chart.superclass.doConfig.call(this);
 			//for compress
-			var self = this,E=self.variable.event;
+			var _ = this,E=_.variable.event;
 			
-			if(self.get('animation')){
-				self.processAnimation = self.get('animation');
-				self.duration = Math.ceil(self.get('duration_animation_duration')*$.FRAME/1000);
-				self.variable.animation = {time:0};
-				self.animationArithmetic = $.getAnimationArithmetic(self.get('animation_timing_function'));
+			if(_.get('animation')){
+				_.processAnimation = _.get('animation');
+				_.duration = Math.ceil(_.get('duration_animation_duration')*$.FRAME/1000);
+				_.variable.animation = {time:0};
+				_.animationArithmetic = $.getAnimationArithmetic(_.get('animation_timing_function'));
 			}
 			
-			if(self.is3D()){
-				$.Interface._3D.call(self);
+			if(_.is3D()){
+				$.Interface._3D.call(_);
 			}
 			
-			self.T.strokeStyle(self.get('brushsize'),self.get('strokeStyle'),self.get('lineJoin'));
+			_.T.strokeStyle(_.get('brushsize'),_.get('strokeStyle'),_.get('lineJoin'));
 			
-			self.T.addEvent('click',function(e){self.fireEvent(self,'click',[$.Event.fix(e)]);},false);
+			_.T.addEvent('click',function(e){_.fireEvent(_,'click',[$.Event.fix(e)]);},false);
 			
-			self.T.addEvent('mousemove',function(e){self.fireEvent(self,'mousemove',[$.Event.fix(e)]);},false);
+			_.T.addEvent('mousemove',function(e){_.fireEvent(_,'mousemove',[$.Event.fix(e)]);},false);
 			
-			self.on('click',function(e){
-				if(self.processAnimation)return;
+			_.on('click',function(e){
+				if(_.processAnimation)return;
 				//console.time('Test for click');
 				var cot;
-				for(var i = 0;i < self.components.length;i++){
-					cot = self.components[i];
+				for(var i = 0;i < _.components.length;i++){
+					cot = _.components[i];
 					if(cot.preventEvent)continue;
 					var M = cot.isMouseOver(e);
 					if(M.valid)
-						self.components[i].fireEvent(cot,'click',[e,M]);
+						_.components[i].fireEvent(cot,'click',[e,M]);
 				}
 				//console.timeEnd('Test for click');
 			});
 			
-			self.on('mousemove',function(e){
-				if(self.processAnimation)return;
+			_.on('mousemove',function(e){
+				if(_.processAnimation)return;
 				//console.time('Test for doMouseMove');
 				var O = false;
-				for(var i = 0;i < self.components.length;i++){
-					var cot = self.components[i],cE = cot.variable.event;
+				for(var i = 0;i < _.components.length;i++){
+					var cot = _.components[i],cE = cot.variable.event;
 					if(cot.preventEvent)continue;
 					var M = cot.isMouseOver(e);
 					if(M.valid){
 						O = true;
 						if(!E.mouseover){
 							E.mouseover = true;
-							self.T.css("cursor","pointer");
-							self.fireEvent(self,'mouseover',[e]);
+							_.T.css("cursor","pointer");
+							_.fireEvent(_,'mouseover',[e]);
 						}
 						if(!cE.mouseover){
 							cE.mouseover = true;
@@ -973,82 +973,82 @@ $.Chart = $.extend($.Painter,{
 				
 				if(!O&&E.mouseover){
 					E.mouseover = false;
-					self.T.css("cursor","default");
-					self.fireEvent(self,'mouseout',[e]);
+					_.T.css("cursor","default");
+					_.fireEvent(_,'mouseout',[e]);
 				}
 				//console.timeEnd('Test for doMouseMove');
 			});
-			$.Assert.isArray(self.data);
+			$.Assert.isArray(_.data);
 			
-			self.push('l_originx',self.get('padding_left'));
-			self.push('r_originx',self.width - self.get('padding_right'));
-			self.push('t_originy',self.get('padding_top'));
-			self.push('b_originy',self.height-self.get('padding_bottom'));
+			_.push('l_originx',_.get('padding_left'));
+			_.push('r_originx',_.width - _.get('padding_right'));
+			_.push('t_originy',_.get('padding_top'));
+			_.push('b_originy',_.height-_.get('padding_bottom'));
 					
 			var offx = 0,offy=0;
 			
-			if(self.get('title')!=''){
-				if(self.get('title_writingmode')=='tb'){//竖直排列
-					offx = self.get('title_height');
-					if(self.get('title_align')=='left'){
-						self.push('l_originx',self.get('l_originx')+self.get('title_height'));
+			if(_.get('title')!=''){
+				if(_.get('title_writingmode')=='tb'){//竖直排列
+					offx = _.get('title_height');
+					if(_.get('title_align')=='left'){
+						_.push('l_originx',_.get('l_originx')+_.get('title_height'));
 					}else{
-						self.push('r_originx',self.width-self.get('l_originx')-self.get('title_height'));
+						_.push('r_originx',_.width-_.get('l_originx')-_.get('title_height'));
 					}
 				}else{//横向排列
-					offy = self.get('title_height');
+					offy = _.get('title_height');
 					
-					if(self.get('title_align')=='left'){
-						self.push('title_originx',self.get('padding_left'));
-					}else if(self.get('title_align')=='right'){
-						self.push('title_originx',self.width-self.get('padding_right'));
+					if(_.get('title_align')=='left'){
+						_.push('title_originx',_.get('padding_left'));
+					}else if(_.get('title_align')=='right'){
+						_.push('title_originx',_.width-_.get('padding_right'));
 					}else{
-						self.push('title_originx',self.get('client_width')/2);//goto midline
+						_.push('title_originx',_.get('client_width')/2);//goto midline
 					}	
-					if(self.get('title_valign')=='bottom'){
-						self.push('title_originy',self.height-self.get('padding_bottom'));
-						self.push('b_originy',self.height-self.get('b_originy')-self.get('title_height'));
+					if(_.get('title_valign')=='bottom'){
+						_.push('title_originy',_.height-_.get('padding_bottom'));
+						_.push('b_originy',_.height-_.get('b_originy')-_.get('title_height'));
 					}else{
-						self.push('t_originy',self.get('t_originy')+self.get('title_height'));
-						self.push('title_originy',self.get('padding_top'));	
+						_.push('t_originy',_.get('t_originy')+_.get('title_height'));
+						_.push('title_originy',_.get('padding_top'));	
 					}
 				}
 			}	
 			
-			self.push('client_width',(self.get('width') - self.get('hpadding')-offx));
-			self.push('client_height',(self.get('height') - self.get('vpadding')-offy));
+			_.push('client_width',(_.get('width') - _.get('hpadding')-offx));
+			_.push('client_height',(_.get('height') - _.get('vpadding')-offy));
 			
-			self.push('minDistance',Math.min(self.get('client_width'),self.get('client_height')));
-			self.push('maxDistance',Math.max(self.get('client_width'),self.get('client_height')));
-			self.push('minstr',self.get('client_width')<self.get('client_height')?'width':'height');
+			_.push('minDistance',Math.min(_.get('client_width'),_.get('client_height')));
+			_.push('maxDistance',Math.max(_.get('client_width'),_.get('client_height')));
+			_.push('minstr',_.get('client_width')<_.get('client_height')?'width':'height');
 			
-			self.push('centerx',self.get('l_originx')+self.get('client_width')/2);
-			self.push('centery',self.get('t_originy')+self.get('client_height')/2);
+			_.push('centerx',_.get('l_originx')+_.get('client_width')/2);
+			_.push('centery',_.get('t_originy')+_.get('client_height')/2);
 			/*
-			if(self.get('border.enable')){
-				var round = $.parseBorder(self.get('border.radius'));
-				self.push('radius_top',round[0]);
-				self.push('radius_right',round[1]);
-				self.push('radius_bottom',round[2]);
-				self.push('radius_left',round[3]);
+			if(_.get('border.enable')){
+				var round = $.parseBorder(_.get('border.radius'));
+				_.push('radius_top',round[0]);
+				_.push('radius_right',round[1]);
+				_.push('radius_bottom',round[2]);
+				_.push('radius_left',round[3]);
 			}*/
 			
 			/**
 			 * legend
 			 */
-			if(self.get('legend.enable')){
-				self.legend = new $.Legend($.apply({
-				 	 maxwidth:self.get('client_width'),
-				 	 data:self.data
-				},self.get('legend')),self);
+			if(_.get('legend.enable')){
+				_.legend = new $.Legend($.apply({
+				 	 maxwidth:_.get('client_width'),
+				 	 data:_.data
+				},_.get('legend')),_);
 				
-				self.components.push(self.legend);
+				_.components.push(_.legend);
 			}
 			/**
 			 * tip's wrap
 			 */
-			if(self.get('tip.enable')){
-				self.push('tip.wrap',self.shell);
+			if(_.get('tip.enable')){
+				_.push('tip.wrap',_.shell);
 			}
 			
 		}

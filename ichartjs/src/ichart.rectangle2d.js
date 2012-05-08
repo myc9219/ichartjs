@@ -47,54 +47,54 @@
 			return {valid:e.offsetX>this.x&&e.offsetX<(this.x+this.width)&&e.offsetY<(this.y+this.height)&&e.offsetY>(this.y)};
 		},
 		tipInvoke:function(){
-			var self = this;
+			var _ = this;
 			//base on event? NEXT
 			return function(w,h){
 				return {
-					left:self.tipX(w,h),
-					top:self.tipY(w,h)
+					left:_.tipX(w,h),
+					top:_.tipY(w,h)
 				}
 			}
 		},
 		doConfig:function(){
 			iChart.Rectangle2D.superclass.doConfig.call(this);
-			var self = this,tipAlign = self.get('tipAlign'),valueAlign=self.get('valueAlign');
+			var _ = this,tipAlign = _.get('tipAlign'),valueAlign=_.get('valueAlign');
 			if(tipAlign=='left'||tipAlign=='right'){
-				self.tipY = function(w,h){return self.centerY - h/2;};
+				_.tipY = function(w,h){return _.centerY - h/2;};
 			}else{
-				self.tipX = function(w,h){return self.centerX -w/2;};
+				_.tipX = function(w,h){return _.centerX -w/2;};
 			}
 			
 			if(tipAlign=='left'){
-				self.tipX = function(w,h){return self.x - self.get('value_space') -w;};
+				_.tipX = function(w,h){return _.x - _.get('value_space') -w;};
 			}else if(tipAlign=='right'){
-				self.tipX = function(w,h){return self.x + self.width + self.get('value_space');};
+				_.tipX = function(w,h){return _.x + _.width + _.get('value_space');};
 			}else if(tipAlign=='bottom'){
-				self.tipY = function(w,h){return self.y  +self.height+3;};
+				_.tipY = function(w,h){return _.y  +_.height+3;};
 			}else{
-				self.tipY = function(w,h){return self.y  - h -3;};
+				_.tipY = function(w,h){return _.y  - h -3;};
 			}
 			
 			if(valueAlign=='left'){
-				self.push('textAlign','right');
-				self.push('value_x',self.x - self.get('value_space'));
-				self.push('value_y',self.centerY);
+				_.push('textAlign','right');
+				_.push('value_x',_.x - _.get('value_space'));
+				_.push('value_y',_.centerY);
 			}else if(valueAlign=='right'){
-				self.push('textAlign','left');
-				self.push('textBaseline','middle');
-				self.push('value_x',self.x + self.width + self.get('value_space'));
-				self.push('value_y',self.centerY);
+				_.push('textAlign','left');
+				_.push('textBaseline','middle');
+				_.push('value_x',_.x + _.width + _.get('value_space'));
+				_.push('value_y',_.centerY);
 			}else if(valueAlign=='bottom'){
-				self.push('value_x',self.centerX);
-				self.push('value_y',self.y  + self.height + self.get('value_space'));
-				self.push('textBaseline','top');
+				_.push('value_x',_.centerX);
+				_.push('value_y',_.y  + _.height + _.get('value_space'));
+				_.push('textBaseline','top');
 			}else{
-				self.push('value_x',self.centerX);
-				self.push('value_y',self.y  - self.get('value_space'));
-				self.push('textBaseline','bottom');
+				_.push('value_x',_.centerX);
+				_.push('value_y',_.y  - _.get('value_space'));
+				_.push('textBaseline','bottom');
 			}
 			
-			self.valueX = self.get('value_x');
-			self.valueY = self.get('value_y');
+			_.valueX = _.get('value_x');
+			_.valueY = _.get('value_y');
 		}
 });
