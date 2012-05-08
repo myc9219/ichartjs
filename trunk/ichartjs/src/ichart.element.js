@@ -112,8 +112,9 @@ iChart.Element.prototype = {
 	},
 	pushIf : function(name, value) {
 		if (!this.get(name)) {
-			this.push(name, value);
+			return this.push(name, value);
 		}
+		return this.get(name);
 	},
 	/**
 	 * average write speed about 0.013ms

@@ -1,14 +1,15 @@
 	iChart.Interface = function(){
 		var simple = function() {
-			var M=0,V=0,MI,ML=0;
+			var M=0,V=0,MI,ML=0,d;
 			for(var i=0;i<this.data.length;i++){
-				iChart.merge(this.data[i],this.fireEvent(this,'parseData',[this.data[i],i]));
-				if(!this.data[i].color)
-				this.data[i].color = iChart.get(i);
-				V  = this.data[i].value;
+				d = this.data[i];
+				iChart.merge(d,this.fireEvent(this,'parseData',[d,i]));
+				if(!d.color)
+				d.color = iChart.get(i);
+				V  = d.value;
 				if(iChart.isNumber(V)){
 					V = iChart.parseFloat(V,this.type+':data['+i+']');
-					this.data[i].value = V;
+					d.value = V;
 					this.total+=V;
 					M = V>M?V:M;
 					if(!MI)
@@ -24,7 +25,7 @@
 						M = V[j]>M?V[j]:M;
 						MI = V[j]<MI?V[j]:MI;
 					}
-					this.data[i].total = T;
+					d.total = T;
 				}
 			}
 			
@@ -38,31 +39,33 @@
 			this.push('total',this.total);
 		},
 		complex = function(){
-			var M=0,MI=0,V;
 			this.columnKeys = this.get('columnKeys');
+			var M=0,MI=0,V,d,L=this.columnKeys.length;
 			
 			for(var i=0;i<this.data.length;i++){
-				iChart.Assert.equal(this.data[i].value.length,this.columnKeys.length,this.type+':data length and columnKeys not corresponding.');
-				iChart.merge(this.data[i],this.fireEvent(this,'parseData',[this.data[i],this.columnKeys,i]));
-				iChart.Assert.equal(this.data[i].value.length,this.columnKeys.length,this.type+':data length and columnKeys not corresponding.');
+				d = this.data[i];
+				iChart.Assert.equal(d.value.length,L,this.type+':data length and columnKeys not corresponding.');
+				iChart.merge(d,this.fireEvent(this,'parseData',[d,this.columnKeys,i]));
+				iChart.Assert.equal(d.value.length,L,this.type+':data length and columnKeys not corresponding.');
 			}
 			
-			for(var i=0;i<this.columnKeys.length;i++){
+			for(var i=0;i<L;i++){
 				var item = [];
 				for(var j=0;j<this.data.length;j++){
-					V = this.data[j].value[i];
-					this.data[j].value[i] = iChart.parseFloat(V,this.type+':data['+j+','+i+']');
-					if(!this.data[j].color)
-					this.data[j].color = iChart.get(j);
+					d = this.data[j];
+					V = d.value[i];
+					d.value[i] = iChart.parseFloat(V,this.type+':data['+j+','+i+']');
+					if(!d.color)
+					d.color = iChart.get(j);
 					//NEXT 此总数需考虑?
 					this.total+=V;
 					M = V>M?V:M;
 					MI = V<MI?V:MI;
 					
 					item.push({
-						name:this.data[j].name,
-						value:this.data[j].value[i],
-						color:this.data[j].color
+						name:d.name,
+						value:d.value[i],
+						color:d.color
 					});
 				}
 				this.columns.push({
@@ -77,11 +80,9 @@
 		};
 		return {
 			_3D:function(){
-				if(!iChart.isDefined(this.get('xAngle_'))||!iChart.isDefined(this.get('xAngle_'))){
-					var P = iChart.vectorP2P(this.get('xAngle'),this.get('yAngle'));
-					this.push('xAngle_',P.x);
-					this.push('yAngle_',P.y);
-				}
+				var P = iChart.vectorP2P(this.get('xAngle'),this.get('yAngle'));
+				this.push('xAngle_',P.x);
+				this.push('yAngle_',P.y);
 			},
 			_2D:'2d',
 			coordinate2d:function(){
@@ -104,11 +105,12 @@
 				},this.get('coordinate')),this);
 			},
 			coordinate:function(){
+				
 				/**
 				 * calculate  chart's measurement
 				 */
-				this.pushIf('coordinate.width',this.get('client_width')*0.8);
-				this.pushIf('coordinate.height',this.get('client_height')*0.8);
+				var w = this.pushIf('coordinate.width',this.get('client_width')*0.8),
+					h=this.pushIf('coordinate.height',this.get('client_height')*0.8);
 				
 				/**
 				 * calculate chart's alignment
@@ -116,21 +118,20 @@
 				if (this.get('align') == 'left') {
 					this.push('originx',this.get('l_originx'));
 				}else if (this.get('align') == 'right'){
-					this.push('originx',this.get('r_originx')-this.get('coordinate.width'));
+					this.push('originx',this.get('r_originx')-w);
 				}else{
-					this.push('originx',this.get('centerx')-this.get('coordinate.width')/2);
+					this.push('originx',this.get('centerx')-w/2);
 				}
 				
 				this.push('originx',this.get('originx')+this.get('offsetx'));
+				this.push('originy',this.get('centery')-h/2+this.get('offsety'));
 				
-				this.push('originy',this.get('centery')-this.get('coordinate.height')/2+this.get('offsety'));
-				
-				if(!this.get('coordinate.valid_width')||this.get('coordinate.valid_width')>this.get('coordinate.width')){
-					this.push('coordinate.valid_width',this.get('coordinate.width'));
+				if(!this.get('coordinate.valid_width')||this.get('coordinate.valid_width')>w){
+					this.push('coordinate.valid_width',w);
 				}
 				
-				if(!this.get('coordinate.valid_height')||this.get('coordinate.valid_height')>this.get('coordinate.height')){
-					this.push('coordinate.valid_height',this.get('coordinate.height'));
+				if(!this.get('coordinate.valid_height')||this.get('coordinate.valid_height')>h){
+					this.push('coordinate.valid_height',h);
 				}
 				
 				/**
