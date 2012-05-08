@@ -89,19 +89,21 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		this.fireEvent(this, 'drawCell', [x, y, text, color]);
 	},
 	drawRow : function(suffix, x, y) {
+		var d;
 		for ( var j = 0; j < this.get('column'); j++) {
+			d = this.data[suffix];
 			if (suffix < this.data.length) {
-				this.fireEvent(this, 'drawCell', [this.data[suffix]]);
-				this.drawCell(x, y, this.data[suffix].text, this.data[suffix].color);
-				this.data[suffix].x = x;
-				this.data[suffix].y = y;
+				this.fireEvent(this, 'drawCell', [d]);
+				this.drawCell(x, y, d.text, d.color);
+				d.x = x;
+				d.y = y;
 			}
 			x += this.columnwidth[j] + this.get('signwidth') + this.get('legendspace');
 			suffix++;
 		}
 	},
 	isEventValid : function(e) {
-		if (e.offsetX > this.x && e.offsetX < (this.x + this.get('width')) && e.offsetY > this.y && e.offsetY < (this.y + this.get('height'))) {
+		if (e.offsetX > this.x && e.offsetX < (this.x + this.width) && e.offsetY > this.y && e.offsetY < (this.y + this.height)) {
 			for ( var i = 0; i < this.data.length; i++) {
 				if (e.offsetX > this.data[i].x && e.offsetX < (this.data[i].x + this.data[i].width + this.get('signwidth')) && e.offsetY > this.data[i].y
 						&& e.offsetY < (this.data[i].y + this.get('line_height'))) {
@@ -121,11 +123,11 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		if (this.get('border.enable'))
 			this.T.drawBorder(this.x, this.y, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('fill_color'),
 					false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
-
+		
 		this.T.textStyle('left', 'middle', iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
-
+		
 		var x = this.x + this.get('padding_left'), y = this.y + this.get('padding_top'), text, c = this.get('column'), r = this.get('row');
-
+		
 		for ( var i = 0; i < r; i++) {
 			this.fireEvent(this, 'drawRaw', [i * c]);
 			this.drawRow(i * c, x, y);
@@ -133,15 +135,12 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		}
 
 	},
-	doEvent : function() {
-
-	},
 	doConfig : function() {
 		iChart.Legend.superclass.doConfig.call(this);
 		iChart.Assert.isNotEmpty(this.get('data'), this.type + '[data]');
 
 		var suffix = 0, maxwidth = w = this.get('width'), width = 0, wauto = (w == 'auto'), ss = this.get('sign_size'), c = iChart.isNumber(this.get('column')), r = iChart
-				.isNumber(this.get('row')), L = this.data.length, d;
+				.isNumber(this.get('row')), L = this.data.length, d,h;
 
 		this.push('signwidth', (ss + this.get('sign_space')));
 
@@ -197,8 +196,8 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		this.push('textwidth', w - this.get('hpadding') - this.get('signwidth'));
 
 		this.width = w;
-		this.height = this.push('height', r * this.get('line_height') + this.get('vpadding'));
-
+		this.height = h = this.push('height', r * this.get('line_height') + this.get('vpadding'));
+		
 		// if the position is incompatible,rectify it.
 		if (this.get('align') == 'center' && this.get('valign') == 'middle') {
 			this.push('valign', 'top');
@@ -212,25 +211,24 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		}
 		
 		if (this.get('valign') == 'top') {
-			this.push('originy', this.getC('t_originy'));
+			this.y = this.getC('t_originy');
 		} else if (this.get('valign') == 'bottom') {
-			this.push('originy', this.getC('b_originy') - this.get('height'));
+			this.y = this.getC('b_originy') - h;
 		} else {
-			this.push('originy', this.getC('centery') - this.get('height') / 2);
+			this.y = this.getC('centery') - h / 2;
 		}
+		
 		if (this.get('align') == 'left') {
-			this.push('originx', this.getC('l_originx'));
+			this.x = this.getC('l_originx');
 		} else if (this.get('align') == 'center') {
-			this.push('originx', this.getC('centerx') - this.get('textwidth') / 2);
+			this.x= this.getC('centerx') - this.get('textwidth') / 2;
 		} else {
-			this.push('originx', this.getC('r_originx') - w);
+			this.x = this.getC('r_originx') - w;
 		}
 
-		this.push('originx', this.get('originx') + this.get('offsetx'));
-		this.push('originy', this.get('originy') + this.get('offsety'));
-
-		this.x = this.get('originx');
-		this.y = this.get('originy');
+		this.x = this.push('originx', this.x + this.get('offsetx'));
+		this.y = this.push('originy', this.y + this.get('offsety'));
+		
 
 	}
 });
