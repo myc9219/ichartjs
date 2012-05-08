@@ -64,6 +64,7 @@
 			if(opts.highlight){
 				this.fireEvent(this,'highlight');
 			}
+			
 			/**drawBorder**/
 			this.lineFn.call(this);
 			this.T.drawBorder(this.labelx,this.labely,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius'),this.get('background_color'),false,this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
@@ -72,19 +73,20 @@
 			this.T.textStyle('left','top',this.get('fontStyle'));
 			
 			var x = this.labelx+this.get('padding_left'),
-				y = this.labely+this.get('padding_top')+this.get('offsety');
+				y = this.labely+this.get('padding_top')+this.get('offsety'),
+				ss = this.get('sign_size');
 			
 			var textcolor = this.get('color');
 			if(this.get('text_with_sign_color')){
 				textcolor = this.get('scolor');
 			}
 			if(this.get('sign')=='square'){				
-				this.T.rectangle(x,y,this.get('sign_size'),this.get('sign_size'),this.get('scolor'),1);
+				this.T.rectangle(x,y,ss,ss,this.get('scolor'),1);
 			}else{		
-				this.T.round(x+this.get('sign_size')/2,y+this.get('sign_size')/2,this.get('sign_size')/2,this.get('scolor'),1);
+				this.T.round(x+ss/2,y+ss/2,ss/2,this.get('scolor'),1);
 			}	
 			
-			this.T.fillText(this.get('text'),x+this.get('sign_size')+this.get('sign_space'),y,this.get('textwidth'),textcolor);
+			this.T.fillText(this.get('text'),x+ss+this.get('sign_space'),y,this.get('textwidth'),textcolor);
 		},
 		updateLcb:function(L){
 			this.lineFn = L.lineFn;

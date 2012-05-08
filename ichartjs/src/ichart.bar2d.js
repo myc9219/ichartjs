@@ -24,17 +24,17 @@
 		},
 		doConfig:function(){
 			iChart.Bar2D.superclass.doConfig.call(this);
-			var L = this.data.length,H = this.get('coordinate.height');
+			var L = this.data.length,
+				H = this.get('coordinate.height'),
+				bh = this.pushIf('barheight',H/(L*2+1));
 			
 			//bar's height 
-			this.pushIf('barheight',H/(L*2+1));
-			
-			if(this.get('barheight')*L>H){
-				this.push('barheight',H/(L*2+1));
+			if(bh*L>H){
+				bh = this.push('barheight',H/(L*2+1));
 			}
 			
 			//the space of two bar
-			this.push('barspace',(H - this.get('barheight')*L)/(L+1));
+			this.push('barspace',(H - bh*L)/(L+1));
 			
 			//use option create a coordinate
 			this.coo = iChart.Interface.coordinate2d.call(this);
@@ -47,13 +47,13 @@
 				W = this.coo.get('width'),
 				Le = this.get('label.enable'),
 				Te = this.get('tip.enable'),
-				gw = this.get('barheight')+this.get('barspace'),
+				gw = bh+this.get('barspace'),
 				t,w,text,value;
 				
 			/**
 			 * quick config to all rectangle
 			 */
-			this.push('rectangle.height',this.get('barheight'));
+			this.push('rectangle.height',bh);
 			this.push('rectangle.valueAlign','right');
 			this.push('rectangle.tipAlign','right');
 			this.push('rectangle.originx',this.x + this.coo.get('brushsize'));
@@ -93,7 +93,7 @@
 					textBaseline:'middle',
 					text:text,
 					originx:this.x - this.get('text_space'),
-	 				originy:this.y + this.get('barspace')+i*gw +this.get('barheight')/2
+	 				originy:this.y + this.get('barspace')+i*gw +bh/2
 				},this));
 				
 			}

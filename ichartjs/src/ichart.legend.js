@@ -140,7 +140,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		iChart.Assert.isNotEmpty(this.get('data'), this.type + '[data]');
 
 		var suffix = 0, maxwidth = w = this.get('width'), width = 0, wauto = (w == 'auto'), ss = this.get('sign_size'), c = iChart.isNumber(this.get('column')), r = iChart
-				.isNumber(this.get('row')), L = this.data.length, d,h;
+				.isNumber(this.get('row')), L = this.data.length, d,h,g=this.container;
 
 		this.push('signwidth', (ss + this.get('sign_space')));
 
@@ -204,31 +204,30 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		}
 
 		// if this position incompatible with container,rectify it.
-		if (this.getC('align') == 'left') {
+		if (g.get('align') == 'left') {
 			if (this.get('valign') == 'middle') {
 				this.push('align', 'right');
 			}
 		}
 		
 		if (this.get('valign') == 'top') {
-			this.y = this.getC('t_originy');
+			this.y = g.get('t_originy');
 		} else if (this.get('valign') == 'bottom') {
-			this.y = this.getC('b_originy') - h;
+			this.y = g.get('b_originy') - h;
 		} else {
-			this.y = this.getC('centery') - h / 2;
+			this.y = g.get('centery') - h / 2;
 		}
 		
 		if (this.get('align') == 'left') {
-			this.x = this.getC('l_originx');
+			this.x = g.get('l_originx');
 		} else if (this.get('align') == 'center') {
-			this.x= this.getC('centerx') - this.get('textwidth') / 2;
+			this.x= g.get('centerx') - this.get('textwidth') / 2;
 		} else {
-			this.x = this.getC('r_originx') - w;
+			this.x = g.get('r_originx') - w;
 		}
 
 		this.x = this.push('originx', this.x + this.get('offsetx'));
 		this.y = this.push('originy', this.y + this.get('offsety'));
 		
-
 	}
 });

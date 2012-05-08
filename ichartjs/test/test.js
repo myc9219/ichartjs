@@ -71,13 +71,14 @@ function start(){
 				chart.END_RUN_TIME = new Date().getTime();
 				chart.RUN_TIME_COST = chart.END_RUN_TIME - chart.START_RUN_TIME;
 			});
-			
+			console.profile(chart.get('title'));
 			chart.draw();
+			console.profileEnd(chart.get('title'));
 			result(true,chart.get('title') || chart.type,chart.RUN_TIME_COST);
 		} catch (e) {
 			result(false,chart.get('title') || chart.type,e.name+":"+e.message);
 		}
-		start();
+		//start();
 	},300)
 }
 /////////////////////上面的写成一个测试的js//////////////////////

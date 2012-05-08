@@ -42,6 +42,7 @@
 			});
 		},
 		follow:function(e,m){
+			var style = this.dom.style;
 			if(this.get('invokeOffsetDynamic')){
 				if(m.hit){
 					if(iChart.isString(m.text)||iChart.isNumber(m.text)){
@@ -49,20 +50,20 @@
 					}
 					var o = this.get('invokeOffset')(this.width(),this.height(),m);
 					
-					this.dom.style.top =  o.top+"px";
-					this.dom.style.left = o.left+"px";
+					style.top =  o.top+"px";
+					style.left = o.left+"px";
 				}
 			}else{
 				if(this.get('showType')=='follow'){
-					this.dom.style.top = (e.offsetY-this.height()*1.1-2)+"px";
-					this.dom.style.left = (e.offsetX+2)+"px";
+					style.top = (e.offsetY-this.height()*1.1-2)+"px";
+					style.left = (e.offsetX+2)+"px";
 				}else if(iChart.isFunction(this.get('invokeOffset'))){
 					var offset = this.get('invokeOffset')(this.width(),this.height(),m);
-					this.dom.style.top =  offset.top+"px";
-					this.dom.style.left = offset.left+"px";
+					style.top =  offset.top+"px";
+					style.left = offset.left+"px";
 				}else{
-					this.dom.style.top = (e.offsetY-this.height()*1.1-2)+"px";
-					this.dom.style.left = (e.offsetX+2)+"px";
+					style.top = (e.offsetY-this.height()*1.1-2)+"px";
+					style.left = (e.offsetX+2)+"px";
 				}
 			}
 			
@@ -87,37 +88,38 @@
 		initialize:function(){
 			iChart.Tip.superclass.initialize.call(this);
 			
-			this.css('position','absolute');
-			this.dom.innerHTML = this.get('text');
+			var self = this;
 			
-			this.hidden();
+			self.css('position','absolute');
+			self.dom.innerHTML = self.get('text');
 			
-			if(this.get('animation')){
-				this.transition('opacity '+this.get('fade_duration')/1000+'s ease-in 0s');
-				this.transition('top '+this.get('move_duration')/1000+'s ease-in 0s');
-				this.transition('left '+this.get('move_duration')/1000+'s ease-in 0s');
-				var self = this;
-				this.onTransitionEnd(function(e){
+			self.hidden();
+			
+			if(self.get('animation')){
+				var m =  self.get('move_duration')/1000+'s ease-in 0s';
+				self.transition('opacity '+self.get('fade_duration')/1000+'s ease-in 0s');
+				self.transition('top '+m);
+				self.transition('left '+m);
+				self.onTransitionEnd(function(e){
 					if(self.css('opacity')==0){
 						self.css('visibility','hidden');
 					}
 				},false);
 			}
 			
-			this.wrap.appendChild(this.dom);
-			var self = this;
+			self.wrap.appendChild(self.dom);
 			
-			this.T.on('mouseover',function(e,m){
+			self.T.on('mouseover',function(e,m){
 				self.show(e,m);	
 			}).on('mouseout',function(e,m){
 				self.hidden(e);	
 			});
 			
-			if(this.get('showType')=='follow'){
-				this.T.on('mousemove',function(e,m){
-					if(self.target.variable.event.mouseover){
+			if(self.get('showType')=='follow'){
+				self.T.on('mousemove',function(e,m){
+					if(self.T.variable.event.mouseover){
 						setTimeout(function(){
-							if(self.target.variable.event.mouseover)
+							if(self.T.variable.event.mouseover)
 								self.follow(e,m);
 						},self.get('delay'));
 					}

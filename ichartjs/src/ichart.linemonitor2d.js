@@ -26,11 +26,8 @@
 			}
 			
 			for ( var j = 0; j < v.length; j++) {
-				
 				x = this.direction=='left'?(this.end - this.space * j):(this.space * j);
-				
 				y = (iChart.between(this.T.S.start,this.T.S.end,v[j]) - this.T.S.start)*this.T.S.uh;
-				
 				this.line.points.push(iChart.merge({x : x,y : y,value : v[j]},this.T.fireEvent(this.T, 'parsePoint', [v[j], x, y, j ])));
 			}
 		}
@@ -84,54 +81,53 @@
 		doConfig : function() {
 			iChart.LineMonitor2D.superclass.doConfig.call(this);
 			
+			var self = this;
 			//the monitor not support the animation now
-			this.push('animation',false);
+			self.push('animation',false);
 			
-			var single = this.data.length == 1, self = this;
 			
-			if (this.get('coordinate.crosshair.enable')) {
-				this.push('coordinate.crosshair.hcross',single);
-				this.push('coordinate.crosshair.invokeOffset',function(e, m) {
+			if (self.get('coordinate.crosshair.enable')) {
+				self.push('coordinate.crosshair.hcross',self.data.length == 1);
+				self.push('coordinate.crosshair.invokeOffset',function(e, m) {
 						var r = self.lines[0].isEventValid(e);
 						return r.valid ? r : false;
 				});
 			}
 			
-			this.coo = new iChart.Coordinate2D(iChart.merge( {
+			self.coo = new iChart.Coordinate2D(iChart.merge( {
 				kedu : [ {
-					position : this.get('keduAlign'),
-					max_scale : this.get('maxValue')
+					position : self.get('keduAlign'),
+					max_scale : self.get('maxValue')
 				}, {
-					position : this.get('labelAlign'),
+					position : self.get('labelAlign'),
 					scaleEnable : false,
 					start_scale : 1,
 					scale : 1,
-					end_scale : this.get('maxItemSize'),
-					labels : this.get('labels')
+					end_scale : self.get('maxItemSize'),
+					labels : self.get('labels')
 				} ],
 				axis : {
 					width : [ 0, 0, 1, 1 ]
 				}
-			}, this.get('coordinate')), this);
+			}, self.get('coordinate')), self);
 
-			this.pushComponent(this.coo, true);
+			self.pushComponent(self.coo, true);
 			
-			this.push('label_spacing',this.get('coordinate.valid_width')/(this.get('queue_size')-1));
+			self.push('label_spacing',self.get('coordinate.valid_width')/(self.get('queue_size')-1));
 			
-			if (!this.get('segment_style.tip')) {
-				this.push('segment_style.tip', this.get('tip'));
+			if (!self.get('segment_style.tip')) {
+				self.push('segment_style.tip', self.get('tip'));
 			} else {
-				this.push('segment_style.tip.wrap', this.get('tip.wrap'));
+				self.push('segment_style.tip.wrap', self.get('tip.wrap'));
 			}
 
-			this.push('segment_style.tip.showType','follow');
-			this.push('segment_style.coordinate',this.coo);
-			this.push('segment_style.keep_with_coordinate',true);
-			
+			self.push('segment_style.tip.showType','follow');
+			self.push('segment_style.coordinate',self.coo);
+			self.push('segment_style.keep_with_coordinate',true);
 			
 			//get the max/min scale of this coordinate for calculated the height
-			this.S = this.coo.getScale(this.get('keduAlign'));
-			this.S.uh = this.get('coordinate.valid_height')/ this.S.distance;
+			self.S = self.coo.getScale(self.get('keduAlign'));
+			self.S.uh = self.get('coordinate.valid_height')/ self.S.distance;
 			
 
 		}

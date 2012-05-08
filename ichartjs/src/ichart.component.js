@@ -4,7 +4,6 @@
 	 * @extend#iChart.Painter
 	 */
 	iChart.Component = iChart.extend(iChart.Painter,{
-	
 		configure : function(c) {
 			/**
 			 * invoked the super class's configuration
@@ -45,7 +44,6 @@
 	},
 	doConfig : function() {
 		iChart.Component.superclass.doConfig.call(this);
-		
 		/**
 		 * originx
 		 */
@@ -64,9 +62,8 @@
 		if (this.is3D()) {
 			iChart.Interface._3D.call(this);
 		}
-	
+		
 		if (this.get('tip.enable')) {
-			
 			/**
 			 * make tip's border in accord with sector
 			 */
@@ -87,15 +84,12 @@
 		this.container.draw();
 	},
 	commonDraw : function(opts) {
-		// this.T.save();
-		// 转换中心坐标至当前目标坐标中心
+		// 转换中心坐标至当前目标坐标中心?
 		// this.T.ctx.translate(this.x,this.y);
 		/**
 		 * execute the doDraw() that the subClass implement
 		 */
 		this.doDraw.call(this, opts);
-	
-		// this.T.restore();
 	
 	},
 	inject : function(c) {
@@ -103,12 +97,5 @@
 			this.container = c;
 			this.target = this.T = c.T;
 		}
-	},
-	getC : function(name) {
-		return this.container.get(name);
-	},
-	getContainer : function() {
-		return this.container;
 	}
-	
 	});

@@ -58,43 +58,43 @@
 		},
 		doConfig:function(){
 			iChart.Rectangle2D.superclass.doConfig.call(this);
-			
-			if(this.get('tipAlign')=='left'||this.get('tipAlign')=='right'){
-				this.tipY = function(w,h){return this.centerY - h/2;};
+			var self = this,tipAlign = self.get('tipAlign'),valueAlign=self.get('valueAlign');
+			if(tipAlign=='left'||tipAlign=='right'){
+				self.tipY = function(w,h){return self.centerY - h/2;};
 			}else{
-				this.tipX = function(w,h){return this.centerX -w/2;};
+				self.tipX = function(w,h){return self.centerX -w/2;};
 			}
 			
-			if(this.get('tipAlign')=='left'){
-				this.tipX = function(w,h){return this.x - this.get('value_space') -w;};
-			}else if(this.get('tipAlign')=='right'){
-				this.tipX = function(w,h){return this.x + this.width + this.get('value_space');};
-			}else if(this.get('tipAlign')=='bottom'){
-				this.tipY = function(w,h){return this.y  +this.height+3;};
+			if(tipAlign=='left'){
+				self.tipX = function(w,h){return self.x - self.get('value_space') -w;};
+			}else if(tipAlign=='right'){
+				self.tipX = function(w,h){return self.x + self.width + self.get('value_space');};
+			}else if(tipAlign=='bottom'){
+				self.tipY = function(w,h){return self.y  +self.height+3;};
 			}else{
-				this.tipY = function(w,h){return this.y  - h -3;};
+				self.tipY = function(w,h){return self.y  - h -3;};
 			}
 			
-			if(this.get('valueAlign')=='left'){
-				this.push('textAlign','right');
-				this.push('value_x',this.x - this.get('value_space'));
-				this.push('value_y',this.centerY);
-			}else if(this.get('valueAlign')=='right'){
-				this.push('textAlign','left');
-				this.push('textBaseline','middle');
-				this.push('value_x',this.x + this.width + this.get('value_space'));
-				this.push('value_y',this.centerY);
-			}else if(this.get('valueAlign')=='bottom'){
-				this.push('value_x',this.centerX);
-				this.push('value_y',this.y  + this.height + this.get('value_space'));
-				this.push('textBaseline','top');
+			if(valueAlign=='left'){
+				self.push('textAlign','right');
+				self.push('value_x',self.x - self.get('value_space'));
+				self.push('value_y',self.centerY);
+			}else if(valueAlign=='right'){
+				self.push('textAlign','left');
+				self.push('textBaseline','middle');
+				self.push('value_x',self.x + self.width + self.get('value_space'));
+				self.push('value_y',self.centerY);
+			}else if(valueAlign=='bottom'){
+				self.push('value_x',self.centerX);
+				self.push('value_y',self.y  + self.height + self.get('value_space'));
+				self.push('textBaseline','top');
 			}else{
-				this.push('value_x',this.centerX);
-				this.push('value_y',this.y  - this.get('value_space'));
-				this.push('textBaseline','bottom');
+				self.push('value_x',self.centerX);
+				self.push('value_y',self.y  - self.get('value_space'));
+				self.push('textBaseline','bottom');
 			}
 			
-			this.valueX = this.get('value_x');
-			this.valueY = this.get('value_y');
+			self.valueX = self.get('value_x');
+			self.valueY = self.get('value_y');
 		}
 });

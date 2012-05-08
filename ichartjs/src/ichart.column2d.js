@@ -23,17 +23,17 @@
 		doConfig:function(){
 			iChart.Column2D.superclass.doConfig.call(this);
 			
-			var L = this.data.length,W = this.get('coordinate.width');
+			var L = this.data.length,
+				W = this.get('coordinate.width'),
+				hw = this.pushIf('hiswidth',W/(L*2+1));
 			
-			//column's width 
-			this.pushIf('hiswidth',W/(L*2+1));
 			
-			if(this.get('hiswidth')*L>W){
-				this.push('hiswidth',W/(L*2+1));
+			if(hw*L>W){
+				hw = this.push('hiswidth',W/(L*2+1));
 			}
 			
 			//the space of two column
-			this.push('hispace',(W - this.get('hiswidth')*L)/(L+1));
+			this.push('hispace',(W - hw*L)/(L+1));
 			
 			//use option create a coordinate
 			this.coo = iChart.Interface.coordinate2d.call(this);
@@ -46,13 +46,13 @@
 				H = this.coo.get('height'),
 				Le = this.get('label.enable'),
 				Te = this.get('tip.enable'),
-				gw = this.get('hiswidth')+this.get('hispace'),
+				gw = hw+this.get('hispace'),
 				t,h,text,value;
 				
 			/**
 			 * quick config to all rectangle
 			 */
-			this.push('rectangle.width',this.get('hiswidth'));
+			this.push('rectangle.width',hw);
 			
 			for(var i=0;i<L;i++){
 				text = this.data[i].name;
@@ -87,7 +87,7 @@
 				this.labels.push(new iChart.Text({
 					id:i,
 					text:text,
-					originx:this.x + this.get('hispace')+gw*i+this.get('hiswidth')/2,
+					originx:this.x + this.get('hispace')+gw*i+hw/2,
 	 				originy:this.y+H+this.get('text_space')
 				},this));
 				

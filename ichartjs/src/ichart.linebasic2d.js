@@ -72,22 +72,21 @@
 			var S = this.coo.getScale(this.get('keduAlign')),
 				H=this.get('coordinate.valid_height'),
 				sp=this.get('label_spacing'),
-				points,x,y;
+				points,x,y,
+				d = this.data;
 			
-			//?多个点重合的Tip处理?
-			
-			for(var i=0;i<this.data.length;i++){
+			for(var i=0;i<d.length;i++){
 				points = [];
-				for(var j=0;j<this.data[i].value.length;j++){
+				for(var j=0;j<d[i].value.length;j++){
 					x = sp*j;
-					y = (this.data[i].value[j]-S.start)*H/S.distance;
-					points.push(iChart.merge({x:x,y:y,value:this.data[i].value[j]},this.fireEvent(this,'parsePoint',[this.data[i].value[j],x,y,j])));
+					y = (d[i].value[j]-S.start)*H/S.distance;
+					points.push(iChart.merge({x:x,y:y,value:d[i].value[j]},this.fireEvent(this,'parsePoint',[d[i].value[j],x,y,j])));
 				}
 				
 				this.push('segment_style.spacing',sp);
 				this.push('segment_style.points',points);
-				this.push('segment_style.brushsize',this.data[i].linewidth||1);
-				this.push('segment_style.background_color',this.data[i].color);
+				this.push('segment_style.brushsize',d[i].linewidth||1);
+				this.push('segment_style.background_color',d[i].color);
 				
 				this.lines.push(new iChart.LineSegment(this.get('segment_style'),this));
 			}
