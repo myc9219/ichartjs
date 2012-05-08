@@ -80,9 +80,9 @@
 		tipInvoke:function(){
 			var A = this.get('middleAngle'),
 				Q  = iChart.quadrantd(A),
-				self =  this;
+				_ =  this;
 			return function(w,h){
-				var P = self.p2p(self.x,self.y,A,0.6);
+				var P = _.p2p(_.x,_.y,A,0.6);
 				return {
 					left:(Q>=2&&Q<=3)?(P.x - w):P.x,
 					top:Q>=3?(P.y - h):P.y
@@ -94,7 +94,7 @@
 				P = this.p2p(x,y,A,this.Z),
 				P2 = this.p2p(x,y,A,1),
 				Q  = iChart.quadrantd(A),
-				self = this,
+				_ = this,
 				ccw = this.get('counterclockwise');
 				return {
 					origin:{
@@ -102,12 +102,12 @@
 						y:P2.y
 					},
 					lineFn:function(){
-						this.T.line(P2.x,P2.y+self.h/2,P.x,P.y+self.h/2,this.get('border.width')*4,this.get('border.color'),(ccw&&A<Math.PI)||(!ccw&&A>Math.PI));
+						this.T.line(P2.x,P2.y+_.h/2,P.x,P.y+_.h/2,this.get('border.width')*4,this.get('border.color'),(ccw&&A<Math.PI)||(!ccw&&A>Math.PI));
 					},
 					labelXY:function(){
 						return {
 							labelx:(Q>=2&&Q<=3)?(P.x - this.width):P.x,
-							labely:Q>=3?(P.y - this.height+self.h/2):P.y+self.h/2
+							labely:Q>=3?(P.y - this.height+_.h/2):P.y+_.h/2
 						}
 					}
 				}

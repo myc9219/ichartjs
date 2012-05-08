@@ -62,10 +62,10 @@
 		tipInvoke:function(){
 			var A = this.get('middleAngle'),
 				Q  = iChart.quadrantd(A),
-				self = this,
+				_ = this,
 				r = this.get('radius');
 			return function(w,h){
-				var P = iChart.p2Point(self.x,self.y,A,r*0.8);
+				var P = iChart.p2Point(_.x,_.y,A,r*0.8);
 				return {
 					left:(Q>=2&&Q<=3)?(P.x - w):P.x,
 					top:Q>=3?(P.y - h):P.y

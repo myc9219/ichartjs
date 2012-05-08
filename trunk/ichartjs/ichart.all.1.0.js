@@ -2277,11 +2277,11 @@ function Cans(c){
 }
 
 Cans.prototype = {
-	css:function(attr,style){
-		if($.isDefined(style))
-			this.canvas.style[attr] = style;
+	css:function(a,s){
+		if($.isDefined(s))
+			this.canvas.style[a] = s;
 		else
-			return this.canvas.style[attr];
+			return this.canvas.style[a];
 	},
 	/* it seem not improve the speed
 	isPointInPathArc:function(x,y,radius,s,e,color,ccw,a2r,x0,y0){
@@ -3031,23 +3031,23 @@ $.Chart = $.extend($.Painter,{
 					this.get('background_color'));
 		},
 		animation:function(){
-			return function(self){
+			return function(_){
 				//console.time('Test for animation');
 				//clear the part of canvas
-				self.segmentRect();
+				_.segmentRect();
 				//doAnimation of implement
-				self.doAnimation(self.variable.animation.time,self.duration);
+				_.doAnimation(_.variable.animation.time,_.duration);
 				//fill the background
-				self.resetCanvas();
-				if(self.variable.animation.time<self.duration){
-					self.variable.animation.time++;setTimeout(function(){self.animation(self)},$.INTERVAL)}
+				_.resetCanvas();
+				if(_.variable.animation.time<_.duration){
+					_.variable.animation.time++;setTimeout(function(){_.animation(_)},$.INTERVAL)}
 				else{
 					setTimeout(function(){
-						self.variable.animation.time = 0;
-						self.animationed = true;
-						self.draw();
-						self.processAnimation = false;
-						self.fireEvent(this,'afterAnimation',[this]);	
+						_.variable.animation.time = 0;
+						_.animationed = true;
+						_.draw();
+						_.processAnimation = false;
+						_.fireEvent(this,'afterAnimation',[this]);	
 					},$.INTERVAL);
 				}
 				//console.timeEnd('Test for animation');
@@ -3167,53 +3167,53 @@ $.Chart = $.extend($.Painter,{
 		doConfig:function(){
 			$.Chart.superclass.doConfig.call(this);
 			//for compress
-			var self = this,E=self.variable.event;
+			var _ = this,E=_.variable.event;
 			
-			if(self.get('animation')){
-				self.processAnimation = self.get('animation');
-				self.duration = Math.ceil(self.get('duration_animation_duration')*$.FRAME/1000);
-				self.variable.animation = {time:0};
-				self.animationArithmetic = $.getAnimationArithmetic(self.get('animation_timing_function'));
+			if(_.get('animation')){
+				_.processAnimation = _.get('animation');
+				_.duration = Math.ceil(_.get('duration_animation_duration')*$.FRAME/1000);
+				_.variable.animation = {time:0};
+				_.animationArithmetic = $.getAnimationArithmetic(_.get('animation_timing_function'));
 			}
 			
-			if(self.is3D()){
-				$.Interface._3D.call(self);
+			if(_.is3D()){
+				$.Interface._3D.call(_);
 			}
 			
-			self.T.strokeStyle(self.get('brushsize'),self.get('strokeStyle'),self.get('lineJoin'));
+			_.T.strokeStyle(_.get('brushsize'),_.get('strokeStyle'),_.get('lineJoin'));
 			
-			self.T.addEvent('click',function(e){self.fireEvent(self,'click',[$.Event.fix(e)]);},false);
+			_.T.addEvent('click',function(e){_.fireEvent(_,'click',[$.Event.fix(e)]);},false);
 			
-			self.T.addEvent('mousemove',function(e){self.fireEvent(self,'mousemove',[$.Event.fix(e)]);},false);
+			_.T.addEvent('mousemove',function(e){_.fireEvent(_,'mousemove',[$.Event.fix(e)]);},false);
 			
-			self.on('click',function(e){
-				if(self.processAnimation)return;
+			_.on('click',function(e){
+				if(_.processAnimation)return;
 				//console.time('Test for click');
 				var cot;
-				for(var i = 0;i < self.components.length;i++){
-					cot = self.components[i];
+				for(var i = 0;i < _.components.length;i++){
+					cot = _.components[i];
 					if(cot.preventEvent)continue;
 					var M = cot.isMouseOver(e);
 					if(M.valid)
-						self.components[i].fireEvent(cot,'click',[e,M]);
+						_.components[i].fireEvent(cot,'click',[e,M]);
 				}
 				//console.timeEnd('Test for click');
 			});
 			
-			self.on('mousemove',function(e){
-				if(self.processAnimation)return;
+			_.on('mousemove',function(e){
+				if(_.processAnimation)return;
 				//console.time('Test for doMouseMove');
 				var O = false;
-				for(var i = 0;i < self.components.length;i++){
-					var cot = self.components[i],cE = cot.variable.event;
+				for(var i = 0;i < _.components.length;i++){
+					var cot = _.components[i],cE = cot.variable.event;
 					if(cot.preventEvent)continue;
 					var M = cot.isMouseOver(e);
 					if(M.valid){
 						O = true;
 						if(!E.mouseover){
 							E.mouseover = true;
-							self.T.css("cursor","pointer");
-							self.fireEvent(self,'mouseover',[e]);
+							_.T.css("cursor","pointer");
+							_.fireEvent(_,'mouseover',[e]);
 						}
 						if(!cE.mouseover){
 							cE.mouseover = true;
@@ -3230,82 +3230,82 @@ $.Chart = $.extend($.Painter,{
 				
 				if(!O&&E.mouseover){
 					E.mouseover = false;
-					self.T.css("cursor","default");
-					self.fireEvent(self,'mouseout',[e]);
+					_.T.css("cursor","default");
+					_.fireEvent(_,'mouseout',[e]);
 				}
 				//console.timeEnd('Test for doMouseMove');
 			});
-			$.Assert.isArray(self.data);
+			$.Assert.isArray(_.data);
 			
-			self.push('l_originx',self.get('padding_left'));
-			self.push('r_originx',self.width - self.get('padding_right'));
-			self.push('t_originy',self.get('padding_top'));
-			self.push('b_originy',self.height-self.get('padding_bottom'));
+			_.push('l_originx',_.get('padding_left'));
+			_.push('r_originx',_.width - _.get('padding_right'));
+			_.push('t_originy',_.get('padding_top'));
+			_.push('b_originy',_.height-_.get('padding_bottom'));
 					
 			var offx = 0,offy=0;
 			
-			if(self.get('title')!=''){
-				if(self.get('title_writingmode')=='tb'){//竖直排列
-					offx = self.get('title_height');
-					if(self.get('title_align')=='left'){
-						self.push('l_originx',self.get('l_originx')+self.get('title_height'));
+			if(_.get('title')!=''){
+				if(_.get('title_writingmode')=='tb'){//竖直排列
+					offx = _.get('title_height');
+					if(_.get('title_align')=='left'){
+						_.push('l_originx',_.get('l_originx')+_.get('title_height'));
 					}else{
-						self.push('r_originx',self.width-self.get('l_originx')-self.get('title_height'));
+						_.push('r_originx',_.width-_.get('l_originx')-_.get('title_height'));
 					}
 				}else{//横向排列
-					offy = self.get('title_height');
+					offy = _.get('title_height');
 					
-					if(self.get('title_align')=='left'){
-						self.push('title_originx',self.get('padding_left'));
-					}else if(self.get('title_align')=='right'){
-						self.push('title_originx',self.width-self.get('padding_right'));
+					if(_.get('title_align')=='left'){
+						_.push('title_originx',_.get('padding_left'));
+					}else if(_.get('title_align')=='right'){
+						_.push('title_originx',_.width-_.get('padding_right'));
 					}else{
-						self.push('title_originx',self.get('client_width')/2);//goto midline
+						_.push('title_originx',_.get('client_width')/2);//goto midline
 					}	
-					if(self.get('title_valign')=='bottom'){
-						self.push('title_originy',self.height-self.get('padding_bottom'));
-						self.push('b_originy',self.height-self.get('b_originy')-self.get('title_height'));
+					if(_.get('title_valign')=='bottom'){
+						_.push('title_originy',_.height-_.get('padding_bottom'));
+						_.push('b_originy',_.height-_.get('b_originy')-_.get('title_height'));
 					}else{
-						self.push('t_originy',self.get('t_originy')+self.get('title_height'));
-						self.push('title_originy',self.get('padding_top'));	
+						_.push('t_originy',_.get('t_originy')+_.get('title_height'));
+						_.push('title_originy',_.get('padding_top'));	
 					}
 				}
 			}	
 			
-			self.push('client_width',(self.get('width') - self.get('hpadding')-offx));
-			self.push('client_height',(self.get('height') - self.get('vpadding')-offy));
+			_.push('client_width',(_.get('width') - _.get('hpadding')-offx));
+			_.push('client_height',(_.get('height') - _.get('vpadding')-offy));
 			
-			self.push('minDistance',Math.min(self.get('client_width'),self.get('client_height')));
-			self.push('maxDistance',Math.max(self.get('client_width'),self.get('client_height')));
-			self.push('minstr',self.get('client_width')<self.get('client_height')?'width':'height');
+			_.push('minDistance',Math.min(_.get('client_width'),_.get('client_height')));
+			_.push('maxDistance',Math.max(_.get('client_width'),_.get('client_height')));
+			_.push('minstr',_.get('client_width')<_.get('client_height')?'width':'height');
 			
-			self.push('centerx',self.get('l_originx')+self.get('client_width')/2);
-			self.push('centery',self.get('t_originy')+self.get('client_height')/2);
+			_.push('centerx',_.get('l_originx')+_.get('client_width')/2);
+			_.push('centery',_.get('t_originy')+_.get('client_height')/2);
 			/*
-			if(self.get('border.enable')){
-				var round = $.parseBorder(self.get('border.radius'));
-				self.push('radius_top',round[0]);
-				self.push('radius_right',round[1]);
-				self.push('radius_bottom',round[2]);
-				self.push('radius_left',round[3]);
+			if(_.get('border.enable')){
+				var round = $.parseBorder(_.get('border.radius'));
+				_.push('radius_top',round[0]);
+				_.push('radius_right',round[1]);
+				_.push('radius_bottom',round[2]);
+				_.push('radius_left',round[3]);
 			}*/
 			
 			/**
 			 * legend
 			 */
-			if(self.get('legend.enable')){
-				self.legend = new $.Legend($.apply({
-				 	 maxwidth:self.get('client_width'),
-				 	 data:self.data
-				},self.get('legend')),self);
+			if(_.get('legend.enable')){
+				_.legend = new $.Legend($.apply({
+				 	 maxwidth:_.get('client_width'),
+				 	 data:_.data
+				},_.get('legend')),_);
 				
-				self.components.push(self.legend);
+				_.components.push(_.legend);
 			}
 			/**
 			 * tip's wrap
 			 */
-			if(self.get('tip.enable')){
-				self.push('tip.wrap',self.shell);
+			if(_.get('tip.enable')){
+				_.push('tip.wrap',_.shell);
 			}
 			
 		}
@@ -4237,55 +4237,55 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			return {valid:e.offsetX>this.x&&e.offsetX<(this.x+this.width)&&e.offsetY<(this.y+this.height)&&e.offsetY>(this.y)};
 		},
 		tipInvoke:function(){
-			var self = this;
+			var _ = this;
 			//base on event? NEXT
 			return function(w,h){
 				return {
-					left:self.tipX(w,h),
-					top:self.tipY(w,h)
+					left:_.tipX(w,h),
+					top:_.tipY(w,h)
 				}
 			}
 		},
 		doConfig:function(){
 			$.Rectangle2D.superclass.doConfig.call(this);
-			var self = this,tipAlign = self.get('tipAlign'),valueAlign=self.get('valueAlign');
+			var _ = this,tipAlign = _.get('tipAlign'),valueAlign=_.get('valueAlign');
 			if(tipAlign=='left'||tipAlign=='right'){
-				self.tipY = function(w,h){return self.centerY - h/2;};
+				_.tipY = function(w,h){return _.centerY - h/2;};
 			}else{
-				self.tipX = function(w,h){return self.centerX -w/2;};
+				_.tipX = function(w,h){return _.centerX -w/2;};
 			}
 			
 			if(tipAlign=='left'){
-				self.tipX = function(w,h){return self.x - self.get('value_space') -w;};
+				_.tipX = function(w,h){return _.x - _.get('value_space') -w;};
 			}else if(tipAlign=='right'){
-				self.tipX = function(w,h){return self.x + self.width + self.get('value_space');};
+				_.tipX = function(w,h){return _.x + _.width + _.get('value_space');};
 			}else if(tipAlign=='bottom'){
-				self.tipY = function(w,h){return self.y  +self.height+3;};
+				_.tipY = function(w,h){return _.y  +_.height+3;};
 			}else{
-				self.tipY = function(w,h){return self.y  - h -3;};
+				_.tipY = function(w,h){return _.y  - h -3;};
 			}
 			
 			if(valueAlign=='left'){
-				self.push('textAlign','right');
-				self.push('value_x',self.x - self.get('value_space'));
-				self.push('value_y',self.centerY);
+				_.push('textAlign','right');
+				_.push('value_x',_.x - _.get('value_space'));
+				_.push('value_y',_.centerY);
 			}else if(valueAlign=='right'){
-				self.push('textAlign','left');
-				self.push('textBaseline','middle');
-				self.push('value_x',self.x + self.width + self.get('value_space'));
-				self.push('value_y',self.centerY);
+				_.push('textAlign','left');
+				_.push('textBaseline','middle');
+				_.push('value_x',_.x + _.width + _.get('value_space'));
+				_.push('value_y',_.centerY);
 			}else if(valueAlign=='bottom'){
-				self.push('value_x',self.centerX);
-				self.push('value_y',self.y  + self.height + self.get('value_space'));
-				self.push('textBaseline','top');
+				_.push('value_x',_.centerX);
+				_.push('value_y',_.y  + _.height + _.get('value_space'));
+				_.push('textBaseline','top');
 			}else{
-				self.push('value_x',self.centerX);
-				self.push('value_y',self.y  - self.get('value_space'));
-				self.push('textBaseline','bottom');
+				_.push('value_x',_.centerX);
+				_.push('value_y',_.y  - _.get('value_space'));
+				_.push('textBaseline','bottom');
 			}
 			
-			self.valueX = self.get('value_x');
-			self.valueY = self.get('value_y');
+			_.valueX = _.get('value_x');
+			_.valueY = _.get('value_y');
 		}
 });	/**
 	 * @overview this component use for abc
@@ -4570,10 +4570,10 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 		tipInvoke:function(){
 			var A = this.get('middleAngle'),
 				Q  = $.quadrantd(A),
-				self = this,
+				_ = this,
 				r = this.get('radius');
 			return function(w,h){
-				var P = $.p2Point(self.x,self.y,A,r*0.8);
+				var P = $.p2Point(_.x,_.y,A,r*0.8);
 				return {
 					left:(Q>=2&&Q<=3)?(P.x - w):P.x,
 					top:Q>=3?(P.y - h):P.y
@@ -4701,9 +4701,9 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 		tipInvoke:function(){
 			var A = this.get('middleAngle'),
 				Q  = $.quadrantd(A),
-				self =  this;
+				_ =  this;
 			return function(w,h){
-				var P = self.p2p(self.x,self.y,A,0.6);
+				var P = _.p2p(_.x,_.y,A,0.6);
 				return {
 					left:(Q>=2&&Q<=3)?(P.x - w):P.x,
 					top:Q>=3?(P.y - h):P.y
@@ -4715,7 +4715,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 				P = this.p2p(x,y,A,this.Z),
 				P2 = this.p2p(x,y,A,1),
 				Q  = $.quadrantd(A),
-				self = this,
+				_ = this,
 				ccw = this.get('counterclockwise');
 				return {
 					origin:{
@@ -4723,12 +4723,12 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 						y:P2.y
 					},
 					lineFn:function(){
-						this.T.line(P2.x,P2.y+self.h/2,P.x,P.y+self.h/2,this.get('border.width')*4,this.get('border.color'),(ccw&&A<Math.PI)||(!ccw&&A>Math.PI));
+						this.T.line(P2.x,P2.y+_.h/2,P.x,P.y+_.h/2,this.get('border.width')*4,this.get('border.color'),(ccw&&A<Math.PI)||(!ccw&&A>Math.PI));
 					},
 					labelXY:function(){
 						return {
 							labelx:(Q>=2&&Q<=3)?(P.x - this.width):P.x,
-							labely:Q>=3?(P.y - this.height+self.h/2):P.y+self.h/2
+							labely:Q>=3?(P.y - this.height+_.h/2):P.y+_.h/2
 						}
 					}
 				}
@@ -5925,11 +5925,11 @@ $.Pie2D = $.extend($.Pie, {
 				y = this.y,
 				o = this.get('tip_offset'),
 				s = this.get('point_size')+o,
-				self = this;
+				_ = this;
 			return function(w,h,m){
 				var l = m.left,t = m.top;
-				l = ((self.tipPosition<3&&(m.left-w-x-o>0))||(self.tipPosition>2&&(m.left-w-x-o<0)))?l-(w+o):l+o;
-				t = self.tipPosition%2==0?m.top+s:m.top-h-s;
+				l = ((_.tipPosition<3&&(m.left-w-x-o>0))||(_.tipPosition>2&&(m.left-w-x-o<0)))?l-(w+o):l+o;
+				t = _.tipPosition%2==0?m.top+s:m.top-h-s;
 				return {
 					left:l,
 					top:t
@@ -5940,13 +5940,13 @@ $.Pie2D = $.extend($.Pie, {
 			$.LineSegment.superclass.doConfig.call(this);
 			$.Assert.gtZero(this.get('spacing'),'spacing');
 			
-			var self = this,
+			var _ = this,
 				sp = this.get('spacing'),
-				ry = self.get('event_range_y'),
-				rx = self.get('event_range_x'),
-				heap = self.get('tipInvokeHeap'),
-				p = self.get('points');
-			self.points = p;
+				ry = _.get('event_range_y'),
+				rx = _.get('event_range_x'),
+				heap = _.get('tipInvokeHeap'),
+				p = _.get('points');
+			_.points = p;
 			
 			for(var i=0;i<p.length;i++){
 				p[i].width = p[i].x;
@@ -5954,48 +5954,48 @@ $.Pie2D = $.extend($.Pie, {
 			}
 			
 			if(rx==0){
-				rx = self.push('event_range_x',Math.floor(sp/2));
+				rx = _.push('event_range_x',Math.floor(sp/2));
 			}else{
-				rx = self.push('event_range_x',$.between(1,Math.floor(sp/2),rx));
+				rx = _.push('event_range_x',$.between(1,Math.floor(sp/2),rx));
 			}
 			if(ry==0){
-				ry = self.push('event_range_y',Math.floor(self.get('point_size')));
+				ry = _.push('event_range_y',Math.floor(_.get('point_size')));
 			}
 			
-			if(self.get('tip.enable')){
-				//self use for tip coincidence
-				self.on('mouseover',function(e,m){
-					heap.push(self);
-					self.tipPosition = heap.length;
+			if(_.get('tip.enable')){
+				//_ use for tip coincidence
+				_.on('mouseover',function(e,m){
+					heap.push(_);
+					_.tipPosition = heap.length;
 				}).on('mouseout',function(e,m){
 					heap.pop();
 				});
-				self.push('tip.invokeOffsetDynamic',true);
-				self.tip = new $.Tip(self.get('tip'),self);
+				_.push('tip.invokeOffsetDynamic',true);
+				_.tip = new $.Tip(_.get('tip'),_);
 			}
 			
-			var c = self.get('coordinate'),
-				ly = self.get('limit_y'),
-				k = self.get('keep_with_coordinate'),
+			var c = _.get('coordinate'),
+				ly = _.get('limit_y'),
+				k = _.get('keep_with_coordinate'),
 				valid =function(i,x,y){
-					if(Math.abs(x-(self.x+p[i].x))<rx&&(!ly||(ly&&Math.abs(y-(self.y-p[i].y))<ry))){
+					if(Math.abs(x-(_.x+p[i].x))<rx&&(!ly||(ly&&Math.abs(y-(_.y-p[i].y))<ry))){
 						return true;
 					}
 					return false;
 				},
 				to = function(i){
-					return {valid:true,text:p[i].value,top:self.y-p[i].y,left:self.x+p[i].x,hit:true};
+					return {valid:true,text:p[i].value,top:_.y-p[i].y,left:_.x+p[i].x,hit:true};
 				};
 			
 			/**
 			 * override the default method
 			 */
-			self.isEventValid =  function(e){
+			_.isEventValid =  function(e){
 				//console.time('mouseover');
 				if(c&&!c.isEventValid(e).valid){
 					return {valid:false};
 				}
-				var ii = Math.floor((e.offsetX-self.x)/sp);
+				var ii = Math.floor((e.offsetX-_.x)/sp);
 				if(ii<0||ii>=(p.length-1)){
 					ii = $.between(0,p.length-1,ii);
 					if(valid(ii,e.offsetX,e.offsetY))
