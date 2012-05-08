@@ -25,9 +25,7 @@
 				 line_height:16,
 				 /**
 				  * @cfg {String} the shape of legend' sign (default to 'square')
-				  
 				  * The following list provides all available value you can use：
-				  
 				  * @Option 'round'
 				  * @Option 'square'
 				  * @Option 'round-bar'
@@ -71,21 +69,21 @@
 				
 		},
 		drawCell:function(x,y,text,color){
-			var s = this.get('sign_size');
-			
-			if(this.get('sign')=='round'){	
+			var s = this.get('sign_size'),
+				n = this.get('sign');
+			if(n=='round'){	
 				this.T.round(x+s/2,y+s/2,s/2,color);
-			}else if(this.get('sign')=='round-bar'){		
+			}else if(n=='round-bar'){		
 				this.T.rectangle(x,y+s*5/12,s,s/6,color);
 				this.T.round(x+s/2,y+s/2,s/4,color);
-			}else if(this.get('sign')=='square-bar'){	
+			}else if(n=='square-bar'){	
 				this.T.rectangle(x,y+s*5/12,s,s/6,color);
 				this.T.rectangle(x+s/4,y+s/4,s/2,s/2,color);
 			}else{				
 				this.T.rectangle(x,y,s,s,color);
 			}
-			
 			var textcolor = this.get('color');
+			
 			if(this.get('text_with_sign_color')){
 				textcolor = color;
 			}
@@ -124,8 +122,8 @@
 				this.height,
 				this.get('border.width'),
 				this.get('border.color'),
-				this.get('border.radius')==0?0:iChart.parseBorder(this.get('border.radius')),
-                this.get('background_color'),
+				this.get('border.radius'),
+                this.get('fill_color'),
                 false,
                 this.get('shadow'),
 				this.get('shadow_color'),

@@ -49,11 +49,6 @@
 			);
 				
 		},
-		drawBorder:function(){
-			this.lineFn.call(this);
-			this.T.drawBorder(this.labelx,this.labely,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:iChart.parseBorder(this.get('border.radius')),this.get('background_color'),false,this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
-			
-		},
 		isEventValid:function(e){ 
 			return {valid:iChart.inRange(this.labelx,this.labelx+this.width,e.offsetX)&&iChart.inRange(this.labely,this.labely+this.height,e.offsetY)};
 		},
@@ -69,8 +64,9 @@
 			if(opts.highlight){
 				this.fireEvent(this,'highlight');
 			}
-			
-			this.drawBorder();
+			/**drawBorder**/
+			this.lineFn.call(this);
+			this.T.drawBorder(this.labelx,this.labely,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius'),this.get('background_color'),false,this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
 			
 			
 			this.T.textStyle('left','top',this.get('fontStyle'));

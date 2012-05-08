@@ -1061,7 +1061,7 @@ $.Element.prototype = {
  * @component#$.Painter
  * @extend#$.Element
  */
-$.Painter = $.extend($.Element,{
+$.Painter = $.extend($.Element, {
 
 	configure : function() {
 		/**
@@ -1079,23 +1079,28 @@ $.Painter = $.extend($.Element,{
 
 		this.set({
 			/**
-			 * @cfg {Number} Specifies the default linewidth of the canvas's context in this element.(defaults to 1)
+			 * @cfg {Number} Specifies the default linewidth of the canvas's
+			 *      context in this element.(defaults to 1)
 			 */
 			brushsize : 1,
 			/**
-			 * @cfg {String} Specifies the default strokeStyle of the canvas's context in this element.(defaults to 'gray')
+			 * @cfg {String} Specifies the default strokeStyle of the canvas's
+			 *      context in this element.(defaults to 'gray')
 			 */
 			strokeStyle : 'gray',
 			/**
-			 * @cfg {String} Specifies the default lineJoin of the canvas's context in this element.(defaults to 'round')
+			 * @cfg {String} Specifies the default lineJoin of the canvas's
+			 *      context in this element.(defaults to 'round')
 			 */
 			lineJoin : 'round',
 			/**
-			 * @cfg {Number} Specifies the padding for this element in pixel,the same rule as css padding.(defaults to 10)
+			 * @cfg {Number} Specifies the padding for this element in pixel,the
+			 *      same rule as css padding.(defaults to 10)
 			 */
 			padding : 10,
 			/**
-			 * @cfg {String} Specifies the color for this element.(defaults to 'black')
+			 * @cfg {String} Specifies the color for this element.(defaults to
+			 *      'black')
 			 */
 			color : 'black',
 			/**
@@ -1107,11 +1112,13 @@ $.Painter = $.extend($.Element,{
 			 */
 			offsety : 0,
 			/**
-			 * @cfg {String} Specifies the backgroundColor for this element.(defaults to 'FDFDFD')
+			 * @cfg {String} Specifies the backgroundColor for this
+			 *      element.(defaults to 'FDFDFD')
 			 */
 			background_color : '#FDFDFD',
 			/**
-			 * @cfg {float} The factor make color dark or light for this element.(0.01 - 0.5).(defaults to '0.15')
+			 * @cfg {float} The factor make color dark or light for this
+			 *      element.(0.01 - 0.5).(defaults to '0.15')
 			 */
 			color_factor : 0.15,
 			/**
@@ -1125,7 +1132,8 @@ $.Painter = $.extend($.Element,{
 				enable : true
 			},
 			/**
-			 * @cfg {Object} A config object containing one or more event handlers.(default to null)
+			 * @cfg {Object} A config object containing one or more event
+			 *      handlers.(default to null)
 			 */
 			listeners : null,
 			/**
@@ -1145,8 +1153,7 @@ $.Painter = $.extend($.Element,{
 		/**
 		 * register the common event
 		 */
-		this.registerEvent('initialize', 'click', 'dbclick', 'mousemove',
-				'mouseover', 'mouseout', 'keydown', 'beforedraw', 'draw');
+		this.registerEvent('initialize', 'click', 'dbclick', 'mousemove', 'mouseover', 'mouseout', 'keydown', 'beforedraw', 'draw');
 
 	},
 	registerEvent : function() {
@@ -1193,9 +1200,9 @@ $.Painter = $.extend($.Element,{
 		 */
 		this.fireEvent(this, 'draw');
 	},
-	fireString : function(socpe, name, args,s) {
+	fireString : function(socpe, name, args, s) {
 		var t = this.fireEvent(socpe, name, args);
-		return $.isString(t)?t:s;
+		return $.isString(t) ? t : s;
 	},
 	fireEvent : function(socpe, name, args) {
 		var L = this.events[name].length;
@@ -1207,34 +1214,25 @@ $.Painter = $.extend($.Element,{
 		}
 		return r;
 	},
-	on:function(name, fn) {
+	on : function(name, fn) {
 		if ($.isString(name) && $.isFunction(fn))
 			this.events[name].push(fn);
 		return this;
 	},
 	doConfig : function() {
-		var padding = $.parsePadding(this.get('padding'));
+		var padding = $.parsePadding(this.get('padding')), bg = this.get('background_color'),f=this.get('color_factor');
 		this.push('padding_top', padding[0]);
 		this.push('padding_right', padding[1]);
 		this.push('padding_bottom', padding[2]);
 		this.push('padding_left', padding[3]);
 		this.push('hpadding', padding[1] + padding[3]);
 		this.push('vpadding', padding[0] + padding[2]);
-
-		this.push('fontStyle', $.getFont(this.get('fontweight'), this
-				.get('fontsize'), this.get('font')));
-
-		this.push('fill_color', this.get('background_color'));
-		this.push("light_color", $.light(
-				this.get('background_color'), this.get('color_factor')));
-		this.push("dark_color", $.dark(this.get('background_color'),
-				this.get('color_factor')));
-
-		this.push("light_color2", $.light(this
-				.get('background_color'), this.get('color_factor') * 2));
-		this.push("dark_color2", $.dark(this.get('background_color'),
-				this.get('color_factor')) * 2);
-
+		this.push('fontStyle', $.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
+		this.push('fill_color', bg);
+		this.push("light_color", $.light(bg, f));
+		this.push("dark_color", $.dark(bg, f));
+		this.push("light_color2", $.light(bg, f * 2));
+		this.push("dark_color2", $.dark(bg, f) * 2);
 		this.id = this.get('id');
 
 	}
@@ -1892,9 +1890,7 @@ $.Html = $.extend($.Element,{
 				 line_height:16,
 				 /**
 				  * @cfg {String} the shape of legend' sign (default to 'square')
-				  
 				  * The following list provides all available value you can use：
-				  
 				  * @Option 'round'
 				  * @Option 'square'
 				  * @Option 'round-bar'
@@ -1938,21 +1934,21 @@ $.Html = $.extend($.Element,{
 				
 		},
 		drawCell:function(x,y,text,color){
-			var s = this.get('sign_size');
-			
-			if(this.get('sign')=='round'){	
+			var s = this.get('sign_size'),
+				n = this.get('sign');
+			if(n=='round'){	
 				this.T.round(x+s/2,y+s/2,s/2,color);
-			}else if(this.get('sign')=='round-bar'){		
+			}else if(n=='round-bar'){		
 				this.T.rectangle(x,y+s*5/12,s,s/6,color);
 				this.T.round(x+s/2,y+s/2,s/4,color);
-			}else if(this.get('sign')=='square-bar'){	
+			}else if(n=='square-bar'){	
 				this.T.rectangle(x,y+s*5/12,s,s/6,color);
 				this.T.rectangle(x+s/4,y+s/4,s/2,s/2,color);
 			}else{				
 				this.T.rectangle(x,y,s,s,color);
 			}
-			
 			var textcolor = this.get('color');
+			
 			if(this.get('text_with_sign_color')){
 				textcolor = color;
 			}
@@ -1991,8 +1987,8 @@ $.Html = $.extend($.Element,{
 				this.height,
 				this.get('border.width'),
 				this.get('border.color'),
-				this.get('border.radius')==0?0:$.parseBorder(this.get('border.radius')),
-                this.get('background_color'),
+				this.get('border.radius'),
+                this.get('fill_color'),
                 false,
                 this.get('shadow'),
 				this.get('shadow_color'),
@@ -2164,11 +2160,6 @@ $.Html = $.extend($.Element,{
 			);
 				
 		},
-		drawBorder:function(){
-			this.lineFn.call(this);
-			this.T.drawBorder(this.labelx,this.labely,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:$.parseBorder(this.get('border.radius')),this.get('background_color'),false,this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
-			
-		},
 		isEventValid:function(e){ 
 			return {valid:$.inRange(this.labelx,this.labelx+this.width,e.offsetX)&&$.inRange(this.labely,this.labely+this.height,e.offsetY)};
 		},
@@ -2184,8 +2175,9 @@ $.Html = $.extend($.Element,{
 			if(opts.highlight){
 				this.fireEvent(this,'highlight');
 			}
-			
-			this.drawBorder();
+			/**drawBorder**/
+			this.lineFn.call(this);
+			this.T.drawBorder(this.labelx,this.labely,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius'),this.get('background_color'),false,this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
 			
 			
 			this.T.textStyle('left','top',this.get('fontStyle'));
@@ -2840,6 +2832,9 @@ Cans.prototype = {
 		if(bgcolor){
 			this.c.fillStyle = bgcolor;
 		}
+		
+		round = round==0?0:$.parseBorder(round);
+		
 		if($.isArray(round)){//draw a round corners border
 			this.c.beginPath();
 			this.c.moveTo(round[0],0);
@@ -3082,7 +3077,7 @@ $.Chart = $.extend($.Painter,{
 			if(!this.redraw){
 				this.title();
 				if(this.get('border.enable')){
-					this.T.drawBorder(0,0,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:$.parseBorder(this.get('border.radius')),this.get('background_color'),true);
+					this.T.drawBorder(0,0,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius'),this.get('background_color'),true);
 				}else{
 					this.T.backgound(0,0,this.width,this.height,this.get('background_color'));
 				}
