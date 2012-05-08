@@ -101,7 +101,7 @@
 	inject : function(c) {
 		if (c) {
 			this.container = c;
-			this.T = this.T = c.T;
+			this.target = this.T = c.T;
 		}
 	},
 	getC : function(name) {
