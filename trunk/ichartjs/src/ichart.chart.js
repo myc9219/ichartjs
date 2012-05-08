@@ -564,6 +564,9 @@ Cans.prototype = {
 		if(bgcolor){
 			this.c.fillStyle = bgcolor;
 		}
+		
+		round = round==0?0:$.parseBorder(round);
+		
 		if($.isArray(round)){//draw a round corners border
 			this.c.beginPath();
 			this.c.moveTo(round[0],0);
@@ -806,7 +809,7 @@ $.Chart = $.extend($.Painter,{
 			if(!this.redraw){
 				this.title();
 				if(this.get('border.enable')){
-					this.T.drawBorder(0,0,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius')==0?0:$.parseBorder(this.get('border.radius')),this.get('background_color'),true);
+					this.T.drawBorder(0,0,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius'),this.get('background_color'),true);
 				}else{
 					this.T.backgound(0,0,this.width,this.height,this.get('background_color'));
 				}
