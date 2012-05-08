@@ -63,7 +63,7 @@
 				if(this.label.isEventValid(e).valid)
 					return {valid:true};
 			}
-			if(!iChart.inEllipse(e.offsetX - this.x,e.offsetY-this.y,this.get('semi_major_axis'),this.get('semi_minor_axis'))){
+			if(!iChart.inEllipse(e.offsetX - this.x,e.offsetY-this.y,this.a,this.b)){
 				return {valid:false};
 			}
 			if(iChart.inRange(this.sA,this.eA,(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
@@ -73,8 +73,8 @@
 		},
 		p2p:function(x,y,a,z){
 			return {
-				x:x+this.get('semi_major_axis')*Math.cos(a)*z,
-				y:y+this.get('semi_minor_axis')*Math.sin(a)*z
+				x:x+this.a*Math.cos(a)*z,
+				y:y+this.b*Math.sin(a)*z
 			};
 		},
 		tipInvoke:function(){
@@ -115,13 +115,12 @@
 		doConfig:function(){
 			iChart.Sector3D.superclass.doConfig.call(this);
 			
-			iChart.Assert.gtZero(this.get('semi_major_axis'));
-			iChart.Assert.gtZero(this.get('semi_minor_axis'));
-			
 			this.a = this.get('semi_major_axis');
 			this.b = this.get('semi_minor_axis');
 			this.h = this.get('cylinder_height');
 			
+			iChart.Assert.gtZero(this.a);
+			iChart.Assert.gtZero(this.b);
 			
 			this.pushIf('increment',iChart.lowTo(5,this.a/8));
 			

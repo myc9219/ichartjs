@@ -44,16 +44,14 @@
 				KL= this.columnKeys.length,
 				W = this.get('coordinate.width'),
 				H = this.get('coordinate.height'),
-				total = KL*L;
+				total = KL*L,
+				bw = this.pushIf('hiswidth',W/(KL+1+total));
 			
-			
-			this.pushIf('hiswidth',W/(KL+1+total));
-			
-			if(this.get('hiswidth')*total>W){
-				this.push('hiswidth',W/total/1.2);
+			if(bw*total>W){
+				bw = this.push('hiswidth',W/(KL+1+total));
 			}
 			
-			this.push('hispace',(W - this.get('hiswidth')*total)/(KL+1));
+			this.push('hispace',(W - bw*total)/(KL+1));
 			
 			//use option create a coordinate
 			this.coo = iChart.Interface.coordinate2d.call(this);
@@ -65,13 +63,13 @@
 				bs = this.coo.get('brushsize'),
 				Le = this.get('label.enable'),
 				Te = this.get('tip.enable'),
-				gw = this.data.length*this.get('hiswidth')+this.get('hispace'),
+				gw = this.data.length*bw+this.get('hispace'),
 				item,t,lt,tt,h,text,value;
 			
 			/**
 			 * quick config to all rectangle
 			 */
-			this.push('rectangle.width',this.get('hiswidth'));
+			this.push('rectangle.width',bw);
 			
 			for(var i=0;i<this.columns.length;i++){
 				item  = this.columns[i].item;
@@ -92,7 +90,7 @@
 					/**
 					 * x = this.x + space*(i+1) + width*(j+i*length)
 					 */
-					this.push('rectangle.originx',this.x + this.get('hispace')+j*this.get('hiswidth')+i*gw);//+this.get('xAngle_')*this.get('hiswidth')/2
+					this.push('rectangle.originx',this.x + this.get('hispace')+j*bw+i*gw);//+this.get('xAngle_')*bw/2
 					/**
 					 * y = this.y + brushsize + h
 					 */

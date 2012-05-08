@@ -60,6 +60,7 @@
 			this.left = iChart.fixPixel(this.get('left'));
 			
 			this.dom = document.createElement("div");
+			
 			this.dom.style.zIndex=this.get('index');
 			this.dom.style.position="absolute";
 			//set size zero make  integration with vertical and horizontal

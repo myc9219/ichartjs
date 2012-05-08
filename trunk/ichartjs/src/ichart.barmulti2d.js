@@ -46,19 +46,17 @@
 					KL= this.columnKeys.length,
 					W = this.get('coordinate.width'),
 					H = this.get('coordinate.height'),
-					total = KL*L;
+					total = KL*L,
+					// bar's height
+					bh = this.pushIf('barheight',H/(KL+1+total));
 				
-				this.push('barspace',(W - this.get('barheight')*total)/(KL+1));
-				
-				//bar's height 
-				this.pushIf('barheight',H/(KL+1+total));
-				
-				if(this.get('barheight')*L>H){
-					this.push('barheight',H/(KL+1+total));
+				if(bh*L>H){
+					bh = this.push('barheight',H/(KL+1+total));
 				}
 				
 				//the space of two bar
-				this.push('barspace',(H - this.get('barheight')*total)/(KL+1));
+				this.push('barspace',(H - bh*total)/(KL+1));
+				
 				
 				//use option create a coordinate
 				this.coo = iChart.Interface.coordinate2d.call(this);
@@ -69,13 +67,13 @@
 				var S = this.coo.getScale(this.get('keduAlign')),
 					Le = this.get('label.enable'),
 					Te = this.get('tip.enable'),
-					gw = L*this.get('barheight')+this.get('barspace'),
+					gw = L*bh+this.get('barspace'),
 					item,t,w,text,value;
 				
 				/**
 				 * quick config to all rectangle
 				 */
-				this.push('rectangle.height',this.get('barheight'));
+				this.push('rectangle.height',bh);
 				this.push('rectangle.originx',this.x + this.coo.get('brushsize'));
 				this.push('rectangle.valueAlign','right');
 				this.push('rectangle.tipAlign','right');
@@ -99,7 +97,7 @@
 						/**
 						 * y = this.y + brushsize + h
 						 */
-						this.push('rectangle.originy',this.y + this.get('barspace')+j*this.get('barheight')+i*gw);
+						this.push('rectangle.originy',this.y + this.get('barspace')+j*bh+i*gw);
 						
 						this.push('rectangle.value',value);
 						this.push('rectangle.width',w);

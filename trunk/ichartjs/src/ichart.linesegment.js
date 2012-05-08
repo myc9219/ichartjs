@@ -71,20 +71,22 @@
 		},
 		drawLabel:function(){
 			if(this.get('intersection')&&this.get('label')){
-				for(var i=0;i<this.points.length;i++){
+				var p = this.get('points');
+				for(var i=0;i<p.length;i++){
 					this.T.textStyle('center','bottom',iChart.getFont(this.get('fontweight'),this.get('fontsize'),this.get('font')));
-					this.T.fillText(this.points[i].value,this.x+this.points[i].x,this.y-this.points[i].y-this.get('point_size')*3/2,false,this.get('background_color'),'lr',16);
+					this.T.fillText(p[i].value,this.x+p[i].x,this.y-p[i].y-this.get('point_size')*3/2,false,this.get('background_color'),'lr',16);
 				}
 			}
 		},
 		drawLineSegment:function(){
 			this.T.shadowOn(this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
+			var p = this.get('points');
 			
 			if(this.get('area')){
 				var polygons = [this.x,this.y];
-				for(var i=0;i<this.points.length;i++){
-					polygons.push(this.x+this.points[i].x);
-					polygons.push(this.y-this.points[i].y);
+				for(var i=0;i<p.length;i++){
+					polygons.push(this.x+p[i].x);
+					polygons.push(this.y-p[i].y);
 				}
 				polygons.push(this.x+this.get('width'));
 				polygons.push(this.y);
@@ -97,16 +99,16 @@
 			}
 			
 			
-			for(var i=0;i<this.points.length-1;i++){
-				this.T.line(this.x+this.points[i].x,this.y-this.points[i].y,this.x+this.points[i+1].x,this.y-this.points[i+1].y,this.get('brushsize'),this.get('fill_color'),false);
+			for(var i=0;i<p.length-1;i++){
+				this.T.line(this.x+p[i].x,this.y-p[i].y,this.x+p[i+1].x,this.y-p[i+1].y,this.get('brushsize'),this.get('fill_color'),false);
 			}
 			
 			if(this.get('intersection')){
-				for(var i=0;i<this.points.length;i++){
+				for(var i=0;i<p.length;i++){
 					if(this.get('point_hollow')){
-						this.T.round(this.x+this.points[i].x,this.y-this.points[i].y,this.get('point_size'),'#FEFEFE',this.get('brushsize'),this.get('fill_color'));
+						this.T.round(this.x+p[i].x,this.y-p[i].y,this.get('point_size'),'#FEFEFE',this.get('brushsize'),this.get('fill_color'));
 					}else{
-						this.T.round(this.x+this.points[i].x,this.y-this.points[i].y,this.get('point_size'),this.get('fill_color'));
+						this.T.round(this.x+p[i].x,this.y-p[i].y,this.get('point_size'),this.get('fill_color'));
 					}
 				}
 			}
@@ -116,11 +118,8 @@
 		    }
 		},
 		doDraw:function(opts){
-			
 			this.drawLineSegment();
-			
 			this.drawLabel();
-			
 		},
 		isEventValid:function(e){
 			return {valid:false};
@@ -145,67 +144,64 @@
 			iChart.LineSegment.superclass.doConfig.call(this);
 			iChart.Assert.gtZero(this.get('spacing'),'spacing');
 			
-			this.points = this.get('points');
+			var self = this,
+				sp = this.get('spacing'),
+				ry = self.get('event_range_y'),
+				rx = self.get('event_range_x'),
+				heap = self.get('tipInvokeHeap'),
+				p = self.get('points');
+			self.points = p;
 			
-			for(var i=0;i<this.points.length;i++){
-				this.points[i].width = this.points[i].x;
-				this.points[i].height = this.points[i].y;
+			for(var i=0;i<p.length;i++){
+				p[i].width = p[i].x;
+				p[i].height = p[i].y;
 			}
 			
-			var sp = this.get('spacing');
-			
-			if(this.get('event_range_x')==0){
-				this.push('event_range_x',Math.floor(sp/2));
+			if(rx==0){
+				rx = self.push('event_range_x',Math.floor(sp/2));
 			}else{
-				this.push('event_range_x',iChart.between(1,Math.floor(sp/2),this.get('event_range_x')));
+				rx = self.push('event_range_x',iChart.between(1,Math.floor(sp/2),rx));
 			}
-			if(this.get('event_range_y')==0){
-				this.push('event_range_y',Math.floor(this.get('point_size')));
+			if(ry==0){
+				ry = self.push('event_range_y',Math.floor(self.get('point_size')));
 			}
 			
-			var heap = this.get('tipInvokeHeap');
-			
-			if(this.get('tip.enable')){
-				//this use for tip coincidence
-				this.on('mouseover',function(e,m){
-					heap.push(this);
-					this.tipPosition = heap.length;
+			if(self.get('tip.enable')){
+				//self use for tip coincidence
+				self.on('mouseover',function(e,m){
+					heap.push(self);
+					self.tipPosition = heap.length;
 				}).on('mouseout',function(e,m){
 					heap.pop();
 				});
-				
-				
-				this.push('tip.invokeOffsetDynamic',true);
-				this.tip = new iChart.Tip(this.get('tip'),this);
+				self.push('tip.invokeOffsetDynamic',true);
+				self.tip = new iChart.Tip(self.get('tip'),self);
 			}
 			
-			var self = this,
-				c = self.get('coordinate'),
-				ry = self.get('event_range_y'),
-				r = self.get('event_range_x'),
+			var c = self.get('coordinate'),
 				ly = self.get('limit_y'),
 				k = self.get('keep_with_coordinate'),
 				valid =function(i,x,y){
-					if(Math.abs(x-(self.x+self.points[i].x))<r&&(!ly||(ly&&Math.abs(y-(self.y-self.points[i].y))<ry))){
+					if(Math.abs(x-(self.x+p[i].x))<rx&&(!ly||(ly&&Math.abs(y-(self.y-p[i].y))<ry))){
 						return true;
 					}
 					return false;
 				},
 				to = function(i){
-					return {valid:true,text:self.points[i].value,top:self.y-self.points[i].y,left:self.x+self.points[i].x,hit:true};
+					return {valid:true,text:p[i].value,top:self.y-p[i].y,left:self.x+p[i].x,hit:true};
 				};
 			
 			/**
 			 * override the default method
 			 */
-			this.isEventValid =  function(e){
+			self.isEventValid =  function(e){
 				//console.time('mouseover');
 				if(c&&!c.isEventValid(e).valid){
 					return {valid:false};
 				}
 				var ii = Math.floor((e.offsetX-self.x)/sp);
-				if(ii<0||ii>=(this.points.length-1)){
-					ii = iChart.between(0,this.points.length-1,ii);
+				if(ii<0||ii>=(p.length-1)){
+					ii = iChart.between(0,p.length-1,ii);
 					if(valid(ii,e.offsetX,e.offsetY))
 						return to(ii);
 					else

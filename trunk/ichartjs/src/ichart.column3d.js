@@ -33,23 +33,22 @@
 		doConfig:function(){
 			iChart.Column3D.superclass.doConfig.call(this);
 			
-			var L = this.data.length,W = this.get('coordinate.width');
+			var L = this.data.length,W = this.get('coordinate.width'),
+			hw = this.pushIf('hiswidth',W/(L*2+1));
 			/**
 			 * common config
 			 */
 			if(this.get('bottom_scale')<1){
-				this.push('bottom_scale',1);
+				hw = this.push('bottom_scale',1);
 			}
 			
-			this.pushIf('hiswidth',W/(L*2+1));
-			
-			if(this.get('hiswidth')*L>W){
-				this.push('hiswidth',W/L/1.2);
+			if(hw*L>W){
+				this.push('hiswidth',W/(L*2+1));
 			}
 			
-			this.push('zHeight',this.get('hiswidth')*this.get('zScale'));
+			this.push('zHeight',hw*this.get('zScale'));
 			
-			this.push('hispace',(W - this.get('hiswidth')*L)/(L+1));
+			this.push('hispace',(W - hw*L)/(L+1));
 			
 			/**
 			 * initialize coordinate
@@ -74,7 +73,7 @@
 				Te = this.get('tip.enable'),
 				zh = this.get('zHeight')*(this.get('bottom_scale')-1)/2*this.get('yAngle_'),
 				t,lt,tt,h,text,value,
-				gw = this.get('hiswidth')+this.get('hispace'),
+				gw = hw+this.get('hispace'),
 				H = this.coo.get('height');
 			
 			
@@ -83,7 +82,7 @@
 			 */
 			this.push('rectangle.xAngle_',this.get('xAngle_'));
 			this.push('rectangle.yAngle_',this.get('yAngle_'));
-			this.push('rectangle.width',this.get('hiswidth'));
+			this.push('rectangle.width',hw);
 			
 			for(var i=0;i<L;i++){
 				text = this.data[i].name;
@@ -105,7 +104,7 @@
 				/**
 				 * x = this.x + space*(i+1) + width*i
 				 */
-				this.push('rectangle.originx',this.x+this.get('hispace')+i*gw);//+this.get('xAngle_')*this.get('hiswidth')/2
+				this.push('rectangle.originx',this.x+this.get('hispace')+i*gw);//+this.get('xAngle_')*hw/2
 				/**
 				 * y = this.y + brushsize + h
 				 */
@@ -120,7 +119,7 @@
 				this.labels.push(new iChart.Text({
 					id:i,
 					text:text,
-					originx:this.x + this.get('hispace')+gw*i+this.get('hiswidth')/2,
+					originx:this.x + this.get('hispace')+gw*i+hw/2,
 	 				originy:this.y+H+this.get('text_space')
 				},this));
 				
