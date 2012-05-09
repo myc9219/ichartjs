@@ -83,22 +83,23 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 				}
 			}
 		});
-
-		this.registerEvent('beforeSectorAnimation', 'afterSectorAnimation');
-
+		
+		this.registerEvent(
+			'animating'
+		);
+		
 		this.sectors = [];
 	},
 	doAnimation : function(t, d) {
 		var s, si = 0, cs = this.offsetAngle;
 		for ( var i = 0; i < this.sectors.length; i++) {
 			s = this.sectors[i];
-			this.fireEvent(this, 'beforeSectorAnimation', [this, s]);
 			si = this.animationArithmetic(t, 0, s.get('totalAngle'), d);
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
 			cs += si;
+			this.fireEvent(this, 'animating', [this,s,t,s.get('totalAngle'), d]);
 			s.drawSector();
-			this.fireEvent(this, 'afterSectorAnimation', [this, s]);
 		}
 	},
 	doConfig : function() {

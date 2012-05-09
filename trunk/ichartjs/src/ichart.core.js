@@ -918,6 +918,14 @@ var iChart_ = (function(window) {//spirit from jquery
 })(window);
 
 
+/**
+ * Add useful method
+ */
+Array.prototype.each = function(f,s)
+{
+	var j = this.length;for(var i=0;i<j;i++)s?f.call(s,this[i],i):f(this[i],i);
+};
+
 window.iChart = window.$ = iChart_;
 
 })(window);

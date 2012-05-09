@@ -1,9 +1,8 @@
 	iChart.Interface = function(){
 		var simple = function() {
 			var M=0,V=0,MI,ML=0,d;
-			for(var i=0;i<this.data.length;i++){
-				d = this.data[i];
-				iChart.merge(d,this.fireEvent(this,'parseData',[d,i]));
+			this.data.each(function(d,i){
+				iChart.merge(d,this.fireEvent(this,'parseData',[this,d,i]));
 				if(!d.color)
 				d.color = iChart.get(i);
 				V  = d.value;
@@ -27,7 +26,7 @@
 					}
 					d.total = T;
 				}
-			}
+			},this);
 			
 			if(iChart.isArray(this.get('labels'))){
 				ML = this.get('labels').length>ML?this.get('labels').length:ML;
@@ -42,12 +41,11 @@
 			this.columnKeys = this.get('columnKeys');
 			var M=0,MI=0,V,d,L=this.columnKeys.length;
 			
-			for(var i=0;i<this.data.length;i++){
-				d = this.data[i];
+			this.data.each(function(d,i){
 				iChart.Assert.equal(d.value.length,L,this.type+':data length and columnKeys not corresponding.');
-				iChart.merge(d,this.fireEvent(this,'parseData',[d,this.columnKeys,i]));
+				iChart.merge(d,this.fireEvent(this,'parseData',[this,d,i,this.columnKeys]));
 				iChart.Assert.equal(d.value.length,L,this.type+':data length and columnKeys not corresponding.');
-			}
+			},this);
 			
 			for(var i=0;i<L;i++){
 				var item = [];
@@ -80,9 +78,11 @@
 		};
 		return {
 			_3D:function(){
-				var P = iChart.vectorP2P(this.get('xAngle'),this.get('yAngle'));
-				this.push('xAngle_',P.x);
-				this.push('yAngle_',P.y);
+				if(this.is3D()){
+					var P = iChart.vectorP2P(this.get('xAngle'),this.get('yAngle'));
+					this.push('xAngle_',P.x);
+					this.push('yAngle_',P.y);
+				}
 			},
 			_2D:'2d',
 			coordinate2d:function(){

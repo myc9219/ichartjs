@@ -24,29 +24,29 @@ iChart.Pie2D = iChart.extend(iChart.Pie, {
 	doConfig : function() {
 		iChart.Pie2D.superclass.doConfig.call(this);
 		
-		var t, lt, tt, Le = this.get('label.enable'), Te = this.get('tip.enable'),d = this.data,scs = this.sector_config;
+		var t, lt, tt, Le = this.get('label.enable'), Te = this.get('tip.enable'),scs = this.sector_config;
 		
 		scs.radius = this.get('radius');
 		
-		for ( var i = 0; i < d.length; i++) {
-
-			t = d[i].name + (this.get('showpercent') ? iChart.toPercent(d[i].value / this.total, this.get('decimalsnum')) : '');
-
+		this.data.each(function(d,i){
+			t = d.name + (this.get('showpercent') ? iChart.toPercent(d.value / this.total, this.get('decimalsnum')) : '');
+			
 			if (Le) {
-				lt = this.fireEvent(this, 'parseLabelText', [d[i], i]);
-				scs.label.text = iChart.isString(lt) ? lt : t;
+				scs.label.text = this.fireString(this,'parseLabelText',[d,i],t);
 			}
+			
 			if (Te) {
-				tt = this.fireEvent(this, 'parseTipText', [d[i], i]);
-				scs.tip.text = iChart.isString(tt) ? tt : t;
+				scs.tip.text = this.fireString(this,'parseTipText',[d,i],t);
 			}
-			scs.startAngle = d[i].startAngle;
-			scs.middleAngle = d[i].middleAngle;
-			scs.endAngle = d[i].endAngle;
-			scs.background_color = d[i].color;
+			
+			scs.startAngle = d.startAngle;
+			scs.middleAngle = d.middleAngle;
+			scs.endAngle = d.endAngle;
+			scs.background_color = d.color;
 
 			this.sectors.push(new iChart.Sector2D(scs, this));
-		}
+		},this);
+		
 		this.pushComponent(this.sectors);
 	}
 });

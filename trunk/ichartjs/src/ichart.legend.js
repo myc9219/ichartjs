@@ -63,7 +63,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			valign : 'middle'
 		});
 
-		this.registerEvent('drawCell', 'analysing', 'drawRaw');
+		this.registerEvent('drawCell', 'parse', 'drawRaw');
 
 	},
 	drawCell : function(x, y, text, color) {
@@ -168,7 +168,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		// calculate the width each item will used
 		for ( var i = 0; i < L; i++) {
 			d = this.data[i];
-			iChart.merge(d, this.fireEvent(this, 'analysing', [d, i]));
+			iChart.merge(d, this.fireEvent(this, 'parse', [d, i]));
 			d.text = d.text || d.name;
 			d.width = this.T.measureText(d.text);
 		}

@@ -1,5 +1,4 @@
 /**
- * 
  * @overview this element use for 画图的基类、其他组件要继承此组件
  * @component#iChart.Painter
  * @extend#iChart.Element
@@ -22,28 +21,23 @@ iChart.Painter = iChart.extend(iChart.Element, {
 
 		this.set({
 			/**
-			 * @cfg {Number} Specifies the default linewidth of the canvas's
-			 *      context in this element.(defaults to 1)
+			 * @cfg {Number} Specifies the default linewidth of the canvas's context in this element.(defaults to 1)
 			 */
 			brushsize : 1,
 			/**
-			 * @cfg {String} Specifies the default strokeStyle of the canvas's
-			 *      context in this element.(defaults to 'gray')
+			 * @cfg {String} Specifies the default strokeStyle of the canvas's context in this element.(defaults to 'gray')
 			 */
 			strokeStyle : 'gray',
 			/**
-			 * @cfg {String} Specifies the default lineJoin of the canvas's
-			 *      context in this element.(defaults to 'round')
+			 * @cfg {String} Specifies the default lineJoin of the canvas's context in this element.(defaults to 'round')
 			 */
 			lineJoin : 'round',
 			/**
-			 * @cfg {Number} Specifies the padding for this element in pixel,the
-			 *      same rule as css padding.(defaults to 10)
+			 * @cfg {Number} Specifies the padding for this element in pixel,the same rule as css padding.(defaults to 10)
 			 */
 			padding : 10,
 			/**
-			 * @cfg {String} Specifies the color for this element.(defaults to
-			 *      'black')
+			 * @cfg {String} Specifies the color for this element.(defaults to 'black')
 			 */
 			color : 'black',
 			/**
@@ -55,13 +49,11 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			 */
 			offsety : 0,
 			/**
-			 * @cfg {String} Specifies the backgroundColor for this
-			 *      element.(defaults to 'FDFDFD')
+			 * @cfg {String} Specifies the backgroundColor for this element.(defaults to 'FDFDFD')
 			 */
 			background_color : '#FDFDFD',
 			/**
-			 * @cfg {float} The factor make color dark or light for this
-			 *      element.(0.01 - 0.5).(defaults to '0.15')
+			 * @cfg {float} The factor make color dark or light for this element.(0.01 - 0.5).(defaults to '0.15')
 			 */
 			color_factor : 0.15,
 			/**
@@ -75,8 +67,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 				enable : true
 			},
 			/**
-			 * @cfg {Object} A config object containing one or more event
-			 *      handlers.(default to null)
+			 * @cfg {Object} A config object containing one or more event handlers.(default to null)
 			 */
 			listeners : null,
 			/**
@@ -96,7 +87,52 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		/**
 		 * register the common event
 		 */
-		this.registerEvent('initialize', 'click', 'dbclick', 'mousemove', 'mouseover', 'mouseout', 'keydown', 'beforedraw', 'draw');
+		this.registerEvent(
+		/**
+		 * @event Fires after the element initializing is finished
+		 * @paramter iChart.Painter#this
+		 */
+		'initialize',
+		/**
+		 * @event Fires when this element is clicked
+		 * @paramter iChart.Painter#this
+		 * @paramter EventObject#e The click event object
+		 */
+		'click',
+		/**
+		 * @event Fires when this element is dblclick
+		 * @paramter iChart.Painter#this
+		 * @paramter EventObject#e The dblclick event object
+		 */
+		'dblclick',
+		/**
+		 * @event Fires when the mouse move on the element
+		 * @paramter iChart.Painter#this
+		 * @paramter EventObject#e The mousemove event object
+		 */
+		'mousemove',
+		/**
+		 * @event Fires when the mouse hovers over the element
+		 * @paramter iChart.Painter#this
+		 * @paramter EventObject#e The mouseover event object
+		 */
+		'mouseover',
+		/**
+		 * @event Fires when the mouse exits the element
+		 * @paramter iChart.Painter#this
+		 * @paramter EventObject#e The mouseout event object
+		 */
+		'mouseout',
+		/**
+		 * @event Fires before the element drawing.Return false from an event handler to stop the draw.
+		 * @paramter iChart.Painter#this
+		 */
+		'beforedraw',
+		/**
+		 * @event Fires after the element drawing when calling the draw method.
+		 * @paramter iChart.Painter#this
+		 */
+		'draw');
 
 	},
 	registerEvent : function() {
@@ -117,9 +153,9 @@ iChart.Painter = iChart.extend(iChart.Element, {
 
 			this.initialize();
 			/**
-			 * fire the afterConfig event,this most use to unit test
+			 * fire the initialize event,this probable use to unit test
 			 */
-			this.fireEvent(this, 'initialize');
+			this.fireEvent(this, 'initialize', [this]);
 		}
 	},
 	is3D : function() {
@@ -130,7 +166,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		/**
 		 * fire the beforedraw event
 		 */
-		if (!this.fireEvent(this, 'beforedraw')) {
+		if (!this.fireEvent(this, 'beforedraw', [this])) {
 			return this;
 		}
 		/**
@@ -141,7 +177,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		/**
 		 * fire the draw event
 		 */
-		this.fireEvent(this, 'draw');
+		this.fireEvent(this, 'draw', [this]);
 	},
 	fireString : function(socpe, name, args, s) {
 		var t = this.fireEvent(socpe, name, args);
@@ -163,7 +199,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		return this;
 	},
 	doConfig : function() {
-		var padding = iChart.parsePadding(this.get('padding')), bg = this.get('background_color'),f=this.get('color_factor');
+		var padding = iChart.parsePadding(this.get('padding')), bg = this.get('background_color'), f = this.get('color_factor');
 		this.push('padding_top', padding[0]);
 		this.push('padding_right', padding[1]);
 		this.push('padding_bottom', padding[2]);
