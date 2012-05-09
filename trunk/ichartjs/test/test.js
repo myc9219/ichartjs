@@ -97,6 +97,17 @@ function test(){
 	});
 	
 	unit.push(function(){
+		return new iChart.Pie2D({
+			render :canvas,
+			title : 'Test Pie2D No Shadow',
+			shadow:false,
+			data:data,
+			radius:140,
+			offsetAngle:45
+		});
+	});
+	
+	unit.push(function(){
 		return new iChart.Pie3D({
 			render :canvas,
 			title : 'Test Pie3D',
@@ -105,6 +116,26 @@ function test(){
 			radius:240,
 			yHeight:30,
 			zRotate:45,
+			showpercent:true,
+			legend:{
+				enable:true
+			},
+			tip:{
+				enable:true
+			}
+		});
+	});
+	
+	unit.push(function(){
+		return new iChart.Pie3D({
+			render :canvas,
+			title : 'Test Pie3D No Shadow',
+			data : data,
+			padding : '10',
+			radius:240,
+			yHeight:30,
+			zRotate:45,
+			shadow:false,
 			showpercent:true,
 			legend:{
 				enable:true
@@ -137,10 +168,56 @@ function test(){
 	});
 	
 	unit.push(function(){
+		return new iChart.Column2D({
+			render :canvas,
+			title : 'Test Column2D No Shadow',
+			data: data,
+			align:'center',
+			shadow:false,
+			coordinate:{
+				width:600,
+				height:400
+			},
+			legend:{
+				enable:true
+			},
+			tip:{
+				enable:true,
+				shadow:true
+			}
+			
+		});
+	});
+	
+	unit.push(function(){
 		return new iChart.Column3D({
 			render :canvas,
 			title : 'Test Column3D',
 			data: data,
+			align:'center',
+			coordinate:{
+				width:600,
+				height:300,
+				background_color:'#d6dbd2'
+			},
+			tip:{
+				enable:true,
+				shadow:true,
+				showType:'fixed'
+			},
+			hiswidth:90,
+			xAngle:70,
+			yAngle:30,
+			zScale:1
+		});
+	});
+	
+	unit.push(function(){
+		return new iChart.Column3D({
+			render :canvas,
+			title : 'Test Column3D No Shadow',
+			data: data,
+			shadow:false,
 			align:'center',
 			coordinate:{
 				width:600,
@@ -298,6 +375,25 @@ function test(){
 			}
 		});
 	});
+	unit.push(function(){
+		return new iChart.Area2D({
+			render :canvas,
+			title : 'Test Area2D No Shadow',
+			data: data7,
+			shadow:false,
+			align:'center',
+			width : 800,
+			height : 400,
+			labels:lineLabels1,
+			listeners:{
+				parsePoint:function(v,x,y){
+					return {value:v+"℃"}
+				}
+			}
+		});
+	});
+	
+	
 	
 	unit.push(function(){
 		return new iChart.Bar2D({

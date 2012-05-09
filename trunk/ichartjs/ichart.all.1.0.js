@@ -2323,327 +2323,341 @@ $.Legend = $.extend($.Component, {
 		 * {String} bc border's color @param {Boolean} sw shadow enable @param {String} swc shadow color @param {Number} swb shadow blur @param {Number} swx shadow's offsetx @param {Number} swy shadow's offsety @param {Boolean} ccw 方向 @param {Boolean} a2r 是否连接圆心 @param {Boolean}
 		 * last 是否置于最底层 @return this
 		 */
+		/**
+		 * arc
+		 */
 		arc : function(x, y, r, s, e, c, b, bw, bc, sw, swc, swb, swx, swy, ccw, a2r, last) {
 			var x0, y0, ccw = !!ccw, a2r = !!a2r;
 			this.c.save();
-			if (!!last)// &&!$.isOpera
-			this.c.globalCompositeOperation = "destination-over";
-		if (b)
-			this.strokeStyle(bw, bc);
-		this.shadowOn(sw, swc, swb, swx, swy).fillStyle(c);
-		this.c.moveTo(x, y);
-		this.c.beginPath();
-		this.c.arc(x, y, r, s, e, ccw);
-		if (a2r)
-			this.c.lineTo(x, y);
-		this.c.closePath();
-		this.c.fill();
-		if (b)
-			this.c.stroke();
-		this.c.restore();
-		return this;
-	},
-	/**
-	 * draw ellipse API
-	 * 
-	 * @param {Object}
-	 *            x 圆心坐标
-	 * @param {Object}
-	 *            y 圆心坐标
-	 * @param {Object}
-	 *            a x轴半径
-	 * @param {Object}
-	 *            b y轴半径
-	 * @param {Object}
-	 *            s 同arc()
-	 * @param {Object}
-	 *            e 同arc()
-	 * @param {String}
-	 *            c color
-	 * @param {Object}
-	 *            ccw 同arc()
-	 * @param {Object}
-	 *            a2r 连接圆心
-	 */
-	ellipse : function(x, y, a, b, s, e, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, a2r, last) {
-		var angle = s, ccw = !!ccw, a2r = !!a2r;
-		this.c.save();
-		if (!!last)
-			this.c.globalCompositeOperation = "destination-over";
-		if (b)
-			this.strokeStyle(bow, boc);
-		this.shadowOn(sw, swc, swb, swx, swy).fillStyle(c);
-
-		this.c.moveTo(x, y);
-		this.c.beginPath();
-		if (a2r)
+			if (!!last)
+				this.c.globalCompositeOperation = "destination-over";
+			if (b)
+				this.strokeStyle(bw, bc);
+			this.shadowOn(sw, swc, swb, swx, swy).fillStyle(c);
 			this.c.moveTo(x, y);
+			this.c.beginPath();
+			this.c.arc(x, y, r, s, e, ccw);
+			if (a2r)
+				this.c.lineTo(x, y);
+			this.c.closePath();
+			this.c.fill();
+			if (b)
+				this.c.stroke();
+			this.c.restore();
+			return this;
+		},
+		/**
+		 * draw ellipse API
+		 * 
+		 * @param {Object}
+		 *            x 圆心坐标
+		 * @param {Object}
+		 *            y 圆心坐标
+		 * @param {Object}
+		 *            a x轴半径
+		 * @param {Object}
+		 *            b y轴半径
+		 * @param {Object}
+		 *            s 同arc()
+		 * @param {Object}
+		 *            e 同arc()
+		 * @param {String}
+		 *            c color
+		 * @param {Object}
+		 *            ccw 同arc()
+		 * @param {Object}
+		 *            a2r 连接圆心
+		 */
+		ellipse : function(x, y, a, b, s, e, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, a2r, last) {
+			var angle = s, ccw = !!ccw, a2r = !!a2r;
+			this.c.save();
+			if (!!last)
+				this.c.globalCompositeOperation = "destination-over";
+			if (b)
+				this.strokeStyle(bow, boc);
+			this.shadowOn(sw, swc, swb, swx, swy).fillStyle(c);
 
-		while (angle <= e) {
-			this.c.lineTo(x + a * cos(angle), y + (ccw ? (-b * sin(angle)) : (b * sin(angle))));
-			angle += inc;
-		}
-		this.c.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e))));
-		this.c.closePath();
-		if (b)
+			this.c.moveTo(x, y);
+			this.c.beginPath();
+			if (a2r)
+				this.c.moveTo(x, y);
+
+			while (angle <= e) {
+				this.c.lineTo(x + a * cos(angle), y + (ccw ? (-b * sin(angle)) : (b * sin(angle))));
+				angle += inc;
+			}
+			this.c.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e))));
+			this.c.closePath();
+			if (b)
+				this.c.stroke();
+			this.c.fill();
+			this.c.restore();
+			return this;
+		},
+		/**
+		 * draw sector
+		 * 
+		 * @param {Number}
+		 *            x round x
+		 * @param {Number}
+		 *            yround y
+		 * @param {Number}
+		 *            r radius
+		 * @param {Number}
+		 *            s start radian
+		 * @param {Number}
+		 *            e end radian
+		 * @param {String}
+		 *            c fill color
+		 * @param {Boolean}
+		 *            b border enable
+		 * @param {Number}
+		 *            bw border's width
+		 * @param {String}
+		 *            bc border's color
+		 * @param {Boolean}
+		 *            sw shadow enable
+		 * @param {String}
+		 *            swc shadow color
+		 * @param {Number}
+		 *            swb shadow blur
+		 * @param {Number}
+		 *            swx shadow's offsetx
+		 * @param {Number}
+		 *            swy shadow's offsety
+		 * @param {Boolean}
+		 *            ccw direction
+		 */
+		sector : function(x, y, r, s, e, c, b, bw, bc, sw, swc, swb, swx, swy, ccw) {
+			if (sw) {
+				/**
+				 * fixed Chrome and Opera bug
+				 */
+				this.arc(x, y, r, s, e, c, b, bw, bc, sw, swc, swb, swx, swy, ccw, true);
+				this.arc(x, y, r, s, e, c, b, bw, bc, false, swc, swb, swx, swy, ccw, true);
+			} else {
+				this.arc(x, y, r, s, e, c, b, bw, bc, false, 0, 0, 0, 0, ccw, true);
+			}
+			return this;
+		},
+		sector3D : function() {
+			var x0, y0, sPaint = function(x, y, a, b, s, e, ccw, h, color) {
+				if ((ccw && e <= PI) || (!ccw && s >= PI))
+					return false;
+				var Lo = function(A, h) {
+					this.c.lineTo(x + a * cos(A), y + (h || 0) + (ccw ? (-b * sin(A)) : (b * sin(A))));
+				};
+				s = ccw && e > PI && s < PI ? PI : s;
+				e = !ccw && s < PI && e > PI ? PI : e;
+				var angle = s;
+				this.c.fillStyle = $.dark(color);
+				this.c.moveTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s))));
+				this.c.beginPath();
+				while (angle <= e) {
+					Lo.call(this, angle);
+					angle = angle + inc;
+				}
+				Lo.call(this, e);
+				this.c.lineTo(x + a * cos(e), (y + h) + (ccw ? (-b * sin(e)) : (b * sin(e))));
+				angle = e;
+				while (angle >= s) {
+					Lo.call(this, angle, h);
+					angle = angle - inc;
+				}
+				Lo.call(this, s, h);
+				this.c.lineTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s))));
+				this.c.closePath();
+				this.c.fill();
+			}, layerDraw = function(x, y, a, b, ccw, h, A, color) {
+				this.c.moveTo(x, y);
+				this.c.beginPath();
+				this.c.fillStyle = $.dark(color);
+				this.c.lineTo(x, y + h);
+				var x0 = x + a * cos(A);
+				var y0 = y + h + (ccw ? (-b * sin(A)) : (b * sin(A)));
+				this.c.lineTo(x0, y0);
+				this.c.lineTo(x0, y0 - h);
+				this.c.lineTo(x, y);
+				this.c.closePath();
+				this.c.fill();
+			}, layerPaint = function(x, y, a, b, s, e, ccw, h, color) {
+				var ds = ccw ? (s < PI / 2 || s > 1.5 * PI) : (s > PI / 2 && s < 1.5 * PI), de = ccw ? (e > PI / 2 && e < 1.5 * PI) : (e < PI / 2 || e > 1.5 * PI);
+				if (!ds && !de)
+					return false;
+				if (ds)
+					layerDraw.call(this, x, y, a, b, ccw, h, s, color);
+				if (de)
+					layerDraw.call(this, x, y, a, b, ccw, h, e, color);
+			};
+			return function(x, y, a, b, s, e, h, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, isw) {
+				/**
+				 * browser opera has bug when use destination-over and shadow
+				 */
+				sw = sw && !$.isOpera;
+				this.c.save();
+				this.c.globalCompositeOperation = "destination-over";
+				this.c.fillStyle = c;
+				/**
+				 * paint inside layer
+				 */
+				layerPaint.call(this, x, y, a, b, s, e, ccw, h, c);
+				/**
+				 * paint bottom layer
+				 */
+				this.ellipse(x, y + h, a, b, s, e, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, true);
+				this.c.globalCompositeOperation = "source-over";
+
+				/**
+				 * paint top layer var g = this.avgRadialGradient(x,y,0,x,y,a,[$.light(c,0.1),$.dark(c,0.05)]);
+				 */
+				this.ellipse(x, y, a, b, s, e, c, bo, bow, boc, false, swc, swb, swx, swy, ccw, true);
+				/**
+				 * paint outside layer
+				 */
+				sPaint.call(this, x, y, a, b, s, e, ccw, h, c);
+
+				this.c.restore();
+				return this;
+			}
+		}(),
+		textStyle : function(a, l, f) {
+			return this.textAlign(a).textBaseline(l).textFont(f);
+		},
+		strokeStyle : function(w, c, j) {
+			if (w)
+				this.c.lineWidth = w;
+			if (c)
+				this.c.strokeStyle = c;
+			if (j)
+				this.c.lineJoin = j;
+			return this;
+		},
+		globalAlpha : function(v) {
+			if (v)
+				this.c.globalAlpha = v;
+			return this;
+		},
+		fillStyle : function(c) {
+			if (c)
+				this.c.fillStyle = c;
+			return this;
+		},
+		textAlign : function(a) {
+			if (a)
+				this.c.textAlign = a;
+			return this;
+		},
+		textBaseline : function(l) {
+			if (l)
+				this.c.textBaseline = l;
+			return this;
+		},
+		textFont : function(font) {
+			if (font)
+				this.c.font = font;
+			return this;
+		},
+		shadowOn : function(s, c, b, x, y) {
+			if ($.isString(s)) {
+				y = x;
+				x = b;
+				b = c;
+				c = s;
+				c = true;
+			}
+			if (s) {
+				this.c.shadowColor = c;
+				this.c.shadowBlur = b;
+				this.c.shadowOffsetX = x;
+				this.c.shadowOffsetY = y;
+			}
+			return this;
+		},
+		shadowOff : function() {
+			this.c.shadowColor = 'white';
+			this.c.shadowBlur = this.c.shadowOffsetX = this.c.shadowOffsetY = 0;
+		},
+		avgLinearGradient : function(xs, ys, xe, ye, c) {
+			var g = this.createLinearGradient(xs, ys, xe, ye);
+			for ( var i = 0; i < c.length; i++)
+				g.addColorStop(i / (c.length - 1), c[i]);
+			return g;
+		},
+		createLinearGradient : function(xs, ys, xe, ye) {
+			return this.c.createLinearGradient(xs, ys, xe, ye);
+		},
+		avgRadialGradient : function(xs, ys, rs, xe, ye, re, c) {
+			var g = this.createRadialGradient(xs, ys, rs, xe, ye, re);
+			for ( var i = 0; i < c.length; i++)
+				g.addColorStop(i / (c.length - 1), c[i]);
+			return g;
+		},
+		createRadialGradient : function(xs, ys, rs, xe, ye, re) {
+			return this.c.createRadialGradient(xs, ys, rs, xe, ye, re);
+		},
+		fillText : function(t, x, y, max, color, mode, lineheight) {
+			t = t + "";
+			max = max || false;
+			mode = mode || 'lr';
+			lineheight = lineheight || 16;
+			this.fillStyle(color);
+			var T = t.split(mode == 'tb' ? "" : "\n");
+			T.each(function(t) {
+				if (max)
+					this.c.fillText(t, x, y, max);
+				else
+					this.c.fillText(t, x, y);
+				y += lineheight;
+			}, this);
+			return this;
+		},
+		measureText : function(text) {
+			return this.c.measureText(text).width;
+		},
+		moveTo : function(x, y) {
+			x = x || 0;
+			y = y || 0;
+			this.c.moveTo(x, y);
+			return this;
+		},
+		lineTo : function(x, y) {
+			x = x || 0;
+			y = y || 0;
+			this.c.lineTo(x, y);
+			return this;
+		},
+		save : function() {
+			this.c.save();
+			return this;
+		},
+		restore : function() {
+			this.c.restore();
+			return this;
+		},
+		beginPath : function() {
+			this.c.beginPath();
+			return this;
+		},
+		closePath : function() {
+			this.c.closePath();
+			return this;
+		},
+		stroke : function() {
 			this.c.stroke();
-		this.c.fill();
-		this.c.restore();
-		return this;
-	},
-	/**
-	 * draw sector
-	 * 
-	 * @param {Number}
-	 *            x round x
-	 * @param {Number}
-	 *            yround y
-	 * @param {Number}
-	 *            r radius
-	 * @param {Number}
-	 *            s start radian
-	 * @param {Number}
-	 *            e end radian
-	 * @param {String}
-	 *            c fill color
-	 * @param {Boolean}
-	 *            b border enable
-	 * @param {Number}
-	 *            bw border's width
-	 * @param {String}
-	 *            bc border's color
-	 * @param {Boolean}
-	 *            sw shadow enable
-	 * @param {String}
-	 *            swc shadow color
-	 * @param {Number}
-	 *            swb shadow blur
-	 * @param {Number}
-	 *            swx shadow's offsetx
-	 * @param {Number}
-	 *            swy shadow's offsety
-	 * @param {Boolean}
-	 *            ccw direction
-	 */
-	sector : function(x, y, r, s, e, c, b, bw, bc, sw, swc, swb, swx, swy, ccw) {
-		if (sw) {
-			// fixed Chrome and Opera bug
-		this.arc(x, y, r, s, e, c, b, bw, bc, sw, swc, swb, swx, swy, ccw, true);
-		this.arc(x, y, r, s, e, c, b, bw, bc, false, swc, swb, swx, swy, ccw, true);
-	} else {
-		this.arc(x, y, r, s, e, c, b, bw, bc, false, 0, 0, 0, 0, ccw, true);
-	}
-	return this;
-},
-sector3D : function() {
-	var x0, y0, sPaint = function(x, y, a, b, s, e, ccw, h, color) {
-		if ((ccw && e <= PI) || (!ccw && s >= PI))
-			return false;
-		var Lo = function(A, h) {
-			this.c.lineTo(x + a * cos(A), y + (h || 0) + (ccw ? (-b * sin(A)) : (b * sin(A))));
-		};
-		s = ccw && e > PI && s < PI ? PI : s;
-		e = !ccw && s < PI && e > PI ? PI : e;
-		var angle = s;
-		this.c.fillStyle = $.dark(color);
-		this.c.moveTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s))));
-		this.c.beginPath();
-		while (angle <= e) {
-			Lo.call(this, angle);
-			angle = angle + inc;
-		}
-		Lo.call(this, e);
-		this.c.lineTo(x + a * cos(e), (y + h) + (ccw ? (-b * sin(e)) : (b * sin(e))));
-		angle = e;
-		while (angle >= s) {
-			Lo.call(this, angle, h);
-			angle = angle - inc;
-		}
-		Lo.call(this, s, h);
-		this.c.lineTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s))));
-		this.c.closePath();
-		this.c.fill();
-	}, layerDraw = function(x, y, a, b, ccw, h, A, color) {
-		this.c.moveTo(x, y);
-		this.c.beginPath();
-		this.c.fillStyle = $.dark(color);
-		this.c.lineTo(x, y + h);
-		var x0 = x + a * cos(A);
-		var y0 = y + h + (ccw ? (-b * sin(A)) : (b * sin(A)));
-		this.c.lineTo(x0, y0);
-		this.c.lineTo(x0, y0 - h);
-		this.c.lineTo(x, y);
-		this.c.closePath();
-		this.c.fill();
-	}, layerPaint = function(x, y, a, b, s, e, ccw, h, color) {
-		var ds = ccw ? (s < PI / 2 || s > 1.5 * PI) : (s > PI / 2 && s < 1.5 * PI), de = ccw ? (e > PI / 2 && e < 1.5 * PI) : (e < PI / 2 || e > 1.5 * PI);
-		if (!ds && !de)
-			return false;
-		if (ds)
-			layerDraw.call(this, x, y, a, b, ccw, h, s, color);
-		if (de)
-			layerDraw.call(this, x, y, a, b, ccw, h, e, color);
-	};
-	return function(x, y, a, b, s, e, h, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, isw) {
-		// browser opera has bug when use destination-over and shadow
-		sw = sw && !$.isOpera;
-		this.c.save();
-		this.c.globalCompositeOperation = "destination-over";
-		this.c.fillStyle = c;
-		// paint inside layer
-		layerPaint.call(this, x, y, a, b, s, e, ccw, h, c);
-		// paint bottom layer
-		this.ellipse(x, y + h, a, b, s, e, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, true);
-		this.c.globalCompositeOperation = "source-over";
-
-		// paint top layer
-		// var g = this.avgRadialGradient(x,y,0,x,y,a,[$.light(c,0.1),$.dark(c,0.05)]);
-		this.ellipse(x, y, a, b, s, e, c, bo, bow, boc, false, swc, swb, swx, swy, ccw, true);
-		// paint outside layer
-		sPaint.call(this, x, y, a, b, s, e, ccw, h, c);
-
-		this.c.restore();
-		return this;
-	}
-}(),
-textStyle : function(a, l, f) {
-	return this.textAlign(a).textBaseline(l).textFont(f);
-},
-strokeStyle : function(w, c, j) {
-	if (w)
-		this.c.lineWidth = w;
-	if (c)
-		this.c.strokeStyle = c;
-	if (j)
-		this.c.lineJoin = j;
-	return this;
-},
-globalAlpha : function(v) {
-	if (v)
-		this.c.globalAlpha = v;
-	return this;
-},
-fillStyle : function(c) {
-	if (c)
-		this.c.fillStyle = c;
-	return this;
-},
-textAlign : function(a) {
-	if (a)
-		this.c.textAlign = a;
-	return this;
-},
-textBaseline : function(l) {
-	if (l)
-		this.c.textBaseline = l;
-	return this;
-},
-textFont : function(font) {
-	if (font)
-		this.c.font = font;
-	return this;
-},
-shadowOn : function(s, c, b, x, y) {
-	if ($.isString(s)) {
-		y = x;
-		x = b;
-		b = c;
-		c = s;
-		c = true;
-	}
-	if (s) {
-		this.c.shadowColor = c;
-		this.c.shadowBlur = b;
-		this.c.shadowOffsetX = x;
-		this.c.shadowOffsetY = y;
-	}
-	return this;
-},
-shadowOff : function() {
-	this.c.shadowColor = 'white';
-	this.c.shadowBlur = this.c.shadowOffsetX = this.c.shadowOffsetY = 0;
-},
-avgLinearGradient : function(xs, ys, xe, ye, c) {
-	var g = this.createLinearGradient(xs, ys, xe, ye);
-	for ( var i = 0; i < c.length; i++)
-		g.addColorStop(i / (c.length - 1), c[i]);
-	return g;
-},
-createLinearGradient : function(xs, ys, xe, ye) {
-	return this.c.createLinearGradient(xs, ys, xe, ye);
-},
-avgRadialGradient : function(xs, ys, rs, xe, ye, re, c) {
-	var g = this.createRadialGradient(xs, ys, rs, xe, ye, re);
-	for ( var i = 0; i < c.length; i++)
-		g.addColorStop(i / (c.length - 1), c[i]);
-	return g;
-},
-createRadialGradient : function(xs, ys, rs, xe, ye, re) {
-	return this.c.createRadialGradient(xs, ys, rs, xe, ye, re);
-},
-fillText : function(t, x, y, max, color, mode, lineheight) {
-	t = t + "";
-	max = max || false;
-	mode = mode || 'lr';
-	lineheight = lineheight || 16;
-	this.fillStyle(color);
-	var T = t.split(mode == 'tb' ? "" : "\n");
-	T.each(function(t) {
-		if (max)
-			this.c.fillText(t, x, y, max);
-		else
-			this.c.fillText(t, x, y);
-		y += lineheight;
-	}, this);
-	return this;
-},
-measureText : function(text) {
-	return this.c.measureText(text).width;
-},
-moveTo : function(x, y) {
-	x = x || 0;
-	y = y || 0;
-	this.c.moveTo(x, y);
-	return this;
-},
-lineTo : function(x, y) {
-	x = x || 0;
-	y = y || 0;
-	this.c.lineTo(x, y);
-	return this;
-},
-save : function() {
-	this.c.save();
-	return this;
-},
-restore : function() {
-	this.c.restore();
-	return this;
-},
-beginPath : function() {
-	this.c.beginPath();
-	return this;
-},
-closePath : function() {
-	this.c.closePath();
-	return this;
-},
-stroke : function() {
-	this.c.stroke();
-	return this;
-},
-fill : function() {
-	this.c.fill();
-	return this;
-},
-text : function(text, x, y, max, color, align, line, font, mode, lineheight) {
-	this.c.save();
-	this.textStyle(align, line, font);
-	this.fillText(text, x, y, max, color, mode, lineheight);
-	this.c.restore();
-	return this;
-},
-// can use cube3D instead of this?
+			return this;
+		},
+		fill : function() {
+			this.c.fill();
+			return this;
+		},
+		text : function(text, x, y, max, color, align, line, font, mode, lineheight) {
+			this.c.save();
+			this.textStyle(align, line, font);
+			this.fillText(text, x, y, max, color, mode, lineheight);
+			this.c.restore();
+			return this;
+		},
+		// can use cube3D instead of this?
 		cube : function(x, y, xv, yv, width, height, zdeep, bg, b, bw, bc, sw, swc, swb, swx, swy) {
 			x = fd(bw, x);
 			y = fd(bw, y);
@@ -4886,8 +4900,7 @@ $.Pie = $.extend($.Chart, {
 			 */
 			decimalsnum : 1,
 			/**
-			 * @cfg {String} the event's name trigger pie pop(default to
-			 *      'click')
+			 * @cfg {String} the event's name trigger pie pop(default to 'click')
 			 */
 			pop_event : 'click',
 			/**
@@ -4896,19 +4909,16 @@ $.Pie = $.extend($.Chart, {
 			customize_layout : false,
 			counterclockwise : false,
 			/**
-			 * @cfg {Boolean} if it has animate when a piece popd (default to
-			 *      false)
+			 * @cfg {Boolean} if it has animate when a piece popd (default to false)
 			 */
 			pop_animate : false,
 			/**
-			 * @cfg {Boolean} if the piece mutex,it means just one piece could
-			 *      pop (default to true)
+			 * @cfg {Boolean} if the piece mutex,it means just one piece could pop (default to true)
 			 */
 			mutex : false,
 			shadow : true,
 			/**
-			 * @cfg {Boolean} if the apply the gradient,if set to true that will
-			 *      be gradient color of each sector(default to true)
+			 * @cfg {Boolean} if the apply the gradient,if set to true that will be gradient color of each sector(default to true)
 			 */
 			gradient : true,
 			shadow_blur : 4,
@@ -4936,11 +4946,9 @@ $.Pie = $.extend($.Chart, {
 				}
 			}
 		});
-		
-		this.registerEvent(
-			'animating'
-		);
-		
+
+		this.registerEvent('animating');
+
 		this.sectors = [];
 	},
 	doAnimation : function(t, d) {
@@ -4951,7 +4959,7 @@ $.Pie = $.extend($.Chart, {
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
 			cs += si;
-			this.fireEvent(this, 'animating', [this,s,t,s.get('totalAngle'), d]);
+			this.fireEvent(this, 'animating', [this, s, t, s.get('totalAngle'), d]);
 			s.drawSector();
 		}
 	},
@@ -4959,7 +4967,7 @@ $.Pie = $.extend($.Chart, {
 		$.Pie.superclass.doConfig.call(this);
 		$.Assert.gtZero(this.total, 'this.total');
 
-		var endAngle = startAngle = this.offsetAngle = $.angle2Radian(this.get('offsetAngle')), d = this.data,r=this.get('radius');
+		var endAngle = startAngle = this.offsetAngle = $.angle2Radian(this.get('offsetAngle')), d = this.data, r = this.get('radius');
 		/**
 		 * calculate pie chart's angle
 		 */
@@ -4998,8 +5006,8 @@ $.Pie = $.extend($.Chart, {
 		}
 		this.push('originy', this.get('centery') + this.get('offsety'));
 
-		this.sector_config = $.clone(['originx', 'originy', 'pop_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow_blur', 'shadow_offsetx',
-				'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options);
+		this.sector_config = $.clone(['originx', 'originy', 'pop_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'],
+				this.options);
 
 	}
 
@@ -5043,7 +5051,7 @@ $.Pie2D = $.extend($.Pie, {
 			if (Te) {
 				scs.tip.text = this.fireString(this,'parseTipText',[d,i],t);
 			}
-			
+			scs.id = i;
 			scs.startAngle = d.startAngle;
 			scs.middleAngle = d.middleAngle;
 			scs.endAngle = d.endAngle;
@@ -5117,99 +5125,90 @@ $.Pie2D = $.extend($.Pie, {
 			this.pushComponent(this.sectors);
 			
 		}
-});	/**
-	 * @overview this component use for abc
-	 * @component#$.Column
-	 * @extend#$.Chart
+});/**
+ * @overview this component use for abc
+ * @component#$.Column
+ * @extend#$.Chart
+ */
+$.Column = $.extend($.Chart, {
+	/**
+	 * initialize the context for the Column
 	 */
-	$.Column = $.extend($.Chart,{
+	configure : function(config) {
 		/**
-		 * initialize the context for the Column
+		 * invoked the super class's configuration
 		 */
-		configure:function(config){
+		$.Column.superclass.configure.call(this);
+
+		this.type = 'column';
+
+		this.set({
+			coordinate : {},
+			hiswidth : undefined,
+			shadow : true,
+			text_space : 6,
 			/**
-			 * invoked the super class's  configuration
+			 * @cfg {String} Available value are:
+			 * @Option 'left'
+			 * @Option 'right'
 			 */
-			$.Column.superclass.configure.call(this);
-			
-			this.type = 'column';
-			
-			this.set({
-				coordinate:{},
-				hiswidth:undefined,
-				shadow:true,
-				text_space:6,
-				/**
-				  *@cfg {String} 
-				  * Available value are:
-				  * @Option 'left'
-				  * @Option 'right'
-			 	 */
-				keduAlign:'left',
-				/**
-				 *@cfg {Object} 
-				 *@extend $.Chart
-				 *@see $.Chart#label
-				 */
-				label:{
-					padding:5
-				},
-				/**
-				 *@cfg {Boolean} 
-				 */
-				customize_layout:false,
-				rectangle:{}
-			});
-			
-			this.registerEvent(
-				'rectangleover',
-				'rectanglemouseout',
-				'rectangleclick',
-				'parseValue',
-				'parseText',
-				'animating'
-			);
-			
-			this.rectangles = [];
-			this.labels = [];
-		},
-		doAnimation:function(t,d){
-			var r,h;
-			this.coo.draw();
-			for(var i=0;i<this.rectangles.length;i++){
-				r = this.rectangles[i]; 
-				h = Math.ceil(this.animationArithmetic(t,0,r.height,d));
-				r.push('originy',r.y+(r.height-h));
-				r.push('height',h);
-				this.fireEvent(this, 'animating', [this,r,t,r.heigh,d]);
-				this.labels[i].draw();
-				r.drawRectangle();
-			}
-		},
-		doConfig:function(){
-			$.Column.superclass.doConfig.call(this);
-			
+			keduAlign : 'left',
 			/**
-			 * apply the coordinate feature
+			 * @cfg {Object}
+			 * @extend $.Chart
+			 * @see $.Chart#label
 			 */
-			$.Interface.coordinate.call(this);
+			label : {
+				padding : 5
+			},
 			/**
-			 * quick config to all rectangle
+			 * @cfg {Boolean}
 			 */
-			$.applyIf(this.get('rectangle'),$.clone(['label','tip','border'],this.options));
-			
-			/**
-			 * register event
-			 */
-			this.on('rectangleover',function(e,r){
-				this.T.css("cursor","pointer");
-				
-			}).on('rectanglemouseout',function(e,r){
-				this.T.css("cursor","default");
-			});
-			
+			customize_layout : false
+		});
+
+		this.registerEvent('rectangleover', 'rectanglemouseout', 'rectangleclick', 'parseValue', 'parseText', 'animating');
+
+		this.rectangles = [];
+		this.labels = [];
+	},
+	doAnimation : function(t, d) {
+		var r, h;
+		this.coo.draw();
+		for ( var i = 0; i < this.rectangles.length; i++) {
+			r = this.rectangles[i];
+			h = Math.ceil(this.animationArithmetic(t, 0, r.height, d));
+			r.push('originy', r.y + (r.height - h));
+			r.push('height', h);
+			this.fireEvent(this, 'animating', [this, r, t, r.heigh, d]);
+			this.labels[i].draw();
+			r.drawRectangle();
 		}
+	},
+	doConfig : function() {
+		$.Column.superclass.doConfig.call(this);
+
+		/**
+		 * apply the coordinate feature
+		 */
+		$.Interface.coordinate.call(this);
+		/**
+		 * quick config to all rectangle
+		 */
+		this.push('rectangle', $.clone(['customize_layout', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options));
 		
+		/**
+		 * register event
+		 */
+		this.on('rectangleover', function(e, r) {
+			this.T.css("cursor", "pointer");
+
+		}).on('rectanglemouseout', function(e, r) {
+			this.T.css("cursor", "default");
+		});
+
+	}
+
 });	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.Column2D
