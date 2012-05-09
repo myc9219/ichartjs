@@ -1,6 +1,8 @@
 //将要实现的
 1.enhance event all-sided
+2.gradient
 3.barmuti2d鼠标移动鼠标样式-cause by the sequence of event invoking
+4.附属的组件可以不加入API?
 5.完善doc
 6.配置事件的Doc
 

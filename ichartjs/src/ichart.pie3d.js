@@ -35,29 +35,16 @@
 			
 			this.push('zRotate',iChart.between(0,90,90-this.get('zRotate')));
 			
-			var t,lt,tt;
-			this.sector_config.semi_major_axis = this.get('radius');
-			this.sector_config.semi_minor_axis = this.get('radius')*this.get('zRotate')/90;
-			this.sector_config.cylinder_height = this.get('yHeight')*Math.cos(iChart.angle2Radian(this.get('zRotate')));
+			this.push('sector.semi_major_axis',this.r);
+			this.push('sector.semi_minor_axis',this.r*this.get('zRotate')/90);
+			this.push('sector.cylinder_height',this.get('yHeight')*Math.cos(iChart.angle2Radian(this.get('zRotate'))));
+			this.push('sector.semi_major_axis',this.r);
 			
-			var t,lt,tt,Le = this.get('label.enable'),Te = this.get('tip.enable');
-			for(var i=0;i<this.data.length;i++){
-				t = this.data[i].name+(this.get('showpercent')?iChart.toPercent(this.data[i].value/this.total,this.get('decimalsnum')):'');
-				if(Le){
-					lt = this.fireEvent(this,'parseLabelText',[this.data[i],i]);
-					this.sector_config.label.text = iChart.isString(lt)?lt:t;
-				}
-				if(Te){
-					tt = this.fireEvent(this,'parseTipText',[this.data[i],i]);
-					this.sector_config.tip.text = iChart.isString(tt)?tt:t;
-				}
-				this.sector_config.startAngle = this.data[i].startAngle;
-				this.sector_config.middleAngle = this.data[i].middleAngle;
-				this.sector_config.endAngle = this.data[i].endAngle;
-				this.sector_config.background_color = this.data[i].color;
-				
-				this.sectors.push(new iChart.Sector3D(this.sector_config,this));
-			}
+			this.data.each(function(d,i){
+				this.doParse(d,i);
+				this.sectors.push(new iChart.Sector3D(this.get('sector'),this));
+			},this);
+			
 			this.pushComponent(this.sectors);
 			
 		}
