@@ -1,6 +1,5 @@
 /**
- * @overview this is base class of all element.All must extend this so that has
- *           ability for configuration
+ * @overview This is base class of all element.All must extend this so that has ability for configuration
  * @component#iChart.Element
  * @extend#Object
  */
@@ -22,23 +21,19 @@ iChart.Element = function(config) {
 
 	this.set({
 		/**
-		 * @inner {String} The unique id of this element (defaults to an
-		 *        auto-assigned id).
+		 * @inner {String} The unique id of this element (defaults to an auto-assigned id).
 		 */
 		id : '',
 		/**
-		 * @cfg {Number} Specifies the font size of this element in
-		 *      pixels.(default to 12)
+		 * @cfg {Number} Specifies the font size of this element in pixels.(default to 12)
 		 */
 		fontsize : 12,
 		/**
-		 * @cfg {String} Specifies the font of this element.(default to
-		 *      'Verdana')
+		 * @cfg {String} Specifies the font of this element.(default to 'Verdana')
 		 */
 		font : 'Verdana',
 		/**
-		 * @cfg {String} Specifies the font weight of this element.(default to
-		 *      'normal')
+		 * @cfg {String} Specifies the font weight of this element.(default to 'normal')
 		 */
 		fontweight : 'normal',
 		/**
@@ -52,13 +47,11 @@ iChart.Element = function(config) {
 			radius : 5
 		},
 		/**
-		 * @cfg {Boolean} Specifies whether the element should be show a
-		 *      shadow.(default to false)
+		 * @cfg {Boolean} Specifies whether the element should be show a shadow.(default to false)
 		 */
 		shadow : false,
 		/**
-		 * @cfg {String} Specifies the color of your shadow is.(default to
-		 *      '#666666')
+		 * @cfg {String} Specifies the color of your shadow is.(default to '#666666')
 		 */
 		shadow_color : '#666666',
 		/**
@@ -66,13 +59,11 @@ iChart.Element = function(config) {
 		 */
 		shadow_blur : 4,
 		/**
-		 * @cfg {Number} Horizontal distance (x-axis) between the shadow and the
-		 *      shape in pixel.(default to 0)
+		 * @cfg {Number} Horizontal distance (x-axis) between the shadow and the shape in pixel.(default to 0)
 		 */
 		shadow_offsetx : 0,
 		/**
-		 * @cfg {Number} Vertical distance (y-axis) between the shadow and the
-		 *      shape in pixel.(default to 0)
+		 * @cfg {Number} Vertical distance (y-axis) between the shadow and the shape in pixel.(default to 0)
 		 */
 		shadow_offsety : 0
 	});
@@ -104,9 +95,8 @@ iChart.Element = function(config) {
 
 iChart.Element.prototype = {
 	set : function(c) {
-		if (iChart.isObject(c)) {
+		if (iChart.isObject(c))
 			iChart.merge(this.options, c);
-		}
 	},
 	afterConfiguration : function() {
 	},

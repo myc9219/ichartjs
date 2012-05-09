@@ -48,9 +48,7 @@
 				'rectangleclick',
 				'parseValue',
 				'parseText',
-				'beforeRectangleAnimation',
-				'afterRectangleAnimation'
-				
+				'animating'
 			);
 			
 			this.rectangles = [];
@@ -61,13 +59,12 @@
 			this.coo.draw();
 			for(var i=0;i<this.rectangles.length;i++){
 				r = this.rectangles[i]; 
-				this.fireEvent(this,'beforeRectangleAnimation',[this,r]);
 				h = Math.ceil(this.animationArithmetic(t,0,r.height,d));
 				r.push('originy',r.y+(r.height-h));
 				r.push('height',h);
+				this.fireEvent(this, 'animating', [this,r,t,r.heigh,d]);
 				this.labels[i].draw();
 				r.drawRectangle();
-				this.fireEvent(this,'afterRectangleAnimation',[this,r]);
 			}
 		},
 		doConfig:function(){
