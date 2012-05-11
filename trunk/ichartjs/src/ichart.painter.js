@@ -90,6 +90,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		this.registerEvent(
 		/**
 		 * @event Fires after the element initializing is finished
+		 * this is for test
 		 * @paramter iChart.Painter#this
 		 */
 		'initialize',
