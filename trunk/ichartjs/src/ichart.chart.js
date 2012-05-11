@@ -802,7 +802,7 @@
 			 * @event Fires when this element Animation finished.Only valid when <link>animation</link> is true
 			 * @paramter iChart.Chart#this
 			 */
-			'afterAnimation');
+			'afterAnimation','animating');
 
 			this.T = null;
 			this.rendered = false;
@@ -856,7 +856,7 @@
 				_.animation(_)
 			}, $.INTERVAL)
 		} else {
-			
+
 			setTimeout(function() {
 				_.variable.animation.time = 0;
 				_.animationed = true;
