@@ -80,6 +80,8 @@ iChart.Element = function(config) {
 	this.preventEvent = false;
 	this.initialization = false;
 
+	
+	//this.registerEvent();
 	/**
 	 * inititalize configure
 	 */

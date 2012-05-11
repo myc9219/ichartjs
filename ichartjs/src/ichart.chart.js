@@ -774,33 +774,33 @@
 			this.registerEvent(
 			/**
 			 * @event Fires when parse this element'data.Return value will override existing.
-			 * @paramter iChart.Painter#this
+			 * @paramter iChart.Chart#this
 			 * @paramter Object#data this element'data item
 			 * @paramter int#i the index of data
 			 */
 			'parseData',
 			/**
 			 * @event Fires when parse this tip's data.Return value will override existing. Only valid when tip is available
-			 * @paramter iChart.Painter#this
+			 * @paramter iChart.Chart#this
 			 * @paramter Object#data this tip's data item
 			 * @paramter int#i the index of data
 			 */
 			'parseTipText',
 			/**
 			 * @event Fires when parse this label's data.Return value will override existing. Only valid when label is available
-			 * @paramter iChart.Painter#this
+			 * @paramter iChart.Chart#this
 			 * @paramter Object#data this label's data item
 			 * @paramter int#i the index of data
 			 */
 			'parseLabelText',
 			/**
 			 * @event Fires before this element Animation.Only valid when <link>animation</link> is true
-			 * @paramter iChart.Painter#this
+			 * @paramter iChart.Chart#this
 			 */
 			'beforeAnimation',
 			/**
 			 * @event Fires when this element Animation finished.Only valid when <link>animation</link> is true
-			 * @paramter iChart.Painter#this
+			 * @paramter iChart.Chart#this
 			 */
 			'afterAnimation');
 
