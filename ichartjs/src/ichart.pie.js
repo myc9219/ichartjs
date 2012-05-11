@@ -80,8 +80,13 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			}
 		});
 
-		this.registerEvent('animating');
-
+		this.registerEvent(
+				/**
+				 * @event Fires when this element 
+				 * @paramter iChart.Chart#this
+				 */
+				'bound','rebound');
+			
 		this.sectors = [];
 	},
 	doAnimation : function(t, d) {
@@ -92,7 +97,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
 			cs += si;
-			this.fireEvent(this, 'animating', [this, s, t, s.get('totalAngle'), d]);
+			//this.fireEvent(this, 'animating', [this, s, t, s.get('totalAngle'), d]);
 			s.drawSector();
 		}
 	},
