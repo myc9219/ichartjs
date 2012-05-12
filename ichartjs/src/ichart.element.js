@@ -13,6 +13,7 @@ iChart.Element = function(config) {
 	 * define abstract method
 	 */
 	iChart.DefineAbstract('configure', this);
+	iChart.DefineAbstract('afterConfiguration', this);
 
 	/**
 	 * All of the configuration will in this property
@@ -99,8 +100,6 @@ iChart.Element.prototype = {
 	set : function(c) {
 		if (iChart.isObject(c))
 			iChart.merge(this.options, c);
-	},
-	afterConfiguration : function() {
 	},
 	pushIf : function(name, value) {
 		if (!this.get(name)) {

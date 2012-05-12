@@ -33,7 +33,7 @@
 	<script type="text/javascript">
 			$(function(){
 				//console.profile('ABC');
-				var pie2d = new iChart.Pie2D({
+				 pie2d = new iChart.Pie2D({
 					render : 'myCanvas',
 					animation:true,
 					//shadow:false,
@@ -42,7 +42,13 @@
 					width : 700,
 					height : 500,
 					radius:140,
-					offsetAngle:45
+					offsetAngle:45,
+					listeners:{
+						bound:function(p,n){
+							console.log("name:"+n);
+						}
+					}
+					
 				});
 				//console.profileEnd('ABC');
 				//开始画图

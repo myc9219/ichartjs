@@ -82,10 +82,19 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 
 		this.registerEvent(
 				/**
-				 * @event Fires when this element 
+				 * @event Fires when this element' sector bounded
 				 * @paramter iChart.Chart#this
+				 * @paramter string#name
+				 * @paramter int#index
 				 */
-				'bound','rebound');
+				'bound',
+				/**
+				 * @event Fires when this element' sector rebounded
+				 * @paramter iChart.Chart#this
+				 * @paramter string#name
+				 * @paramter int#index
+				 */
+				'rebound');
 			
 		this.sectors = [];
 	},
@@ -102,17 +111,21 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		}
 	},
 	doParse:function(d,i){
-		var t = d.name + (this.get('showpercent') ? iChart.toPercent(d.value / this.total, this.get('decimalsnum')) : '');
-		if(this.get('label.enable'))
-			this.push('sector.label.text',this.fireString(this,'parseLabelText',[d,i],t));
-		if(this.get('tip.enable'))
-			this.push('sector.tip.text',this.fireString(this,'parseTipText',[d,i],t));
+		var _=this,t = d.name + (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : '');
+		if(_.get('label.enable'))
+			_.push('sector.label.text',_.fireString(_,'parseLabelText',[d,i],t));
+		if(_.get('tip.enable'))
+			_.push('sector.tip.text',_.fireString(_,'parseTipText',[d,i],t));
 		
-		this.push('sector.id',i);
-		this.push('sector.startAngle',d.startAngle);
-		this.push('sector.middleAngle',d.middleAngle);
-		this.push('sector.endAngle',d.endAngle);
-		this.push('sector.background_color',d.color);
+		_.push('sector.id',i);
+		_.push('sector.name',d.name);
+		_.push('sector.listeners.changed',function(se,st,i){
+			_.fireEvent(_,st?'bound':'rebound',[_,se.get('name')]);
+		});
+		_.push('sector.startAngle',d.startAngle);
+		_.push('sector.middleAngle',d.middleAngle);
+		_.push('sector.endAngle',d.endAngle);
+		_.push('sector.background_color',d.color);
 	},
 	doConfig : function() {
 		iChart.Pie.superclass.doConfig.call(this);

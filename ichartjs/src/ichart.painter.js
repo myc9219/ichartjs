@@ -89,8 +89,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		 */
 		this.registerEvent(
 		/**
-		 * @event Fires after the element initializing is finished
-		 * this is for test
+		 * @event Fires after the element initializing is finished this is for test
 		 * @paramter iChart.Painter#this
 		 */
 		'initialize',
@@ -136,6 +135,9 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		'draw');
 
 	},
+	afterConfiguration : function() {
+
+	},
 	registerEvent : function() {
 		for ( var i = 0; i < arguments.length; i++) {
 			this.events[arguments[i]] = [];
@@ -162,23 +164,26 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	is3D : function() {
 		return this.dimension == iChart._3D;
 	},
-	draw : function(opts) {
+	draw : function(o) {
 		this.init();
-		/**
-		 * fire the beforedraw event
-		 */
-		if (!this.fireEvent(this, 'beforedraw', [this])) {
-			return this;
-		}
-		/**
-		 * execute the commonDraw() that the subClass implement
-		 */
-		this.commonDraw(opts);
+		this.draw = function(o){
+			/**
+			 * fire the beforedraw event
+			 */
+			if (!this.fireEvent(this, 'beforedraw', [this])) {
+				return this;
+			}
+			/**
+			 * execute the commonDraw() that the subClass implement
+			 */
+			this.commonDraw(o);
 
-		/**
-		 * fire the draw event
-		 */
-		this.fireEvent(this, 'draw', [this]);
+			/**
+			 * fire the draw event
+			 */
+			this.fireEvent(this, 'draw', [this]);
+		}
+		this.draw(o);
 	},
 	fireString : function(socpe, name, args, s) {
 		var t = this.fireEvent(socpe, name, args);

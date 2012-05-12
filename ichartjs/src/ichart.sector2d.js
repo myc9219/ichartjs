@@ -44,10 +44,9 @@
 					this.get('counterclockwise'));
 		},
 		isEventValid:function(e){
-			if(this.get('label.enable')){
-				if(this.label.isEventValid(e).valid)
-					return {valid:true};
-			}
+			if(this.label&&this.label.isEventValid(e).valid)
+				return {valid:true};
+				
 			if((this.r)<iChart.distanceP2P(this.x,this.y,e.offsetX,e.offsetY)){
 				return {valid:false};
 			}
@@ -60,10 +59,10 @@
 			return {valid:false};
 		},
 		tipInvoke:function(){
-			var A = this.get('middleAngle'),
+			var _ = this,
+				A = _.get('middleAngle'),
 				Q  = iChart.quadrantd(A),
-				_ = this,
-				r = this.get('radius');
+				r = _.get('radius');
 			return function(w,h){
 				var P = iChart.p2Point(_.x,_.y,A,r*0.8);
 				return {
