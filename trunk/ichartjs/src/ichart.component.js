@@ -25,6 +25,13 @@
 			this.inject(c);
 			
 			this.final_parameter = {};
+			
+			
+			
+			
+			
+			
+			
 	
 	},
 	afterConfiguration:function(){

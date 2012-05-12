@@ -696,7 +696,10 @@
 				 */
 				height : undefined,
 				/**
-				 * @cfg {String} this property specifies the horizontal alignment of graph in an module (defaults to 'center')
+				 * @cfg {String} this property specifies the horizontal alignment of chart in an module (defaults to 'center') Available value are:
+				 * @Option 'left'
+				 * @Option 'center'
+				 * @Option 'right'
 				 */
 				align : 'center',
 				/**
@@ -735,11 +738,11 @@
 				title_color : 'black',
 				title_height : 25,
 				/**
-				 * @cfg {Boolean}
+				 * @cfg {Boolean} If true element will has a animation when show, false to skip the animation.(default to false)
 				 */
 				animation : false,
 				/**
-				 * @cfg {Function} the custom funtion for animation
+				 * @inner {Function} the custom funtion for animation
 				 */
 				doAnimationFn : $.emptyFn,
 				/**
@@ -802,7 +805,7 @@
 			 * @event Fires when this element Animation finished.Only valid when <link>animation</link> is true
 			 * @paramter iChart.Chart#this
 			 */
-			'afterAnimation','animating');
+			'afterAnimation', 'animating');
 
 			this.T = null;
 			this.rendered = false;
@@ -867,128 +870,131 @@
 		}
 		// console.timeEnd('Test for animation');
 	}
-}(),
-doAnimation : function(t, d) {
-	this.get('doAnimationFn').call(this, t, d);
-},
-commonDraw : function() {
-	$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
-	$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
-	$.Assert.gtZero(this.data.length, this.type + '\'data is empty.');
-
-	// console.time('Test for draw');
-
-		if (!this.redraw) {
-			this.title();
-			if (this.get('border.enable')) {
-				this.T.drawBorder(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('background_color'), true);
-			} else {
-				this.T.backgound(0, 0, this.width, this.height, this.get('background_color'));
-			}
-		}
-		this.redraw = true;
-
-		if (!this.animationed && this.get('animation')) {
-			this.fireEvent(this, 'beforeAnimation', [this]);
-			this.animation(this);
-			return;
-		}
-
-		this.segmentRect();
-
-		for ( var i = 0; i < this.components.length; i++) {
-			this.components[i].draw();
-		}
-
-		this.resetCanvas();
-		// console.timeEnd('Test for draw');
-
+	}(),
+	doAnimation : function(t, d) {
+		this.get('doAnimationFn').call(this, t, d);
 	},
-	/**
-	 * Draw the title when title not empty
-	 */
-	title : function() {
-		if (this.get('title') == '')
-			return;
-		if (this.get('title_writingmode') == 'tb') {
-
-		} else {
-			if (this.get('title_align') == 'left') {
-				this.push('title_originx', this.get('padding_left'));
-			} else if (this.get('title_align') == 'right') {
-				this.push('title_originx', this.width - this.get('padding_right'));
-			} else {
-				this.push('title_originx', this.get('client_width') / 2);// goto midline
-	}
-	this.T.textAlign(this.get('title_align'));
-	if (this.get('title_valign') == 'bottom') {
-		this.push('title_originy', this.height - this.get('padding_bottom'));
-	} else {
-		this.push('title_originy', this.get('padding_top'));
-	}
-	this.T.textBaseline(this.get('title_valign'));
-
-}
-this.T.textFont($.getFont(this.get('title_fontweight'), this.get('title_fontsize'), this.get('title_font')));
-this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_originy'), this.get('client_width'), this.get('title_color'));
-},
-create : function(shell) {
-// 默认的要计算为warp的div
-		this.width = this.push('width', this.get('width') || 400);
-		this.height = this.push('height', this.get('height') || 300);
-		var style = "width:" + this.width + "px;height:" + this.height + "px;padding:0px;overflow:hidden;position:relative;";
-
-		var id = $.iGather(this.type);
-		this.shellid = $.iGather(this.type + "-shell");
-		var html = "<div id='" + this.shellid + "' style='" + style + "'>" + "<canvas id= '" + id + "'  width='" + this.width + "' height=" + this.height + "'>" + "<p>Your browser does not support the canvas element</p>" + "</canvas>" + "</div>";
-		// also use appendChild()
-		shell.innerHTML = html;
-
-		this.element = document.getElementById(id);
-		this.shell = document.getElementById(this.shellid);
-		// this.element.width = this.width;
-		// this.element.height = this.height;
+	commonDraw : function() {
+		$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
+		$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
+		$.Assert.gtZero(this.data.length, this.type + '\'data is empty.');
+	
+		// console.time('Test for draw');
+	
+			if (!this.redraw) {
+				this.title();
+				if (this.get('border.enable')) {
+					this.T.drawBorder(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('background_color'), true);
+				} else {
+					this.T.backgound(0, 0, this.width, this.height, this.get('background_color'));
+				}
+			}
+			this.redraw = true;
+	
+			if (!this.animationed && this.get('animation')) {
+				this.fireEvent(this, 'beforeAnimation', [this]);
+				this.animation(this);
+				return;
+			}
+	
+			this.segmentRect();
+	
+			for ( var i = 0; i < this.components.length; i++) {
+				this.components[i].draw();
+			}
+	
+			this.resetCanvas();
+			// console.timeEnd('Test for draw');
+	
+		},
 		/**
-		 * the base canvas wrap for draw
+		 * Draw the title when title not empty
 		 */
-		this.T = this.target = new Cans(this.element);
-
-		this.rendered = true;
+		title : function() {
+			if (this.get('title') == '')
+				return;
+			if (this.get('title_writingmode') == 'tb') {
+	
+			} else {
+				if (this.get('title_align') == 'left') {
+					this.push('title_originx', this.get('padding_left'));
+				} else if (this.get('title_align') == 'right') {
+					this.push('title_originx', this.width - this.get('padding_right'));
+				} else {
+					this.push('title_originx', this.get('client_width') / 2);// goto midline
+		}
+		this.T.textAlign(this.get('title_align'));
+		if (this.get('title_valign') == 'bottom') {
+			this.push('title_originy', this.height - this.get('padding_bottom'));
+		} else {
+			this.push('title_originy', this.get('padding_top'));
+		}
+		this.T.textBaseline(this.get('title_valign'));
+	
+	}
+	this.T.textFont($.getFont(this.get('title_fontweight'), this.get('title_fontsize'), this.get('title_font')));
+	this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_originy'), this.get('client_width'), this.get('title_color'));
+	},
+	create : function(shell) {
+	/**
+	 * 默认的要计算为warp的div
+	 */
+	this.width = this.push('width', this.get('width') || 400);
+	this.height = this.push('height', this.get('height') || 300);
+	var style = "width:" + this.width + "px;height:" + this.height + "px;padding:0px;overflow:hidden;position:relative;";
+	
+	var id = $.iGather(this.type);
+	this.shellid = $.iGather(this.type + "-shell");
+	var html = "<div id='" + this.shellid + "' style='" + style + "'>" + "<canvas id= '" + id + "'  width='" + this.width + "' height=" + this.height + "'>" + "<p>Your browser does not support the canvas element</p>" + "</canvas>" + "</div>";
+	/**
+	 * also use appendChild()
+	 */
+	shell.innerHTML = html;
+	
+	this.element = document.getElementById(id);
+	this.shell = document.getElementById(this.shellid);
+	/**
+	 * the base canvas wrap for draw
+	 */
+	this.T = this.target = new Cans(this.element);
+	
+	this.rendered = true;
 	},
 	render : function(id) {
-		this.push('render', id);
+	this.push('render', id);
 	},
 	initialize : function() {
-		if (!this.rendered) {
-			var r = this.get('render');
-			if (typeof r == "string" && document.getElementById(r))
-				this.create(document.getElementById(r));
-			else if (typeof r == 'object')
-				this.create(r);
-		}
-
-		if (this.get('data').length > 0 && this.rendered && !this.initialization) {
-			$.Interface.parser.call(this);
-			this.doConfig();
-			this.initialization = true;
-		}
+	if (!this.rendered) {
+		var r = this.get('render');
+		if (typeof r == "string" && document.getElementById(r))
+			this.create(document.getElementById(r));
+		else if (typeof r == 'object')
+			this.create(r);
+	}
+	
+	if (this.get('data').length > 0 && this.rendered && !this.initialization) {
+		$.Interface.parser.call(this);
+		this.doConfig();
+		this.initialization = true;
+	}
 	},
 	doConfig : function() {
 		$.Chart.superclass.doConfig.call(this);
-		// for compress
+		/**
+		 * for compress
+		 */
 		var _ = this, E = _.variable.event, register = function() {
-			['click', 'dblclick', 'mousemove'].each(function(item) {
-				_.T.addEvent(item, function(e) {
-					_.fireEvent(_, item, [$.Event.fix(e)]);
+			['click', 'dblclick', 'mousemove'].each(function(it) {
+				_.T.addEvent(it, function(e) {
+					_.fireEvent(_, it, [$.Event.fix(e)]);
 				}, false);
 			});
 		}
-
+		
 		$.Interface._3D.call(_);
-
+		
 		_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
-
-		// afterAnimation
+		
 		if (_.get('animation')) {
 			_.processAnimation = _.get('animation');
 			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
@@ -1002,7 +1008,7 @@ create : function(shell) {
 		} else {
 			register();
 		}
-
+		
 		_.on('click', function(e) {
 			// console.time('Test for click');
 				_.components.each(function(c) {
@@ -1014,7 +1020,7 @@ create : function(shell) {
 				});
 				// console.timeEnd('Test for click');
 			});
-
+		
 		_.on('mousemove', function(e) {
 			// console.time('Test for doMouseMove');
 				var O = false;
@@ -1041,7 +1047,7 @@ create : function(shell) {
 						}
 					}
 				});
-
+		
 				if (!O && E.mouseover) {
 					E.mouseover = false;
 					_.T.css("cursor", "default");
@@ -1050,31 +1056,31 @@ create : function(shell) {
 				// console.timeEnd('Test for doMouseMove');
 			});
 		$.Assert.isArray(_.data);
-
+		
 		_.push('l_originx', _.get('padding_left'));
 		_.push('r_originx', _.width - _.get('padding_right'));
 		_.push('t_originy', _.get('padding_top'));
 		_.push('b_originy', _.height - _.get('padding_bottom'));
-
+		
 		var offx = 0, offy = 0;
-
+		
 		if (_.get('title') != '') {
 			if (_.get('title_writingmode') == 'tb') {// 竖直排列
-			offx = _.get('title_height');
-			if (_.get('title_align') == 'left') {
-				_.push('l_originx', _.get('l_originx') + _.get('title_height'));
-			} else {
-				_.push('r_originx', _.width - _.get('l_originx') - _.get('title_height'));
-			}
-		} else {// 横向排列
-			offy = _.get('title_height');
-
-			if (_.get('title_align') == 'left') {
-				_.push('title_originx', _.get('padding_left'));
-			} else if (_.get('title_align') == 'right') {
-				_.push('title_originx', _.width - _.get('padding_right'));
-			} else {
-				_.push('title_originx', _.get('client_width') / 2);// goto midline
+					offx = _.get('title_height');
+					if (_.get('title_align') == 'left') {
+						_.push('l_originx', _.get('l_originx') + _.get('title_height'));
+					} else {
+						_.push('r_originx', _.width - _.get('l_originx') - _.get('title_height'));
+					}
+				} else {// 横向排列
+					offy = _.get('title_height');
+		
+					if (_.get('title_align') == 'left') {
+						_.push('title_originx', _.get('padding_left'));
+					} else if (_.get('title_align') == 'right') {
+						_.push('title_originx', _.width - _.get('padding_right'));
+					} else {
+						_.push('title_originx', _.get('client_width') / 2);// goto midline
 			}
 			if (_.get('title_valign') == 'bottom') {
 				_.push('title_originy', _.height - _.get('padding_bottom'));
@@ -1084,39 +1090,39 @@ create : function(shell) {
 				_.push('title_originy', _.get('padding_top'));
 			}
 		}
-	}
-
-	_.push('client_width', (_.get('width') - _.get('hpadding') - offx));
-	_.push('client_height', (_.get('height') - _.get('vpadding') - offy));
-
-	_.push('minDistance', Math.min(_.get('client_width'), _.get('client_height')));
-	_.push('maxDistance', Math.max(_.get('client_width'), _.get('client_height')));
-	_.push('minstr', _.get('client_width') < _.get('client_height') ? 'width' : 'height');
-
-	_.push('centerx', _.get('l_originx') + _.get('client_width') / 2);
-	_.push('centery', _.get('t_originy') + _.get('client_height') / 2);
-	/*
-	 * if(_.get('border.enable')){ var round = $.parseBorder(_.get('border.radius')); _.push('radius_top',round[0]); _.push('radius_right',round[1]); _.push('radius_bottom',round[2]); _.push('radius_left',round[3]); }
-	 */
-
-	/**
-	 * legend
-	 */
-	if (_.get('legend.enable')) {
+		}
+		
+		_.push('client_width', (_.get('width') - _.get('hpadding') - offx));
+		_.push('client_height', (_.get('height') - _.get('vpadding') - offy));
+		
+		_.push('minDistance', Math.min(_.get('client_width'), _.get('client_height')));
+		_.push('maxDistance', Math.max(_.get('client_width'), _.get('client_height')));
+		_.push('minstr', _.get('client_width') < _.get('client_height') ? 'width' : 'height');
+		
+		_.push('centerx', _.get('l_originx') + _.get('client_width') / 2);
+		_.push('centery', _.get('t_originy') + _.get('client_height') / 2);
+		/*
+		 * if(_.get('border.enable')){ var round = $.parseBorder(_.get('border.radius')); _.push('radius_top',round[0]); _.push('radius_right',round[1]); _.push('radius_bottom',round[2]); _.push('radius_left',round[3]); }
+		 */
+		
+		/**
+		 * legend
+		 */
+		if (_.get('legend.enable')) {
 		_.legend = new $.Legend($.apply({
 			maxwidth : _.get('client_width'),
 			data : _.data
 		}, _.get('legend')), _);
-
+		
 		_.components.push(_.legend);
-	}
-	/**
-	 * tip's wrap
-	 */
-	if (_.get('tip.enable')) {
+		}
+		/**
+		 * tip's wrap
+		 */
+		if (_.get('tip.enable')) {
 		_.push('tip.wrap', _.shell);
+		}
+	
 	}
-
-}
 	});
 })(iChart);
