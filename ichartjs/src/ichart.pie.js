@@ -83,14 +83,14 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		this.registerEvent(
 				/**
 				 * @event Fires when this element' sector bounded
-				 * @paramter iChart.Chart#this
+				 * @paramter iChart.Sector2d#sector
 				 * @paramter string#name
 				 * @paramter int#index
 				 */
 				'bound',
 				/**
 				 * @event Fires when this element' sector rebounded
-				 * @paramter iChart.Chart#this
+				 * @paramter iChart.Sector2d#sector
 				 * @paramter string#name
 				 * @paramter int#index
 				 */
@@ -98,17 +98,16 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			
 		this.sectors = [];
 	},
-	doAnimation : function(t, d) {
+	doAnimation : function(t, d){
 		var s, si = 0, cs = this.offsetAngle;
-		for ( var i = 0; i < this.sectors.length; i++) {
-			s = this.sectors[i];
+		this.sectors.each(function(s,i){
 			si = this.animationArithmetic(t, 0, s.get('totalAngle'), d);
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
 			cs += si;
 			//this.fireEvent(this, 'animating', [this, s, t, s.get('totalAngle'), d]);
 			s.drawSector();
-		}
+		},this);
 	},
 	doParse:function(d,i){
 		var _=this,t = d.name + (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : '');
@@ -154,6 +153,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		if (r <= 0 || r > this.get('minDistance') / 2) {
 			r = this.push('radius', this.get('minDistance') / 2);
 		}
+		
 		this.r = r;
 		/**
 		 * calculate pie chart's increment
