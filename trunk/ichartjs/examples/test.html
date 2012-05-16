@@ -13,20 +13,14 @@
 			}
 		</style>
 		<script type="text/javascript">
-			Array.prototype.each = function(fn)
-		    {
-				var j = this.length;for(var i=0;i<j;i++)fn(this[i]);
-		    };
-		    var b = [];
-		    for(var i=0;i<10000;i++){
-				b.push(i);
-			}
-			console.time("test");
-		    b.each(function(x){
-		        x = x*2;
-		    });
-			console.timeEnd("test");
-		    
+			var a = {
+				name:'wanghe'
+					};
+			b ={};
+			b.name = a.name;
+	        delete a.name;
+		    alert(b.name);
+		    alert(a.name);
 			</script>
 		</head>
 		<body>
