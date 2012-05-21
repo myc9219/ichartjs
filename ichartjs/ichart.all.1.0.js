@@ -944,6 +944,7 @@ $.Element = function(config) {
 	 * define abstract method
 	 */
 	$.DefineAbstract('configure', this);
+	$.DefineAbstract('afterConfiguration', this);
 
 	/**
 	 * All of the configuration will in this property
@@ -1011,6 +1012,8 @@ $.Element = function(config) {
 	this.preventEvent = false;
 	this.initialization = false;
 
+	
+	//this.registerEvent();
 	/**
 	 * inititalize configure
 	 */
@@ -1028,8 +1031,6 @@ $.Element.prototype = {
 	set : function(c) {
 		if ($.isObject(c))
 			$.merge(this.options, c);
-	},
-	afterConfiguration : function() {
 	},
 	pushIf : function(name, value) {
 		if (!this.get(name)) {
@@ -1154,7 +1155,7 @@ $.Painter = $.extend($.Element, {
 		 */
 		this.registerEvent(
 		/**
-		 * @event Fires after the element initializing is finished
+		 * @event Fires after the element initializing is finished this is for test
 		 * @paramter $.Painter#this
 		 */
 		'initialize',
@@ -1200,6 +1201,9 @@ $.Painter = $.extend($.Element, {
 		'draw');
 
 	},
+	afterConfiguration : function() {
+
+	},
 	registerEvent : function() {
 		for ( var i = 0; i < arguments.length; i++) {
 			this.events[arguments[i]] = [];
@@ -1226,23 +1230,26 @@ $.Painter = $.extend($.Element, {
 	is3D : function() {
 		return this.dimension == $._3D;
 	},
-	draw : function(opts) {
+	draw : function(o) {
 		this.init();
-		/**
-		 * fire the beforedraw event
-		 */
-		if (!this.fireEvent(this, 'beforedraw', [this])) {
-			return this;
-		}
-		/**
-		 * execute the commonDraw() that the subClass implement
-		 */
-		this.commonDraw(opts);
+		this.draw = function(o){
+			/**
+			 * fire the beforedraw event
+			 */
+			if (!this.fireEvent(this, 'beforedraw', [this])) {
+				return this;
+			}
+			/**
+			 * execute the commonDraw() that the subClass implement
+			 */
+			this.commonDraw(o);
 
-		/**
-		 * fire the draw event
-		 */
-		this.fireEvent(this, 'draw', [this]);
+			/**
+			 * fire the draw event
+			 */
+			this.fireEvent(this, 'draw', [this]);
+		}
+		this.draw(o);
 	},
 	fireString : function(socpe, name, args, s) {
 		var t = this.fireEvent(socpe, name, args);
@@ -1430,6 +1437,13 @@ $.Html = $.extend($.Element,{
 			this.inject(c);
 			
 			this.final_parameter = {};
+			
+			
+			
+			
+			
+			
+			
 	
 	},
 	afterConfiguration:function(){
@@ -2987,7 +3001,10 @@ $.Legend = $.extend($.Component, {
 				 */
 				height : undefined,
 				/**
-				 * @cfg {String} this property specifies the horizontal alignment of graph in an module (defaults to 'center')
+				 * @cfg {String} this property specifies the horizontal alignment of chart in an module (defaults to 'center') Available value are:
+				 * @Option 'left'
+				 * @Option 'center'
+				 * @Option 'right'
 				 */
 				align : 'center',
 				/**
@@ -3026,11 +3043,11 @@ $.Legend = $.extend($.Component, {
 				title_color : 'black',
 				title_height : 25,
 				/**
-				 * @cfg {Boolean}
+				 * @cfg {Boolean} If true element will has a animation when show, false to skip the animation.(default to false)
 				 */
 				animation : false,
 				/**
-				 * @cfg {Function} the custom funtion for animation
+				 * @inner {Function} the custom funtion for animation
 				 */
 				doAnimationFn : $.emptyFn,
 				/**
@@ -3065,35 +3082,35 @@ $.Legend = $.extend($.Component, {
 			this.registerEvent(
 			/**
 			 * @event Fires when parse this element'data.Return value will override existing.
-			 * @paramter $.Painter#this
+			 * @paramter $.Chart#this
 			 * @paramter Object#data this element'data item
 			 * @paramter int#i the index of data
 			 */
 			'parseData',
 			/**
 			 * @event Fires when parse this tip's data.Return value will override existing. Only valid when tip is available
-			 * @paramter $.Painter#this
+			 * @paramter $.Chart#this
 			 * @paramter Object#data this tip's data item
 			 * @paramter int#i the index of data
 			 */
 			'parseTipText',
 			/**
 			 * @event Fires when parse this label's data.Return value will override existing. Only valid when label is available
-			 * @paramter $.Painter#this
+			 * @paramter $.Chart#this
 			 * @paramter Object#data this label's data item
 			 * @paramter int#i the index of data
 			 */
 			'parseLabelText',
 			/**
 			 * @event Fires before this element Animation.Only valid when <link>animation</link> is true
-			 * @paramter $.Painter#this
+			 * @paramter $.Chart#this
 			 */
 			'beforeAnimation',
 			/**
 			 * @event Fires when this element Animation finished.Only valid when <link>animation</link> is true
-			 * @paramter $.Painter#this
+			 * @paramter $.Chart#this
 			 */
-			'afterAnimation');
+			'afterAnimation', 'animating');
 
 			this.T = null;
 			this.rendered = false;
@@ -3147,6 +3164,7 @@ $.Legend = $.extend($.Component, {
 				_.animation(_)
 			}, $.INTERVAL)
 		} else {
+
 			setTimeout(function() {
 				_.variable.animation.time = 0;
 				_.animationed = true;
@@ -3157,128 +3175,131 @@ $.Legend = $.extend($.Component, {
 		}
 		// console.timeEnd('Test for animation');
 	}
-}(),
-doAnimation : function(t, d) {
-	this.get('doAnimationFn').call(this, t, d);
-},
-commonDraw : function() {
-	$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
-	$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
-	$.Assert.gtZero(this.data.length, this.type + '\'data is empty.');
-
-	// console.time('Test for draw');
-
-		if (!this.redraw) {
-			this.title();
-			if (this.get('border.enable')) {
-				this.T.drawBorder(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('background_color'), true);
-			} else {
-				this.T.backgound(0, 0, this.width, this.height, this.get('background_color'));
-			}
-		}
-		this.redraw = true;
-
-		if (!this.animationed && this.get('animation')) {
-			this.fireEvent(this, 'beforeAnimation', [this]);
-			this.animation(this);
-			return;
-		}
-
-		this.segmentRect();
-
-		for ( var i = 0; i < this.components.length; i++) {
-			this.components[i].draw();
-		}
-
-		this.resetCanvas();
-		// console.timeEnd('Test for draw');
-
+	}(),
+	doAnimation : function(t, d) {
+		this.get('doAnimationFn').call(this, t, d);
 	},
-	/**
-	 * Draw the title when title not empty
-	 */
-	title : function() {
-		if (this.get('title') == '')
-			return;
-		if (this.get('title_writingmode') == 'tb') {
-
-		} else {
-			if (this.get('title_align') == 'left') {
-				this.push('title_originx', this.get('padding_left'));
-			} else if (this.get('title_align') == 'right') {
-				this.push('title_originx', this.width - this.get('padding_right'));
-			} else {
-				this.push('title_originx', this.get('client_width') / 2);// goto midline
-	}
-	this.T.textAlign(this.get('title_align'));
-	if (this.get('title_valign') == 'bottom') {
-		this.push('title_originy', this.height - this.get('padding_bottom'));
-	} else {
-		this.push('title_originy', this.get('padding_top'));
-	}
-	this.T.textBaseline(this.get('title_valign'));
-
-}
-this.T.textFont($.getFont(this.get('title_fontweight'), this.get('title_fontsize'), this.get('title_font')));
-this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_originy'), this.get('client_width'), this.get('title_color'));
-},
-create : function(shell) {
-// 默认的要计算为warp的div
-		this.width = this.push('width', this.get('width') || 400);
-		this.height = this.push('height', this.get('height') || 300);
-		var style = "width:" + this.width + "px;height:" + this.height + "px;padding:0px;overflow:hidden;position:relative;";
-
-		var id = $.iGather(this.type);
-		this.shellid = $.iGather(this.type + "-shell");
-		var html = "<div id='" + this.shellid + "' style='" + style + "'>" + "<canvas id= '" + id + "'  width='" + this.width + "' height=" + this.height + "'>" + "<p>Your browser does not support the canvas element</p>" + "</canvas>" + "</div>";
-		// also use appendChild()
-		shell.innerHTML = html;
-
-		this.element = document.getElementById(id);
-		this.shell = document.getElementById(this.shellid);
-		// this.element.width = this.width;
-		// this.element.height = this.height;
+	commonDraw : function() {
+		$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
+		$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
+		$.Assert.gtZero(this.data.length, this.type + '\'data is empty.');
+	
+		// console.time('Test for draw');
+	
+			if (!this.redraw) {
+				this.title();
+				if (this.get('border.enable')) {
+					this.T.drawBorder(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('background_color'), true);
+				} else {
+					this.T.backgound(0, 0, this.width, this.height, this.get('background_color'));
+				}
+			}
+			this.redraw = true;
+	
+			if (!this.animationed && this.get('animation')) {
+				this.fireEvent(this, 'beforeAnimation', [this]);
+				this.animation(this);
+				return;
+			}
+	
+			this.segmentRect();
+	
+			for ( var i = 0; i < this.components.length; i++) {
+				this.components[i].draw();
+			}
+	
+			this.resetCanvas();
+			// console.timeEnd('Test for draw');
+	
+		},
 		/**
-		 * the base canvas wrap for draw
+		 * Draw the title when title not empty
 		 */
-		this.T = this.target = new Cans(this.element);
-
-		this.rendered = true;
+		title : function() {
+			if (this.get('title') == '')
+				return;
+			if (this.get('title_writingmode') == 'tb') {
+	
+			} else {
+				if (this.get('title_align') == 'left') {
+					this.push('title_originx', this.get('padding_left'));
+				} else if (this.get('title_align') == 'right') {
+					this.push('title_originx', this.width - this.get('padding_right'));
+				} else {
+					this.push('title_originx', this.get('client_width') / 2);// goto midline
+		}
+		this.T.textAlign(this.get('title_align'));
+		if (this.get('title_valign') == 'bottom') {
+			this.push('title_originy', this.height - this.get('padding_bottom'));
+		} else {
+			this.push('title_originy', this.get('padding_top'));
+		}
+		this.T.textBaseline(this.get('title_valign'));
+	
+	}
+	this.T.textFont($.getFont(this.get('title_fontweight'), this.get('title_fontsize'), this.get('title_font')));
+	this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_originy'), this.get('client_width'), this.get('title_color'));
+	},
+	create : function(shell) {
+	/**
+	 * 默认的要计算为warp的div
+	 */
+	this.width = this.push('width', this.get('width') || 400);
+	this.height = this.push('height', this.get('height') || 300);
+	var style = "width:" + this.width + "px;height:" + this.height + "px;padding:0px;overflow:hidden;position:relative;";
+	
+	var id = $.iGather(this.type);
+	this.shellid = $.iGather(this.type + "-shell");
+	var html = "<div id='" + this.shellid + "' style='" + style + "'>" + "<canvas id= '" + id + "'  width='" + this.width + "' height=" + this.height + "'>" + "<p>Your browser does not support the canvas element</p>" + "</canvas>" + "</div>";
+	/**
+	 * also use appendChild()
+	 */
+	shell.innerHTML = html;
+	
+	this.element = document.getElementById(id);
+	this.shell = document.getElementById(this.shellid);
+	/**
+	 * the base canvas wrap for draw
+	 */
+	this.T = this.target = new Cans(this.element);
+	
+	this.rendered = true;
 	},
 	render : function(id) {
-		this.push('render', id);
+	this.push('render', id);
 	},
 	initialize : function() {
-		if (!this.rendered) {
-			var r = this.get('render');
-			if (typeof r == "string" && document.getElementById(r))
-				this.create(document.getElementById(r));
-			else if (typeof r == 'object')
-				this.create(r);
-		}
-
-		if (this.get('data').length > 0 && this.rendered && !this.initialization) {
-			$.Interface.parser.call(this);
-			this.doConfig();
-			this.initialization = true;
-		}
+	if (!this.rendered) {
+		var r = this.get('render');
+		if (typeof r == "string" && document.getElementById(r))
+			this.create(document.getElementById(r));
+		else if (typeof r == 'object')
+			this.create(r);
+	}
+	
+	if (this.get('data').length > 0 && this.rendered && !this.initialization) {
+		$.Interface.parser.call(this);
+		this.doConfig();
+		this.initialization = true;
+	}
 	},
 	doConfig : function() {
 		$.Chart.superclass.doConfig.call(this);
-		// for compress
+		/**
+		 * for compress
+		 */
 		var _ = this, E = _.variable.event, register = function() {
-			['click', 'dblclick', 'mousemove'].each(function(item) {
-				_.T.addEvent(item, function(e) {
-					_.fireEvent(_, item, [$.Event.fix(e)]);
+			['click', 'dblclick', 'mousemove'].each(function(it) {
+				_.T.addEvent(it, function(e) {
+					_.fireEvent(_, it, [$.Event.fix(e)]);
 				}, false);
 			});
 		}
-
+		
 		$.Interface._3D.call(_);
-
+		
 		_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
-
-		// afterAnimation
+		
 		if (_.get('animation')) {
 			_.processAnimation = _.get('animation');
 			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
@@ -3292,7 +3313,7 @@ create : function(shell) {
 		} else {
 			register();
 		}
-
+		
 		_.on('click', function(e) {
 			// console.time('Test for click');
 				_.components.each(function(c) {
@@ -3304,7 +3325,7 @@ create : function(shell) {
 				});
 				// console.timeEnd('Test for click');
 			});
-
+		
 		_.on('mousemove', function(e) {
 			// console.time('Test for doMouseMove');
 				var O = false;
@@ -3331,7 +3352,7 @@ create : function(shell) {
 						}
 					}
 				});
-
+		
 				if (!O && E.mouseover) {
 					E.mouseover = false;
 					_.T.css("cursor", "default");
@@ -3340,31 +3361,31 @@ create : function(shell) {
 				// console.timeEnd('Test for doMouseMove');
 			});
 		$.Assert.isArray(_.data);
-
+		
 		_.push('l_originx', _.get('padding_left'));
 		_.push('r_originx', _.width - _.get('padding_right'));
 		_.push('t_originy', _.get('padding_top'));
 		_.push('b_originy', _.height - _.get('padding_bottom'));
-
+		
 		var offx = 0, offy = 0;
-
+		
 		if (_.get('title') != '') {
 			if (_.get('title_writingmode') == 'tb') {// 竖直排列
-			offx = _.get('title_height');
-			if (_.get('title_align') == 'left') {
-				_.push('l_originx', _.get('l_originx') + _.get('title_height'));
-			} else {
-				_.push('r_originx', _.width - _.get('l_originx') - _.get('title_height'));
-			}
-		} else {// 横向排列
-			offy = _.get('title_height');
-
-			if (_.get('title_align') == 'left') {
-				_.push('title_originx', _.get('padding_left'));
-			} else if (_.get('title_align') == 'right') {
-				_.push('title_originx', _.width - _.get('padding_right'));
-			} else {
-				_.push('title_originx', _.get('client_width') / 2);// goto midline
+					offx = _.get('title_height');
+					if (_.get('title_align') == 'left') {
+						_.push('l_originx', _.get('l_originx') + _.get('title_height'));
+					} else {
+						_.push('r_originx', _.width - _.get('l_originx') - _.get('title_height'));
+					}
+				} else {// 横向排列
+					offy = _.get('title_height');
+		
+					if (_.get('title_align') == 'left') {
+						_.push('title_originx', _.get('padding_left'));
+					} else if (_.get('title_align') == 'right') {
+						_.push('title_originx', _.width - _.get('padding_right'));
+					} else {
+						_.push('title_originx', _.get('client_width') / 2);// goto midline
 			}
 			if (_.get('title_valign') == 'bottom') {
 				_.push('title_originy', _.height - _.get('padding_bottom'));
@@ -3374,40 +3395,40 @@ create : function(shell) {
 				_.push('title_originy', _.get('padding_top'));
 			}
 		}
-	}
-
-	_.push('client_width', (_.get('width') - _.get('hpadding') - offx));
-	_.push('client_height', (_.get('height') - _.get('vpadding') - offy));
-
-	_.push('minDistance', Math.min(_.get('client_width'), _.get('client_height')));
-	_.push('maxDistance', Math.max(_.get('client_width'), _.get('client_height')));
-	_.push('minstr', _.get('client_width') < _.get('client_height') ? 'width' : 'height');
-
-	_.push('centerx', _.get('l_originx') + _.get('client_width') / 2);
-	_.push('centery', _.get('t_originy') + _.get('client_height') / 2);
-	/*
-	 * if(_.get('border.enable')){ var round = $.parseBorder(_.get('border.radius')); _.push('radius_top',round[0]); _.push('radius_right',round[1]); _.push('radius_bottom',round[2]); _.push('radius_left',round[3]); }
-	 */
-
-	/**
-	 * legend
-	 */
-	if (_.get('legend.enable')) {
+		}
+		
+		_.push('client_width', (_.get('width') - _.get('hpadding') - offx));
+		_.push('client_height', (_.get('height') - _.get('vpadding') - offy));
+		
+		_.push('minDistance', Math.min(_.get('client_width'), _.get('client_height')));
+		_.push('maxDistance', Math.max(_.get('client_width'), _.get('client_height')));
+		_.push('minstr', _.get('client_width') < _.get('client_height') ? 'width' : 'height');
+		
+		_.push('centerx', _.get('l_originx') + _.get('client_width') / 2);
+		_.push('centery', _.get('t_originy') + _.get('client_height') / 2);
+		/*
+		 * if(_.get('border.enable')){ var round = $.parseBorder(_.get('border.radius')); _.push('radius_top',round[0]); _.push('radius_right',round[1]); _.push('radius_bottom',round[2]); _.push('radius_left',round[3]); }
+		 */
+		
+		/**
+		 * legend
+		 */
+		if (_.get('legend.enable')) {
 		_.legend = new $.Legend($.apply({
 			maxwidth : _.get('client_width'),
 			data : _.data
 		}, _.get('legend')), _);
-
+		
 		_.components.push(_.legend);
-	}
-	/**
-	 * tip's wrap
-	 */
-	if (_.get('tip.enable')) {
+		}
+		/**
+		 * tip's wrap
+		 */
+		if (_.get('tip.enable')) {
 		_.push('tip.wrap', _.shell);
+		}
+	
 	}
-
-}
 	});
 })($);
 	/**
@@ -4470,141 +4491,147 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			
 			
 		}
-});$.Sector = $.extend($.Component,{
-		configure:function(){
+});$.Sector = $.extend($.Component, {
+	configure : function() {
+		/**
+		 * invoked the super class's configuration
+		 */
+		$.Sector.superclass.configure.apply(this, arguments);
+
+		/**
+		 * indicate the component's type
+		 */
+		this.type = 'sector';
+		
+		this.set({
+			name:'',
+			counterclockwise : false,
+			startAngle : 0,
+			middleAngle : 0,
+			endAngle : 0,
+			totalAngle : 0,
 			/**
-			 * invoked the super class's  configuration
+			 * @cfg {String} the event's name trigger pie bound(default to 'click'). 
+			 * Available value are:
+			 * @Option 'left'
+			 * @Option 'center'
+			 * @Option 'right'
 			 */
-			$.Sector.superclass.configure.apply(this,arguments);
-			
+			pop_event : 'click',
+			expand : false,
 			/**
-			 * indicate the component's type
+			 * @cfg {Boolean} if it has animate when a piece popd (default to false)
 			 */
-			this.type = 'sector';
-			
-			this.set({
-				 counterclockwise:false,
-				 startAngle:0,
-				 middleAngle:0,
-				 endAngle:0,
-				 totalAngle:0,
-				 /**
-				  *@cfg {String} the event's name trigger pie pop(default to 'click')
-				 */
-				 pop_event:'click',
-				 expand:false,
-				 /**
-				  *@cfg {Boolean} if it has animate when a piece popd (default to false)
-			 	  */
-				 pop_animate:false,
-				 /**
-				  *@cfg {Boolean} if the piece mutex,it means just one piece could pop (default to true)
-				 */
-				 mutex:false,
-				 increment:undefined,
-				 shadow:true,
-				 gradient:true,
-				 /**
-				 *@cfg {Boolean} if the label displayed (default to true)
-				 */
-				 label:{
-					 enable:true,
-					 /**
-					  * label线的长度
-					  * @memberOf {label} 
-					  */
-					 linelength:undefined
-				 },
-				 tip:{
-					 enable:false,
-					 border:{
-						width:2
-					 }
-				 }
-			});
-			
-			this.registerEvent();
-			
-			this.label = null;
-			this.tip = null;
-		},
-		expand:function(p){
-			this.expanded = true;
-		},	
-		collapse:function(){
-			this.expanded = false;
-		},
-		toggle:function(){
-			this.expanded = !this.expanded;
-		},
-		drawLabel:function(){
-			if(this.get('label.enable')){
+			pop_animate : false,
+			/**
+			 * @cfg {Boolean} if the piece mutex,it means just one piece could pop (default to true)
+			 */
+			mutex : false,
+			increment : undefined,
+			shadow : true,
+			gradient : true,
+			/**
+			 * @cfg {Boolean} if the label displayed (default to true)
+			 */
+			label : {
+				enable : true,
 				/**
-				 * draw the labels
+				 * label线的长度
+				 * 
+				 * @memberOf {label}
 				 */
-				this.label.draw({
-					highlight:this.highlighted,
-					invoke:this.labelInvoke(this.x,this.y)
-				});
+				linelength : undefined
+			},
+			tip : {
+				enable : false,
+				border : {
+					width : 2
+				}
 			}
-		},
-		doDraw:function(opts){
-			this.drawSector();
-			this.drawLabel();
-		},
-		doConfig:function(){
-			$.Sector.superclass.doConfig.call(this);
-			
-			
-			this.push('totalAngle',this.get('endAngle')-this.get('startAngle'));
-			
+		});
+
+		this.registerEvent('changed');
+
+		this.label = null;
+		this.tip = null;
+	},
+	expand : function(p) {
+		this.expanded = true;
+	},
+	collapse : function() {
+		this.expanded = false;
+	},
+	toggle : function() {
+		this.expanded = !this.expanded;
+	},
+	drawLabel : function() {
+		if (this.get('label.enable')) {
 			/**
-			 * make the label's color in accord with sector
+			 * draw the labels
 			 */
-			this.push('label.scolor',this.get('background_color'));
-			
-			this.expanded = this.get('expand');
-			
-			var self = this;
-			
-			if(this.get('tip.enable')){
-				if(this.get('tip.showType')!='follow'){
-					this.push('tip.invokeOffsetDynamic',false); 
-				}
-				this.tip = new $.Tip(this.get('tip'),this);
-			}
-			
-			this.variable.event.poped = false;
-			
-			this.on(this.get('pop_event'),function(e,r){
-//					console.profile('Test for pop');
-//					console.time('Test for pop');
-					self.variable.event.poped = true;
-					self.toggle();
-					
-					self.redraw();
-					
-					self.variable.event.poped = false;
-//					console.timeEnd('Test for pop');
-//					console.profileEnd('Test for pop');
+			this.label.draw({
+				highlight : this.highlighted,
+				invoke : this.labelInvoke(this.x, this.y)
 			});
-			
-			this.on('beforedraw',function(){
-				this.x = this.get('originx');
-				this.y = this.get('originy');
-				if(this.expanded){
-					if(this.get('mutex')&&!self.variable.event.poped){
-						this.expanded = false;
-					}else{
-						this.x+=this.get('increment')*Math.cos(2*Math.PI-this.get('middleAngle'));
-						this.y-=this.get('increment')*Math.sin(2*Math.PI-this.get('middleAngle'));
-					}
-				}
-				return true;
-			});
-			
-			
 		}
+	},
+	doDraw : function(opts) {
+		this.drawSector();
+		this.drawLabel();
+	},
+	doConfig : function() {
+		$.Sector.superclass.doConfig.call(this);
+		
+		var _ = this;
+		
+		_.push('totalAngle', _.get('endAngle') - _.get('startAngle'));
+
+		/**
+		 * make the label's color in accord with sector
+		 */
+		_.push('label.scolor', _.get('background_color'));
+
+		_.variable.event.status = _.expanded = _.get('expand');
+		
+		if (_.get('tip.enable')) {
+			if (_.get('tip.showType') != 'follow') {
+				_.push('tip.invokeOffsetDynamic', false);
+			}
+			_.tip = new $.Tip(_.get('tip'), _);
+		}
+
+		_.variable.event.poped = false;
+
+		_.on(_.get('pop_event'), function(e, r) {
+			// console.profile('Test for pop');
+				// console.time('Test for pop');
+				_.variable.event.poped = true;
+				_.toggle();
+				_.redraw();
+				_.variable.event.poped = false;
+				// console.timeEnd('Test for pop');
+				// console.profileEnd('Test for pop');
+			});
+
+		_.on('beforedraw', function() {
+			_.x = _.get('originx');
+			_.y = _.get('originy');
+			if(_.variable.event.status!=_.expanded){
+				_.fireEvent(_,'changed',[_,_.expanded]);
+			}
+			_.variable.event.status = _.expanded;
+			if (_.expanded) {
+				if (_.get('mutex') && !_.variable.event.poped) {
+					_.expanded = false;
+				} else {
+					_.x += _.get('increment') * Math.cos(2 * Math.PI - _.get('middleAngle'));
+					_.y -= _.get('increment') * Math.sin(2 * Math.PI - _.get('middleAngle'));
+				}
+			}
+			return true;
+		});
+
+	}
 });	/**
 	 * @overview this component use for abc
 	 * @component#$.Sector2D
@@ -4651,10 +4678,9 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 					this.get('counterclockwise'));
 		},
 		isEventValid:function(e){
-			if(this.get('label.enable')){
-				if(this.label.isEventValid(e).valid)
-					return {valid:true};
-			}
+			if(this.label&&this.label.isEventValid(e).valid)
+				return {valid:true};
+				
 			if((this.r)<$.distanceP2P(this.x,this.y,e.offsetX,e.offsetY)){
 				return {valid:false};
 			}
@@ -4667,10 +4693,10 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			return {valid:false};
 		},
 		tipInvoke:function(){
-			var A = this.get('middleAngle'),
+			var _ = this,
+				A = _.get('middleAngle'),
 				Q  = $.quadrantd(A),
-				_ = this,
-				r = this.get('radius');
+				r = _.get('radius');
 			return function(w,h){
 				var P = $.p2Point(_.x,_.y,A,r*0.8);
 				return {
@@ -4947,41 +4973,72 @@ $.Pie = $.extend($.Chart, {
 			}
 		});
 
-		this.registerEvent('animating');
-
+		this.registerEvent(
+				/**
+				 * @event Fires when this element' sector bounded
+				 * @paramter $.Sector2d#sector
+				 * @paramter string#name
+				 * @paramter int#index
+				 */
+				'bound',
+				/**
+				 * @event Fires when this element' sector rebounded
+				 * @paramter $.Sector2d#sector
+				 * @paramter string#name
+				 * @paramter int#index
+				 */
+				'rebound');
+			
 		this.sectors = [];
 	},
-	doAnimation : function(t, d) {
+	doAnimation : function(t, d){
 		var s, si = 0, cs = this.offsetAngle;
-		for ( var i = 0; i < this.sectors.length; i++) {
-			s = this.sectors[i];
+		this.sectors.each(function(s,i){
 			si = this.animationArithmetic(t, 0, s.get('totalAngle'), d);
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
 			cs += si;
-			this.fireEvent(this, 'animating', [this, s, t, s.get('totalAngle'), d]);
+			//this.fireEvent(this, 'animating', [this, s, t, s.get('totalAngle'), d]);
 			s.drawSector();
-		}
+		},this);
+	},
+	doParse:function(d,i){
+		var _=this,t = d.name + (_.get('showpercent') ? $.toPercent(d.value / _.total, _.get('decimalsnum')) : '');
+		if(_.get('label.enable'))
+			_.push('sector.label.text',_.fireString(_,'parseLabelText',[d,i],t));
+		if(_.get('tip.enable'))
+			_.push('sector.tip.text',_.fireString(_,'parseTipText',[d,i],t));
+		
+		_.push('sector.id',i);
+		_.push('sector.name',d.name);
+		_.push('sector.listeners.changed',function(se,st,i){
+			_.fireEvent(_,st?'bound':'rebound',[_,se.get('name')]);
+		});
+		_.push('sector.startAngle',d.startAngle);
+		_.push('sector.middleAngle',d.middleAngle);
+		_.push('sector.endAngle',d.endAngle);
+		_.push('sector.background_color',d.color);
 	},
 	doConfig : function() {
 		$.Pie.superclass.doConfig.call(this);
 		$.Assert.gtZero(this.total, 'this.total');
 
-		var endAngle = startAngle = this.offsetAngle = $.angle2Radian(this.get('offsetAngle')), d = this.data, r = this.get('radius');
+		var eA = sA = this.offsetAngle = $.angle2Radian(this.get('offsetAngle')),L=this.data.length,r = this.get('radius');
 		/**
 		 * calculate pie chart's angle
 		 */
-		for ( var i = 0; i < d.length; i++) {
-			endAngle += (2 * d[i].value / this.total) * Math.PI;
-			if (i == (d.length - 1)) {
-				endAngle = 2 * Math.PI + this.offsetAngle;
+		
+		this.data.each(function(d,i){
+			eA += (2 * d.value / this.total) * Math.PI;
+			if (i == (L - 1)) {
+				eA = 2 * Math.PI + this.offsetAngle;
 			}
-			d[i].startAngle = startAngle;
-			d[i].endAngle = endAngle;
-			d[i].totalAngle = endAngle - startAngle;
-			d[i].middleAngle = (startAngle + endAngle) / 2;
-			startAngle = endAngle;
-		}
+			d.startAngle = sA;
+			d.endAngle = eA;
+			d.totalAngle = eA - sA;
+			d.middleAngle = (sA + eA) / 2;
+			sA = eA;
+		},this);
 
 		/**
 		 * calculate pie chart's radius
@@ -4989,6 +5046,8 @@ $.Pie = $.extend($.Chart, {
 		if (r <= 0 || r > this.get('minDistance') / 2) {
 			r = this.push('radius', this.get('minDistance') / 2);
 		}
+		
+		this.r = r;
 		/**
 		 * calculate pie chart's increment
 		 */
@@ -5006,8 +5065,8 @@ $.Pie = $.extend($.Chart, {
 		}
 		this.push('originy', this.get('centery') + this.get('offsety'));
 
-		this.sector_config = $.clone(['originx', 'originy', 'pop_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'],
-				this.options);
+		this.push('sector', $.clone(['originx', 'originy', 'pop_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'],
+				this.options));
 
 	}
 
@@ -5030,34 +5089,20 @@ $.Pie2D = $.extend($.Pie, {
 
 		this.dataType = 'simple';
 
-		this.set({});
-
+		//this.set({});
+		
 		this.registerEvent();
 	},
 	doConfig : function() {
 		$.Pie2D.superclass.doConfig.call(this);
-		
-		var t, lt, tt, Le = this.get('label.enable'), Te = this.get('tip.enable'),scs = this.sector_config;
-		
-		scs.radius = this.get('radius');
+		/**
+		 * quick config to all rectangle
+		 */
+		this.push('sector.radius',this.r)
 		
 		this.data.each(function(d,i){
-			t = d.name + (this.get('showpercent') ? $.toPercent(d.value / this.total, this.get('decimalsnum')) : '');
-			
-			if (Le) {
-				scs.label.text = this.fireString(this,'parseLabelText',[d,i],t);
-			}
-			
-			if (Te) {
-				scs.tip.text = this.fireString(this,'parseTipText',[d,i],t);
-			}
-			scs.id = i;
-			scs.startAngle = d.startAngle;
-			scs.middleAngle = d.middleAngle;
-			scs.endAngle = d.endAngle;
-			scs.background_color = d.color;
-
-			this.sectors.push(new $.Sector2D(scs, this));
+			this.doParse(d,i);
+			this.sectors.push(new $.Sector2D(this.get('sector'), this));
 		},this);
 		
 		this.pushComponent(this.sectors);
@@ -5099,29 +5144,16 @@ $.Pie2D = $.extend($.Pie, {
 			
 			this.push('zRotate',$.between(0,90,90-this.get('zRotate')));
 			
-			var t,lt,tt;
-			this.sector_config.semi_major_axis = this.get('radius');
-			this.sector_config.semi_minor_axis = this.get('radius')*this.get('zRotate')/90;
-			this.sector_config.cylinder_height = this.get('yHeight')*Math.cos($.angle2Radian(this.get('zRotate')));
+			this.push('sector.semi_major_axis',this.r);
+			this.push('sector.semi_minor_axis',this.r*this.get('zRotate')/90);
+			this.push('sector.cylinder_height',this.get('yHeight')*Math.cos($.angle2Radian(this.get('zRotate'))));
+			this.push('sector.semi_major_axis',this.r);
 			
-			var t,lt,tt,Le = this.get('label.enable'),Te = this.get('tip.enable');
-			for(var i=0;i<this.data.length;i++){
-				t = this.data[i].name+(this.get('showpercent')?$.toPercent(this.data[i].value/this.total,this.get('decimalsnum')):'');
-				if(Le){
-					lt = this.fireEvent(this,'parseLabelText',[this.data[i],i]);
-					this.sector_config.label.text = $.isString(lt)?lt:t;
-				}
-				if(Te){
-					tt = this.fireEvent(this,'parseTipText',[this.data[i],i]);
-					this.sector_config.tip.text = $.isString(tt)?tt:t;
-				}
-				this.sector_config.startAngle = this.data[i].startAngle;
-				this.sector_config.middleAngle = this.data[i].middleAngle;
-				this.sector_config.endAngle = this.data[i].endAngle;
-				this.sector_config.background_color = this.data[i].color;
-				
-				this.sectors.push(new $.Sector3D(this.sector_config,this));
-			}
+			this.data.each(function(d,i){
+				this.doParse(d,i);
+				this.sectors.push(new $.Sector3D(this.get('sector'),this));
+			},this);
+			
 			this.pushComponent(this.sectors);
 			
 		}
@@ -5460,7 +5492,7 @@ $.Column = $.extend($.Chart, {
 			this.type = 'columnmulti2d';
 			this.dataType = 'complex';
 			
-			this.set({});
+			//this.set({});
 			
 			//this.registerEvent();
 			this.columns = [];

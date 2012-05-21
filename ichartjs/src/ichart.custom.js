@@ -34,4 +34,4 @@
 		doConfig:function(){
 			iChart.Custom.superclass.doConfig.call(this);
 		}
-});
+});//@end

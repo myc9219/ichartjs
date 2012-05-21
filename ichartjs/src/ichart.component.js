@@ -26,12 +26,6 @@
 			
 			this.final_parameter = {};
 			
-			
-			
-			
-			
-			
-			
 	
 	},
 	afterConfiguration:function(){
@@ -105,4 +99,4 @@
 			this.target = this.T = c.T;
 		}
 	}
-	});
+	});//@end

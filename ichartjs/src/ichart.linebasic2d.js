@@ -92,8 +92,6 @@
 			}
 			this.pushComponent(this.lines);
 			
-						
-			
 		}
 		
-});
+});//@end

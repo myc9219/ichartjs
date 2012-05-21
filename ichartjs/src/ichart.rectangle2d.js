@@ -97,4 +97,4 @@
 			_.valueX = _.get('value_x');
 			_.valueY = _.get('value_y');
 		}
-});
+});//@end

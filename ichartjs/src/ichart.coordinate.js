@@ -244,7 +244,7 @@
 					}
 				}
 			}
-	});
+	});//@end
 	
 	/**
 	 * @overview this component use for abc
@@ -579,7 +579,7 @@
 			}
 			
 		}
-});
+});//@end
 /**
  * @overview this component use for abc
  * @component#iChart.Coordinate3D
@@ -748,4 +748,4 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 			
 			
 		}
-});
+});//@end

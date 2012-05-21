@@ -81,61 +81,98 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		});
 
 		this.registerEvent(
-				/**
-				 * @event Fires when this element' sector bounded
-				 * @paramter iChart.Sector2d#sector
-				 * @paramter string#name
-				 * @paramter int#index
-				 */
-				'bound',
-				/**
-				 * @event Fires when this element' sector rebounded
-				 * @paramter iChart.Sector2d#sector
-				 * @paramter string#name
-				 * @paramter int#index
-				 */
-				'rebound');
-			
+		/**
+		 * @event Fires when this element' sector bounded
+		 * @paramter iChart.Sector2d#sector
+		 * @paramter string#name
+		 * @paramter int#index
+		 */
+		'bound',
+		/**
+		 * @event Fires when this element' sector rebounded
+		 * @paramter iChart.Sector2d#sector
+		 * @paramter string#name
+		 * @paramter int#index
+		 */
+		'rebound');
+
 		this.sectors = [];
 	},
-	doAnimation : function(t, d){
+	/**
+	 * @method toggle sector 
+	 * @paramter int#i the index of sector
+	 * @return void
+	 */
+	toggle:function(i){
+		this.sectors[i].toggle();
+	},
+	/**
+	 * @method bound sector
+	 * @paramter int#i the index of sector
+	 * @return void
+	 */
+	bound:function(i){
+		this.sectors[i].bound();
+	},
+	/**
+	 * @method rebound sector
+	 * @paramter int#i the index of sector
+	 * @return void
+	 */
+	rebound:function(i){
+		this.sectors[i].rebound();
+	},
+	doAnimation : function(t, d) {
 		var s, si = 0, cs = this.offsetAngle;
-		this.sectors.each(function(s,i){
+		this.sectors.each(function(s, i) {
 			si = this.animationArithmetic(t, 0, s.get('totalAngle'), d);
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
 			cs += si;
-			//this.fireEvent(this, 'animating', [this, s, t, s.get('totalAngle'), d]);
-			s.drawSector();
-		},this);
+			// this.fireEvent(this, 'animating', [this, s, t, s.get('totalAngle'), d]);
+				s.drawSector();
+			}, this);
 	},
-	doParse:function(d,i){
-		var _=this,t = d.name + (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : '');
-		if(_.get('label.enable'))
-			_.push('sector.label.text',_.fireString(_,'parseLabelText',[d,i],t));
-		if(_.get('tip.enable'))
-			_.push('sector.tip.text',_.fireString(_,'parseTipText',[d,i],t));
-		
-		_.push('sector.id',i);
-		_.push('sector.name',d.name);
-		_.push('sector.listeners.changed',function(se,st,i){
-			_.fireEvent(_,st?'bound':'rebound',[_,se.get('name')]);
+	/**
+	 * @method make sector rebounded
+	 * @return Array#the collection of sectors
+	 */
+	getSectors : function() {
+		return this.sectors;
+	},
+	doParse : function(d, i) {
+		var _ = this, t = d.name + (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : '');
+		if (_.get('label.enable'))
+			_.push('sector.label.text', _.fireString(_, 'parseLabelText', [
+					d, i
+			], t));
+		if (_.get('tip.enable'))
+			_.push('sector.tip.text', _.fireString(_, 'parseTipText', [
+					d, i
+			], t));
+
+		_.push('sector.id', i);
+		_.push('sector.name', d.name);
+		_.push('sector.listeners.changed', function(se, st, i) {
+			_.fireEvent(_, st ? 'bound' : 'rebound', [
+					_, se.get('name')
+			]);
 		});
-		_.push('sector.startAngle',d.startAngle);
-		_.push('sector.middleAngle',d.middleAngle);
-		_.push('sector.endAngle',d.endAngle);
-		_.push('sector.background_color',d.color);
+		_.push('sector.startAngle', d.startAngle);
+		_.push('sector.middleAngle', d.middleAngle);
+		_.push('sector.endAngle', d.endAngle);
+		_.push('sector.background_color', d.color);
 	},
 	doConfig : function() {
 		iChart.Pie.superclass.doConfig.call(this);
 		iChart.Assert.gtZero(this.total, 'this.total');
 
-		var eA = sA = this.offsetAngle = iChart.angle2Radian(this.get('offsetAngle')),L=this.data.length,r = this.get('radius');
+		var eA = sA = this.offsetAngle = iChart.angle2Radian(this.get('offsetAngle')), L = this.data.length, r = this.get('radius');
 		/**
 		 * calculate pie chart's angle
 		 */
-		
-		this.data.each(function(d,i){
+
+		this.data.each(function(d, i) {
 			eA += (2 * d.value / this.total) * Math.PI;
 			if (i == (L - 1)) {
 				eA = 2 * Math.PI + this.offsetAngle;
@@ -145,7 +182,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			d.totalAngle = eA - sA;
 			d.middleAngle = (sA + eA) / 2;
 			sA = eA;
-		},this);
+		}, this);
 
 		/**
 		 * calculate pie chart's radius
@@ -153,7 +190,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		if (r <= 0 || r > this.get('minDistance') / 2) {
 			r = this.push('radius', this.get('minDistance') / 2);
 		}
-		
+
 		this.r = r;
 		/**
 		 * calculate pie chart's increment
@@ -172,9 +209,9 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		}
 		this.push('originy', this.get('centery') + this.get('offsety'));
 
-		this.push('sector', iChart.clone(['originx', 'originy', 'pop_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'],
-				this.options));
+		this.push('sector', iChart.clone([
+				'originx', 'originy', 'pop_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'
+		], this.options));
 
 	}
-
-});
+});//@end 

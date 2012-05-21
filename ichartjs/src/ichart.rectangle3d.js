@@ -79,7 +79,5 @@
 			
 			this.topCenterY=this.y-this.get('width')*this.get('yAngle_')/2;
 			
-			
-			
 		}
-});
+});//@end

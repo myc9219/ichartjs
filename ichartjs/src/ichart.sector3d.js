@@ -145,4 +145,4 @@
 				this.label = new iChart.Label(this.get('label'),this);
 			}
 		}
-});
+});//@end
