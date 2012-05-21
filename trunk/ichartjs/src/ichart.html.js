@@ -118,5 +118,5 @@ iChart.Html = iChart.extend(iChart.Element,{
 			if(style.length>1)this.css(style[0],style[1]);
 		}
 	}
-});
+});//@end
 

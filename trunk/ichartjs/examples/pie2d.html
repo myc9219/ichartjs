@@ -38,6 +38,14 @@
 					animation:true,
 					//shadow:false,
 					data: data,
+					legend : {
+						enable : true,
+						listeners:{
+							click:function(c,e,p){
+					 			pie2d.toggle(p.index);
+							}
+						}
+					},
 					title : 'HTML 5 Sample Pie2D',
 					width : 700,
 					height : 500,
@@ -45,7 +53,7 @@
 					offsetAngle:45,
 					listeners:{
 						bound:function(p,n){
-							console.log("name:"+n);
+							//console.log("name:"+n);
 						}
 					}
 					

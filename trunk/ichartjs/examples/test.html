@@ -5,7 +5,7 @@
 		<title>test</title>
 		<meta name="Description" content="" />
 		<meta name="Keywords" content="" />
-
+		<script type="text/javascript" src="../src/ichart.core.js"></script>
 		<style type="text/css">
 			body{
 				margin-top:10px;
@@ -13,9 +13,8 @@
 			}
 		</style>
 		<script type="text/javascript">
-			var b = new String("abc");
-			b.name='hello';
-			alert(b.name);
+			(function(a){alert(a);})(function(){return "ABC"}());
+			
 			</script>
 		</head>
 		<body>

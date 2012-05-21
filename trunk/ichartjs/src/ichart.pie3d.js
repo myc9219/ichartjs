@@ -48,4 +48,4 @@
 			this.pushComponent(this.sectors);
 			
 		}
-});
+});//@end

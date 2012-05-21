@@ -23,8 +23,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			maxwidth : 0,
 			line_height : 16,
 			/**
-			 * @cfg {String} the shape of legend' sign (default to 'square') The
-			 *      following list provides all available value you can use：
+			 * @cfg {String} the shape of legend' sign (default to 'square') The following list provides all available value you can use：
 			 * @Option 'round'
 			 * @Option 'square'
 			 * @Option 'round-bar'
@@ -36,16 +35,13 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			 */
 			sign_size : 12,
 			/**
-			 * @cfg {Number} the distance of legend' sign and text (default to
-			 *      5)
+			 * @cfg {Number} the distance of legend' sign and text (default to 5)
 			 */
 			sign_space : 5,
 			legendspace : 5,
 			text_with_sign_color : false,
 			/**
-			 * @cfg {String} this property specifies the horizontal position of
-			 *      the legend in an module (defaults to 'right') The following
-			 *      list provides all available value you can use：
+			 * @cfg {String} this property specifies the horizontal position of the legend in an module (defaults to 'right') The following list provides all available value you can use：
 			 * @Option 'left'
 			 * @Option 'center' Only applies when valign = 'top|bottom'
 			 * @Option 'right'
@@ -53,9 +49,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			align : 'right',
 
 			/**
-			 * @cfg {String} this property specifies the vertical position of
-			 *      the legend in an module (defaults to 'middle') Available
-			 *      value are:
+			 * @cfg {String} this property specifies the vertical position of the legend in an module (defaults to 'middle') Available value are:
 			 * @Option 'top'
 			 * @Option 'middle' Only applies when align = 'left|right'
 			 * @Option 'bottom'
@@ -103,31 +97,31 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		}
 	},
 	isEventValid : function(e) {
-		if (e.offsetX > this.x && e.offsetX < (this.x + this.width) && e.offsetY > this.y && e.offsetY < (this.y + this.height)) {
-			for ( var i = 0; i < this.data.length; i++) {
-				if (e.offsetX > this.data[i].x && e.offsetX < (this.data[i].x + this.data[i].width + this.get('signwidth')) && e.offsetY > this.data[i].y
-						&& e.offsetY < (this.data[i].y + this.get('line_height'))) {
-					return {
-						valid : true,
-						value : i,
-						target : this.data[i]
-					};
-				}
-			}
-		}
-		return {
+		var r = {
 			valid : false
 		};
+		if (e.offsetX > this.x && e.offsetX < (this.x + this.width) && e.offsetY > this.y && e.offsetY < (this.y + this.height)) {
+			this.data.each(function(d, i) {
+				if (e.offsetX > d.x && e.offsetX < (d.x + d.width + this.get('signwidth')) && e.offsetY > d.y && e.offsetY < (d.y + this.get('line_height'))) {
+					r = {
+						valid : true,
+						index : i,
+						target : d
+					}
+				}
+			}, this);
+		}
+		return r;
 	},
 	doDraw : function() {
 		if (this.get('border.enable'))
-			this.T.drawBorder(this.x, this.y, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('fill_color'),
-					false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
-		
+			this.T.drawBorder(this.x, this.y, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('fill_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'),
+					this.get('shadow_offsety'));
+
 		this.T.textStyle('left', 'middle', iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
-		
+
 		var x = this.x + this.get('padding_left'), y = this.y + this.get('padding_top'), text, c = this.get('column'), r = this.get('row');
-		
+
 		for ( var i = 0; i < r; i++) {
 			this.fireEvent(this, 'drawRaw', [i * c]);
 			this.drawRow(i * c, x, y);
@@ -139,8 +133,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		iChart.Legend.superclass.doConfig.call(this);
 		iChart.Assert.isNotEmpty(this.get('data'), this.type + '[data]');
 
-		var suffix = 0, maxwidth = w = this.get('width'), width = 0, wauto = (w == 'auto'), ss = this.get('sign_size'), c = iChart.isNumber(this.get('column')), r = iChart
-				.isNumber(this.get('row')), L = this.data.length, d,h,g=this.container;
+		var suffix = 0, maxwidth = w = this.get('width'), width = 0, wauto = (w == 'auto'), ss = this.get('sign_size'), c = iChart.isNumber(this.get('column')), r = iChart.isNumber(this.get('row')), L = this.data.length, d, h, g = this.container;
 
 		this.push('signwidth', (ss + this.get('sign_space')));
 
@@ -164,15 +157,14 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			this.T.textFont(this.get('fontStyle'));
 			maxwidth = 0;// 行最大宽度
 		}
-
+		
 		// calculate the width each item will used
-		for ( var i = 0; i < L; i++) {
-			d = this.data[i];
+		this.data.each(function(d,i){
 			iChart.merge(d, this.fireEvent(this, 'parse', [d, i]));
 			d.text = d.text || d.name;
 			d.width = this.T.measureText(d.text);
-		}
-
+		},this);
+		
 		// calculate the each column's width it will used
 		for ( var i = 0; i < c; i++) {
 			width = 0;// 初始化宽度
@@ -197,7 +189,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 
 		this.width = w;
 		this.height = h = this.push('height', r * this.get('line_height') + this.get('vpadding'));
-		
+
 		// if the position is incompatible,rectify it.
 		if (this.get('align') == 'center' && this.get('valign') == 'middle') {
 			this.push('valign', 'top');
@@ -209,7 +201,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 				this.push('align', 'right');
 			}
 		}
-		
+
 		if (this.get('valign') == 'top') {
 			this.y = g.get('t_originy');
 		} else if (this.get('valign') == 'bottom') {
@@ -217,17 +209,17 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		} else {
 			this.y = g.get('centery') - h / 2;
 		}
-		
+
 		if (this.get('align') == 'left') {
 			this.x = g.get('l_originx');
 		} else if (this.get('align') == 'center') {
-			this.x= g.get('centerx') - this.get('textwidth') / 2;
+			this.x = g.get('centerx') - this.get('textwidth') / 2;
 		} else {
 			this.x = g.get('r_originx') - w;
 		}
 
 		this.x = this.push('originx', this.x + this.get('offsetx'));
 		this.y = this.push('originy', this.y + this.get('offsety'));
-		
+
 	}
-});
+});//@end

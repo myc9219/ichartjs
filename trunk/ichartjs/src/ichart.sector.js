@@ -62,14 +62,16 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		this.label = null;
 		this.tip = null;
 	},
-	expand : function(p) {
-		this.expanded = true;
+	bound : function() {
+		if(!this.expanded)
+			this.toggle();
 	},
-	collapse : function() {
-		this.expanded = false;
+	rebound : function() {
+		if(this.expanded)
+			this.toggle();
 	},
 	toggle : function() {
-		this.expanded = !this.expanded;
+		this.fireEvent(this,this.get('pop_event'),[this]);
 	},
 	drawLabel : function() {
 		if (this.get('label.enable')) {
@@ -109,11 +111,11 @@ iChart.Sector = iChart.extend(iChart.Component, {
 
 		_.variable.event.poped = false;
 
-		_.on(_.get('pop_event'), function(e, r) {
+		_.on(_.get('pop_event'), function(_,e,r) {
 			// console.profile('Test for pop');
 				// console.time('Test for pop');
 				_.variable.event.poped = true;
-				_.toggle();
+				_.expanded = !_.expanded;
 				_.redraw();
 				_.variable.event.poped = false;
 				// console.timeEnd('Test for pop');
@@ -139,4 +141,4 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		});
 
 	}
-});
+});//@end

@@ -119,4 +119,4 @@
 				this.pushComponent(this.rectangles);
 			}
 			
-	});
+	});//@end

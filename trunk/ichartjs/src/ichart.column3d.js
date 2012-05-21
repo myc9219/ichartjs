@@ -126,10 +126,6 @@
 			}
 			this.pushComponent(this.labels);
 			this.pushComponent(this.rectangles);
-			
-			
-			
-			
 		}
 		
-});
+});//@end

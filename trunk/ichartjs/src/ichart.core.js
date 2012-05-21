@@ -923,7 +923,7 @@ var iChart_ = (function(window) {//spirit from jquery
  */
 Array.prototype.each = function(f,s)
 {
-	var j = this.length;for(var i=0;i<j;i++)s?f.call(s,this[i],i):f(this[i],i);
+	var j = this.length,r;for(var i=0;i<j;i++){r=s?f.call(s,this[i],i):f(this[i],i);if(typeof r === "boolean" && !r){break}};
 };
 
 window.iChart = window.$ = iChart_;

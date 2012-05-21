@@ -132,4 +132,4 @@ iChart.Element.prototype = {
 		}
 		return V;
 	}
-}
+}//@end

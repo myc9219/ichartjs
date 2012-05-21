@@ -128,8 +128,6 @@
 			}else{
 				this.push('segment_style.tip.wrap',this.get('tip.wrap'));
 			}
-			
-			
 		}
 		
-});
+});//@end

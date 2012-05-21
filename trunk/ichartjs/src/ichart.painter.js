@@ -97,6 +97,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		 * @event Fires when this element is clicked
 		 * @paramter iChart.Painter#this
 		 * @paramter EventObject#e The click event object
+		 * @paramter Object#param The additional parameter
 		 */
 		'click',
 		/**
@@ -221,4 +222,4 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		this.id = this.get('id');
 
 	}
-});
+});//@end

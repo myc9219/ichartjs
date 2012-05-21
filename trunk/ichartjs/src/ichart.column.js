@@ -82,4 +82,4 @@ iChart.Column = iChart.extend(iChart.Chart, {
 
 	}
 
-});
+});//@end
