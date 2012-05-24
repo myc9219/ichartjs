@@ -81,6 +81,7 @@
 	isMouseOver : function(e) {
 		return this.isEventValid(e);
 	},
+	//render ? named
 	redraw : function() {
 		this.container.draw();
 	},

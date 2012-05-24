@@ -613,7 +613,6 @@
 
 	}
 
-	// window.Cans = Cans;
 	/**
 	 * @overview this component use for abc
 	 * @component#iChart.Chart
@@ -661,34 +660,49 @@
 				 */
 				title : '',
 				/**
-				 * @cfg {String} Available value are:
+				 * @cfg {String} Specifies how align title horizontally
+				 * Available value are:
 				 * @Option 'left'
 				 * @Option 'center'
 				 * @Option 'right'
 				 */
 				title_align : 'center',
 				/**
-				 * @cfg {String} Available value are:
+				 * @cfg {String} Specifies how align title vertically
+				 * Available value are:
 				 * @Option 'top'
 				 * @Option 'middle' Only applies when title_writingmode = 'tb'
 				 * @Option 'bottom'
 				 */
 				title_valign : 'top',
 				/**
-				 * @cfg {String} Available value are:
+				 * @cfg {String} Specifies the writing-mode of title.(default to 'lr')
+				 * Available value are:
 				 * @Option 'lr,'tb'
 				 */
 				title_writingmode : 'lr',
 				/**
-				 * @cfg {TypeName}
+				 * @cfg {String} Specifies the font of title.(default to 'Verdana')
 				 */
 				title_font : 'Verdana',
+				/**
+				 * @cfg {String} Specifies the font-weight of title.(default to 'bold')
+				 */
 				title_fontweight : 'bold',
+				/**
+				 * @cfg {Number} Specifies the font-size in pixels of title.(default to 20)
+				 */
 				title_fontsize : 20,
+				/**
+				 * @cfg {String} Specifies the font-color of title.(default to 'black')
+				 */
 				title_color : 'black',
+				/**
+				 * @cfg {Number} Specifies the height of title will be use.(default to 25)
+				 */
 				title_height : 25,
 				/**
-				 * @cfg {Boolean} If true element will has a animation when show, false to skip the animation.(default to false)
+				 * @cfg {Boolean} if true element will has a animation when show, false to skip the animation.(default to false)
 				 */
 				animation : false,
 				/**
@@ -968,51 +982,53 @@ this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_or
 			}
 
 			_.on('click', function(_, e) {
-				// console.time('Test for click');
-					_.components.each(function(c) {
-						if (!c.preventEvent) {
-							var M = c.isMouseOver(e);
-							if (M.valid)
-								c.fireEvent(c, 'click', [c, e, M]);
-						}
-					});
-					// console.timeEnd('Test for click');
+				/**
+				 * console.time('Test for click');
+				 */
+				_.components.each(function(c) {
+					if (!c.preventEvent) {
+						var M = c.isMouseOver(e);
+						if (M.valid)
+							c.fireEvent(c, 'click', [c, e, M]);
+					}
 				});
+				/**
+				 * console.timeEnd('Test for click');
+				 */
+			});
 
 			_.on('mousemove', function(_, e) {
-				// console.time('Test for doMouseMove');
-					var O = false;
-					_.components.each(function(cot) {
-						if (!cot.preventEvent) {
-							var cE = cot.variable.event, M = cot.isMouseOver(e);
-							if (M.valid) {
-								O = true;
-								if (!E.mouseover) {
-									E.mouseover = true;
-									_.T.css("cursor", "pointer");
-									_.fireEvent(_, 'mouseover', [e]);
-								}
-								if (!cE.mouseover) {
-									cE.mouseover = true;
-									cot.fireEvent(cot, 'mouseover', [e, M]);
-								}
-								cot.fireEvent(cot, 'mousemove', [e, M]);
-							} else {
-								if (cE.mouseover) {
-									cE.mouseover = false;
-									cot.fireEvent(cot, 'mouseout', [e, M]);
-								}
+				var O = false;
+				_.components.each(function(cot) {
+					if (!cot.preventEvent) {
+						var cE = cot.variable.event, M = cot.isMouseOver(e);
+						if (M.valid) {
+							O = true;
+							if (!E.mouseover) {
+								E.mouseover = true;
+								_.T.css("cursor", "pointer");
+								_.fireEvent(_, 'mouseover', [e]);
+							}
+							if (!cE.mouseover) {
+								cE.mouseover = true;
+								cot.fireEvent(cot, 'mouseover', [e, M]);
+							}
+							cot.fireEvent(cot, 'mousemove', [e, M]);
+						} else {
+							if (cE.mouseover) {
+								cE.mouseover = false;
+								cot.fireEvent(cot, 'mouseout', [e, M]);
 							}
 						}
-					});
-
-					if (!O && E.mouseover) {
-						E.mouseover = false;
-						_.T.css("cursor", "default");
-						_.fireEvent(_, 'mouseout', [e]);
 					}
-					// console.timeEnd('Test for doMouseMove');
 				});
+
+				if (!O && E.mouseover) {
+					E.mouseover = false;
+					_.T.css("cursor", "default");
+					_.fireEvent(_, 'mouseout', [e]);
+				}
+			});
 			$.Assert.isArray(_.data);
 
 			_.push('l_originx', _.get('padding_left'));
@@ -1082,5 +1098,5 @@ this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_or
 			}
 
 		}
-	});//@end
+	});// @end
 })(iChart);

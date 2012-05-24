@@ -25,11 +25,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			offsetAngle : 0,
 			/**
-			 * @cfg {Boolean} 是否显示百分比 (default to true)
+			 * @cfg {Boolean} Specify as true to display with percent.(default to true)
 			 */
 			showpercent : true,
 			/**
-			 * @cfg {Number} 显示百分比精确小数点位数
+			 * @cfg {Number} Specify with percent.(default to 1)
 			 */
 			decimalsnum : 1,
 			/**
@@ -49,25 +49,16 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 * @cfg {Boolean} if the piece mutex,it means just one piece could pop (default to true)
 			 */
 			mutex : false,
-			shadow : true,
 			/**
 			 * @cfg {Boolean} if the apply the gradient,if set to true that will be gradient color of each sector(default to true)
 			 */
 			gradient : true,
-			shadow_blur : 4,
-			shadow_offsetx : 0,
-			shadow_offsety : 0,
 			increment : undefined,
 			/**
 			 * @cfg {Boolean} if the label displayed (default to true)
 			 */
 			label : {
 				enable : true,
-				/**
-				 * label线的长度
-				 * 
-				 * @memberOf {label}
-				 */
 				linelength : undefined,
 				padding : 5
 			},

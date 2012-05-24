@@ -16,18 +16,27 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		this.type = 'column';
 
 		this.set({
+			/**
+			 * @cfg {Object} the option for coordinate 
+			 */
 			coordinate : {},
+			/**
+			 * @cfg {Number} the width of each column(default to calculate according to coordinate's width)
+			 */
 			hiswidth : undefined,
-			shadow : true,
+			/**
+			 * @cfg {Number} the distance of column's bottom and text(default to 6)
+			 */
 			text_space : 6,
 			/**
-			 * @cfg {String} Available value are:
+			 * @cfg {String} the align of scale(default to 6)
+			 * Available value are:
 			 * @Option 'left'
 			 * @Option 'right'
 			 */
 			keduAlign : 'left',
 			/**
-			 * @cfg {Object}
+			 * @inner {Object} the option for label 
 			 * @extend iChart.Chart
 			 * @see iChart.Chart#label
 			 */
@@ -35,12 +44,12 @@ iChart.Column = iChart.extend(iChart.Chart, {
 				padding : 5
 			},
 			/**
-			 * @cfg {Boolean}
+			 * @inner {Boolean}
 			 */
 			customize_layout : false
 		});
 
-		this.registerEvent('rectangleover', 'rectanglemouseout', 'rectangleclick', 'parseValue', 'parseText', 'animating');
+		this.registerEvent('rectangleover', 'rectanglemouseout', 'rectangleclick');
 
 		this.rectangles = [];
 		this.labels = [];
@@ -53,7 +62,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			h = Math.ceil(this.animationArithmetic(t, 0, r.height, d));
 			r.push('originy', r.y + (r.height - h));
 			r.push('height', h);
-			this.fireEvent(this, 'animating', [this, r, t, r.heigh, d]);
+			//this.fireEvent(this, 'animating', [this, r, t, r.heigh, d]);
 			this.labels[i].draw();
 			r.drawRectangle();
 		}
