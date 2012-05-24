@@ -39,6 +39,7 @@ iChart.Element = function(config) {
 		fontweight : 'normal',
 		/**
 		 * @cfg {Object} Specifies the border for this element
+		 * 
 		 */
 		border : {
 			enable : false,
@@ -48,7 +49,7 @@ iChart.Element = function(config) {
 			radius : 5
 		},
 		/**
-		 * @cfg {Boolean} Specifies whether the element should be show a shadow.(default to false)
+		 * @cfg {Boolean} Specifies whether the element should be show a shadow.In general there will be get a high render speed when apply false.(default to false)
 		 */
 		shadow : false,
 		/**
