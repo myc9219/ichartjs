@@ -40,13 +40,16 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 * @cfg {Boolean}
 			 */
 			customize_layout : false,
+			/**
+			 * @cfg {Boolean} Specify as true make sector will counterclockwise.(default to false)
+			 */
 			counterclockwise : false,
 			/**
-			 * @cfg {Boolean} if it has animate when a piece popd (default to false)
+			 * inner {Boolean} if it has animate when a piece popd (default to false)
 			 */
 			pop_animate : false,
 			/**
-			 * @cfg {Boolean} if the piece mutex,it means just one piece could pop (default to true)
+			 * @cfg {Boolean} Specify as true it means just one piece could pop (default to true)
 			 */
 			mutex : false,
 			/**
@@ -89,6 +92,9 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 
 		this.sectors = [];
 	},
+	addSector:function(s,a){
+		
+	},
 	/**
 	 * @method toggle sector 
 	 * @paramter int#i the index of sector
@@ -125,7 +131,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			}, this);
 	},
 	/**
-	 * @method make sector rebounded
+	 * @method Returns an array containing all sectors of this pie
 	 * @return Array#the collection of sectors
 	 */
 	getSectors : function() {
