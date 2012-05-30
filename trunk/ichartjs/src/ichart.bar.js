@@ -15,7 +15,7 @@
 			iChart.Bar.superclass.configure.call(this);
 			
 			this.type = 'bar';
-			
+			this.dataType = 'simple';
 			this.set({
 				coordinate:{},
 				barheight:undefined,

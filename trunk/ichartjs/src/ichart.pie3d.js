@@ -15,7 +15,6 @@
 			 */
 			this.type = 'pie3d';
 			this.dimension = iChart._3D;
-			this.dataType = 'simple';
 			
 			this.set({
 				 /**

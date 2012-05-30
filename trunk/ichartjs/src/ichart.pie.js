@@ -14,7 +14,8 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		iChart.Pie.superclass.configure.call(this);
 
 		this.type = 'pie';
-
+		this.dataType = 'simple';
+		
 		this.set({
 			/**
 			 * @cfg {Float (0~)} the pie's radius

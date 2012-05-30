@@ -14,7 +14,6 @@
 			iChart.Column3D.superclass.configure.call(this);
 			
 			this.type = 'column3d';
-			this.dataType = 'simple';
 			this.dimension = iChart._3D;
 			
 			this.set({

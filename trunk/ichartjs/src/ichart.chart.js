@@ -965,6 +965,7 @@
 			}
 			
 			if (this.get('data').length > 0 && this.rendered && !this.initialization) {
+				this.data = this.get('data');
 				$.Interface.parser.call(this);
 				this.doConfig();
 				this.initialization = true;
