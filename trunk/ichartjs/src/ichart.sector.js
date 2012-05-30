@@ -24,7 +24,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 * @Option 'center'
 			 * @Option 'right'
 			 */
-			pop_event : 'click',
+			bound_event : 'click',
 			expand : false,
 			/**
 			 * @cfg {Boolean} if it has animate when a piece popd (default to false)
@@ -71,7 +71,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			this.toggle();
 	},
 	toggle : function() {
-		this.fireEvent(this,this.get('pop_event'),[this]);
+		this.fireEvent(this,this.get('bound_event'),[this]);
 	},
 	drawLabel : function() {
 		if (this.get('label.enable')) {
@@ -111,7 +111,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 
 		_.variable.event.poped = false;
 
-		_.on(_.get('pop_event'), function(_,e,r) {
+		_.on(_.get('bound_event'), function(_,e,r) {
 			// console.profile('Test for pop');
 				// console.time('Test for pop');
 				_.variable.event.poped = true;

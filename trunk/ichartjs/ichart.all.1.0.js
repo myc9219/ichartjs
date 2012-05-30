@@ -4517,7 +4517,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			 * @Option 'center'
 			 * @Option 'right'
 			 */
-			pop_event : 'click',
+			bound_event : 'click',
 			expand : false,
 			/**
 			 * @cfg {Boolean} if it has animate when a piece popd (default to false)
@@ -4602,7 +4602,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 
 		_.variable.event.poped = false;
 
-		_.on(_.get('pop_event'), function(e, r) {
+		_.on(_.get('bound_event'), function(e, r) {
 			// console.profile('Test for pop');
 				// console.time('Test for pop');
 				_.variable.event.poped = true;
@@ -4928,7 +4928,7 @@ $.Pie = $.extend($.Chart, {
 			/**
 			 * @cfg {String} the event's name trigger pie pop(default to 'click')
 			 */
-			pop_event : 'click',
+			bound_event : 'click',
 			/**
 			 * @cfg {Boolean}
 			 */
@@ -5065,7 +5065,7 @@ $.Pie = $.extend($.Chart, {
 		}
 		this.push('originy', this.get('centery') + this.get('offsety'));
 
-		this.push('sector', $.clone(['originx', 'originy', 'pop_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'],
+		this.push('sector', $.clone(['originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'],
 				this.options));
 
 	}
