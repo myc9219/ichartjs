@@ -35,7 +35,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {String} the event's name trigger pie pop(default to 'click')
 			 */
-			pop_event : 'click',
+			bound_event : 'click',
 			/**
 			 * @cfg {Boolean}
 			 */
@@ -45,7 +45,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			counterclockwise : false,
 			/**
-			 * inner {Boolean} if it has animate when a piece popd (default to false)
+			 * @inner {Boolean} if it has animate when a piece popd (default to false)
 			 */
 			pop_animate : false,
 			/**
@@ -56,15 +56,21 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 * @cfg {Boolean} if the apply the gradient,if set to true that will be gradient color of each sector(default to true)
 			 */
 			gradient : true,
+			/**
+			 * @cfg {Number} Specify the length when sector bounded.(default to 1/8 radius,and minimum is 5), 
+			 */
 			increment : undefined,
 			/**
-			 * @cfg {Boolean} if the label displayed (default to true)
+			 * @cfg {Object} Specify the config of label
 			 */
 			label : {
 				enable : true,
 				linelength : undefined,
 				padding : 5
 			},
+			/**
+			 * @cfg {Object} Specify the config of tip
+			 */
 			tip : {
 				enable : false,
 				border : {
@@ -207,7 +213,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		this.push('originy', this.get('centery') + this.get('offsety'));
 
 		this.push('sector', iChart.clone([
-				'originx', 'originy', 'pop_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'
+				'originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'
 		], this.options));
 
 	}

@@ -135,12 +135,12 @@
 				}
 				
 				/**
-				 * originx
+				 * originx for short
 				 */
 				this.x = this.get('originx');
 				/**
 				 * 
-				 * originy 
+				 * originy for short 
 				 */
 				this.y = this.get('originy');
 				
@@ -148,7 +148,7 @@
 				this.push('coordinate.originy',this.y);
 				
 			},
-			parser:function() {
+			parser:function(){
 				this.data = this.get('data');
 				if(this.dataType=='simple'){
 					simple.call(this);
