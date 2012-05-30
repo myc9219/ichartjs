@@ -1,5 +1,6 @@
 	iChart.Interface = function(){
-		var simple = function() {
+		
+		var simple = function(c) {
 			var M=0,V=0,MI,ML=0,d;
 			this.data.each(function(d,i){
 				iChart.merge(d,this.fireEvent(this,'parseData',[this,d,i]));
@@ -37,7 +38,7 @@
 			this.push('maxValue',M);
 			this.push('total',this.total);
 		},
-		complex = function(){
+		complex = function(c){
 			this.columnKeys = this.get('columnKeys');
 			var M=0,MI=0,V,d,L=this.columnKeys.length;
 			
@@ -77,13 +78,11 @@
 			this.push('total',this.total);
 		};
 		return {
-			parser:function(data){
-				
-				this.data = this.get('data');
+			parser:function(d){
 				if(this.dataType=='simple'){
-					simple.call(this);
+					simple.call(this,d);
 				}else if(this.dataType=='complex'){
-					complex.call(this);
+					complex.call(this,d);
 				}
 			},
 			_3D:function(){

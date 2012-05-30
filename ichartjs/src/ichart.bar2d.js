@@ -16,8 +16,6 @@
 			
 			this.type = 'bar2d';
 			
-			this.dataType = 'simple';
-			
 			this.set({
 				coordinate:{grid_color:'#CDCDCD',background_color:'#FEFEFE'}
 			});

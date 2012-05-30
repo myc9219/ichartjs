@@ -14,7 +14,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		iChart.Column.superclass.configure.call(this);
 
 		this.type = 'column';
-
+		this.dataType = 'simple';
 		this.set({
 			/**
 			 * @cfg {Object} the option for coordinate 

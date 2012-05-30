@@ -15,8 +15,6 @@ iChart.Pie2D = iChart.extend(iChart.Pie, {
 
 		this.type = 'pie2d';
 
-		this.dataType = 'simple';
-
 		//this.set({});
 		
 		this.registerEvent();

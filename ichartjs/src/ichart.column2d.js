@@ -14,7 +14,6 @@
 			iChart.Column2D.superclass.configure.call(this);
 			
 			this.type = 'column2d';
-			this.dataType = 'simple';
 			
 			this.set({
 				coordinate:{grid_color:'#c4dede',background_color:'#FEFEFE'}
