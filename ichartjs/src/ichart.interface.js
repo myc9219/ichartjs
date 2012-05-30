@@ -77,6 +77,15 @@
 			this.push('total',this.total);
 		};
 		return {
+			parser:function(data){
+				
+				this.data = this.get('data');
+				if(this.dataType=='simple'){
+					simple.call(this);
+				}else if(this.dataType=='complex'){
+					complex.call(this);
+				}
+			},
 			_3D:function(){
 				if(this.is3D()){
 					var P = iChart.vectorP2P(this.get('xAngle'),this.get('yAngle'));
@@ -147,14 +156,6 @@
 				this.push('coordinate.originx',this.x);
 				this.push('coordinate.originy',this.y);
 				
-			},
-			parser:function(){
-				this.data = this.get('data');
-				if(this.dataType=='simple'){
-					simple.call(this);
-				}else if(this.dataType=='complex'){
-					complex.call(this);
-				}
 			}
 		}	
 	}();

@@ -98,9 +98,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 
 		this.sectors = [];
 	},
-	addSector:function(s,a){
-		
-	},
 	/**
 	 * @method toggle sector 
 	 * @paramter int#i the index of sector

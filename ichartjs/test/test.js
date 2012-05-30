@@ -437,5 +437,5 @@ $(function(){
 	resultList = $('result_list'),
 	canvas = $("myCanvas");
 	Html = resultList.innerHTML;
-	test();
+	setTimeout(test,1000);
 });

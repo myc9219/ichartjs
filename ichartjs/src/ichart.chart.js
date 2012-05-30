@@ -316,7 +316,9 @@
 			this.c.restore();
 			return this;
 		},
-		// can use cube3D instead of this?
+		/**
+		 * can use cube3D instead of this?
+		 */
 		cube : function(x, y, xv, yv, width, height, zdeep, bg, b, bw, bc, sw, swc, swb, swx, swy) {
 			x = fd(bw, x);
 			y = fd(bw, y);
@@ -324,7 +326,9 @@
 			var x1 = x + zdeep * xv, y1 = y - zdeep * yv;
 			x1 = fd(bw, x1);
 			y1 = fd(bw, y1);
-			// styles -> top-front-right
+			/**
+			 * styles -> top-front-right
+			 */
 			if (sw) {
 				this.polygon(bg, b, bw, bc, sw, swc, swb, swx, swy, false, [x, y, x1, y1, x1 + width, y1, x + width, y]);
 				this.polygon(bg, b, bw, bc, sw, swc, swb, swx, swy, false, [x, y, x, y + height, x + width, y + height, x + width, y]);
@@ -366,10 +370,11 @@
 		 * @return this
 		 */
 		cube3D : function(x, y, rotatex, rotatey, angle, w, h, zh, b, bw, bc, styles) {
-			// styles -> 下底-底-左-右-上-前
+			/**
+			 * styles -> 下底-底-左-右-上-前
+			 */
 			x = fd(bw, x);
 			y = fd(bw, y);
-			// Deep of Z'axis
 			zh = (!zh || zh == 0) ? w : zh;
 
 			if (angle) {
@@ -571,7 +576,10 @@
 
 			round = round == 0 ? 0 : $.parseBorder(round);
 
-			if ($.isArray(round)) {// draw a round corners border
+			/**
+			 * draw a round corners border
+			 */
+			if ($.isArray(round)) {
 				this.c.beginPath();
 				this.c.moveTo(round[0], 0);
 				this.c.lineTo(w - round[1], 0);
@@ -592,7 +600,10 @@
 				this.c.globalCompositeOperation = "source-over";
 
 				this.c.stroke();
-			} else {// draw a rectangular border
+			} else {
+				/**
+				 * draw a rectangular border
+				 */
 				this.shadowOn(shadow, scolor, blur, offsetx, offsety);
 				if (bgcolor) {
 					this.c.fillRect(0, 0, w, h);
@@ -660,24 +671,21 @@
 				 */
 				title : '',
 				/**
-				 * @cfg {String} Specifies how align title horizontally
-				 * Available value are:
+				 * @cfg {String} Specifies how align title horizontally Available value are:
 				 * @Option 'left'
 				 * @Option 'center'
 				 * @Option 'right'
 				 */
 				title_align : 'center',
 				/**
-				 * @cfg {String} Specifies how align title vertically
-				 * Available value are:
+				 * @cfg {String} Specifies how align title vertically Available value are:
 				 * @Option 'top'
 				 * @Option 'middle' Only applies when title_writingmode = 'tb'
 				 * @Option 'bottom'
 				 */
 				title_valign : 'top',
 				/**
-				 * @cfg {String} Specifies the writing-mode of title.(default to 'lr')
-				 * Available value are:
+				 * @cfg {String} Specifies the writing-mode of title.(default to 'lr') Available value are:
 				 * @Option 'lr,'tb'
 				 */
 				title_writingmode : 'lr',
@@ -893,23 +901,35 @@
 				} else if (this.get('title_align') == 'right') {
 					this.push('title_originx', this.width - this.get('padding_right'));
 				} else {
-					this.push('title_originx', this.get('client_width') / 2);// goto midline
-	}
-	this.T.textAlign(this.get('title_align'));
-	if (this.get('title_valign') == 'bottom') {
-		this.push('title_originy', this.height - this.get('padding_bottom'));
-	} else {
-		this.push('title_originy', this.get('padding_top'));
-	}
-	this.T.textBaseline(this.get('title_valign'));
+					this.push('title_originx', this.get('client_width') / 2);
+				}
+				this.T.textAlign(this.get('title_align'));
+				if (this.get('title_valign') == 'bottom') {
+					this.push('title_originy', this.height - this.get('padding_bottom'));
+				} else {
+					this.push('title_originy', this.get('padding_top'));
+				}
+				this.T.textBaseline(this.get('title_valign'));
 
-}
-this.T.textFont($.getFont(this.get('title_fontweight'), this.get('title_fontsize'), this.get('title_font')));
-this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_originy'), this.get('client_width'), this.get('title_color'));
-},
+			}
+			this.T.textFont($.getFont(this.get('title_fontweight'), this.get('title_fontsize'), this.get('title_font')));
+			this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_originy'), this.get('client_width'), this.get('title_color'));
+		},
+		/**
+		 * @method Add item(s) into the Chart at the given index or not.. This method accepts either a single object of data config or a array of items's config
+		 * @paramter data#Object/Array the data's config
+		 * @paramter index#int The start index at which to add the item.
+		 * @paramter animate#boolean if has a animation when drawing
+		 * @return void
+		 */
+		addItem:function(data,index,animate){
+			
+			
+			
+		},
 		create : function(shell) {
 			/**
-			 * 默认的要计算为warp的div
+			 * default should to calculate the size of warp?
 			 */
 			this.width = this.push('width', this.get('width') || 400);
 			this.height = this.push('height', this.get('height') || 300);
@@ -943,7 +963,7 @@ this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_or
 				else if (typeof r == 'object')
 					this.create(r);
 			}
-
+			
 			if (this.get('data').length > 0 && this.rendered && !this.initialization) {
 				$.Interface.parser.call(this);
 				this.doConfig();
@@ -1039,14 +1059,20 @@ this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_or
 			var offx = 0, offy = 0;
 
 			if (_.get('title') != '') {
-				if (_.get('title_writingmode') == 'tb') {// 竖直排列
+				/**
+				 * 竖直排列
+				 */
+				if (_.get('title_writingmode') == 'tb') {
 					offx = _.get('title_height');
 					if (_.get('title_align') == 'left') {
 						_.push('l_originx', _.get('l_originx') + _.get('title_height'));
 					} else {
 						_.push('r_originx', _.width - _.get('l_originx') - _.get('title_height'));
 					}
-				} else {// 横向排列
+				} else {
+					/**
+					 * 横向排列
+					 */
 					offy = _.get('title_height');
 
 					if (_.get('title_align') == 'left') {
@@ -1054,7 +1080,7 @@ this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_or
 					} else if (_.get('title_align') == 'right') {
 						_.push('title_originx', _.width - _.get('padding_right'));
 					} else {
-						_.push('title_originx', _.get('client_width') / 2);// goto midline
+						_.push('title_originx', _.get('client_width') / 2);
 					}
 					if (_.get('title_valign') == 'bottom') {
 						_.push('title_originy', _.height - _.get('padding_bottom'));
@@ -1098,5 +1124,6 @@ this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_or
 			}
 
 		}
-	});// @end
+	});
 })(iChart);
+//@end
