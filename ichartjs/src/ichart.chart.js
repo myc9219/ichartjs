@@ -783,24 +783,17 @@
 			this.rendered = false;
 
 			this.animationed = false;
-
+			this.data = [];
 			this.components = [];
 			this.total = 0;
 
 		},
-		pushComponent : function(c, b) {
-			if ($.isArray(c)) {
-				if (!!b)
-					this.components = c.concat(this.components);
+		pushComponent : function(c, b){
+			if (!!b)
+					this.components.unshift(c);
 				else
-					this.components = this.components.concat(c);
-			} else {
-				if (!!b)
-					this.components = [c].concat(this.components);
-				else
-					this.components.push(c);
-			}
-
+					this.components.push(c);;
+					
 		},
 		plugin : function(c, b) {
 			this.init();
@@ -836,7 +829,6 @@
 						_.animation(_)
 					}, $.INTERVAL)
 				} else {
-
 					setTimeout(function() {
 						_.variable.animation.time = 0;
 						_.animationed = true;
@@ -849,6 +841,26 @@
 		}(),
 		doAnimation : function(t, d) {
 			this.get('doAnimationFn').call(this, t, d);
+		},
+		/**
+		 * the common config
+		 */
+		add:function(data,index,animate){
+			if(this.processAnimation){
+				this.variable.animation.queue.push({handler:'add',arguments:[data,index,animate]});
+				return;
+			}
+			data = $.Interface.parser.call(this,data);
+			if(animate){
+				this.variable.animation.type = 1;
+				this.animation();
+			}
+			
+			if (this.get('legend.enable')) {
+				this.legend.calculate(this.data,data);
+			}
+			
+			return data;
 		},
 		commonDraw : function() {
 			$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
@@ -877,10 +889,10 @@
 
 			this.segmentRect();
 
-			for ( var i = 0; i < this.components.length; i++) {
-				this.components[i].draw();
-			}
-
+			this.components.eachAll(function(c,i){
+				c.draw();
+			},this);
+			
 			this.resetCanvas();
 			/**
 			 * console.timeEnd('Test for draw');
@@ -914,18 +926,6 @@
 			}
 			this.T.textFont($.getFont(this.get('title_fontweight'), this.get('title_fontsize'), this.get('title_font')));
 			this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_originy'), this.get('client_width'), this.get('title_color'));
-		},
-		/**
-		 * @method Add item(s) into the Chart at the given index or not.. This method accepts either a single object of data config or a array of items's config
-		 * @paramter data#Object/Array the data's config
-		 * @paramter index#int The start index at which to add the item.
-		 * @paramter animate#boolean if has a animation when drawing
-		 * @return void
-		 */
-		addItem:function(data,index,animate){
-			
-			
-			
 		},
 		create : function(shell) {
 			/**
@@ -965,8 +965,7 @@
 			}
 			
 			if (this.get('data').length > 0 && this.rendered && !this.initialization) {
-				this.data = this.get('data');
-				$.Interface.parser.call(this);
+				$.Interface.parser.call(this,this.get('data'));
 				this.doConfig();
 				this.initialization = true;
 			}
@@ -976,37 +975,42 @@
 			/**
 			 * for compress
 			 */
-			var _ = this, E = _.variable.event, register = function() {
-				['click', 'dblclick', 'mousemove'].each(function(it) {
-					_.T.addEvent(it, function(e) {
-						_.fireEvent(_, it, [_, $.Event.fix(e)]);
-					}, false);
-				});
-			}
-
+			var _ = this, E = _.variable.event;
+			
 			$.Interface._3D.call(_);
 
 			_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
-
-			if (_.get('animation')) {
-				_.processAnimation = _.get('animation');
-				_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
-				_.variable.animation = {
-					time : 0
-				};
-				_.animationArithmetic = $.getAnimationArithmetic(_.get('animation_timing_function'));
-				_.on('afterAnimation', function() {
-					register();
-				});
-			} else {
-				register();
-			}
+			
+			_.processAnimation = _.get('animation');
+			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
+			_.variable.animation = {
+				type:0,
+				time : 0,
+				queue:[]
+			};
+			
+			_.animationArithmetic = $.getAnimationArithmetic(_.get('animation_timing_function'));
+			
+			_.on('afterAnimation', function() {
+				var N = _.variable.animation.queue.shift();
+				if(N){
+					_[N.handler].apply(_,N.arguments);
+				}
+			});
+			
+			
+			['click', 'dblclick', 'mousemove'].each(function(it) {
+				_.T.addEvent(it, function(e) {
+					if(_.processAnimation)return;
+					_.fireEvent(_, it, [_, $.Event.fix(e)]);
+				}, false);
+			});
 
 			_.on('click', function(_, e) {
 				/**
 				 * console.time('Test for click');
 				 */
-				_.components.each(function(c) {
+				_.components.eachAll(function(c) {
 					if (!c.preventEvent) {
 						var M = c.isMouseOver(e);
 						if (M.valid)
@@ -1020,7 +1024,7 @@
 
 			_.on('mousemove', function(_, e) {
 				var O = false;
-				_.components.each(function(cot) {
+				_.components.eachAll(function(cot) {
 					if (!cot.preventEvent) {
 						var cE = cot.variable.event, M = cot.isMouseOver(e);
 						if (M.valid) {

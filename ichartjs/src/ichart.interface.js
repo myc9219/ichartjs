@@ -1,11 +1,10 @@
 	iChart.Interface = function(){
-		
 		var simple = function(c) {
-			var M=0,V=0,MI,ML=0,d;
-			this.data.each(function(d,i){
+			var M=0,V=0,MI,ML=0;
+			c = [].concat(c);
+			c.each(function(d,i){
 				iChart.merge(d,this.fireEvent(this,'parseData',[this,d,i]));
-				if(!d.color)
-				d.color = iChart.get(i);
+				d.color = d.color || iChart.get(i);
 				V  = d.value;
 				if(iChart.isNumber(V)){
 					V = iChart.parseFloat(V,this.type+':data['+i+']');
@@ -29,6 +28,16 @@
 				}
 			},this);
 			
+			this.data = this.data.concat(c);
+			
+			if(this.get('minValue')){
+				MI = this.get('minValue')<MI?this.get('minValue'):MI;
+			}
+			
+			if(this.get('maxValue')){
+				M = this.get('maxValue')<M?this.get('maxValue'):M;
+			}
+			
 			if(iChart.isArray(this.get('labels'))){
 				ML = this.get('labels').length>ML?this.get('labels').length:ML;
 			}
@@ -37,6 +46,8 @@
 			this.push('minValue',MI);
 			this.push('maxValue',M);
 			this.push('total',this.total);
+			
+			return c;
 		},
 		complex = function(c){
 			this.columnKeys = this.get('columnKeys');
@@ -80,7 +91,7 @@
 		return {
 			parser:function(d){
 				if(this.dataType=='simple'){
-					simple.call(this,d);
+					return simple.call(this,d);
 				}else if(this.dataType=='complex'){
 					complex.call(this,d);
 				}
