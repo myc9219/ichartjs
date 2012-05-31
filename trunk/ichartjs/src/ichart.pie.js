@@ -100,6 +100,31 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		this.sectors = [];
 	},
 	/**
+	 * @method Add item(s) into the Chart at the given index or not.. This method accepts either a single object of data config or a array of items's config
+	 * @paramter data#Object/Array the data's config
+	 * @paramter index#int The start index at which to add the item.
+	 * @paramter animate#boolean if has a animation when drawing
+	 * @return void
+	 */
+	add:function(data,index,animate){
+		data = iChart.Pie.superclass.add.call(this,data,index,animate);
+		
+		this.calculate();
+		
+		this.sectors.each(function(s, i) {
+			s.push('startAngle', this.data[i].startAngle);
+			s.push('middleAngle', this.data[i].middleAngle);
+			s.push('endAngle', this.data[i].endAngle);
+		}, this);
+		
+		data.each(function(d,i){
+			this.doParse(d,i);
+			this.sectors.push(new iChart.Sector2D(this.get('sector'), this));
+		},this);
+		
+		this.draw();
+	},
+	/**
 	 * @method toggle sector 
 	 * @paramter int#i the index of sector
 	 * @return void
@@ -164,15 +189,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		_.push('sector.endAngle', d.endAngle);
 		_.push('sector.background_color', d.color);
 	},
-	doConfig : function() {
-		iChart.Pie.superclass.doConfig.call(this);
-		iChart.Assert.gtZero(this.total, 'this.total');
-
-		var eA = sA = this.offsetAngle = iChart.angle2Radian(this.get('offsetAngle')), L = this.data.length, r = this.get('radius');
-		/**
-		 * calculate pie chart's angle
-		 */
-
+	/**
+	 * calculate pie chart's angle
+	 */
+	calculate:function(){
+		var eA  = this.offsetAngle,sA = eA,L = this.data.length;
 		this.data.each(function(d, i) {
 			eA += (2 * d.value / this.total) * Math.PI;
 			if (i == (L - 1)) {
@@ -184,7 +205,15 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			d.middleAngle = (sA + eA) / 2;
 			sA = eA;
 		}, this);
-
+	},
+	doConfig : function() {
+		iChart.Pie.superclass.doConfig.call(this);
+		iChart.Assert.gtZero(this.total, 'this.total');
+		
+		this.offsetAngle = iChart.angle2Radian(this.get('offsetAngle')),r = this.get('radius');
+		
+		this.calculate();
+		
 		/**
 		 * calculate pie chart's radius
 		 */

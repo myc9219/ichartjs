@@ -127,39 +127,36 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			this.drawRow(i * c, x, y);
 			y += this.get('line_height');
 		}
-
 	},
-	doConfig : function() {
-		iChart.Legend.superclass.doConfig.call(this);
-		iChart.Assert.isNotEmpty(this.get('data'), this.type + '[data]');
-
-		var suffix = 0, maxwidth = w = this.get('width'), width = 0, wauto = (w == 'auto'), ss = this.get('sign_size'), c = iChart.isNumber(this.get('column')), r = iChart.isNumber(this.get('row')), L = this.data.length, d, h, g = this.container;
-
-		this.push('signwidth', (ss + this.get('sign_space')));
-
-		if (this.get('line_height') < ss) {
-			this.push('line_height', ss + ss / 5);
-		}
+	calculate:function(data,D){
+		this.data = data;
+		
+		var suffix = 0, maxwidth = w = this.get('width'), width = 0, wauto = (w == 'auto'), c = iChart.isNumber(this.get('column')), r = iChart.isNumber(this.get('row')), L = this.data.length, d, h, g = this.container;
 
 		if (!c && !r)
 			c = 1;
+		
 		if (c && !r)
 			this.push('row', Math.ceil(L / this.get('column')));
 		if (!c && r)
 			this.push('column', Math.ceil(L / this.get('row')));
-
+		
 		c = this.get('column');
 		r = this.get('row');
-
+		
+		if(L>r*c){
+			r +=Math.ceil((L - r*c)/c);
+			this.push('row',r);
+		}
+		
 		this.columnwidth = new Array(c);
-
+		
 		if (wauto) {
-			this.T.textFont(this.get('fontStyle'));
 			maxwidth = 0;// 行最大宽度
 		}
 		
 		// calculate the width each item will used
-		this.data.each(function(d,i){
+		D.each(function(d,i){
 			iChart.merge(d, this.fireEvent(this, 'parse', [d, i]));
 			d.text = d.text || d.name;
 			d.width = this.T.measureText(d.text);
@@ -190,17 +187,6 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		this.width = w;
 		this.height = h = this.push('height', r * this.get('line_height') + this.get('vpadding'));
 
-		// if the position is incompatible,rectify it.
-		if (this.get('align') == 'center' && this.get('valign') == 'middle') {
-			this.push('valign', 'top');
-		}
-
-		// if this position incompatible with container,rectify it.
-		if (g.get('align') == 'left') {
-			if (this.get('valign') == 'middle') {
-				this.push('align', 'right');
-			}
-		}
 
 		if (this.get('valign') == 'top') {
 			this.y = g.get('t_originy');
@@ -220,6 +206,33 @@ iChart.Legend = iChart.extend(iChart.Component, {
 
 		this.x = this.push('originx', this.x + this.get('offsetx'));
 		this.y = this.push('originy', this.y + this.get('offsety'));
+	},
+	doConfig : function() {
+		iChart.Legend.superclass.doConfig.call(this);
+		iChart.Assert.isNotEmpty(this.get('data'), this.type + '[data]');
+		var  ss = this.get('sign_size'), g = this.container;
+		
+		this.T.textFont(this.get('fontStyle'));
+		
+		this.push('signwidth', (ss + this.get('sign_space')));
+
+		if (this.get('line_height') < ss) {
+			this.push('line_height', ss + ss / 5);
+		}
+		
+		// if the position is incompatible,rectify it.
+		if (this.get('align') == 'center' && this.get('valign') == 'middle') {
+			this.push('valign', 'top');
+		}
+
+		// if this position incompatible with container,rectify it.
+		if (g.get('align') == 'left') {
+			if (this.get('valign') == 'middle') {
+				this.push('align', 'right');
+			}
+		}
+		
+		this.calculate(this.data,this.data);
 
 	}
 });//@end

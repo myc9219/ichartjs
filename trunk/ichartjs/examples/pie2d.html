@@ -31,11 +31,12 @@
 		}
 	</style>
 	<script type="text/javascript">
+			var pie2d;
 			$(function(){
 				//console.profile('ABC');
 				 pie2d = new iChart.Pie2D({
 					render : 'myCanvas',
-					animation:true,
+					//animation:true,
 					//shadow:false,
 					data: data,
 					legend : {
@@ -62,11 +63,19 @@
 				//开始画图
 				pie2d.draw();
 			});
+			
+			var NO_INDEX = 1,i=0;
+			function add(){
+				NO_INDEX++;
+				pie2d.add({name : '美国'+i,value : Math.round(Math.random()*100+20),color:iChart.get(NO_INDEX)});
+			}
+			
 		</script>
 	</head>
 	<body>
 		<div><a href="../index.html">Home</a>&nbsp;Sample</div>
 		<br>
 		<div id='myCanvas'></div>
+		<div><button onclick="add();">Add a Sector</button></div>
 	</body>
 </html>
