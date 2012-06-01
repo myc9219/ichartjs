@@ -67,8 +67,8 @@
 					this.push('rectangle.tip.text',this.fireString(this,'parseTipText',[this.data[i],i],t));
 				}
 				
-				//text = this.fireString(this,'parseText',[this.data[i],i],text);
-				//value = this.fireString(this,'parseValue',[this.data[i],i],value);
+				text = this.fireString(this,'parseText',[this.data[i],i],text);
+				value = this.fireString(this,'parseValue',[this.data[i],i],value);
 				/**
 				 * x = this.x + space*(i+1) + width*i
 				 */

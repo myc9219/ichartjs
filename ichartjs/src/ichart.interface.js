@@ -1,7 +1,6 @@
 	iChart.Interface = function(){
 		var simple = function(c,z) {
 			var M=0,V=0,MI,ML=0;
-			c = [].concat(c);
 			c.each(function(d,i){
 				iChart.merge(d,this.fireEvent(this,'parseData',[this,d,i]));
 				d.color = d.color || iChart.get(i);
@@ -53,9 +52,11 @@
 			
 			return c;
 		},
-		complex = function(c,j){
+		complex = function(c,z){
 			this.columnKeys = this.get('columnKeys');
 			var M=0,MI=0,V,d,L=this.columnKeys.length;
+			
+			this.data = this.data.concat(c);
 			
 			this.data.each(function(d,i){
 				iChart.Assert.equal(d.value.length,L,this.type+':data length and columnKeys not corresponding.');
@@ -86,8 +87,10 @@
 					name:this.columnKeys[i],
 					item:item
 				});
-				
 			}
+			
+			
+			
 			this.push('minValue',MI);
 			this.push('maxValue',M);
 			this.push('total',this.total);
@@ -95,9 +98,9 @@
 		return {
 			parser:function(d,i){
 				if(this.dataType=='simple'){
-					return simple.call(this,d,i);
+					return simple.call(this,[].concat(d),i);
 				}else if(this.dataType=='complex'){
-					complex.call(this,d,i);
+					complex.call(this,[].concat(d),i);
 				}
 			},
 			_3D:function(){

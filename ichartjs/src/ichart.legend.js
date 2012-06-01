@@ -210,6 +210,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 	doConfig : function() {
 		iChart.Legend.superclass.doConfig.call(this);
 		iChart.Assert.isNotEmpty(this.get('data'), this.type + '[data]');
+		
 		var  ss = this.get('sign_size'), g = this.container;
 		
 		this.T.textFont(this.get('fontStyle'));
