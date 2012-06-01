@@ -312,6 +312,13 @@
 				 crosshair:{
 					enable:false
 				 },
+				 /**
+				  *@cfg {Object} style of the crosshair. .Note that this option only applies when crosshair.enable = true.
+				 */
+				crosshair_style:{
+					width:1,
+					color:'blank'
+				},
 				 width:undefined,
 				 height:undefined,
 				 /**
