@@ -43,9 +43,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			label : {
 				enable : true,
 				/**
-				 * label线的长度
-				 * 
-				 * @memberOf {label}
+				 * label's length
 				 */
 				linelength : undefined
 			},

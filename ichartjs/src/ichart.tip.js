@@ -49,7 +49,6 @@
 						this.dom.innerHTML =  m.text;
 					}
 					var o = this.get('invokeOffset')(this.width(),this.height(),m);
-					
 					style.top =  o.top+"px";
 					style.left = o.left+"px";
 				}
@@ -58,15 +57,17 @@
 					style.top = (e.offsetY-this.height()*1.1-2)+"px";
 					style.left = (e.offsetX+2)+"px";
 				}else if(iChart.isFunction(this.get('invokeOffset'))){
-					var offset = this.get('invokeOffset')(this.width(),this.height(),m);
-					style.top =  offset.top+"px";
-					style.left = offset.left+"px";
+					var o = this.get('invokeOffset')(this.width(),this.height(),m);
+					style.top =  o.top+"px";
+					style.left = o.left+"px";
 				}else{
 					style.top = (e.offsetY-this.height()*1.1-2)+"px";
 					style.left = (e.offsetX+2)+"px";
 				}
 			}
-			
+		},
+		text:function(text){
+			this.dom.innerHTML = text;
 		},
 		beforeshow:function(e,m){
 			this.follow(e,m);
@@ -88,40 +89,40 @@
 		initialize:function(){
 			iChart.Tip.superclass.initialize.call(this);
 			
-			var self = this;
+			var _ = this;
 			
-			self.css('position','absolute');
-			self.dom.innerHTML = self.get('text');
+			_.css('position','absolute');
+			_.dom.innerHTML = _.get('text');
 			
-			self.hidden();
+			_.hidden();
 			
-			if(self.get('animation')){
-				var m =  self.get('move_duration')/1000+'s ease-in 0s';
-				self.transition('opacity '+self.get('fade_duration')/1000+'s ease-in 0s');
-				self.transition('top '+m);
-				self.transition('left '+m);
-				self.onTransitionEnd(function(e){
-					if(self.css('opacity')==0){
-						self.css('visibility','hidden');
+			if(_.get('animation')){
+				var m =  _.get('move_duration')/1000+'s ease-in 0s';
+				_.transition('opacity '+_.get('fade_duration')/1000+'s ease-in 0s');
+				_.transition('top '+m);
+				_.transition('left '+m);
+				_.onTransitionEnd(function(e){
+					if(_.css('opacity')==0){
+						_.css('visibility','hidden');
 					}
 				},false);
 			}
 			
-			self.wrap.appendChild(self.dom);
+			_.wrap.appendChild(_.dom);
 			
-			self.T.on('mouseover',function(e,m){
-				self.show(e,m);	
+			_.T.on('mouseover',function(e,m){
+				_.show(e,m);	
 			}).on('mouseout',function(e,m){
-				self.hidden(e);	
+				_.hidden(e);	
 			});
 			
-			if(self.get('showType')=='follow'){
-				self.T.on('mousemove',function(e,m){
-					if(self.T.variable.event.mouseover){
+			if(_.get('showType')=='follow'){
+				_.T.on('mousemove',function(e,m){
+					if(_.T.variable.event.mouseover){
 						setTimeout(function(){
-							if(self.T.variable.event.mouseover)
-								self.follow(e,m);
-						},self.get('delay'));
+							if(_.T.variable.event.mouseover)
+								_.follow(e,m);
+						},_.get('delay'));
 					}
 				});
 			}
