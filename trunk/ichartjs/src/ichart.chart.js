@@ -970,11 +970,14 @@
 		},
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
+			
+			
 			/**
 			 * for compress
 			 */
 			var _ = this, E = _.variable.event;
 			
+			$.Assert.isArray(_.data);
 			$.Interface._3D.call(_);
 
 			_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
@@ -1052,7 +1055,6 @@
 					_.fireEvent(_, 'mouseout', [e]);
 				}
 			});
-			$.Assert.isArray(_.data);
 
 			_.push('l_originx', _.get('padding_left'));
 			_.push('r_originx', _.width - _.get('padding_right'));

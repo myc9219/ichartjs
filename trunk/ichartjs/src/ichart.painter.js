@@ -202,6 +202,9 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	},
 	on : function(name, fn) {
 		if (iChart.isString(name) && iChart.isFunction(fn))
+			if(!this.events[name]){
+				console.log(name);
+			}
 			this.events[name].push(fn);
 		return this;
 	},

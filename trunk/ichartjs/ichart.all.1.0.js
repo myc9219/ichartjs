@@ -362,6 +362,7 @@ var iChart_ = (function(window) {//spirit from jquery
 			fuchsia:'rgb(255,0,255)',
 			aqua:'rgb(0,255,255)',
 			green:'rgb(0,128,0)',
+			gray:'rgb(80,80,80)',
 			red:'rgb(255,0,0)',
 			blue:'rgb(0,0,255)',
 			pink:'rgb(255,192,203)',
@@ -798,7 +799,7 @@ var iChart_ = (function(window) {//spirit from jquery
 			/**
 			 * static variable
 			 */
-			FRAME:20,
+			FRAME:24,
 			INTERVAL:30,
 			DefaultAnimationArithmetic:'Cubic'
 		});
@@ -923,13 +924,18 @@ var iChart_ = (function(window) {//spirit from jquery
  */
 Array.prototype.each = function(f,s)
 {
-	var j = this.length;for(var i=0;i<j;i++)s?f.call(s,this[i],i):f(this[i],i);
+	var j = this.length,r;for(var i=0;i<j;i++){r=s?f.call(s,this[i],i):f(this[i],i);if(typeof r === "boolean" && !r){break}};
 };
-
+Array.prototype.eachAll = function(f,s)
+{
+	this.each(function(d,i){if(iChart_.isArray(d))d.eachAll(f, s);else s?f.call(s,d,i):f(d,i);},s);
+};
 window.iChart = window.$ = iChart_;
 
 })(window);
-;(function($){/**
+
+;(function($){
+/**
  * @overview This is base class of all element.All must extend this so that has ability for configuration
  * @component#$.Element
  * @extend#Object
@@ -970,6 +976,7 @@ $.Element = function(config) {
 		fontweight : 'normal',
 		/**
 		 * @cfg {Object} Specifies the border for this element
+		 * 
 		 */
 		border : {
 			enable : false,
@@ -979,7 +986,7 @@ $.Element = function(config) {
 			radius : 5
 		},
 		/**
-		 * @cfg {Boolean} Specifies whether the element should be show a shadow.(default to false)
+		 * @cfg {Boolean} Specifies whether the element should be show a shadow.In general there will be get a high render speed when apply false.(default to false)
 		 */
 		shadow : false,
 		/**
@@ -1063,7 +1070,8 @@ $.Element.prototype = {
 		}
 		return V;
 	}
-}
+}//@end
+
 /**
  * @overview this element use for 画图的基类、其他组件要继承此组件
  * @component#$.Painter
@@ -1163,6 +1171,7 @@ $.Painter = $.extend($.Element, {
 		 * @event Fires when this element is clicked
 		 * @paramter $.Painter#this
 		 * @paramter EventObject#e The click event object
+		 * @paramter Object#param The additional parameter
 		 */
 		'click',
 		/**
@@ -1267,6 +1276,9 @@ $.Painter = $.extend($.Element, {
 	},
 	on : function(name, fn) {
 		if ($.isString(name) && $.isFunction(fn))
+			if(!this.events[name]){
+				console.log(name);
+			}
 			this.events[name].push(fn);
 		return this;
 	},
@@ -1287,7 +1299,8 @@ $.Painter = $.extend($.Element, {
 		this.id = this.get('id');
 
 	}
-});
+});//@end
+
 
 /**
  * 
@@ -1408,7 +1421,8 @@ $.Html = $.extend($.Element,{
 			if(style.length>1)this.css(style[0],style[1]);
 		}
 	}
-});
+});//@end
+
 
 	/**
 	 * @overview this component use for abc
@@ -1437,12 +1451,6 @@ $.Html = $.extend($.Element,{
 			this.inject(c);
 			
 			this.final_parameter = {};
-			
-			
-			
-			
-			
-			
 			
 	
 	},
@@ -1499,6 +1507,7 @@ $.Html = $.extend($.Element,{
 	isMouseOver : function(e) {
 		return this.isEventValid(e);
 	},
+	//render ? named
 	redraw : function() {
 		this.container.draw();
 	},
@@ -1517,13 +1526,13 @@ $.Html = $.extend($.Element,{
 			this.target = this.T = c.T;
 		}
 	}
-	});	$.Interface = function(){
-		var simple = function() {
-			var M=0,V=0,MI,ML=0,d;
-			this.data.each(function(d,i){
+	});//@end
+	$.Interface = function(){
+		var simple = function(c,z) {
+			var M=0,V=0,MI,ML=0;
+			c.each(function(d,i){
 				$.merge(d,this.fireEvent(this,'parseData',[this,d,i]));
-				if(!d.color)
-				d.color = $.get(i);
+				d.color = d.color || $.get(i);
 				V  = d.value;
 				if($.isNumber(V)){
 					V = $.parseFloat(V,this.type+':data['+i+']');
@@ -1547,6 +1556,20 @@ $.Html = $.extend($.Element,{
 				}
 			},this);
 			
+			if($.isNumber(z)){
+				Array.prototype.splice.apply(this.data,[z,0].concat(c));
+			}else{
+				this.data = this.data.concat(c);
+			}
+			
+			if(this.get('minValue')){
+				MI = this.get('minValue')<MI?this.get('minValue'):MI;
+			}
+			
+			if(this.get('maxValue')){
+				M = this.get('maxValue')<M?this.get('maxValue'):M;
+			}
+			
 			if($.isArray(this.get('labels'))){
 				ML = this.get('labels').length>ML?this.get('labels').length:ML;
 			}
@@ -1555,10 +1578,14 @@ $.Html = $.extend($.Element,{
 			this.push('minValue',MI);
 			this.push('maxValue',M);
 			this.push('total',this.total);
+			
+			return c;
 		},
-		complex = function(){
+		complex = function(c,z){
 			this.columnKeys = this.get('columnKeys');
 			var M=0,MI=0,V,d,L=this.columnKeys.length;
+			
+			this.data = this.data.concat(c);
 			
 			this.data.each(function(d,i){
 				$.Assert.equal(d.value.length,L,this.type+':data length and columnKeys not corresponding.');
@@ -1589,13 +1616,22 @@ $.Html = $.extend($.Element,{
 					name:this.columnKeys[i],
 					item:item
 				});
-				
 			}
+			
+			
+			
 			this.push('minValue',MI);
 			this.push('maxValue',M);
 			this.push('total',this.total);
 		};
 		return {
+			parser:function(d,i){
+				if(this.dataType=='simple'){
+					return simple.call(this,[].concat(d),i);
+				}else if(this.dataType=='complex'){
+					complex.call(this,[].concat(d),i);
+				}
+			},
 			_3D:function(){
 				if(this.is3D()){
 					var P = $.vectorP2P(this.get('xAngle'),this.get('yAngle'));
@@ -1654,29 +1690,22 @@ $.Html = $.extend($.Element,{
 				}
 				
 				/**
-				 * originx
+				 * originx for short
 				 */
 				this.x = this.get('originx');
 				/**
 				 * 
-				 * originy 
+				 * originy for short 
 				 */
 				this.y = this.get('originy');
 				
 				this.push('coordinate.originx',this.x);
 				this.push('coordinate.originy',this.y);
 				
-			},
-			parser:function() {
-				this.data = this.get('data');
-				if(this.dataType=='simple'){
-					simple.call(this);
-				}else if(this.dataType=='complex'){
-					complex.call(this);
-				}
 			}
 		}	
 	}();
+
  	/**
 	 * @overview this component use for abc
 	 * @component#$.Tip
@@ -1728,7 +1757,6 @@ $.Html = $.extend($.Element,{
 						this.dom.innerHTML =  m.text;
 					}
 					var o = this.get('invokeOffset')(this.width(),this.height(),m);
-					
 					style.top =  o.top+"px";
 					style.left = o.left+"px";
 				}
@@ -1737,15 +1765,17 @@ $.Html = $.extend($.Element,{
 					style.top = (e.offsetY-this.height()*1.1-2)+"px";
 					style.left = (e.offsetX+2)+"px";
 				}else if($.isFunction(this.get('invokeOffset'))){
-					var offset = this.get('invokeOffset')(this.width(),this.height(),m);
-					style.top =  offset.top+"px";
-					style.left = offset.left+"px";
+					var o = this.get('invokeOffset')(this.width(),this.height(),m);
+					style.top =  o.top+"px";
+					style.left = o.left+"px";
 				}else{
 					style.top = (e.offsetY-this.height()*1.1-2)+"px";
 					style.left = (e.offsetX+2)+"px";
 				}
 			}
-			
+		},
+		text:function(text){
+			this.dom.innerHTML = text;
 		},
 		beforeshow:function(e,m){
 			this.follow(e,m);
@@ -1767,46 +1797,47 @@ $.Html = $.extend($.Element,{
 		initialize:function(){
 			$.Tip.superclass.initialize.call(this);
 			
-			var self = this;
+			var _ = this;
 			
-			self.css('position','absolute');
-			self.dom.innerHTML = self.get('text');
+			_.css('position','absolute');
+			_.dom.innerHTML = _.get('text');
 			
-			self.hidden();
+			_.hidden();
 			
-			if(self.get('animation')){
-				var m =  self.get('move_duration')/1000+'s ease-in 0s';
-				self.transition('opacity '+self.get('fade_duration')/1000+'s ease-in 0s');
-				self.transition('top '+m);
-				self.transition('left '+m);
-				self.onTransitionEnd(function(e){
-					if(self.css('opacity')==0){
-						self.css('visibility','hidden');
+			if(_.get('animation')){
+				var m =  _.get('move_duration')/1000+'s ease-in 0s';
+				_.transition('opacity '+_.get('fade_duration')/1000+'s ease-in 0s');
+				_.transition('top '+m);
+				_.transition('left '+m);
+				_.onTransitionEnd(function(e){
+					if(_.css('opacity')==0){
+						_.css('visibility','hidden');
 					}
 				},false);
 			}
 			
-			self.wrap.appendChild(self.dom);
+			_.wrap.appendChild(_.dom);
 			
-			self.T.on('mouseover',function(e,m){
-				self.show(e,m);	
+			_.T.on('mouseover',function(e,m){
+				_.show(e,m);	
 			}).on('mouseout',function(e,m){
-				self.hidden(e);	
+				_.hidden(e);	
 			});
 			
-			if(self.get('showType')=='follow'){
-				self.T.on('mousemove',function(e,m){
-					if(self.T.variable.event.mouseover){
+			if(_.get('showType')=='follow'){
+				_.T.on('mousemove',function(e,m){
+					if(_.T.variable.event.mouseover){
 						setTimeout(function(){
-							if(self.T.variable.event.mouseover)
-								self.follow(e,m);
-						},self.get('delay'));
+							if(_.T.variable.event.mouseover)
+								_.follow(e,m);
+						},_.get('delay'));
 					}
 				});
 			}
 			
 		}
-});
+});//@end
+
 	/**
 	 * @overview this component use for abc
 	 * @component#$.CrossHair
@@ -1909,10 +1940,9 @@ $.Html = $.extend($.Element,{
 				self.follow(e,m);
 			});
 			
-			
-			
 		}
-});/**
+});//@end
+/**
  * @overview this component use for abc
  * @component#$.Legend
  * @extend#$.Component
@@ -1937,8 +1967,7 @@ $.Legend = $.extend($.Component, {
 			maxwidth : 0,
 			line_height : 16,
 			/**
-			 * @cfg {String} the shape of legend' sign (default to 'square') The
-			 *      following list provides all available value you can use：
+			 * @cfg {String} the shape of legend' sign (default to 'square') The following list provides all available value you can use：
 			 * @Option 'round'
 			 * @Option 'square'
 			 * @Option 'round-bar'
@@ -1950,16 +1979,13 @@ $.Legend = $.extend($.Component, {
 			 */
 			sign_size : 12,
 			/**
-			 * @cfg {Number} the distance of legend' sign and text (default to
-			 *      5)
+			 * @cfg {Number} the distance of legend' sign and text (default to 5)
 			 */
 			sign_space : 5,
 			legendspace : 5,
 			text_with_sign_color : false,
 			/**
-			 * @cfg {String} this property specifies the horizontal position of
-			 *      the legend in an module (defaults to 'right') The following
-			 *      list provides all available value you can use：
+			 * @cfg {String} this property specifies the horizontal position of the legend in an module (defaults to 'right') The following list provides all available value you can use：
 			 * @Option 'left'
 			 * @Option 'center' Only applies when valign = 'top|bottom'
 			 * @Option 'right'
@@ -1967,9 +1993,7 @@ $.Legend = $.extend($.Component, {
 			align : 'right',
 
 			/**
-			 * @cfg {String} this property specifies the vertical position of
-			 *      the legend in an module (defaults to 'middle') Available
-			 *      value are:
+			 * @cfg {String} this property specifies the vertical position of the legend in an module (defaults to 'middle') Available value are:
 			 * @Option 'top'
 			 * @Option 'middle' Only applies when align = 'left|right'
 			 * @Option 'bottom'
@@ -2017,79 +2041,74 @@ $.Legend = $.extend($.Component, {
 		}
 	},
 	isEventValid : function(e) {
-		if (e.offsetX > this.x && e.offsetX < (this.x + this.width) && e.offsetY > this.y && e.offsetY < (this.y + this.height)) {
-			for ( var i = 0; i < this.data.length; i++) {
-				if (e.offsetX > this.data[i].x && e.offsetX < (this.data[i].x + this.data[i].width + this.get('signwidth')) && e.offsetY > this.data[i].y
-						&& e.offsetY < (this.data[i].y + this.get('line_height'))) {
-					return {
-						valid : true,
-						value : i,
-						target : this.data[i]
-					};
-				}
-			}
-		}
-		return {
+		var r = {
 			valid : false
 		};
+		if (e.offsetX > this.x && e.offsetX < (this.x + this.width) && e.offsetY > this.y && e.offsetY < (this.y + this.height)) {
+			this.data.each(function(d, i) {
+				if (e.offsetX > d.x && e.offsetX < (d.x + d.width + this.get('signwidth')) && e.offsetY > d.y && e.offsetY < (d.y + this.get('line_height'))) {
+					r = {
+						valid : true,
+						index : i,
+						target : d
+					}
+				}
+			}, this);
+		}
+		return r;
 	},
 	doDraw : function() {
 		if (this.get('border.enable'))
-			this.T.drawBorder(this.x, this.y, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('fill_color'),
-					false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
-		
+			this.T.drawBorder(this.x, this.y, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('fill_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'),
+					this.get('shadow_offsety'));
+
 		this.T.textStyle('left', 'middle', $.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
-		
+
 		var x = this.x + this.get('padding_left'), y = this.y + this.get('padding_top'), text, c = this.get('column'), r = this.get('row');
-		
+
 		for ( var i = 0; i < r; i++) {
 			this.fireEvent(this, 'drawRaw', [i * c]);
 			this.drawRow(i * c, x, y);
 			y += this.get('line_height');
 		}
-
 	},
-	doConfig : function() {
-		$.Legend.superclass.doConfig.call(this);
-		$.Assert.isNotEmpty(this.get('data'), this.type + '[data]');
-
-		var suffix = 0, maxwidth = w = this.get('width'), width = 0, wauto = (w == 'auto'), ss = this.get('sign_size'), c = $.isNumber(this.get('column')), r = $
-				.isNumber(this.get('row')), L = this.data.length, d,h,g=this.container;
-
-		this.push('signwidth', (ss + this.get('sign_space')));
-
-		if (this.get('line_height') < ss) {
-			this.push('line_height', ss + ss / 5);
-		}
+	calculate:function(data,D){
+		this.data = data;
+		
+		var suffix = 0, maxwidth = w = this.get('width'), width = 0, wauto = (w == 'auto'), c = $.isNumber(this.get('column')), r = $.isNumber(this.get('row')), L = this.data.length, d, h, g = this.container;
 
 		if (!c && !r)
 			c = 1;
+		
 		if (c && !r)
 			this.push('row', Math.ceil(L / this.get('column')));
 		if (!c && r)
 			this.push('column', Math.ceil(L / this.get('row')));
-
+		
 		c = this.get('column');
 		r = this.get('row');
-
+		
+		if(L>r*c){
+			r +=Math.ceil((L - r*c)/c);
+			this.push('row',r);
+		}
+		
 		this.columnwidth = new Array(c);
-
+		
 		if (wauto) {
-			this.T.textFont(this.get('fontStyle'));
 			maxwidth = 0;// 行最大宽度
 		}
-
+		
 		// calculate the width each item will used
-		for ( var i = 0; i < L; i++) {
-			d = this.data[i];
+		D.each(function(d,i){
 			$.merge(d, this.fireEvent(this, 'parse', [d, i]));
 			d.text = d.text || d.name;
 			d.width = this.T.measureText(d.text);
-		}
-
+		},this);
+		
 		// calculate the each column's width it will used
 		for ( var i = 0; i < c; i++) {
-			width = 0;// 初始化宽度
+			width = 0;
 			suffix = i;
 			while (suffix < L) {
 				width = Math.max(width, this.data[suffix].width);
@@ -2111,6 +2130,40 @@ $.Legend = $.extend($.Component, {
 
 		this.width = w;
 		this.height = h = this.push('height', r * this.get('line_height') + this.get('vpadding'));
+
+
+		if (this.get('valign') == 'top') {
+			this.y = g.get('t_originy');
+		} else if (this.get('valign') == 'bottom') {
+			this.y = g.get('b_originy') - h;
+		} else {
+			this.y = g.get('centery') - h / 2;
+		}
+
+		if (this.get('align') == 'left') {
+			this.x = g.get('l_originx');
+		} else if (this.get('align') == 'center') {
+			this.x = g.get('centerx') - this.get('textwidth') / 2;
+		} else {
+			this.x = g.get('r_originx') - w;
+		}
+
+		this.x = this.push('originx', this.x + this.get('offsetx'));
+		this.y = this.push('originy', this.y + this.get('offsety'));
+	},
+	doConfig : function() {
+		$.Legend.superclass.doConfig.call(this);
+		$.Assert.isNotEmpty(this.get('data'), this.type + '[data]');
+		
+		var  ss = this.get('sign_size'), g = this.container;
+		
+		this.T.textFont(this.get('fontStyle'));
+		
+		this.push('signwidth', (ss + this.get('sign_space')));
+
+		if (this.get('line_height') < ss) {
+			this.push('line_height', ss + ss / 5);
+		}
 		
 		// if the position is incompatible,rectify it.
 		if (this.get('align') == 'center' && this.get('valign') == 'middle') {
@@ -2124,27 +2177,11 @@ $.Legend = $.extend($.Component, {
 			}
 		}
 		
-		if (this.get('valign') == 'top') {
-			this.y = g.get('t_originy');
-		} else if (this.get('valign') == 'bottom') {
-			this.y = g.get('b_originy') - h;
-		} else {
-			this.y = g.get('centery') - h / 2;
-		}
-		
-		if (this.get('align') == 'left') {
-			this.x = g.get('l_originx');
-		} else if (this.get('align') == 'center') {
-			this.x= g.get('centerx') - this.get('textwidth') / 2;
-		} else {
-			this.x = g.get('r_originx') - w;
-		}
+		this.calculate(this.data,this.data);
 
-		this.x = this.push('originx', this.x + this.get('offsetx'));
-		this.y = this.push('originy', this.y + this.get('offsety'));
-		
 	}
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#$.Label
 	 * @extend#$.Component
@@ -2198,6 +2235,11 @@ $.Legend = $.extend($.Component, {
 		isEventValid:function(e){ 
 			return {valid:$.inRange(this.labelx,this.labelx+this.width,e.offsetX)&&$.inRange(this.labely,this.labely+this.height,e.offsetY)};
 		},
+		text:function(text){
+			if(text)
+			this.push('text',text);
+			this.width = this.T.measureText(this.get('text'))+this.get('hpadding')+this.get('sign_size')+this.get('sign_space');
+		},
 		doDraw:function(opts){
 			opts = opts || {};
 			if(opts.invoke){
@@ -2249,7 +2291,7 @@ $.Legend = $.extend($.Component, {
 			this.T.textFont($.getFont(this.get('fontweight'),this.get('fontsize'),this.get('font')));
 			this.height = this.get('line_height')+this.get('vpadding');
 			
-			this.width = this.T.measureText(this.get('text'))+this.get('hpadding')+this.get('sign_size')+this.get('sign_space');
+			this.text();
 			
 			var lcb = this.get('lineCB');
 			if(lcb){
@@ -2258,10 +2300,9 @@ $.Legend = $.extend($.Component, {
 			
 			
 			
-			
-			
 		}
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#$.Text
 	 * @extend#$.Component
@@ -2303,7 +2344,8 @@ $.Legend = $.extend($.Component, {
 			
 			
 		}
-});;
+});//@end
+;
 (function($) {
 
 	var inc = Math.PI / 90, PI = Math.PI, PI2 = 2 * Math.PI, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
@@ -2362,25 +2404,6 @@ $.Legend = $.extend($.Component, {
 		},
 		/**
 		 * draw ellipse API
-		 * 
-		 * @param {Object}
-		 *            x 圆心坐标
-		 * @param {Object}
-		 *            y 圆心坐标
-		 * @param {Object}
-		 *            a x轴半径
-		 * @param {Object}
-		 *            b y轴半径
-		 * @param {Object}
-		 *            s 同arc()
-		 * @param {Object}
-		 *            e 同arc()
-		 * @param {String}
-		 *            c color
-		 * @param {Object}
-		 *            ccw 同arc()
-		 * @param {Object}
-		 *            a2r 连接圆心
 		 */
 		ellipse : function(x, y, a, b, s, e, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, a2r, last) {
 			var angle = s, ccw = !!ccw, a2r = !!a2r;
@@ -2410,37 +2433,6 @@ $.Legend = $.extend($.Component, {
 		},
 		/**
 		 * draw sector
-		 * 
-		 * @param {Number}
-		 *            x round x
-		 * @param {Number}
-		 *            yround y
-		 * @param {Number}
-		 *            r radius
-		 * @param {Number}
-		 *            s start radian
-		 * @param {Number}
-		 *            e end radian
-		 * @param {String}
-		 *            c fill color
-		 * @param {Boolean}
-		 *            b border enable
-		 * @param {Number}
-		 *            bw border's width
-		 * @param {String}
-		 *            bc border's color
-		 * @param {Boolean}
-		 *            sw shadow enable
-		 * @param {String}
-		 *            swc shadow color
-		 * @param {Number}
-		 *            swb shadow blur
-		 * @param {Number}
-		 *            swx shadow's offsetx
-		 * @param {Number}
-		 *            swy shadow's offsety
-		 * @param {Boolean}
-		 *            ccw direction
 		 */
 		sector : function(x, y, r, s, e, c, b, bw, bc, sw, swc, swb, swx, swy, ccw) {
 			if (sw) {
@@ -2671,7 +2663,9 @@ $.Legend = $.extend($.Component, {
 			this.c.restore();
 			return this;
 		},
-		// can use cube3D instead of this?
+		/**
+		 * can use cube3D instead of this?
+		 */
 		cube : function(x, y, xv, yv, width, height, zdeep, bg, b, bw, bc, sw, swc, swb, swx, swy) {
 			x = fd(bw, x);
 			y = fd(bw, y);
@@ -2679,296 +2673,304 @@ $.Legend = $.extend($.Component, {
 			var x1 = x + zdeep * xv, y1 = y - zdeep * yv;
 			x1 = fd(bw, x1);
 			y1 = fd(bw, y1);
-			// styles -> top-front-right
-		if (sw) {
-			this.polygon(bg, b, bw, bc, sw, swc, swb, swx, swy, false, [x, y, x1, y1, x1 + width, y1, x + width, y]);
-			this.polygon(bg, b, bw, bc, sw, swc, swb, swx, swy, false, [x, y, x, y + height, x + width, y + height, x + width, y]);
-			this.polygon(bg, b, bw, bc, sw, swc, swb, swx, swy, false, [x + width, y, x1 + width, y1, x1 + width, y1 + height, x + width, y + height]);
-		}
-		/**
-		 * clear the shadow on the body
-		 */
-		this.polygon($.dark(bg), b, bw, bc, false, swc, swb, swx, swy, false, [x, y, x1, y1, x1 + width, y1, x + width, y]);
-		this.polygon(bg, b, bw, bc, false, swc, swb, swx, swy, false, [x, y, x, y + height, x + width, y + height, x + width, y]);
-		this.polygon($.dark(bg), b, bw, bc, false, swc, swb, swx, swy, false, [x + width, y, x1 + width, y1, x1 + width, y1 + height, x + width, y + height]);
-		return this;
-	},
-	/**
-	 * cube3D
-	 * 
-	 * @param {Number}
-	 *            x 左下角前面x坐标
-	 * @param {Number}
-	 *            y 左下角前面y坐标
-	 * @param {Number}
-	 *            rotatex x旋转值,默认角度为单位
-	 * @param {Number}
-	 *            rotatey y旋转值,默认角度为单位
-	 * @param {Number}
-	 *            width 宽度
-	 * @param {Number}
-	 *            height 高度
-	 * @param {Number}
-	 *            zh z轴长
-	 * @param {Number}
-	 *            border 边框
-	 * @param {Number}
-	 *            linewidth
-	 * @param {String}
-	 *            bcolor
-	 * @param {Array}
-	 *            styles 立方体各个面样式,包含:{alpha,color},共六个面
-	 * @return this
-	 */
-	cube3D : function(x, y, rotatex, rotatey, angle, w, h, zh, b, bw, bc, styles) {
-		// styles -> 下底-底-左-右-上-前
-		x = fd(bw, x);
-		y = fd(bw, y);
-		// Deep of Z'axis
-		zh = (!zh || zh == 0) ? w : zh;
-
-		if (angle) {
-			var P = $.vectorP2P(rotatex, rotatey);
-			rotatex = x + zh * P.x, rotatey = y - zh * P.y;
-		} else {
-			rotatex = x + zh * rotatex, rotatey = y - zh * rotatey;
-		}
-
-		while (styles.length < 6)
-			styles.push(false);
-
-		rotatex = fd(bw, rotatex);
-		rotatey = fd(bw, rotatey);
-
-		var side = [];
-
-		if (rotatey < 0) {
-			if ($.isObject(styles[4]))
-				side.push($.applyIf({
-					points : [x, y - h, rotatex, rotatey - h, rotatex + w, rotatey - h, x + w, y - h]
-				}, styles[4]));
-		} else {
-			if ($.isObject(styles[0]))
-				side.push($.applyIf({
-					points : [x, y, rotatex, rotatey, rotatex + w, rotatey, x + w, y]
-				}, styles[0]));
-		}
-
-		if ($.isObject(styles[1]))
-			side.push($.applyIf({
-				points : [rotatex, rotatey, rotatex, rotatey - h, rotatex + w, rotatey - h, rotatex + w, rotatey]
-			}, styles[1]));
-
-		if ($.isObject(styles[2]))
-			side.push($.applyIf({
-				points : [x, y, x, y - h, rotatex, rotatey - h, rotatex, rotatey]
-			}, styles[2]));
-
-		if ($.isObject(styles[3]))
-			side.push($.applyIf({
-				points : [x + w, y, x + w, y - h, rotatex + w, rotatey - h, rotatex + w, rotatey]
-			}, styles[3]));
-
-		if (rotatey < 0) {
-			if ($.isObject(styles[0]))
-				side.push($.applyIf({
-					points : [x, y, rotatex, rotatey, rotatex + w, rotatey, x + w, y]
-				}, styles[0]));
-		} else {
-			if ($.isObject(styles[4]))
-				side.push($.applyIf({
-					points : [x, y - h, rotatex, rotatey - h, rotatex + w, rotatey - h, x + w, y - h]
-				}, styles[4]));
-		}
-
-		if ($.isObject(styles[5]))
-			side.push($.applyIf({
-				points : [x, y, x, y - h, x + w, y - h, x + w, y]
-			}, styles[5]));
-
-		side.each(function(s) {
-			this.polygon(s.color, b, bw, bc, s.shadow, s.shadowColor, s.blur, s.sx, s.sy, s.alpha, s.points);
-		}, this);
-
-		return this;
-	},
-	/**
-	 * polygon
-	 * 
-	 * @param {Object}
-	 *            border
-	 * @param {Object}
-	 *            linewidth
-	 * @param {Object}
-	 *            bcolor
-	 * @param {Object}
-	 *            bgcolor
-	 * @param {Object}
-	 *            alpham
-	 * @param {Object}
-	 *            points
-	 * @memberOf {TypeName}
-	 * @return {TypeName}
-	 */
-	polygon : function(bg, b, bw, bc, sw, swc, swb, swx, swy, alpham, points) {
-		if (points.length < 2)
-			return;
-		this.c.save();
-		this.strokeStyle(bw, bc);
-		this.c.beginPath();
-		this.fillStyle(bg).globalAlpha(alpham).shadowOn(sw, swc, swb, swx, swy).moveTo(points[0], points[1]);
-		for ( var i = 2; i < points.length; i += 2)
-			this.lineTo(points[i], points[i + 1]);
-		this.c.closePath();
-		if (b)
-			this.c.stroke();
-		this.c.fill();
-		this.c.restore();
-		return this;
-	},
-	line : function(x1, y1, x2, y2, w, c, last) {
-		if (!w || w == 0)
+			/**
+			 * styles -> top-front-right
+			 */
+			if (sw) {
+				this.polygon(bg, b, bw, bc, sw, swc, swb, swx, swy, false, [x, y, x1, y1, x1 + width, y1, x + width, y]);
+				this.polygon(bg, b, bw, bc, sw, swc, swb, swx, swy, false, [x, y, x, y + height, x + width, y + height, x + width, y]);
+				this.polygon(bg, b, bw, bc, sw, swc, swb, swx, swy, false, [x + width, y, x1 + width, y1, x1 + width, y1 + height, x + width, y + height]);
+			}
+			/**
+			 * clear the shadow on the body
+			 */
+			this.polygon($.dark(bg), b, bw, bc, false, swc, swb, swx, swy, false, [x, y, x1, y1, x1 + width, y1, x + width, y]);
+			this.polygon(bg, b, bw, bc, false, swc, swb, swx, swy, false, [x, y, x, y + height, x + width, y + height, x + width, y]);
+			this.polygon($.dark(bg), b, bw, bc, false, swc, swb, swx, swy, false, [x + width, y, x1 + width, y1, x1 + width, y1 + height, x + width, y + height]);
 			return this;
-		this.c.save();
-		if (!!last)
-			this.c.globalCompositeOperation = "destination-over";
+		},
+		/**
+		 * cube3D
+		 * 
+		 * @param {Number}
+		 *            x 左下角前面x坐标
+		 * @param {Number}
+		 *            y 左下角前面y坐标
+		 * @param {Number}
+		 *            rotatex x旋转值,默认角度为单位
+		 * @param {Number}
+		 *            rotatey y旋转值,默认角度为单位
+		 * @param {Number}
+		 *            width 宽度
+		 * @param {Number}
+		 *            height 高度
+		 * @param {Number}
+		 *            zh z轴长
+		 * @param {Number}
+		 *            border 边框
+		 * @param {Number}
+		 *            linewidth
+		 * @param {String}
+		 *            bcolor
+		 * @param {Array}
+		 *            styles 立方体各个面样式,包含:{alpha,color},共六个面
+		 * @return this
+		 */
+		cube3D : function(x, y, rotatex, rotatey, angle, w, h, zh, b, bw, bc, styles) {
+			/**
+			 * styles -> 下底-底-左-右-上-前
+			 */
+			x = fd(bw, x);
+			y = fd(bw, y);
+			zh = (!zh || zh == 0) ? w : zh;
 
-		x1 = fd(w, x1);
-		y1 = fd(w, y1);
-		x2 = fd(w, x2);
-		y2 = fd(w, y2);
+			if (angle) {
+				var P = $.vectorP2P(rotatex, rotatey);
+				rotatex = x + zh * P.x, rotatey = y - zh * P.y;
+			} else {
+				rotatex = x + zh * rotatex, rotatey = y - zh * rotatey;
+			}
 
-		this.c.beginPath();
-		this.strokeStyle(w, c).moveTo(x1, y1).lineTo(x2, y2).c.stroke();
-		this.c.closePath();
-		this.c.restore();
-		return this;
-	},
-	round : function(x, y, r, c, bw, bc) {
-		this.c.beginPath();
-		this.c.fillStyle = c;
-		this.c.arc(x, y, r, 0, PI2, false);
-		this.c.closePath();
-		this.c.fill();
-		if (bw) {
-			this.c.lineWidth = bw;
-			this.c.strokeStyle = bc || '#010101';
-			this.c.stroke();
-		}
-		return this;
-	},
-	backgound : function(x, y, w, h, bgcolor) {
-		this.c.save();
-		this.c.globalCompositeOperation = "destination-over";
-		this.c.translate(x, y);
-		this.c.beginPath();
-		this.c.fillStyle = bgcolor;
-		this.c.fillRect(0, 0, w, h);
-		this.c.restore();
-		return this;
-	},
-	rectangle : function(x, y, w, h, bgcolor, border, linewidth, bcolor, sw, swc, swb, swx, swy) {
-		this.c.save();
-		x = fd(linewidth, x);
-		y = fd(linewidth, y);
-		this.c.translate(x, y);
-		this.c.beginPath();
-		this.c.fillStyle = bgcolor;
-		this.shadowOn(sw, swc, swb, swx, swy);
-		if (border && $.isNumber(linewidth)) {
-			this.c.lineWidth = linewidth;
-			this.c.strokeStyle = bcolor;
-			this.c.strokeRect(0, 0, w, h);
-		}
+			while (styles.length < 6)
+				styles.push(false);
 
-		this.c.fillRect(0, 0, w, h);
+			rotatex = fd(bw, rotatex);
+			rotatey = fd(bw, rotatey);
 
-		if (border && $.isArray(linewidth)) {
-			this.c.strokeStyle = bcolor;
-			this.line(0, 0, w, 0, linewidth[0], bcolor);
-			this.line(w, 0, w, h, linewidth[1], bcolor);
-			this.line(0, h, w, h, linewidth[2], bcolor);
-			this.line(0, 0, 0, h, linewidth[3], bcolor);
-		}
-		this.c.restore();
-		return this;
-	},
-	clearRect : function(x, y, w, h) {
-		x = x || 0;
-		y = y || 0;
-		w = w || this.width;
-		h = h || this.height;
-		this.c.clearRect(x, y, w, h);
-		return this;
-	},
-	drawBorder : function(x, y, w, h, line, color, round, bgcolor, last, shadow, scolor, blur, offsetx, offsety) {
-		this.c.save();
-		var x0 = fd(line, x);
-		var y0 = fd(line, y);
-		if (x0 != x) {
-			x = x0;
-			w -= 1;
-		}
-		if (y0 != y) {
-			y = y0;
-			h -= 1;
-		}
-		this.c.translate(x, y);
-		this.c.lineWidth = line;
-		this.c.strokeStyle = color;
+			var side = [];
 
-		if (!!last) {
-			this.c.globalCompositeOperation = "destination-over";
-		}
-		if (bgcolor) {
-			this.c.fillStyle = bgcolor;
-		}
+			if (rotatey < 0) {
+				if ($.isObject(styles[4]))
+					side.push($.applyIf({
+						points : [x, y - h, rotatex, rotatey - h, rotatex + w, rotatey - h, x + w, y - h]
+					}, styles[4]));
+			} else {
+				if ($.isObject(styles[0]))
+					side.push($.applyIf({
+						points : [x, y, rotatex, rotatey, rotatex + w, rotatey, x + w, y]
+					}, styles[0]));
+			}
 
-		round = round == 0 ? 0 : $.parseBorder(round);
+			if ($.isObject(styles[1]))
+				side.push($.applyIf({
+					points : [rotatex, rotatey, rotatex, rotatey - h, rotatex + w, rotatey - h, rotatex + w, rotatey]
+				}, styles[1]));
 
-		if ($.isArray(round)) {// draw a round corners border
+			if ($.isObject(styles[2]))
+				side.push($.applyIf({
+					points : [x, y, x, y - h, rotatex, rotatey - h, rotatex, rotatey]
+				}, styles[2]));
+
+			if ($.isObject(styles[3]))
+				side.push($.applyIf({
+					points : [x + w, y, x + w, y - h, rotatex + w, rotatey - h, rotatex + w, rotatey]
+				}, styles[3]));
+
+			if (rotatey < 0) {
+				if ($.isObject(styles[0]))
+					side.push($.applyIf({
+						points : [x, y, rotatex, rotatey, rotatex + w, rotatey, x + w, y]
+					}, styles[0]));
+			} else {
+				if ($.isObject(styles[4]))
+					side.push($.applyIf({
+						points : [x, y - h, rotatex, rotatey - h, rotatex + w, rotatey - h, x + w, y - h]
+					}, styles[4]));
+			}
+
+			if ($.isObject(styles[5]))
+				side.push($.applyIf({
+					points : [x, y, x, y - h, x + w, y - h, x + w, y]
+				}, styles[5]));
+
+			side.each(function(s) {
+				this.polygon(s.color, b, bw, bc, s.shadow, s.shadowColor, s.blur, s.sx, s.sy, s.alpha, s.points);
+			}, this);
+
+			return this;
+		},
+		/**
+		 * polygon
+		 * 
+		 * @param {Object}
+		 *            border
+		 * @param {Object}
+		 *            linewidth
+		 * @param {Object}
+		 *            bcolor
+		 * @param {Object}
+		 *            bgcolor
+		 * @param {Object}
+		 *            alpham
+		 * @param {Object}
+		 *            points
+		 * @memberOf {TypeName}
+		 * @return {TypeName}
+		 */
+		polygon : function(bg, b, bw, bc, sw, swc, swb, swx, swy, alpham, points) {
+			if (points.length < 2)
+				return;
+			this.c.save();
+			this.strokeStyle(bw, bc);
 			this.c.beginPath();
-			this.c.moveTo(round[0], 0);
-			this.c.lineTo(w - round[1], 0);
-			this.c.arcTo(w, 0, w, round[1], round[1]);
-			this.c.lineTo(w, h - round[2]);
-			this.c.arcTo(w, h, w - round[2], h, round[2]);
-			this.c.lineTo(round[3], h);
-			this.c.arcTo(0, h, 0, h - round[3], round[3]);
-			this.c.lineTo(0, round[0]);
-			this.c.arcTo(0, 0, round[0], 0, round[0]);
+			this.fillStyle(bg).globalAlpha(alpham).shadowOn(sw, swc, swb, swx, swy).moveTo(points[0], points[1]);
+			for ( var i = 2; i < points.length; i += 2)
+				this.lineTo(points[i], points[i + 1]);
 			this.c.closePath();
-			this.shadowOn(shadow, scolor, blur, offsetx, offsety);
-			if (bgcolor) {
-				this.c.fill();
-			}
-			if (shadow)
-				this.shadowOff();
-			this.c.globalCompositeOperation = "source-over";
+			if (b)
+				this.c.stroke();
+			this.c.fill();
+			this.c.restore();
+			return this;
+		},
+		line : function(x1, y1, x2, y2, w, c, last) {
+			if (!w || w == 0)
+				return this;
+			this.c.save();
+			if (!!last)
+				this.c.globalCompositeOperation = "destination-over";
 
-			this.c.stroke();
-		} else {// draw a rectangular border
-			this.shadowOn(shadow, scolor, blur, offsetx, offsety);
-			if (bgcolor) {
-				this.c.fillRect(0, 0, w, h);
+			x1 = fd(w, x1);
+			y1 = fd(w, y1);
+			x2 = fd(w, x2);
+			y2 = fd(w, y2);
+
+			this.c.beginPath();
+			this.strokeStyle(w, c).moveTo(x1, y1).lineTo(x2, y2).c.stroke();
+			this.c.closePath();
+			this.c.restore();
+			return this;
+		},
+		round : function(x, y, r, c, bw, bc) {
+			this.c.beginPath();
+			this.c.fillStyle = c;
+			this.c.arc(x, y, r, 0, PI2, false);
+			this.c.closePath();
+			this.c.fill();
+			if (bw) {
+				this.c.lineWidth = bw;
+				this.c.strokeStyle = bc || '#010101';
+				this.c.stroke();
 			}
-			if (shadow)
-				this.shadowOff();
-			this.c.strokeRect(0, 0, w, h);
+			return this;
+		},
+		backgound : function(x, y, w, h, bgcolor) {
+			this.c.save();
+			this.c.globalCompositeOperation = "destination-over";
+			this.c.translate(x, y);
+			this.c.beginPath();
+			this.c.fillStyle = bgcolor;
+			this.c.fillRect(0, 0, w, h);
+			this.c.restore();
+			return this;
+		},
+		rectangle : function(x, y, w, h, bgcolor, border, linewidth, bcolor, sw, swc, swb, swx, swy) {
+			this.c.save();
+			x = fd(linewidth, x);
+			y = fd(linewidth, y);
+			this.c.translate(x, y);
+			this.c.beginPath();
+			this.c.fillStyle = bgcolor;
+			this.shadowOn(sw, swc, swb, swx, swy);
+			if (border && $.isNumber(linewidth)) {
+				this.c.lineWidth = linewidth;
+				this.c.strokeStyle = bcolor;
+				this.c.strokeRect(0, 0, w, h);
+			}
+
+			this.c.fillRect(0, 0, w, h);
+
+			if (border && $.isArray(linewidth)) {
+				this.c.strokeStyle = bcolor;
+				this.line(0, 0, w, 0, linewidth[0], bcolor);
+				this.line(w, 0, w, h, linewidth[1], bcolor);
+				this.line(0, h, w, h, linewidth[2], bcolor);
+				this.line(0, 0, 0, h, linewidth[3], bcolor);
+			}
+			this.c.restore();
+			return this;
+		},
+		clearRect : function(x, y, w, h) {
+			x = x || 0;
+			y = y || 0;
+			w = w || this.width;
+			h = h || this.height;
+			this.c.clearRect(x, y, w, h);
+			return this;
+		},
+		drawBorder : function(x, y, w, h, line, color, round, bgcolor, last, shadow, scolor, blur, offsetx, offsety) {
+			this.c.save();
+			var x0 = fd(line, x);
+			var y0 = fd(line, y);
+			if (x0 != x) {
+				x = x0;
+				w -= 1;
+			}
+			if (y0 != y) {
+				y = y0;
+				h -= 1;
+			}
+			this.c.translate(x, y);
+			this.c.lineWidth = line;
+			this.c.strokeStyle = color;
+
+			if (!!last) {
+				this.c.globalCompositeOperation = "destination-over";
+			}
+			if (bgcolor) {
+				this.c.fillStyle = bgcolor;
+			}
+
+			round = round == 0 ? 0 : $.parseBorder(round);
+
+			/**
+			 * draw a round corners border
+			 */
+			if ($.isArray(round)) {
+				this.c.beginPath();
+				this.c.moveTo(round[0], 0);
+				this.c.lineTo(w - round[1], 0);
+				this.c.arcTo(w, 0, w, round[1], round[1]);
+				this.c.lineTo(w, h - round[2]);
+				this.c.arcTo(w, h, w - round[2], h, round[2]);
+				this.c.lineTo(round[3], h);
+				this.c.arcTo(0, h, 0, h - round[3], round[3]);
+				this.c.lineTo(0, round[0]);
+				this.c.arcTo(0, 0, round[0], 0, round[0]);
+				this.c.closePath();
+				this.shadowOn(shadow, scolor, blur, offsetx, offsety);
+				if (bgcolor) {
+					this.c.fill();
+				}
+				if (shadow)
+					this.shadowOff();
+				this.c.globalCompositeOperation = "source-over";
+
+				this.c.stroke();
+			} else {
+				/**
+				 * draw a rectangular border
+				 */
+				this.shadowOn(shadow, scolor, blur, offsetx, offsety);
+				if (bgcolor) {
+					this.c.fillRect(0, 0, w, h);
+				}
+				if (shadow)
+					this.shadowOff();
+				this.c.strokeRect(0, 0, w, h);
+			}
+			this.c.restore();
+			return this;
+		},
+		toImageURL : function() {
+			return this.canvas.toDataURL("image/png");
+		},
+		addEvent : function(type, fn, useCapture) {
+			$.Event.addEvent(this.canvas, type, fn, useCapture);
 		}
-		this.c.restore();
-		return this;
-	},
-	toImageURL : function() {
-		return this.canvas.toDataURL("image/png");
-	},
-	addEvent : function(type, fn, useCapture) {
-		$.Event.addEvent(this.canvas, type, fn, useCapture);
-	}
 
 	}
 
-	// window.Cans = Cans;
 	/**
 	 * @overview this component use for abc
 	 * @component#$.Chart
@@ -3016,34 +3018,46 @@ $.Legend = $.extend($.Component, {
 				 */
 				title : '',
 				/**
-				 * @cfg {String} Available value are:
+				 * @cfg {String} Specifies how align title horizontally Available value are:
 				 * @Option 'left'
 				 * @Option 'center'
 				 * @Option 'right'
 				 */
 				title_align : 'center',
 				/**
-				 * @cfg {String} Available value are:
+				 * @cfg {String} Specifies how align title vertically Available value are:
 				 * @Option 'top'
 				 * @Option 'middle' Only applies when title_writingmode = 'tb'
 				 * @Option 'bottom'
 				 */
 				title_valign : 'top',
 				/**
-				 * @cfg {String} Available value are:
+				 * @cfg {String} Specifies the writing-mode of title.(default to 'lr') Available value are:
 				 * @Option 'lr,'tb'
 				 */
 				title_writingmode : 'lr',
 				/**
-				 * @cfg {TypeName}
+				 * @cfg {String} Specifies the font of title.(default to 'Verdana')
 				 */
 				title_font : 'Verdana',
+				/**
+				 * @cfg {String} Specifies the font-weight of title.(default to 'bold')
+				 */
 				title_fontweight : 'bold',
+				/**
+				 * @cfg {Number} Specifies the font-size in pixels of title.(default to 20)
+				 */
 				title_fontsize : 20,
+				/**
+				 * @cfg {String} Specifies the font-color of title.(default to 'black')
+				 */
 				title_color : 'black',
+				/**
+				 * @cfg {Number} Specifies the height of title will be use.(default to 25)
+				 */
 				title_height : 25,
 				/**
-				 * @cfg {Boolean} If true element will has a animation when show, false to skip the animation.(default to false)
+				 * @cfg {Boolean} if true element will has a animation when show, false to skip the animation.(default to false)
 				 */
 				animation : false,
 				/**
@@ -3116,24 +3130,17 @@ $.Legend = $.extend($.Component, {
 			this.rendered = false;
 
 			this.animationed = false;
-
+			this.data = [];
 			this.components = [];
 			this.total = 0;
 
 		},
-		pushComponent : function(c, b) {
-			if ($.isArray(c)) {
-				if (!!b)
-					this.components = c.concat(this.components);
+		pushComponent : function(c, b){
+			if (!!b)
+					this.components.unshift(c);
 				else
-					this.components = this.components.concat(c);
-			} else {
-				if (!!b)
-					this.components = [c].concat(this.components);
-				else
-					this.components.push(c);
-			}
-
+					this.components.push(c);;
+					
 		},
 		plugin : function(c, b) {
 			this.init();
@@ -3151,41 +3158,64 @@ $.Legend = $.extend($.Component, {
 		},
 		animation : function() {
 			return function(_) {
-				// console.time('Test for animation');
-		// clear the part of canvas
-		_.segmentRect();
-		// doAnimation of implement
-		_.doAnimation(_.variable.animation.time, _.duration);
-		// fill the background
-		_.resetCanvas();
-		if (_.variable.animation.time < _.duration) {
-			_.variable.animation.time++;
-			setTimeout(function() {
-				_.animation(_)
-			}, $.INTERVAL)
-		} else {
+				/**
+				 * clear the part of canvas
+				 */
+				_.segmentRect();
+				/**
+				 * doAnimation of implement
+				 */
+				_.doAnimation(_.variable.animation.time, _.duration);
+				/**
+				 * fill the background
+				 */
+				_.resetCanvas();
+				if (_.variable.animation.time < _.duration) {
+					_.variable.animation.time++;
+					setTimeout(function() {
+						_.animation(_)
+					}, $.INTERVAL)
+				} else {
+					setTimeout(function() {
+						_.variable.animation.time = 0;
+						_.animationed = true;
+						_.draw();
+						_.processAnimation = false;
+						_.fireEvent(this, 'afterAnimation', [this]);
+					}, $.INTERVAL);
+				}
+			}
+		}(),
+		doAnimation : function(t, d) {
+			this.get('doAnimationFn').call(this, t, d);
+		},
+		/**
+		 * the common config
+		 */
+		add:function(data,index,animate){
+			if(this.processAnimation){
+				this.variable.animation.queue.push({handler:'add',arguments:[data,index,animate]});
+				return false;
+			}
+			$.isNumber(index)
+			index = $.between(0,this.data.length,index);
+			data = $.Interface.parser.call(this,data,index);
+			
+			if (this.get('legend.enable')) {
+				this.legend.calculate(this.data,data);
+			}
+			
+			return data;
+		},
+		commonDraw : function() {
+			$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
+			$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
+			$.Assert.gtZero(this.data.length, this.type + '\'data is empty.');
 
-			setTimeout(function() {
-				_.variable.animation.time = 0;
-				_.animationed = true;
-				_.draw();
-				_.processAnimation = false;
-				_.fireEvent(this, 'afterAnimation', [this]);
-			}, $.INTERVAL);
-		}
-		// console.timeEnd('Test for animation');
-	}
-	}(),
-	doAnimation : function(t, d) {
-		this.get('doAnimationFn').call(this, t, d);
-	},
-	commonDraw : function() {
-		$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
-		$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
-		$.Assert.gtZero(this.data.length, this.type + '\'data is empty.');
-	
-		// console.time('Test for draw');
-	
+			/**
+			 * console.time('Test for draw');
+			 */
+
 			if (!this.redraw) {
 				this.title();
 				if (this.get('border.enable')) {
@@ -3195,22 +3225,24 @@ $.Legend = $.extend($.Component, {
 				}
 			}
 			this.redraw = true;
-	
+
 			if (!this.animationed && this.get('animation')) {
 				this.fireEvent(this, 'beforeAnimation', [this]);
 				this.animation(this);
 				return;
 			}
-	
+
 			this.segmentRect();
-	
-			for ( var i = 0; i < this.components.length; i++) {
-				this.components[i].draw();
-			}
-	
+
+			this.components.eachAll(function(c,i){
+				c.draw();
+			},this);
+			
 			this.resetCanvas();
-			// console.timeEnd('Test for draw');
-	
+			/**
+			 * console.timeEnd('Test for draw');
+			 */
+
 		},
 		/**
 		 * Draw the title when title not empty
@@ -3219,117 +3251,128 @@ $.Legend = $.extend($.Component, {
 			if (this.get('title') == '')
 				return;
 			if (this.get('title_writingmode') == 'tb') {
-	
+
 			} else {
 				if (this.get('title_align') == 'left') {
 					this.push('title_originx', this.get('padding_left'));
 				} else if (this.get('title_align') == 'right') {
 					this.push('title_originx', this.width - this.get('padding_right'));
 				} else {
-					this.push('title_originx', this.get('client_width') / 2);// goto midline
-		}
-		this.T.textAlign(this.get('title_align'));
-		if (this.get('title_valign') == 'bottom') {
-			this.push('title_originy', this.height - this.get('padding_bottom'));
-		} else {
-			this.push('title_originy', this.get('padding_top'));
-		}
-		this.T.textBaseline(this.get('title_valign'));
-	
-	}
-	this.T.textFont($.getFont(this.get('title_fontweight'), this.get('title_fontsize'), this.get('title_font')));
-	this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_originy'), this.get('client_width'), this.get('title_color'));
-	},
-	create : function(shell) {
-	/**
-	 * 默认的要计算为warp的div
-	 */
-	this.width = this.push('width', this.get('width') || 400);
-	this.height = this.push('height', this.get('height') || 300);
-	var style = "width:" + this.width + "px;height:" + this.height + "px;padding:0px;overflow:hidden;position:relative;";
-	
-	var id = $.iGather(this.type);
-	this.shellid = $.iGather(this.type + "-shell");
-	var html = "<div id='" + this.shellid + "' style='" + style + "'>" + "<canvas id= '" + id + "'  width='" + this.width + "' height=" + this.height + "'>" + "<p>Your browser does not support the canvas element</p>" + "</canvas>" + "</div>";
-	/**
-	 * also use appendChild()
-	 */
-	shell.innerHTML = html;
-	
-	this.element = document.getElementById(id);
-	this.shell = document.getElementById(this.shellid);
-	/**
-	 * the base canvas wrap for draw
-	 */
-	this.T = this.target = new Cans(this.element);
-	
-	this.rendered = true;
-	},
-	render : function(id) {
-	this.push('render', id);
-	},
-	initialize : function() {
-	if (!this.rendered) {
-		var r = this.get('render');
-		if (typeof r == "string" && document.getElementById(r))
-			this.create(document.getElementById(r));
-		else if (typeof r == 'object')
-			this.create(r);
-	}
-	
-	if (this.get('data').length > 0 && this.rendered && !this.initialization) {
-		$.Interface.parser.call(this);
-		this.doConfig();
-		this.initialization = true;
-	}
-	},
-	doConfig : function() {
-		$.Chart.superclass.doConfig.call(this);
-		/**
-		 * for compress
-		 */
-		var _ = this, E = _.variable.event, register = function() {
-			['click', 'dblclick', 'mousemove'].each(function(it) {
-				_.T.addEvent(it, function(e) {
-					_.fireEvent(_, it, [$.Event.fix(e)]);
-				}, false);
-			});
-		}
-		
-		$.Interface._3D.call(_);
-		
-		_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
-		
-		if (_.get('animation')) {
+					this.push('title_originx', this.get('client_width') / 2);
+				}
+				this.T.textAlign(this.get('title_align'));
+				if (this.get('title_valign') == 'bottom') {
+					this.push('title_originy', this.height - this.get('padding_bottom'));
+				} else {
+					this.push('title_originy', this.get('padding_top'));
+				}
+				this.T.textBaseline(this.get('title_valign'));
+
+			}
+			this.T.textFont($.getFont(this.get('title_fontweight'), this.get('title_fontsize'), this.get('title_font')));
+			this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_originy'), this.get('client_width'), this.get('title_color'));
+		},
+		create : function(shell) {
+			/**
+			 * default should to calculate the size of warp?
+			 */
+			this.width = this.push('width', this.get('width') || 400);
+			this.height = this.push('height', this.get('height') || 300);
+			var style = "width:" + this.width + "px;height:" + this.height + "px;padding:0px;overflow:hidden;position:relative;";
+
+			var id = $.iGather(this.type);
+			this.shellid = $.iGather(this.type + "-shell");
+			var html = "<div id='" + this.shellid + "' style='" + style + "'>" + "<canvas id= '" + id + "'  width='" + this.width + "' height=" + this.height + "'>" + "<p>Your browser does not support the canvas element</p>" + "</canvas>" + "</div>";
+			/**
+			 * also use appendChild()
+			 */
+			shell.innerHTML = html;
+
+			this.element = document.getElementById(id);
+			this.shell = document.getElementById(this.shellid);
+			/**
+			 * the base canvas wrap for draw
+			 */
+			this.T = this.target = new Cans(this.element);
+
+			this.rendered = true;
+		},
+		render : function(id) {
+			this.push('render', id);
+		},
+		initialize : function() {
+			if (!this.rendered) {
+				var r = this.get('render');
+				if (typeof r == "string" && document.getElementById(r))
+					this.create(document.getElementById(r));
+				else if (typeof r == 'object')
+					this.create(r);
+			}
+			
+			if (this.get('data').length > 0 && this.rendered && !this.initialization) {
+				$.Interface.parser.call(this,this.get('data'));
+				this.doConfig();
+				this.initialization = true;
+			}
+		},
+		doConfig : function() {
+			$.Chart.superclass.doConfig.call(this);
+			
+			
+			/**
+			 * for compress
+			 */
+			var _ = this, E = _.variable.event;
+			
+			$.Assert.isArray(_.data);
+			$.Interface._3D.call(_);
+
+			_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
+			
 			_.processAnimation = _.get('animation');
 			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
 			_.variable.animation = {
-				time : 0
+				type:0,
+				time : 0,
+				queue:[]
 			};
+			
 			_.animationArithmetic = $.getAnimationArithmetic(_.get('animation_timing_function'));
+			
 			_.on('afterAnimation', function() {
-				register();
+				var N = _.variable.animation.queue.shift();
+				if(N){
+					_[N.handler].apply(_,N.arguments);
+				}
 			});
-		} else {
-			register();
-		}
-		
-		_.on('click', function(e) {
-			// console.time('Test for click');
-				_.components.each(function(c) {
+			
+			
+			['click', 'dblclick', 'mousemove'].each(function(it) {
+				_.T.addEvent(it, function(e) {
+					if(_.processAnimation)return;
+					_.fireEvent(_, it, [_, $.Event.fix(e)]);
+				}, false);
+			});
+
+			_.on('click', function(_, e) {
+				/**
+				 * console.time('Test for click');
+				 */
+				_.components.eachAll(function(c) {
 					if (!c.preventEvent) {
 						var M = c.isMouseOver(e);
 						if (M.valid)
 							c.fireEvent(c, 'click', [c, e, M]);
 					}
 				});
-				// console.timeEnd('Test for click');
+				/**
+				 * console.timeEnd('Test for click');
+				 */
 			});
-		
-		_.on('mousemove', function(e) {
-			// console.time('Test for doMouseMove');
+
+			_.on('mousemove', function(_, e) {
 				var O = false;
-				_.components.each(function(cot) {
+				_.components.eachAll(function(cot) {
 					if (!cot.preventEvent) {
 						var cE = cot.variable.event, M = cot.isMouseOver(e);
 						if (M.valid) {
@@ -3352,85 +3395,91 @@ $.Legend = $.extend($.Component, {
 						}
 					}
 				});
-		
+
 				if (!O && E.mouseover) {
 					E.mouseover = false;
 					_.T.css("cursor", "default");
 					_.fireEvent(_, 'mouseout', [e]);
 				}
-				// console.timeEnd('Test for doMouseMove');
 			});
-		$.Assert.isArray(_.data);
-		
-		_.push('l_originx', _.get('padding_left'));
-		_.push('r_originx', _.width - _.get('padding_right'));
-		_.push('t_originy', _.get('padding_top'));
-		_.push('b_originy', _.height - _.get('padding_bottom'));
-		
-		var offx = 0, offy = 0;
-		
-		if (_.get('title') != '') {
-			if (_.get('title_writingmode') == 'tb') {// 竖直排列
+
+			_.push('l_originx', _.get('padding_left'));
+			_.push('r_originx', _.width - _.get('padding_right'));
+			_.push('t_originy', _.get('padding_top'));
+			_.push('b_originy', _.height - _.get('padding_bottom'));
+
+			var offx = 0, offy = 0;
+
+			if (_.get('title') != '') {
+				/**
+				 * 竖直排列
+				 */
+				if (_.get('title_writingmode') == 'tb') {
 					offx = _.get('title_height');
 					if (_.get('title_align') == 'left') {
 						_.push('l_originx', _.get('l_originx') + _.get('title_height'));
 					} else {
 						_.push('r_originx', _.width - _.get('l_originx') - _.get('title_height'));
 					}
-				} else {// 横向排列
+				} else {
+					/**
+					 * 横向排列
+					 */
 					offy = _.get('title_height');
-		
+
 					if (_.get('title_align') == 'left') {
 						_.push('title_originx', _.get('padding_left'));
 					} else if (_.get('title_align') == 'right') {
 						_.push('title_originx', _.width - _.get('padding_right'));
 					} else {
-						_.push('title_originx', _.get('client_width') / 2);// goto midline
+						_.push('title_originx', _.get('client_width') / 2);
+					}
+					if (_.get('title_valign') == 'bottom') {
+						_.push('title_originy', _.height - _.get('padding_bottom'));
+						_.push('b_originy', _.height - _.get('b_originy') - _.get('title_height'));
+					} else {
+						_.push('t_originy', _.get('t_originy') + _.get('title_height'));
+						_.push('title_originy', _.get('padding_top'));
+					}
+				}
 			}
-			if (_.get('title_valign') == 'bottom') {
-				_.push('title_originy', _.height - _.get('padding_bottom'));
-				_.push('b_originy', _.height - _.get('b_originy') - _.get('title_height'));
-			} else {
-				_.push('t_originy', _.get('t_originy') + _.get('title_height'));
-				_.push('title_originy', _.get('padding_top'));
+
+			_.push('client_width', (_.get('width') - _.get('hpadding') - offx));
+			_.push('client_height', (_.get('height') - _.get('vpadding') - offy));
+
+			_.push('minDistance', Math.min(_.get('client_width'), _.get('client_height')));
+			_.push('maxDistance', Math.max(_.get('client_width'), _.get('client_height')));
+			_.push('minstr', _.get('client_width') < _.get('client_height') ? 'width' : 'height');
+
+			_.push('centerx', _.get('l_originx') + _.get('client_width') / 2);
+			_.push('centery', _.get('t_originy') + _.get('client_height') / 2);
+			/*
+			 * if(_.get('border.enable')){ var round = $.parseBorder(_.get('border.radius')); _.push('radius_top',round[0]); _.push('radius_right',round[1]); _.push('radius_bottom',round[2]); _.push('radius_left',round[3]); }
+			 */
+
+			/**
+			 * legend
+			 */
+			if (_.get('legend.enable')) {
+				_.legend = new $.Legend($.apply({
+					maxwidth : _.get('client_width'),
+					data : _.data
+				}, _.get('legend')), _);
+
+				_.components.push(_.legend);
 			}
+			/**
+			 * tip's wrap
+			 */
+			if (_.get('tip.enable')) {
+				_.push('tip.wrap', _.shell);
+			}
+
 		}
-		}
-		
-		_.push('client_width', (_.get('width') - _.get('hpadding') - offx));
-		_.push('client_height', (_.get('height') - _.get('vpadding') - offy));
-		
-		_.push('minDistance', Math.min(_.get('client_width'), _.get('client_height')));
-		_.push('maxDistance', Math.max(_.get('client_width'), _.get('client_height')));
-		_.push('minstr', _.get('client_width') < _.get('client_height') ? 'width' : 'height');
-		
-		_.push('centerx', _.get('l_originx') + _.get('client_width') / 2);
-		_.push('centery', _.get('t_originy') + _.get('client_height') / 2);
-		/*
-		 * if(_.get('border.enable')){ var round = $.parseBorder(_.get('border.radius')); _.push('radius_top',round[0]); _.push('radius_right',round[1]); _.push('radius_bottom',round[2]); _.push('radius_left',round[3]); }
-		 */
-		
-		/**
-		 * legend
-		 */
-		if (_.get('legend.enable')) {
-		_.legend = new $.Legend($.apply({
-			maxwidth : _.get('client_width'),
-			data : _.data
-		}, _.get('legend')), _);
-		
-		_.components.push(_.legend);
-		}
-		/**
-		 * tip's wrap
-		 */
-		if (_.get('tip.enable')) {
-		_.push('tip.wrap', _.shell);
-		}
-	
-	}
 	});
 })($);
+//@end
+
 	/**
 	 * @overview this component use for abc
 	 * @component#$.Custom
@@ -3467,7 +3516,8 @@ $.Legend = $.extend($.Component, {
 		doConfig:function(){
 			$.Custom.superclass.doConfig.call(this);
 		}
-});	/**
+});//@end
+	/**
 	 * @overview
 	 * this is inner use for axis
 	 * 用于坐标系上坐标刻度的配置
@@ -3713,7 +3763,7 @@ $.Legend = $.extend($.Component, {
 					}
 				}
 			}
-	});
+	});//@end
 	
 	/**
 	 * @overview this component use for abc
@@ -4048,7 +4098,7 @@ $.Legend = $.extend($.Component, {
 			}
 			
 		}
-});
+});//@end
 /**
  * @overview this component use for abc
  * @component#$.Coordinate3D
@@ -4217,7 +4267,8 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			
 			
 		}
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#$.Rectangle
 	 * @extend#$.Component
@@ -4305,10 +4356,9 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 				}
 				return true;
 			});
-			
-			
 		}
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#$.Rectangle2D
 	 * @extend#$.Rectangle
@@ -4407,7 +4457,8 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			_.valueX = _.get('value_x');
 			_.valueY = _.get('value_y');
 		}
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#$.Rectangle3D
 	 * @extend#$.Rectangle
@@ -4488,10 +4539,9 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			
 			this.topCenterY=this.y-this.get('width')*this.get('yAngle_')/2;
 			
-			
-			
 		}
-});$.Sector = $.extend($.Component, {
+});//@end
+$.Sector = $.extend($.Component, {
 	configure : function() {
 		/**
 		 * invoked the super class's configuration
@@ -4536,9 +4586,7 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			label : {
 				enable : true,
 				/**
-				 * label线的长度
-				 * 
-				 * @memberOf {label}
+				 * label's length
 				 */
 				linelength : undefined
 			},
@@ -4555,14 +4603,16 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 		this.label = null;
 		this.tip = null;
 	},
-	expand : function(p) {
-		this.expanded = true;
+	bound : function() {
+		if(!this.expanded)
+			this.toggle();
 	},
-	collapse : function() {
-		this.expanded = false;
+	rebound : function() {
+		if(this.expanded)
+			this.toggle();
 	},
 	toggle : function() {
-		this.expanded = !this.expanded;
+		this.fireEvent(this,this.get('bound_event'),[this]);
 	},
 	drawLabel : function() {
 		if (this.get('label.enable')) {
@@ -4602,11 +4652,11 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 
 		_.variable.event.poped = false;
 
-		_.on(_.get('bound_event'), function(e, r) {
+		_.on(_.get('bound_event'), function(_,e,r) {
 			// console.profile('Test for pop');
 				// console.time('Test for pop');
 				_.variable.event.poped = true;
-				_.toggle();
+				_.expanded = !_.expanded;
 				_.redraw();
 				_.variable.event.poped = false;
 				// console.timeEnd('Test for pop');
@@ -4632,7 +4682,8 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 		});
 
 	}
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#$.Sector2D
 	 * @extend#$.Sector
@@ -4693,12 +4744,9 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 			return {valid:false};
 		},
 		tipInvoke:function(){
-			var _ = this,
-				A = _.get('middleAngle'),
-				Q  = $.quadrantd(A),
-				r = _.get('radius');
+			var _ = this,r = _.get('radius');
 			return function(w,h){
-				var P = $.p2Point(_.x,_.y,A,r*0.8);
+				var P = $.p2Point(_.x,_.y,_.get('middleAngle'),r*0.8),Q  = $.quadrantd(_.get('middleAngle'));
 				return {
 					left:(Q>=2&&Q<=3)?(P.x - w):P.x,
 					top:Q>=3?(P.y - h):P.y
@@ -4744,7 +4792,8 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 				this.label = new $.Label(this.get('label'),this);
 			}
 		}
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#$.Sector3D
 	 * @extend#$.Sector
@@ -4891,7 +4940,8 @@ $.Coordinate3D = $.extend($.Coordinate2D,{
 				this.label = new $.Label(this.get('label'),this);
 			}
 		}
-});/**
+});//@end
+/**
  * @overview this component use for abc
  * @component#$.Pie
  * @extend#$.Chart
@@ -4907,7 +4957,8 @@ $.Pie = $.extend($.Chart, {
 		$.Pie.superclass.configure.call(this);
 
 		this.type = 'pie';
-
+		this.dataType = 'simple';
+		
 		this.set({
 			/**
 			 * @cfg {Float (0~)} the pie's radius
@@ -4918,11 +4969,11 @@ $.Pie = $.extend($.Chart, {
 			 */
 			offsetAngle : 0,
 			/**
-			 * @cfg {Boolean} 是否显示百分比 (default to true)
+			 * @cfg {Boolean} Specify as true to display with percent.(default to true)
 			 */
 			showpercent : true,
 			/**
-			 * @cfg {Number} 显示百分比精确小数点位数
+			 * @cfg {Number} Specify with percent.(default to 1)
 			 */
 			decimalsnum : 1,
 			/**
@@ -4933,37 +4984,37 @@ $.Pie = $.extend($.Chart, {
 			 * @cfg {Boolean}
 			 */
 			customize_layout : false,
+			/**
+			 * @cfg {Boolean} Specify as true make sector will counterclockwise.(default to false)
+			 */
 			counterclockwise : false,
 			/**
-			 * @cfg {Boolean} if it has animate when a piece popd (default to false)
+			 * @inner {Boolean} if it has animate when a piece popd (default to false)
 			 */
 			pop_animate : false,
 			/**
-			 * @cfg {Boolean} if the piece mutex,it means just one piece could pop (default to true)
+			 * @cfg {Boolean} Specify as true it means just one piece could pop (default to true)
 			 */
 			mutex : false,
-			shadow : true,
 			/**
 			 * @cfg {Boolean} if the apply the gradient,if set to true that will be gradient color of each sector(default to true)
 			 */
 			gradient : true,
-			shadow_blur : 4,
-			shadow_offsetx : 0,
-			shadow_offsety : 0,
+			/**
+			 * @cfg {Number} Specify the length when sector bounded.(default to 1/8 radius,and minimum is 5), 
+			 */
 			increment : undefined,
 			/**
-			 * @cfg {Boolean} if the label displayed (default to true)
+			 * @cfg {Object} Specify the config of label
 			 */
 			label : {
 				enable : true,
-				/**
-				 * label线的长度
-				 * 
-				 * @memberOf {label}
-				 */
 				linelength : undefined,
 				padding : 5
 			},
+			/**
+			 * @cfg {Object} Specify the config of tip
+			 */
 			tip : {
 				enable : false,
 				border : {
@@ -4974,61 +5025,140 @@ $.Pie = $.extend($.Chart, {
 		});
 
 		this.registerEvent(
-				/**
-				 * @event Fires when this element' sector bounded
-				 * @paramter $.Sector2d#sector
-				 * @paramter string#name
-				 * @paramter int#index
-				 */
-				'bound',
-				/**
-				 * @event Fires when this element' sector rebounded
-				 * @paramter $.Sector2d#sector
-				 * @paramter string#name
-				 * @paramter int#index
-				 */
-				'rebound');
-			
+		/**
+		 * @event Fires when this element' sector bounded
+		 * @paramter $.Sector2d#sector
+		 * @paramter string#name
+		 * @paramter int#index
+		 */
+		'bound',
+		/**
+		 * @event Fires when this element' sector rebounded
+		 * @paramter $.Sector2d#sector
+		 * @paramter string#name
+		 * @paramter int#index
+		 */
+		'rebound');
+
 		this.sectors = [];
 	},
-	doAnimation : function(t, d){
+	/**
+	 * @method Add item(s) into the Chart at the given index or not.. This method accepts either a single object of data config or a array of items's config
+	 * @paramter data#Object/Array the data's config
+	 * @paramter index#int The start index at which to add the item.(default to append)
+	 * @paramter animate#boolean if has a animation when drawing
+	 * @return void
+	 */
+	add:function(data,index,animate){
+		data = $.Pie.superclass.add.call(this,data,index,animate);
+		if(!data)return; 
+			
+		this.calculate();
+		
+		data.each(function(d,i){
+			d.new_ = true;
+			this.doSector(d,i);
+		},this);
+		/**
+		 * update index,percent of each sector and angle and so on
+		 */
+		this.data.each(function(d,i){
+			if(d.new_){delete d.new_;}else{
+			var t = d.name + (this.get('showpercent') ? $.toPercent(d.value / this.total, this.get('decimalsnum')) : '');
+			
+			if (this.get('label.enable'))
+				d.reference.label.text(this.fireString(this, 'parseLabelText', [d, i], t));
+			
+			if (this.get('tip.enable'))
+				d.reference.tip.text(this.fireString(this, 'parseTipText', [d, i], t));
+			
+			d.reference.id = i;
+			d.reference.push('startAngle', d.startAngle);
+			d.reference.push('middleAngle', d.middleAngle);
+			d.reference.push('endAngle', d.endAngle);
+			d.reference.push('totalAngle', d.endAngle-d.startAngle);
+			}
+		},this);
+		
+		if(animate){
+			this.animation(this);
+			return;
+		}
+		
+		this.draw();
+	},
+	/**
+	 * @method toggle sector 
+	 * @paramter int#i the index of sector
+	 * @return void
+	 */
+	toggle:function(i){
+		this.data[i].reference.toggle();
+	},
+	/**
+	 * @method bound sector
+	 * @paramter int#i the index of sector
+	 * @return void
+	 */
+	bound:function(i){
+		this.data[i].reference.bound();
+	},
+	/**
+	 * @method rebound sector
+	 * @paramter int#i the index of sector
+	 * @return void
+	 */
+	rebound:function(i){
+		this.data[i].reference.rebound();
+	},
+	doAnimation : function(t, d) {
 		var s, si = 0, cs = this.offsetAngle;
-		this.sectors.each(function(s,i){
+		this.data.each(function(D, i) {
+			s = D.reference;
 			si = this.animationArithmetic(t, 0, s.get('totalAngle'), d);
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
 			cs += si;
-			//this.fireEvent(this, 'animating', [this, s, t, s.get('totalAngle'), d]);
-			s.drawSector();
-		},this);
+			// this.fireEvent(this, 'animating', [this, s, t, s.get('totalAngle'), d]);
+				s.drawSector();
+			}, this);
 	},
-	doParse:function(d,i){
-		var _=this,t = d.name + (_.get('showpercent') ? $.toPercent(d.value / _.total, _.get('decimalsnum')) : '');
-		if(_.get('label.enable'))
-			_.push('sector.label.text',_.fireString(_,'parseLabelText',[d,i],t));
-		if(_.get('tip.enable'))
-			_.push('sector.tip.text',_.fireString(_,'parseTipText',[d,i],t));
-		
-		_.push('sector.id',i);
-		_.push('sector.name',d.name);
-		_.push('sector.listeners.changed',function(se,st,i){
-			_.fireEvent(_,st?'bound':'rebound',[_,se.get('name')]);
-		});
-		_.push('sector.startAngle',d.startAngle);
-		_.push('sector.middleAngle',d.middleAngle);
-		_.push('sector.endAngle',d.endAngle);
-		_.push('sector.background_color',d.color);
+	/**
+	 * @method Returns an array containing all sectors of this pie
+	 * @return Array#the collection of sectors
+	 */
+	getSectors : function() {
+		return this.sectors;
 	},
-	doConfig : function() {
-		$.Pie.superclass.doConfig.call(this);
-		$.Assert.gtZero(this.total, 'this.total');
+	doParse : function(d, i) {
+		var _ = this, t = d.name + (_.get('showpercent') ? $.toPercent(d.value / _.total, _.get('decimalsnum')) : '');
+		if (_.get('label.enable'))
+			_.push('sector.label.text', _.fireString(_, 'parseLabelText', [
+					d, i
+			], t));
+		if (_.get('tip.enable'))
+			_.push('sector.tip.text', _.fireString(_, 'parseTipText', [
+					d, i
+			], t));
 
-		var eA = sA = this.offsetAngle = $.angle2Radian(this.get('offsetAngle')),L=this.data.length,r = this.get('radius');
-		/**
-		 * calculate pie chart's angle
-		 */
-		
-		this.data.each(function(d,i){
+		_.push('sector.id', i);
+		_.push('sector.name', d.name);
+		_.push('sector.listeners.changed', function(se, st, i) {
+			_.fireEvent(_, st ? 'bound' : 'rebound', [
+					_, se.get('name')
+			]);
+		});
+		_.push('sector.startAngle', d.startAngle);
+		_.push('sector.middleAngle', d.middleAngle);
+		_.push('sector.endAngle', d.endAngle);
+		_.push('sector.background_color', d.color);
+	},
+	/**
+	 * calculate pie chart's angle
+	 */
+	calculate:function(){
+		var eA  = this.offsetAngle,sA = eA,L = this.data.length;
+		this.data.each(function(d, i) {
 			eA += (2 * d.value / this.total) * Math.PI;
 			if (i == (L - 1)) {
 				eA = 2 * Math.PI + this.offsetAngle;
@@ -5038,15 +5168,23 @@ $.Pie = $.extend($.Chart, {
 			d.totalAngle = eA - sA;
 			d.middleAngle = (sA + eA) / 2;
 			sA = eA;
-		},this);
-
+		}, this);
+	},
+	doConfig : function() {
+		$.Pie.superclass.doConfig.call(this);
+		$.Assert.gtZero(this.total, 'this.total');
+		
+		this.offsetAngle = $.angle2Radian(this.get('offsetAngle')),r = this.get('radius');
+		
+		this.calculate();
+		
 		/**
 		 * calculate pie chart's radius
 		 */
 		if (r <= 0 || r > this.get('minDistance') / 2) {
 			r = this.push('radius', this.get('minDistance') / 2);
 		}
-		
+
 		this.r = r;
 		/**
 		 * calculate pie chart's increment
@@ -5065,12 +5203,13 @@ $.Pie = $.extend($.Chart, {
 		}
 		this.push('originy', this.get('centery') + this.get('offsety'));
 
-		this.push('sector', $.clone(['originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'],
-				this.options));
+		this.push('sector', $.clone([
+				'originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'
+		], this.options));
 
 	}
-
-});/**
+});//@end 
+/**
  * @overview this component use for abc
  * @component#@chart#$.Pie2D
  * @extend#$.Pie
@@ -5087,11 +5226,14 @@ $.Pie2D = $.extend($.Pie, {
 
 		this.type = 'pie2d';
 
-		this.dataType = 'simple';
-
 		//this.set({});
 		
 		this.registerEvent();
+	},
+	doSector:function(d,i){
+		this.doParse(d,i);
+		d.reference = new $.Sector2D(this.get('sector'), this);
+		this.sectors.push(d.reference);
 	},
 	doConfig : function() {
 		$.Pie2D.superclass.doConfig.call(this);
@@ -5101,13 +5243,13 @@ $.Pie2D = $.extend($.Pie, {
 		this.push('sector.radius',this.r)
 		
 		this.data.each(function(d,i){
-			this.doParse(d,i);
-			this.sectors.push(new $.Sector2D(this.get('sector'), this));
+			this.doSector(d,i);
 		},this);
 		
 		this.pushComponent(this.sectors);
 	}
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.Pie3D
 	 * @extend#$.Pie
@@ -5124,7 +5266,6 @@ $.Pie2D = $.extend($.Pie, {
 			 */
 			this.type = 'pie3d';
 			this.dimension = $._3D;
-			this.dataType = 'simple';
 			
 			this.set({
 				 /**
@@ -5139,6 +5280,11 @@ $.Pie2D = $.extend($.Pie, {
 				'drawRow'
 			);
 		},
+		doSector:function(d,i){
+			this.doParse(d,i);
+			d.reference = new $.Sector3D(this.get('sector'), this);
+			this.sectors.push(d.reference);
+		},
 		doConfig:function(){
 			$.Pie3D.superclass.doConfig.call(this);
 			
@@ -5150,14 +5296,14 @@ $.Pie2D = $.extend($.Pie, {
 			this.push('sector.semi_major_axis',this.r);
 			
 			this.data.each(function(d,i){
-				this.doParse(d,i);
-				this.sectors.push(new $.Sector3D(this.get('sector'),this));
+				this.doSector(d,i);
 			},this);
 			
 			this.pushComponent(this.sectors);
 			
 		}
-});/**
+});//@end
+/**
  * @overview this component use for abc
  * @component#$.Column
  * @extend#$.Chart
@@ -5173,20 +5319,28 @@ $.Column = $.extend($.Chart, {
 		$.Column.superclass.configure.call(this);
 
 		this.type = 'column';
-
+		this.dataType = 'simple';
 		this.set({
+			/**
+			 * @cfg {Object} the option for coordinate
+			 */
 			coordinate : {},
+			/**
+			 * @cfg {Number} the width of each column(default to calculate according to coordinate's width)
+			 */
 			hiswidth : undefined,
-			shadow : true,
+			/**
+			 * @cfg {Number} the distance of column's bottom and text(default to 6)
+			 */
 			text_space : 6,
 			/**
-			 * @cfg {String} Available value are:
+			 * @cfg {String} the align of scale(default to 6) Available value are:
 			 * @Option 'left'
 			 * @Option 'right'
 			 */
 			keduAlign : 'left',
 			/**
-			 * @cfg {Object}
+			 * @inner {Object} the option for label
 			 * @extend $.Chart
 			 * @see $.Chart#label
 			 */
@@ -5194,12 +5348,12 @@ $.Column = $.extend($.Chart, {
 				padding : 5
 			},
 			/**
-			 * @cfg {Boolean}
+			 * @inner {Boolean}
 			 */
 			customize_layout : false
 		});
 
-		this.registerEvent('rectangleover', 'rectanglemouseout', 'rectangleclick', 'parseValue', 'parseText', 'animating');
+		this.registerEvent('rectangleover', 'rectanglemouseout', 'rectangleclick','parseValue','parseText');
 
 		this.rectangles = [];
 		this.labels = [];
@@ -5212,7 +5366,6 @@ $.Column = $.extend($.Chart, {
 			h = Math.ceil(this.animationArithmetic(t, 0, r.height, d));
 			r.push('originy', r.y + (r.height - h));
 			r.push('height', h);
-			this.fireEvent(this, 'animating', [this, r, t, r.heigh, d]);
 			this.labels[i].draw();
 			r.drawRectangle();
 		}
@@ -5228,7 +5381,7 @@ $.Column = $.extend($.Chart, {
 		 * quick config to all rectangle
 		 */
 		this.push('rectangle', $.clone(['customize_layout', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options));
-		
+
 		/**
 		 * register event
 		 */
@@ -5241,7 +5394,9 @@ $.Column = $.extend($.Chart, {
 
 	}
 
-});	/**
+});// @end
+
+	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.Column2D
 	 * @extend#$.Column
@@ -5257,7 +5412,6 @@ $.Column = $.extend($.Chart, {
 			$.Column2D.superclass.configure.call(this);
 			
 			this.type = 'column2d';
-			this.dataType = 'simple';
 			
 			this.set({
 				coordinate:{grid_color:'#c4dede',background_color:'#FEFEFE'}
@@ -5313,7 +5467,6 @@ $.Column = $.extend($.Chart, {
 				
 				text = this.fireString(this,'parseText',[this.data[i],i],text);
 				value = this.fireString(this,'parseValue',[this.data[i],i],value);
-				
 				/**
 				 * x = this.x + space*(i+1) + width*i
 				 */
@@ -5327,6 +5480,7 @@ $.Column = $.extend($.Chart, {
 				this.push('rectangle.background_color',this.data[i].color);
 				this.push('rectangle.id',i);
 				this.rectangles.push(new $.Rectangle2D(this.get('rectangle'),this));
+				
 				this.labels.push(new $.Text({
 					id:i,
 					text:text,
@@ -5340,7 +5494,8 @@ $.Column = $.extend($.Chart, {
 			
 		}
 		
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.Column3D
 	 * @extend#$.Column
@@ -5356,7 +5511,6 @@ $.Column = $.extend($.Chart, {
 			$.Column3D.superclass.configure.call(this);
 			
 			this.type = 'column3d';
-			this.dataType = 'simple';
 			this.dimension = $._3D;
 			
 			this.set({
@@ -5468,13 +5622,10 @@ $.Column = $.extend($.Chart, {
 			}
 			this.pushComponent(this.labels);
 			this.pushComponent(this.rectangles);
-			
-			
-			
-			
 		}
 		
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.ColumnMulti2D
 	 * @extend#$.Column
@@ -5590,8 +5741,8 @@ $.Column = $.extend($.Chart, {
 			this.pushComponent(this.labels);
 			this.pushComponent(this.rectangles);
 		}
-		
-});
+});//@end
+
 	/**
 	 * @overview this component use for abc
 	 * @component#$.Bar
@@ -5608,7 +5759,7 @@ $.Column = $.extend($.Chart, {
 			$.Bar.superclass.configure.call(this);
 			
 			this.type = 'bar';
-			
+			this.dataType = 'simple';
 			this.set({
 				coordinate:{},
 				barheight:undefined,
@@ -5683,7 +5834,8 @@ $.Column = $.extend($.Chart, {
 			});
 		}
 		
-});	
+});//@end
+	
 	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.Bar2D
@@ -5700,8 +5852,6 @@ $.Column = $.extend($.Chart, {
 			$.Bar2D.superclass.configure.call(this);
 			
 			this.type = 'bar2d';
-			
-			this.dataType = 'simple';
 			
 			this.set({
 				coordinate:{grid_color:'#CDCDCD',background_color:'#FEFEFE'}
@@ -5787,7 +5937,8 @@ $.Column = $.extend($.Chart, {
 			
 		}
 		
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.BarMulti2D
 	 * @extend#$.Bar
@@ -5908,7 +6059,8 @@ $.Column = $.extend($.Chart, {
 				this.pushComponent(this.rectangles);
 			}
 			
-	});	/**
+	});//@end
+	/**
 	 * Line ability for real-time show 
 	 * @overview this component use for abc
 	 * @component#$.LineSegment
@@ -6126,9 +6278,9 @@ $.Column = $.extend($.Chart, {
 				return {valid:k};
 			}
 			
-			
 		}
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#$.Line
 	 * @extend#$.Chart
@@ -6258,11 +6410,10 @@ $.Column = $.extend($.Chart, {
 			}else{
 				this.push('segment_style.tip.wrap',this.get('tip.wrap'));
 			}
-			
-			
 		}
 		
-});	/**
+});//@end
+	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.LineBasic2D
 	 * @extend#$.Line
@@ -6356,11 +6507,10 @@ $.Column = $.extend($.Chart, {
 			}
 			this.pushComponent(this.lines);
 			
-						
-			
 		}
 		
-});;(function(){
+});//@end
+;(function(){
 	var Queue = function(T,L){
 		this.T = T;
 		this.line = L;
@@ -6494,8 +6644,9 @@ $.Column = $.extend($.Chart, {
 
 		}
 
-	});
-})();	/**
+	});//@end
+})();
+	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.Area2D
 	 * @extend#$.LineBasic2D
@@ -6531,4 +6682,5 @@ $.Column = $.extend($.Chart, {
 			
 			
 		}
-	});})(iChart);
+	});//@end
+})(iChart);

@@ -17,7 +17,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		this.dataType = 'simple';
 		this.set({
 			/**
-			 * @cfg {Object} the option for coordinate 
+			 * @cfg {Object} the option for coordinate
 			 */
 			coordinate : {},
 			/**
@@ -29,14 +29,13 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			 */
 			text_space : 6,
 			/**
-			 * @cfg {String} the align of scale(default to 6)
-			 * Available value are:
+			 * @cfg {String} the align of scale(default to 6) Available value are:
 			 * @Option 'left'
 			 * @Option 'right'
 			 */
 			keduAlign : 'left',
 			/**
-			 * @inner {Object} the option for label 
+			 * @inner {Object} the option for label
 			 * @extend iChart.Chart
 			 * @see iChart.Chart#label
 			 */
@@ -49,7 +48,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			customize_layout : false
 		});
 
-		this.registerEvent('rectangleover', 'rectanglemouseout', 'rectangleclick');
+		this.registerEvent('rectangleover', 'rectanglemouseout', 'rectangleclick','parseValue','parseText');
 
 		this.rectangles = [];
 		this.labels = [];
@@ -62,7 +61,6 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			h = Math.ceil(this.animationArithmetic(t, 0, r.height, d));
 			r.push('originy', r.y + (r.height - h));
 			r.push('height', h);
-			//this.fireEvent(this, 'animating', [this, r, t, r.heigh, d]);
 			this.labels[i].draw();
 			r.drawRectangle();
 		}
@@ -78,7 +76,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		 * quick config to all rectangle
 		 */
 		this.push('rectangle', iChart.clone(['customize_layout', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options));
-		
+
 		/**
 		 * register event
 		 */
@@ -91,4 +89,4 @@ iChart.Column = iChart.extend(iChart.Chart, {
 
 	}
 
-});//@end
+});// @end
