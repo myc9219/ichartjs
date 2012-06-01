@@ -52,6 +52,11 @@
 		isEventValid:function(e){ 
 			return {valid:iChart.inRange(this.labelx,this.labelx+this.width,e.offsetX)&&iChart.inRange(this.labely,this.labely+this.height,e.offsetY)};
 		},
+		text:function(text){
+			if(text)
+			this.push('text',text);
+			this.width = this.T.measureText(this.get('text'))+this.get('hpadding')+this.get('sign_size')+this.get('sign_space');
+		},
 		doDraw:function(opts){
 			opts = opts || {};
 			if(opts.invoke){
@@ -103,7 +108,7 @@
 			this.T.textFont(iChart.getFont(this.get('fontweight'),this.get('fontsize'),this.get('font')));
 			this.height = this.get('line_height')+this.get('vpadding');
 			
-			this.width = this.T.measureText(this.get('text'))+this.get('hpadding')+this.get('sign_size')+this.get('sign_space');
+			this.text();
 			
 			var lcb = this.get('lineCB');
 			if(lcb){

@@ -362,6 +362,7 @@ var iChart_ = (function(window) {//spirit from jquery
 			fuchsia:'rgb(255,0,255)',
 			aqua:'rgb(0,255,255)',
 			green:'rgb(0,128,0)',
+			gray:'rgb(80,80,80)',
 			red:'rgb(255,0,0)',
 			blue:'rgb(0,0,255)',
 			pink:'rgb(255,192,203)',
@@ -798,7 +799,7 @@ var iChart_ = (function(window) {//spirit from jquery
 			/**
 			 * static variable
 			 */
-			FRAME:20,
+			FRAME:24,
 			INTERVAL:30,
 			DefaultAnimationArithmetic:'Cubic'
 		});

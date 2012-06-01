@@ -36,8 +36,8 @@
 				//console.profile('ABC');
 				 pie2d = new iChart.Pie2D({
 					render : 'myCanvas',
-					//animation:true,
-					//shadow:false,
+					animation:true,
+					//shadow:true,
 					data: data,
 					legend : {
 						enable : true,
@@ -67,7 +67,12 @@
 			var NO_INDEX = 1,i=0;
 			function add(){
 				NO_INDEX++;
-				pie2d.add({name : '美国'+i,value : Math.round(Math.random()*100+20),color:iChart.get(NO_INDEX)});
+				pie2d.add({name : '美国'+i,value : Math.round(Math.random()*100+20),color:iChart.get(NO_INDEX)},false);
+			}
+
+			function add1(){
+				NO_INDEX++;
+				pie2d.add({name : '美国'+i,value : Math.round(Math.random()*100+20),color:iChart.get(NO_INDEX)},false,true);
 			}
 			
 		</script>
@@ -77,5 +82,6 @@
 		<br>
 		<div id='myCanvas'></div>
 		<div><button onclick="add();">Add a Sector</button></div>
+		<div><button onclick="add1();">Add a Sector with Animation</button></div>
 	</body>
 </html>

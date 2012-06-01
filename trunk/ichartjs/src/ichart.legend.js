@@ -164,7 +164,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		
 		// calculate the each column's width it will used
 		for ( var i = 0; i < c; i++) {
-			width = 0;// 初始化宽度
+			width = 0;
 			suffix = i;
 			while (suffix < L) {
 				width = Math.max(width, this.data[suffix].width);

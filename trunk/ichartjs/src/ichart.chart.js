@@ -848,13 +848,11 @@
 		add:function(data,index,animate){
 			if(this.processAnimation){
 				this.variable.animation.queue.push({handler:'add',arguments:[data,index,animate]});
-				return;
+				return false;
 			}
-			data = $.Interface.parser.call(this,data);
-			if(animate){
-				this.variable.animation.type = 1;
-				this.animation();
-			}
+			iChart.isNumber(index)
+			index = iChart.between(0,this.data.length,index);
+			data = $.Interface.parser.call(this,data,index);
 			
 			if (this.get('legend.enable')) {
 				this.legend.calculate(this.data,data);

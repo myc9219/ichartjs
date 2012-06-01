@@ -102,25 +102,45 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	/**
 	 * @method Add item(s) into the Chart at the given index or not.. This method accepts either a single object of data config or a array of items's config
 	 * @paramter data#Object/Array the data's config
-	 * @paramter index#int The start index at which to add the item.
+	 * @paramter index#int The start index at which to add the item.(default to append)
 	 * @paramter animate#boolean if has a animation when drawing
 	 * @return void
 	 */
 	add:function(data,index,animate){
 		data = iChart.Pie.superclass.add.call(this,data,index,animate);
-		
+		if(!data)return; 
+			
 		this.calculate();
 		
-		this.sectors.each(function(s, i) {
-			s.push('startAngle', this.data[i].startAngle);
-			s.push('middleAngle', this.data[i].middleAngle);
-			s.push('endAngle', this.data[i].endAngle);
-		}, this);
-		
 		data.each(function(d,i){
-			this.doParse(d,i);
-			this.sectors.push(new iChart.Sector2D(this.get('sector'), this));
+			d.new_ = true;
+			this.doSector(d,i);
 		},this);
+		/**
+		 * update index,percent of each sector and angle and so on
+		 */
+		this.data.each(function(d,i){
+			if(d.new_){delete d.new_;}else{
+			var t = d.name + (this.get('showpercent') ? iChart.toPercent(d.value / this.total, this.get('decimalsnum')) : '');
+			
+			if (this.get('label.enable'))
+				d.reference.label.text(this.fireString(this, 'parseLabelText', [d, i], t));
+			
+			if (this.get('tip.enable'))
+				d.reference.tip.text(this.fireString(this, 'parseTipText', [d, i], t));
+			
+			d.reference.id = i;
+			d.reference.push('startAngle', d.startAngle);
+			d.reference.push('middleAngle', d.middleAngle);
+			d.reference.push('endAngle', d.endAngle);
+			d.reference.push('totalAngle', d.endAngle-d.startAngle);
+			}
+		},this);
+		
+		if(animate){
+			this.animation(this);
+			return;
+		}
 		
 		this.draw();
 	},
@@ -130,7 +150,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @return void
 	 */
 	toggle:function(i){
-		this.sectors[i].toggle();
+		this.data[i].reference.toggle();
 	},
 	/**
 	 * @method bound sector
@@ -138,7 +158,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @return void
 	 */
 	bound:function(i){
-		this.sectors[i].bound();
+		this.data[i].reference.bound();
 	},
 	/**
 	 * @method rebound sector
@@ -146,11 +166,12 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @return void
 	 */
 	rebound:function(i){
-		this.sectors[i].rebound();
+		this.data[i].reference.rebound();
 	},
 	doAnimation : function(t, d) {
 		var s, si = 0, cs = this.offsetAngle;
-		this.sectors.each(function(s, i) {
+		this.data.each(function(D, i) {
+			s = D.reference;
 			si = this.animationArithmetic(t, 0, s.get('totalAngle'), d);
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);

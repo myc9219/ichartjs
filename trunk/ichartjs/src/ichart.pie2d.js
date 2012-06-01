@@ -19,6 +19,11 @@ iChart.Pie2D = iChart.extend(iChart.Pie, {
 		
 		this.registerEvent();
 	},
+	doSector:function(d,i){
+		this.doParse(d,i);
+		d.reference = new iChart.Sector2D(this.get('sector'), this);
+		this.sectors.push(d.reference);
+	},
 	doConfig : function() {
 		iChart.Pie2D.superclass.doConfig.call(this);
 		/**
@@ -27,8 +32,7 @@ iChart.Pie2D = iChart.extend(iChart.Pie, {
 		this.push('sector.radius',this.r)
 		
 		this.data.each(function(d,i){
-			this.doParse(d,i);
-			this.sectors.push(new iChart.Sector2D(this.get('sector'), this));
+			this.doSector(d,i);
 		},this);
 		
 		this.pushComponent(this.sectors);

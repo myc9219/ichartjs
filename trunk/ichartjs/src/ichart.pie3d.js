@@ -29,6 +29,11 @@
 				'drawRow'
 			);
 		},
+		doSector:function(d,i){
+			this.doParse(d,i);
+			d.reference = new iChart.Sector3D(this.get('sector'), this);
+			this.sectors.push(d.reference);
+		},
 		doConfig:function(){
 			iChart.Pie3D.superclass.doConfig.call(this);
 			
@@ -40,8 +45,7 @@
 			this.push('sector.semi_major_axis',this.r);
 			
 			this.data.each(function(d,i){
-				this.doParse(d,i);
-				this.sectors.push(new iChart.Sector3D(this.get('sector'),this));
+				this.doSector(d,i);
 			},this);
 			
 			this.pushComponent(this.sectors);
