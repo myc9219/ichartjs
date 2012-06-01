@@ -29,7 +29,8 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			 */
 			text_space : 6,
 			/**
-			 * @cfg {String} the align of scale(default to 6) Available value are:
+			 * @cfg {String} the align of scale(default to 'left')
+			 * Available value are:
 			 * @Option 'left'
 			 * @Option 'right'
 			 */

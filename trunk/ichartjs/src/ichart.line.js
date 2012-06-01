@@ -18,20 +18,30 @@
 			this.dataType='simple';
 				
 			this.set({
+				/**
+				 * @cfg {Object} the option for coordinate
+				 */
 				coordinate:{},
 				/**
-				  *@cfg {String} 
-				  * Available value are:
-				  * @Option 'left,'right'
-			 	 */
+				 * @cfg {String} the align of scale(default to 'left')
+				 * Available value are:
+				 * @Option 'left'
+				 * @Option 'right'
+				 */
 				keduAlign:'left',
 				/**
-				  *@cfg {String} 
+				  *@cfg {String} the align of label(default to 'bottom')
 				  * Available value are:
 				  * @Option 'top,'bottom'
 			 	 */
 				labelAlign:'bottom',
+				/**
+				  *@cfg {Array} the array of labels close to the axis
+			 	 */
 				labels:[],
+				/**
+				 * @cfg {Number} the distance of column's bottom and text(default to 6)
+				 */
 				label_space:6,
 				/**
 				 *@cfg {Boolean} Can Line smooth?
