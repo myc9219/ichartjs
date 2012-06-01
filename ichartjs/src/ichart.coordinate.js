@@ -103,7 +103,7 @@
 					sa=this.get('scaleAlign'),
 					ta=this.get('textAlign'),
 					ts=this.get('text_space');
-				if(this.isHorizontal){
+				if(this.isH){
 					if(sa=='top'){
 						y = -w;
 					}else if(sa=='center'){
@@ -195,13 +195,13 @@
 						
 				this.T.textFont(this.get('fontStyle'));
 				this.push('which',this.get('which').toLowerCase());
-				this.isHorizontal = this.get('which')=='h';
+				this.isH = this.get('which')=='h';
 				
 				//有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
 				for(var i=0;i<=this.number;i++){
 					text = customLabel?this.get('labels')[i]:(scale*i+start_scale).toFixed(this.get('decimalsnum'));
-					x = this.isHorizontal?this.get('valid_x')+i*this.get('distanceOne'):this.x;
-					y = this.isHorizontal?this.y:this.get('valid_y')+this.get('distance')-i*this.get('distanceOne');
+					x = this.isH?this.get('valid_x')+i*this.get('distanceOne'):this.x;
+					y = this.isH?this.y:this.get('valid_y')+this.get('distance')-i*this.get('distanceOne');
 					this.items.push(iChart.merge({text:text,x:x,y:y,textX:x,textY:y},this.fireEvent(this,'parseText',[text,x,y,i])));
 					maxwidth = Math.max(maxwidth,this.T.measureText(text));
 				}
@@ -214,7 +214,7 @@
 				w = this.get('scale_width'),
 				w2 = w/2;
 				
-				if(this.isHorizontal){
+				if(this.isH){
 					if(sa=='top'){
 						this.top = w;
 					}else if(sa=='center'){
