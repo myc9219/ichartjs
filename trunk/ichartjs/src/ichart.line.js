@@ -44,7 +44,7 @@
 				 */
 				label_space:6,
 				/**
-				 *@cfg {Boolean} Can Line smooth?
+				 *@cfg {Boolean} Can Line smooth?now has unavailable
 				 */
 				smooth:false,
 				/**
@@ -52,40 +52,26 @@
 				 */
 				proportional_spacing:true,
 				/**
-				 * @cfg {TypeName}  need named ???
+				 * @inner {Number} the space of each label
 				 */
 				label_spacing:0,
-				segment_style:{
-					 /**
-					 *@cfg {Boolean} if the label displayed (default to true)
-					 */
-					label:false
-				},
+				/**
+				 * @cfg {Object} the option for linesegment
+				 */
+				segment_style:{},
 				/**
 				 *@cfg {Boolean} if the tip displayed (default to false).Note that this option only applies when showPoint = true. 
 				 */
 				tip:{
 					enable:false
 				},
+				/**
+				 * {Object} the option for legend
+				 */
 				legend:{
 					sign:'round-bar',
 				 	sign_size:14
-				},
-				/**
-				 *@cfg {Boolean} if the crosshair displayed (default to false). 
-				 */
-				crosshair:false,
-				/**
-				 *@cfg {Object} style of the crosshair. 
-				 */
-				crosshair_style:{
-					width:1,
-					color:'blank'
-				},
-				/**
-				 *@cfg {Boolean} 
-				 */
-				customize_layout:false
+				}
 			});
 			
 			this.registerEvent(
