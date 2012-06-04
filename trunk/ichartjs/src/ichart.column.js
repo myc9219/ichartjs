@@ -44,9 +44,9 @@ iChart.Column = iChart.extend(iChart.Chart, {
 				padding : 5
 			},
 			/**
-			 * @inner {Boolean}
+			 * @cfg {Object} the option for rectangle
 			 */
-			customize_layout : false
+			rectangle:{}
 		});
 
 		this.registerEvent('rectangleover', 'rectanglemouseout', 'rectangleclick','parseValue','parseText');

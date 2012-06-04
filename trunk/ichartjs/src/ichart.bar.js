@@ -17,18 +17,26 @@
 			this.type = 'bar';
 			this.dataType = 'simple';
 			this.set({
+				/**
+				 * @cfg {Object} the option for coordinate
+				 */
 				coordinate:{},
+				/**
+				 * @cfg {Number} the width of each bar(default to calculate according to coordinate's height)
+				 */
 				barheight:undefined,
-				shadow:true,
+				/**
+				 * @cfg {Number} the distance of column's bottom and text(default to 6)
+				 */
 				text_space:6,
 				/**
-				  *@cfg {String} 
+				  *@cfg {String} the align of scale(default to 'bottom')
 				  * Available value are:
 				  * @Option 'top,'bottom'
 			 	 */
 				keduAlign:'bottom',
 				/**
-				 *@cfg {Object} 
+				 *@cfg {Object}  the option for label
 				 *@extend iChart.Chart
 				 *@see iChart.Chart#label
 				 */
@@ -36,9 +44,8 @@
 					padding:5
 				},
 				/**
-				 *@cfg {Boolean} 
+				 * @cfg {Object} the option for rectangle
 				 */
-				customize_layout:false,
 				rectangle:{}
 			});
 			

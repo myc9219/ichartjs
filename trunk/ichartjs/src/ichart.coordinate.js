@@ -1,7 +1,6 @@
 	/**
 	 * @overview
 	 * this is inner use for axis
-	 * 用于坐标系上坐标刻度的配置
 	 * @component#iChart.KeDu
 	 * @extend#iChart.Component
 	 */
@@ -30,10 +29,23 @@
 					 * @inner {Number}
 					 */
 					 distance:undefined,
+					 /**
+					 * @cfg {Number} the start coordinate scale value.(default to 0)
+					 */
 					 start_scale:0,
+					 /**
+					 * @cfg {Number} the end coordinate scale value.Note either this or property of max_scale must be has the given value.(default to undefined)
+					 */
 					 end_scale:undefined,
+					 /**
+					 * @inner {Number} the chart's minimal value
+					 */
 					 min_scale:undefined,
+					 /**
+					 * @inner {Number} the chart's maximal value
+					 */
 					 max_scale:undefined,
+					 
 					 scale:undefined,
 					 scale_share:5,
 					 /**
@@ -48,7 +60,7 @@
 					 /**
 					  * @cfg {Boolean} indicate whether the grid is accord with kedu
 					  */
-					 kedu2grid:true,
+					 scale2grid:true,
 					 text_height:16,
 					 text_space:4,
 					 textAlign:'left',
@@ -274,9 +286,9 @@
 				 gridlinesVisible:true,
 				 /**
 				  * @cfg {Boolean} indicate whether the grid is accord with kedu,on the premise of grids is not specify.
-				  * this just give a convenient way bulid grid for default.and actual value depend on kedu's kedu2grid
+				  * this just give a convenient way bulid grid for default.and actual value depend on kedu's scale2grid
 				  */
-				 kedu2grid:true,
+				 scale2grid:true,
 				 /**
 				  * @cfg {Object} this is  grid config for custom.the detailed like this:
 				  * way:the manner calculate grid-line (default to 'share_alike')
@@ -464,7 +476,7 @@
 				w = this.get('width'),
 				vw = this.get('valid_width'),
 				vh = this.get('valid_height'),
-				k2g = this.get('gridlinesVisible')&&this.get('kedu2grid')&&!(hg&&vg),
+				k2g = this.get('gridlinesVisible')&&this.get('scale2grid')&&!(hg&&vg),
 				sw =(w - vw)/2;
 				sh =(h - vh)/2,
 				axis = this.get('axis.width');
@@ -529,8 +541,8 @@
 				var kedu,x,y;
  				for(var i=0;i<this.kedu.length;i++){
  					kedu = this.kedu[i];
- 					//disable,given specfiy grid will ignore kedu2grid 
- 					if(iChart.isFalse(kedu.get('kedu2grid'))||hg&&kedu.get('which') == 'v'||vg&&kedu.get('which') == 'h'){
+ 					//disable,given specfiy grid will ignore scale2grid 
+ 					if(iChart.isFalse(kedu.get('scale2grid'))||hg&&kedu.get('which') == 'v'||vg&&kedu.get('which') == 'h'){
  						continue;
 		 					}
  					x = y = 0;
