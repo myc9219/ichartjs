@@ -3567,7 +3567,7 @@ $.Legend = $.extend($.Component, {
 					 /**
 					  * @cfg {Boolean} indicate whether the grid is accord with kedu
 					  */
-					 kedu2grid:true,
+					 scale2grid:true,
 					 text_height:16,
 					 text_space:4,
 					 textAlign:'left',
@@ -3793,9 +3793,9 @@ $.Legend = $.extend($.Component, {
 				 gridlinesVisible:true,
 				 /**
 				  * @cfg {Boolean} indicate whether the grid is accord with kedu,on the premise of grids is not specify.
-				  * this just give a convenient way bulid grid for default.and actual value depend on kedu's kedu2grid
+				  * this just give a convenient way bulid grid for default.and actual value depend on kedu's scale2grid
 				  */
-				 kedu2grid:true,
+				 scale2grid:true,
 				 /**
 				  * @cfg {Object} this is  grid config for custom.the detailed like this:
 				  * way:the manner calculate grid-line (default to 'share_alike')
@@ -3976,7 +3976,7 @@ $.Legend = $.extend($.Component, {
 				w = this.get('width'),
 				vw = this.get('valid_width'),
 				vh = this.get('valid_height'),
-				k2g = this.get('gridlinesVisible')&&this.get('kedu2grid')&&!(hg&&vg),
+				k2g = this.get('gridlinesVisible')&&this.get('scale2grid')&&!(hg&&vg),
 				sw =(w - vw)/2;
 				sh =(h - vh)/2,
 				axis = this.get('axis.width');
@@ -4041,8 +4041,8 @@ $.Legend = $.extend($.Component, {
 				var kedu,x,y;
  				for(var i=0;i<this.kedu.length;i++){
  					kedu = this.kedu[i];
- 					//disable,given specfiy grid will ignore kedu2grid 
- 					if($.isFalse(kedu.get('kedu2grid'))||hg&&kedu.get('which') == 'v'||vg&&kedu.get('which') == 'h'){
+ 					//disable,given specfiy grid will ignore scale2grid 
+ 					if($.isFalse(kedu.get('scale2grid'))||hg&&kedu.get('which') == 'v'||vg&&kedu.get('which') == 'h'){
  						continue;
 		 					}
  					x = y = 0;

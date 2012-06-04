@@ -646,6 +646,9 @@
 
 			this.set({
 				render : '',
+				/**
+				 * @cfg {Array} Required array of Chart.must be not empty
+				 */
 				data : [],
 				/**
 				 * @cfg {Number} the width of this canvas
@@ -929,8 +932,9 @@
 			/**
 			 * default should to calculate the size of warp?
 			 */
-			this.width = this.push('width', this.get('width') || 400);
-			this.height = this.push('height', this.get('height') || 300);
+			this.width = this.pushIf('width',400);
+			this.height = this.pushIf('height',300);
+			
 			var style = "width:" + this.width + "px;height:" + this.height + "px;padding:0px;overflow:hidden;position:relative;";
 
 			var id = $.iGather(this.type);

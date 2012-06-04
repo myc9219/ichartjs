@@ -16,9 +16,7 @@
 			
 			this.type = 'bar2d';
 			
-			this.set({
-				coordinate:{grid_color:'#CDCDCD',background_color:'#FEFEFE'}
-			});
+			//this.set({});
 		},
 		doConfig:function(){
 			iChart.Bar2D.superclass.doConfig.call(this);

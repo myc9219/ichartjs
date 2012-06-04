@@ -17,14 +17,20 @@
 			this.dimension = iChart._3D;
 			
 			this.set({
+				/**
+				 * @cfg {Number} Three-dimensional rotation X.unit is degree(angle).socpe{0-90}(default to 60)
+				 */
 				xAngle:60,
+				/**
+				 * @cfg {Number} Three-dimensional rotation Y.unit is degree(angle).socpe{0-90}(default to 20)
+				 */
 				yAngle:20,
 				/**
-				 * 矩形z轴的深度系数-宽度为参照物
+				 * @cfg {Number} Three-dimensional z-axis deep factor.frame of reference is width(default to 1)
 				 */
 				zScale:1,
 				/**
-				 * 坐标z轴的底座深度系数-宽度为参照物 must ge 1
+				 * @cfg {Number} Three-dimensional z-axis deep factor of pedestal.frame of reference is width(default to 1.4)
 				 */
 				bottom_scale:1.4
 			});

@@ -15,9 +15,7 @@
 			
 			this.type = 'column2d';
 			
-			this.set({
-				coordinate:{grid_color:'#c4dede',background_color:'#FEFEFE'}
-			});
+			//this.set({});
 		},
 		doConfig:function(){
 			iChart.Column2D.superclass.doConfig.call(this);
