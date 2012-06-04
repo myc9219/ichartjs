@@ -2993,6 +2993,9 @@ $.Legend = $.extend($.Component, {
 
 			this.set({
 				render : '',
+				/**
+				 * @cfg {Array} Required array of Chart.must be not empty
+				 */
 				data : [],
 				/**
 				 * @cfg {Number} the width of this canvas
@@ -3276,8 +3279,9 @@ $.Legend = $.extend($.Component, {
 			/**
 			 * default should to calculate the size of warp?
 			 */
-			this.width = this.push('width', this.get('width') || 400);
-			this.height = this.push('height', this.get('height') || 300);
+			this.width = this.pushIf('width',400);
+			this.height = this.pushIf('height',300);
+			
 			var style = "width:" + this.width + "px;height:" + this.height + "px;padding:0px;overflow:hidden;position:relative;";
 
 			var id = $.iGather(this.type);
@@ -3520,7 +3524,6 @@ $.Legend = $.extend($.Component, {
 	/**
 	 * @overview
 	 * this is inner use for axis
-	 * 用于坐标系上坐标刻度的配置
 	 * @component#$.KeDu
 	 * @extend#$.Component
 	 */
@@ -3549,11 +3552,24 @@ $.Legend = $.extend($.Component, {
 					 * @inner {Number}
 					 */
 					 distance:undefined,
+					 /**
+					 * @cfg {Number} the start coordinate scale value.(default to 0)
+					 */
 					 start_scale:0,
+					 /**
+					 * @cfg {Number} the end coordinate scale value.Note either this or property of max_scale must be has the given value.(default to undefined)
+					 */
 					 end_scale:undefined,
+					 /**
+					 * @inner {Number} the chart's minimal value
+					 */
 					 min_scale:undefined,
+					 /**
+					 * @inner {Number} the chart's maximal value
+					 */
 					 max_scale:undefined,
-					 scale:undefined,
+					 
+					 scale_space:undefined,
 					 scale_share:5,
 					 /**
 					  *@cfg {Boolean} 是否显示刻度
@@ -3622,7 +3638,7 @@ $.Legend = $.extend($.Component, {
 					sa=this.get('scaleAlign'),
 					ta=this.get('textAlign'),
 					ts=this.get('text_space');
-				if(this.isHorizontal){
+				if(this.isH){
 					if(sa=='top'){
 						y = -w;
 					}else if(sa=='center'){
@@ -3676,7 +3692,7 @@ $.Legend = $.extend($.Component, {
 				var customLabel = this.get('labels').length,
 					min_scale = this.get('min_scale'),
 					max_scale = this.get('max_scale'),
-					scale = this.get('scale'),
+					scale_space = this.get('scale_space'),
 					end_scale = this.get('end_scale'),
 					start_scale = this.get('start_scale');
 				
@@ -3695,13 +3711,13 @@ $.Legend = $.extend($.Component, {
 						this.push('start_scale',$.floor(min_scale));
 					}
 					
-					if(scale&&scale<end_scale-start_scale){
-						this.push('scale_share',(end_scale-start_scale)/scale);
+					if(scale_space&&scale_space<end_scale-start_scale){
+						this.push('scale_share',(end_scale-start_scale)/scale_space);
 					}
 					
 					//value of each scale
-					if(!scale||scale>end_scale-start_scale){
-						scale = this.push('scale',(end_scale-start_scale)/this.get('scale_share'));
+					if(!scale_space||scale_space>end_scale-start_scale){
+						scale_space = this.push('scale',(end_scale-start_scale)/this.get('scale_share'));
 					}
 					
 					this.number = this.get('scale_share');
@@ -3714,13 +3730,13 @@ $.Legend = $.extend($.Component, {
 						
 				this.T.textFont(this.get('fontStyle'));
 				this.push('which',this.get('which').toLowerCase());
-				this.isHorizontal = this.get('which')=='h';
+				this.isH = this.get('which')=='h';
 				
 				//有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
 				for(var i=0;i<=this.number;i++){
-					text = customLabel?this.get('labels')[i]:(scale*i+start_scale).toFixed(this.get('decimalsnum'));
-					x = this.isHorizontal?this.get('valid_x')+i*this.get('distanceOne'):this.x;
-					y = this.isHorizontal?this.y:this.get('valid_y')+this.get('distance')-i*this.get('distanceOne');
+					text = customLabel?this.get('labels')[i]:(scale_space*i+start_scale).toFixed(this.get('decimalsnum'));
+					x = this.isH?this.get('valid_x')+i*this.get('distanceOne'):this.x;
+					y = this.isH?this.y:this.get('valid_y')+this.get('distance')-i*this.get('distanceOne');
 					this.items.push($.merge({text:text,x:x,y:y,textX:x,textY:y},this.fireEvent(this,'parseText',[text,x,y,i])));
 					maxwidth = Math.max(maxwidth,this.T.measureText(text));
 				}
@@ -3733,7 +3749,7 @@ $.Legend = $.extend($.Component, {
 				w = this.get('scale_width'),
 				w2 = w/2;
 				
-				if(this.isHorizontal){
+				if(this.isH){
 					if(sa=='top'){
 						this.top = w;
 					}else if(sa=='center'){
@@ -3831,6 +3847,13 @@ $.Legend = $.extend($.Component, {
 				 crosshair:{
 					enable:false
 				 },
+				 /**
+				  *@cfg {Object} style of the crosshair. .Note that this option only applies when crosshair.enable = true.
+				 */
+				crosshair_style:{
+					width:1,
+					color:'blank'
+				},
 				 width:undefined,
 				 height:undefined,
 				 /**
@@ -5334,7 +5357,8 @@ $.Column = $.extend($.Chart, {
 			 */
 			text_space : 6,
 			/**
-			 * @cfg {String} the align of scale(default to 6) Available value are:
+			 * @cfg {String} the align of scale(default to 'left')
+			 * Available value are:
 			 * @Option 'left'
 			 * @Option 'right'
 			 */
@@ -5348,9 +5372,9 @@ $.Column = $.extend($.Chart, {
 				padding : 5
 			},
 			/**
-			 * @inner {Boolean}
+			 * @cfg {Object} the option for rectangle
 			 */
-			customize_layout : false
+			rectangle:{}
 		});
 
 		this.registerEvent('rectangleover', 'rectanglemouseout', 'rectangleclick','parseValue','parseText');
@@ -5413,9 +5437,7 @@ $.Column = $.extend($.Chart, {
 			
 			this.type = 'column2d';
 			
-			this.set({
-				coordinate:{grid_color:'#c4dede',background_color:'#FEFEFE'}
-			});
+			//this.set({});
 		},
 		doConfig:function(){
 			$.Column2D.superclass.doConfig.call(this);
@@ -5514,14 +5536,20 @@ $.Column = $.extend($.Chart, {
 			this.dimension = $._3D;
 			
 			this.set({
+				/**
+				 * @cfg {Number} Three-dimensional rotation X.unit is degree(angle).socpe{0-90}(default to 60)
+				 */
 				xAngle:60,
+				/**
+				 * @cfg {Number} Three-dimensional rotation Y.unit is degree(angle).socpe{0-90}(default to 20)
+				 */
 				yAngle:20,
 				/**
-				 * 矩形z轴的深度系数-宽度为参照物
+				 * @cfg {Number} Three-dimensional z-axis deep factor.frame of reference is width(default to 1)
 				 */
 				zScale:1,
 				/**
-				 * 坐标z轴的底座深度系数-宽度为参照物 must ge 1
+				 * @cfg {Number} Three-dimensional z-axis deep factor of pedestal.frame of reference is width(default to 1.4)
 				 */
 				bottom_scale:1.4
 			});
@@ -5761,18 +5789,26 @@ $.Column = $.extend($.Chart, {
 			this.type = 'bar';
 			this.dataType = 'simple';
 			this.set({
+				/**
+				 * @cfg {Object} the option for coordinate
+				 */
 				coordinate:{},
+				/**
+				 * @cfg {Number} the width of each bar(default to calculate according to coordinate's height)
+				 */
 				barheight:undefined,
-				shadow:true,
+				/**
+				 * @cfg {Number} the distance of column's bottom and text(default to 6)
+				 */
 				text_space:6,
 				/**
-				  *@cfg {String} 
+				  *@cfg {String} the align of scale(default to 'bottom')
 				  * Available value are:
 				  * @Option 'top,'bottom'
 			 	 */
 				keduAlign:'bottom',
 				/**
-				 *@cfg {Object} 
+				 *@cfg {Object}  the option for label
 				 *@extend $.Chart
 				 *@see $.Chart#label
 				 */
@@ -5780,9 +5816,8 @@ $.Column = $.extend($.Chart, {
 					padding:5
 				},
 				/**
-				 *@cfg {Boolean} 
+				 * @cfg {Object} the option for rectangle
 				 */
-				customize_layout:false,
 				rectangle:{}
 			});
 			
@@ -5853,9 +5888,7 @@ $.Column = $.extend($.Chart, {
 			
 			this.type = 'bar2d';
 			
-			this.set({
-				coordinate:{grid_color:'#CDCDCD',background_color:'#FEFEFE'}
-			});
+			//this.set({});
 		},
 		doConfig:function(){
 			$.Bar2D.superclass.doConfig.call(this);
@@ -5957,9 +5990,8 @@ $.Column = $.extend($.Chart, {
 				
 				this.dataType = 'complex';
 				
-				this.set({
-					
-				});
+				//this.set({});
+				
 				//this.registerEvent();
 				this.columns = [];
 			},
@@ -6300,23 +6332,33 @@ $.Column = $.extend($.Chart, {
 			this.dataType='simple';
 				
 			this.set({
+				/**
+				 * @cfg {Object} the option for coordinate
+				 */
 				coordinate:{},
 				/**
-				  *@cfg {String} 
-				  * Available value are:
-				  * @Option 'left,'right'
-			 	 */
+				 * @cfg {String} the align of scale(default to 'left')
+				 * Available value are:
+				 * @Option 'left'
+				 * @Option 'right'
+				 */
 				keduAlign:'left',
 				/**
-				  *@cfg {String} 
+				  *@cfg {String} the align of label(default to 'bottom')
 				  * Available value are:
 				  * @Option 'top,'bottom'
 			 	 */
 				labelAlign:'bottom',
+				/**
+				  *@cfg {Array} the array of labels close to the axis
+			 	 */
 				labels:[],
+				/**
+				 * @cfg {Number} the distance of column's bottom and text(default to 6)
+				 */
 				label_space:6,
 				/**
-				 *@cfg {Boolean} Can Line smooth?
+				 *@cfg {Boolean} Can Line smooth?now has unavailable
 				 */
 				smooth:false,
 				/**
@@ -6324,40 +6366,26 @@ $.Column = $.extend($.Chart, {
 				 */
 				proportional_spacing:true,
 				/**
-				 * @cfg {TypeName}  need named ???
+				 * @inner {Number} the space of each label
 				 */
 				label_spacing:0,
-				segment_style:{
-					 /**
-					 *@cfg {Boolean} if the label displayed (default to true)
-					 */
-					label:false
-				},
+				/**
+				 * @cfg {Object} the option for linesegment
+				 */
+				segment_style:{},
 				/**
 				 *@cfg {Boolean} if the tip displayed (default to false).Note that this option only applies when showPoint = true. 
 				 */
 				tip:{
 					enable:false
 				},
+				/**
+				 * {Object} the option for legend
+				 */
 				legend:{
 					sign:'round-bar',
 				 	sign_size:14
-				},
-				/**
-				 *@cfg {Boolean} if the crosshair displayed (default to false). 
-				 */
-				crosshair:false,
-				/**
-				 *@cfg {Object} style of the crosshair. 
-				 */
-				crosshair_style:{
-					width:1,
-					color:'blank'
-				},
-				/**
-				 *@cfg {Boolean} 
-				 */
-				customize_layout:false
+				}
 			});
 			
 			this.registerEvent(

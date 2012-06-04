@@ -41,17 +41,17 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			 */
 			color : 'black',
 			/**
-			 * @cfg {Number} Horizontal offset(x-axis) in pixel.(default to 0)
+			 * @cfg {Number} Specifies Horizontal offset(x-axis) in pixel.(default to 0)
 			 */
 			offsetx : 0,
 			/**
-			 * @cfg {Number}Vertical distance (y-axis) in pixel.(default to 0)
+			 * @cfg {Number}Specifies Vertical distance (y-axis) in pixel.(default to 0)
 			 */
 			offsety : 0,
 			/**
 			 * @cfg {String} Specifies the backgroundColor for this element.(defaults to 'FDFDFD')
 			 */
-			background_color : '#FDFDFD',
+			background_color : '#FFFFFF',
 			/**
 			 * @cfg {float} The factor make color dark or light for this element.(0.01 - 0.5).(defaults to '0.15')
 			 */
