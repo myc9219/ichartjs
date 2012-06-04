@@ -30,46 +30,89 @@
 					 */
 					 distance:undefined,
 					 /**
-					 * @cfg {Number} the start coordinate scale value.(default to 0)
+					 * @cfg {Number} Specifies the start coordinate scale value.(default to 0)
 					 */
 					 start_scale:0,
 					 /**
-					 * @cfg {Number} the end coordinate scale value.Note either this or property of max_scale must be has the given value.(default to undefined)
+					 * @cfg {Number} Specifies the end coordinate scale value.Note either this or property of max_scale must be has the given value.(default to undefined)
 					 */
 					 end_scale:undefined,
 					 /**
-					 * @inner {Number} the chart's minimal value
+					 * @inner {Number} Specifies the chart's minimal value
 					 */
 					 min_scale:undefined,
 					 /**
-					 * @inner {Number} the chart's maximal value
+					 * @inner {Number} Specifies the chart's maximal value
 					 */
 					 max_scale:undefined,
-					 
-					 scale:undefined,
+					 /**
+					  * @cfg {Number} Specifies the space of two scale.Note either this or property of scale_share must be has the given value.(default to undefined)
+					  */
+					 scale_space:undefined,
+					 /**
+					  * @cfg {Number} Specifies the number of scale on axis.(default to 5)
+					  */
 					 scale_share:5,
 					 /**
-					  *@cfg {Boolean} 是否显示刻度
+					  *@cfg {Boolean} True to display the scale line.(default to true) 
 				 	  */
-					 scale_line_enable:true,
+					 scale_enable:true,
+					 /**
+					  * @cfg {Number} Specifies the size of brush(context.linewidth).(default to 1)
+					  */
 					 scale_size:1,
+					 /**
+					  * @cfg {Number} Specifies the width(length) of scale.(default to 4)
+					  */
 					 scale_width:4,
+					 /**
+					  * @cfg {String} Specifies the color of scale.(default to 4)
+					  */
 					 scale_color:'#333333',
+					 /**
+					  * @cfg {String} Specifies the align against axis.(default to 'center')
+					  * When the property of which set to 'h',Available value are:
+					  * @Option 'left'
+					  * @Option 'center'
+					  * @Option 'right'
+					  * When the property of which set to 'v', Available value are:
+					  * @Option 'top'
+					  * @Option 'center'
+					  * @Option 'bottom'
+					  */
 					 scaleAlign:'center',
+					 /**
+					 * @cfg {Array} the customize labels
+					 */
 					 labels:[],
 					 /**
-					  * @cfg {Boolean} indicate whether the grid is accord with kedu
+					  * @cfg {Boolean} True to Indicate the grid is accord with scale
 					  */
 					 scale2grid:true,
+					 /**
+					  *@cfg {Number} Specifies the lineheight when text display multiline.(default to 16)
+				 	  */
 					 text_height:16,
+					 /**
+					  *@cfg {Number} Specifies the distance to scale.(default to 4)
+				 	  */
 					 text_space:4,
+					 /**
+					  * @cfg {String} Specifies the align against axis.(default to 'left' or 'bottom' in v mode)
+					  * When the property of which set to 'h',Available value are:
+					  * @Option 'left'
+					  * @Option 'right'
+					  * When the property of which set to 'v', Available value are:
+					  * @Option 'top'
+					  * @Option 'bottom'
+					  */
 					 textAlign:'left',
 					 /**
-					  *@cfg {Number} 显示百分比精确小数点位数
-				 	  */
+					 * @cfg {Number} Specify the number of decimal.(default to 1)
+					 */
 					 decimalsnum:0,
 					 /**
-					  * @cfg {String} the style of overlapping(default to 'none')
+					  * @inner {String} the style of overlapping(default to 'none')
 					  * Available value are:
 					  * @Option 'square'
 					  * @Option 'round'
@@ -77,12 +120,9 @@
 					 */
 					 join_style:'none',
 					 /**
-					  *@cfg {Number}
+					  *@inner {Number}
 					 */
-					 join_size:2,
-					 label:'',
-					 label_position:''
-					 
+					 join_size:2
 				});
 				
 				this.registerEvent(
@@ -156,7 +196,7 @@
 				this.T.textFont(this.get('fontStyle'));
 				
 				for(var i =0;i<this.items.length;i++){
-					if(this.get('scale_line_enable'))
+					if(this.get('scale_enable'))
 					this.T.line(this.items[i].x+x,this.items[i].y+y,this.items[i].x+x0,this.items[i].y+y0,this.get('scale_size'),this.get('scale_color'),false);
 					
 					this.T.fillText(this.items[i].text,this.items[i].textX+tx,this.items[i].textY+ty,false,this.get('color'),'lr',this.get('text_height'));
@@ -169,7 +209,7 @@
 				var customLabel = this.get('labels').length,
 					min_scale = this.get('min_scale'),
 					max_scale = this.get('max_scale'),
-					scale = this.get('scale'),
+					scale_space = this.get('scale_space'),
 					end_scale = this.get('end_scale'),
 					start_scale = this.get('start_scale');
 				
@@ -188,13 +228,13 @@
 						this.push('start_scale',iChart.floor(min_scale));
 					}
 					
-					if(scale&&scale<end_scale-start_scale){
-						this.push('scale_share',(end_scale-start_scale)/scale);
+					if(scale_space&&scale_space<end_scale-start_scale){
+						this.push('scale_share',(end_scale-start_scale)/scale_space);
 					}
 					
 					//value of each scale
-					if(!scale||scale>end_scale-start_scale){
-						scale = this.push('scale',(end_scale-start_scale)/this.get('scale_share'));
+					if(!scale_space||scale_space>end_scale-start_scale){
+						scale_space = this.push('scale',(end_scale-start_scale)/this.get('scale_share'));
 					}
 					
 					this.number = this.get('scale_share');
@@ -211,7 +251,7 @@
 				
 				//有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
 				for(var i=0;i<=this.number;i++){
-					text = customLabel?this.get('labels')[i]:(scale*i+start_scale).toFixed(this.get('decimalsnum'));
+					text = customLabel?this.get('labels')[i]:(scale_space*i+start_scale).toFixed(this.get('decimalsnum'));
 					x = this.isH?this.get('valid_x')+i*this.get('distanceOne'):this.x;
 					y = this.isH?this.y:this.get('valid_y')+this.get('distance')-i*this.get('distanceOne');
 					this.items.push(iChart.merge({text:text,x:x,y:y,textX:x,textY:y},this.fireEvent(this,'parseText',[text,x,y,i])));
@@ -276,13 +316,37 @@
 			this.type = 'coordinate2d';
 			
 			this.set({
+				/**
+				 * @inner {Number} 
+				 */
 				 sign_size:12,
+				 /**
+				 * @inner {Number} 
+				 */
 				 sign_space:5,
+				 /**
+				  * @cfg {Array} the option for kedu
+				  */
 				 kedu:[],
+				 /**
+				 * @cfg {Number} Specifies the valid width,less than the width of coordinate.(default same as width)
+				 */
 				 valid_width:undefined,
+				 /**
+				 * @cfg {Number} Specifies the valid height,less than the height of coordinate.(default same as height)
+				 */
 				 valid_height:undefined,
+				 /**
+				 * @cfg {Number} Specifies the linewidth of the grid.(default to 1)
+				 */
 				 grid_line_width:1,
+				 /**
+				 * @cfg {Number} Specifies the color of the grid.(default to '#c4dede')
+				 */
 				 grid_color:'#c4dede',
+				 /**
+				 * @cfg {Boolean}  True to display grid line.(default to true)
+				 */
 				 gridlinesVisible:true,
 				 /**
 				  * @cfg {Boolean} indicate whether the grid is accord with kedu,on the premise of grids is not specify.
@@ -311,15 +375,14 @@
 				  */
 				 grids:undefined,
 				  /**
-				  * @cfg {Boolean} the grid line will be ignored when gird and axis overlap
+				  * @cfg {Boolean} the grid line will be ignored when gird and axis overlap.(default to true)
 				  */
 				 ignoreOverlap:true,
+				 
 				 ignoreEdge:false,
-				 gradient:false,
+				 
 				 ylabel:'',
 				 xlabel:'',
-				 color_factor:0.18,
-				 background_color:'#FEFEFE',
 				 alternate_color:true,
 				 crosshair:{
 					enable:false
@@ -626,9 +689,9 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D,{
 				 pedestal_height:22,
 				 board_deep:20,
 				 gradient:true,
+				 color_factor:0.18,
 				 ignoreEdge:true,
 				 alternate_color:false,
-				 shadow:true,
 				 grid_color:'#7a8d44',
 				 background_color:'#d6dbd2',
 				 shadow_offsetx:4,

@@ -30,7 +30,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			showpercent : true,
 			/**
-			 * @cfg {Number} Specify with percent.(default to 1)
+			 * @cfg {Number} Specify the number of decimal when use percent.(default to 1)
 			 */
 			decimalsnum : 1,
 			/**

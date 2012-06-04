@@ -18,11 +18,11 @@
 			
 			this.set({
 				/**
-				 * @cfg {Number} Three-dimensional rotation X.unit is degree(angle).socpe{0-90}(default to 60)
+				 * @cfg {Number} Three-dimensional rotation X in degree(angle).socpe{0-90}(default to 60)
 				 */
 				xAngle:60,
 				/**
-				 * @cfg {Number} Three-dimensional rotation Y.unit is degree(angle).socpe{0-90}(default to 20)
+				 * @cfg {Number} Three-dimensional rotation Y in degree(angle).socpe{0-90}(default to 20)
 				 */
 				yAngle:20,
 				/**

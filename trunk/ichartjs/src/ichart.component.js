@@ -17,9 +17,9 @@
 	
 			this.set({
 				/**
-				 * @cfg {Boolean} indicate whether there has a effect of color gradient
+				 * @cfg {Boolean} indicate whether there has a effect of color gradient.(default to false)
 				 */
-				gradient : true
+				gradient : false
 			});
 	
 			this.inject(c);
