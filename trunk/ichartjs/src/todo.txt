@@ -7,10 +7,9 @@
 6.配置事件的Doc
 
 
-创意无限:
-画一个ipad,然后在ipad上画charts
-制作一个天平,将筹码放入使其平衡
-立方体上写字
+
+draw a ipad,then draw charts on ipad
+
 
 guitar调音器
 make a draggable bulider-must show a cool animation
