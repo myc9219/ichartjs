@@ -18,21 +18,35 @@
 			this.type = 'crosshair';
 			
 			this.set({
-				 text:'',
+				yAngle_ : undefined,
+				/**
+				 * @inner {Number} Specifies the position top,normally this will given by chart.(default to 0)
+				 */
 				 top:0,
+				 /**
+				 * @inner {Number} Specifies the position left,normally this will given by chart.(default to 0)
+				 */
 				 left:0,
 				 /**
-				  * @cfg {Boolean} private use 
+				  * @inner {Boolean} private use 
 				  */
 				 hcross:true,
 				  /**
-				  * @cfg {Boolean} private use 
+				  * @inner {Boolean} private use 
 				  */
 				 vcross:true,
+				 /**
+				  * @inner {Function} private use 
+				  */
 				 invokeOffset:null,
+				 /**
+				 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
+				 */
 				 line_width:1,
-				 line_color:'green',
-				 shadow_color:'#dedede',
+				 /**
+				 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
+				 */
+				 line_color:'#1a1a1a',
 				 delay:200
 			});
 		},
