@@ -51,9 +51,9 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			/**
 			 * @cfg {String} Specifies the backgroundColor for this element.(defaults to 'FDFDFD')
 			 */
-			background_color : '#FFFFFF',
+			background_color : '#FEFEFE',
 			/**
-			 * @cfg {float} The factor make color dark or light for this element.(0.01 - 0.5).(defaults to '0.15')
+			 * @cfg {float} Specifies the factor make color dark or light for this element,relative to background-color,the bigger the value you set,the larger the color changed.scope{0.01 - 0.5}.(defaults to '0.15')
 			 */
 			color_factor : 0.15,
 			/**

@@ -1,5 +1,4 @@
-;
-(function($) {
+;(function($) {
 
 	var inc = Math.PI / 90, PI = Math.PI, PI2 = 2 * Math.PI, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
 		return w <= 1 ? (Math.floor(c) + 0.5) : Math.floor(c);
