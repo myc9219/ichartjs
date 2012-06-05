@@ -1,129 +1,122 @@
+/**
+ * @overview this component use for abc
+ * @component#iChart.Line
+ * @extend#iChart.Chart
+ */
+iChart.Line = iChart.extend(iChart.Chart, {
 	/**
-	 * @overview this component use for abc
-	 * @component#iChart.Line
-	 * @extend#iChart.Chart
+	 * initialize the context for the line
 	 */
-	iChart.Line = iChart.extend(iChart.Chart,{
+	configure : function() {
 		/**
-		 * initialize the context for the line
+		 * invoked the super class's configuration
 		 */
-		configure:function(){
+		iChart.Line.superclass.configure.call(this);
+
+		this.type = 'line';
+
+		this.dataType = 'simple';
+
+		this.set({
 			/**
-			 * invoked the super class's  configuration
+			 * @cfg {Object} the option for coordinate
 			 */
-			iChart.Line.superclass.configure.call(this);
-			
-			this.type = 'line';
-			
-			this.dataType='simple';
-				
-			this.set({
-				/**
-				 * @cfg {Object} the option for coordinate
-				 */
-				coordinate:{},
-				/**
-				 * @cfg {String} the align of scale(default to 'left')
-				 * Available value are:
-				 * @Option 'left'
-				 * @Option 'right'
-				 */
-				keduAlign:'left',
-				/**
-				  *@cfg {String} the align of label(default to 'bottom')
-				  * Available value are:
-				  * @Option 'top,'bottom'
-			 	 */
-				labelAlign:'bottom',
-				/**
-				  *@cfg {Array} the array of labels close to the axis
-			 	 */
-				labels:[],
-				/**
-				 * @cfg {Number} the distance of column's bottom and text(default to 6)
-				 */
-				label_space:6,
-				/**
-				 *@cfg {Boolean} Can Line smooth?now has unavailable
-				 */
-				smooth:false,
-				/**
-				 *@cfg {Boolean} if the point are proportional space(default to true)
-				 */
-				proportional_spacing:true,
-				/**
-				 * @inner {Number} the space of each label
-				 */
-				label_spacing:0,
-				/**
-				 * @cfg {Object} the option for linesegment
-				 */
-				segment_style:{},
-				/**
-				 *@cfg {Boolean} if the tip displayed (default to false).Note that this option only applies when showPoint = true. 
-				 */
-				tip:{
-					enable:false
-				},
-				/**
-				 * {Object} the option for legend
-				 */
-				legend:{
-					sign:'round-bar',
-				 	sign_size:14
-				}
+			coordinate : {},
+			/**
+			 * @cfg {String} the align of scale.(default to 'left') Available value are:
+			 * @Option 'left'
+			 * @Option 'right'
+			 */
+			keduAlign : 'left',
+			/**
+			 * @cfg {String} the align of label.(default to 'bottom') Available value are:
+			 * @Option 'top,'bottom'
+			 */
+			labelAlign : 'bottom',
+			/**
+			 * @cfg {Array} the array of labels close to the axis
+			 */
+			labels : [],
+			/**
+			 * @cfg {Number} the distance of column's bottom and text.(default to 6)
+			 */
+			label_space : 6,
+			/**
+			 * @cfg {Boolean} Can Line smooth?now has unavailable
+			 */
+			smooth : false,
+			/**
+			 * @cfg {Boolean} if the point are proportional space.(default to true)
+			 */
+			proportional_spacing : true,
+			/**
+			 * @inner {Number} the space of each label
+			 */
+			label_spacing : 0,
+			/**
+			 * @cfg {Object} the option for linesegment
+			 */
+			segment_style : {},
+			/**
+			 * @cfg {Boolean} If the tip displayed.(default enable to false). Note that this option only applies when showPoint = true.
+			 */
+			tip : {
+				enable : false
+			},
+			/**
+			 * {Object} the option for legend.
+			 */
+			legend : {
+				sign : 'round-bar',
+				sign_size : 14
+			}
+		});
+
+		this.registerEvent('parsePoint', 'beforeLineAnimation', 'afterLineAnimation');
+
+		this.lines = [];
+	},
+	doConfig : function() {
+		iChart.Line.superclass.doConfig.call(this);
+
+		/**
+		 * apply the coordinate feature
+		 */
+		iChart.Interface.coordinate.call(this);
+
+		this.push('line_start', (this.get('coordinate.width') - this.get('coordinate.valid_width')) / 2);
+		this.push('line_end', this.get('coordinate.width') - this.get('line_start'));
+
+		if (this.get('proportional_spacing'))
+			this.push('label_spacing', this.get('coordinate.valid_width') / (this.get('maxItemSize') - 1));
+
+		this.push('segment_style.originx', this.get('originx') + this.get('line_start'));
+
+		// NEXT y also has line_start and line end
+	this.push('segment_style.originy', this.get('originy') + this.get('coordinate.height'));
+
+	this.push('segment_style.width', this.get('coordinate.valid_width'));
+	this.push('segment_style.height', this.get('coordinate.valid_height'));
+
+	this.push('segment_style.limit_y', this.data.length > 1);
+
+	this.push('segment_style.keep_with_coordinate', this.data.length == 1);
+
+	var single = this.data.length == 1, self = this;
+
+	if (this.get('coordinate.crosshair.enable')) {
+		this.push('coordinate.crosshair.hcross', single);
+		this.push('coordinate.crosshair.invokeOffset', function(e, m) {
+			var r = self.lines[0].isEventValid(e);// NEXT how fire muti line?
+				return r.valid ? r : false;
 			});
-			
-			this.registerEvent(
-				'parsePoint',
-				'beforeLineAnimation',
-				'afterLineAnimation'
-			);
-			
-			this.lines = [];
-		},
-		doConfig:function(){
-			iChart.Line.superclass.doConfig.call(this);
-			
-			/**
-			 * apply the coordinate feature
-			 */
-			iChart.Interface.coordinate.call(this);
-			
-			this.push('line_start',(this.get('coordinate.width')-this.get('coordinate.valid_width'))/2);
-			this.push('line_end',this.get('coordinate.width')-this.get('line_start'));
-			
-			if(this.get('proportional_spacing'))
-			this.push('label_spacing',this.get('coordinate.valid_width')/(this.get('maxItemSize')-1));
-			
-			
-			this.push('segment_style.originx',this.get('originx')+this.get('line_start'));
-			
-			//NEXT y also has line_start and line end
-			this.push('segment_style.originy',this.get('originy')+this.get('coordinate.height'));
-			
-			this.push('segment_style.width',this.get('coordinate.valid_width'));
-			this.push('segment_style.height',this.get('coordinate.valid_height'));
-			
-			this.push('segment_style.limit_y',this.data.length>1);
-			
-			this.push('segment_style.keep_with_coordinate',true&&this.data.length==1);
-			
-			var single = this.data.length==1,self = this;
-			
-			if(this.get('coordinate.crosshair.enable')){
-				this.push('coordinate.crosshair.hcross',single);
-				this.push('coordinate.crosshair.invokeOffset',function(e,m){
-					var r = self.lines[0].isEventValid(e);//NEXT how fire muti line?
-					return r.valid?r:false;
-				});
-			}
-			
-			if(!this.get('segment_style.tip')){
-				this.push('segment_style.tip',this.get('tip'));
-			}else{
-				this.push('segment_style.tip.wrap',this.get('tip.wrap'));
-			}
-		}
-		
-});//@end
+	}
+
+	if (!this.get('segment_style.tip')) {
+		this.push('segment_style.tip', this.get('tip'));
+	} else {
+		this.push('segment_style.tip.wrap', this.get('tip.wrap'));
+	}
+}
+
+});// @end

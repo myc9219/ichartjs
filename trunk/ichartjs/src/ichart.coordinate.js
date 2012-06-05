@@ -120,15 +120,11 @@ iChart.KeDu = iChart.extend(iChart.Component, {
 
 		this.registerEvent(
 		/**
-		 * @cfg {Function} the event when parse text、you can return a object like this:{text:'',textX:100,textY:100} to override the given Available param are:
-		 * @param text:item's
-		 *            text
-		 * @param textX:coordinate-x
-		 *            of item's text
-		 * @param textY:coordinate-y
-		 *            of item's text
-		 * @param index:item's
-		 *            index (text,x,y,index)
+		 * @event Fires the event when parse text、you can return a object like this:{text:'',textX:100,textY:100} to override the given.
+		 * @paramter string#text item's text
+		 * @paramter int#textX coordinate-x of item's text
+		 * @paramter int#textY coordinate-y of item's text
+		 * @paramter int#index item's index
 		 */
 		'parseText');
 
@@ -181,18 +177,22 @@ iChart.KeDu = iChart.extend(iChart.Component, {
 				tx = -ts;
 			}
 		}
-		// 将上述的配置部分转移到config中?
+		/**
+		 * 将上述的配置部分转移到config中?
+		 */
 
-	// 每一个text的个性化问题?
-	this.T.textFont(this.get('fontStyle'));
+		/**
+		 * 每一个text的个性化问题?
+		 */
+		this.T.textFont(this.get('fontStyle'));
 
-	for ( var i = 0; i < this.items.length; i++) {
-		if (this.get('scale_enable'))
-			this.T.line(this.items[i].x + x, this.items[i].y + y, this.items[i].x + x0, this.items[i].y + y0, this.get('scale_size'), this.get('scale_color'), false);
+		for ( var i = 0; i < this.items.length; i++) {
+			if (this.get('scale_enable'))
+				this.T.line(this.items[i].x + x, this.items[i].y + y, this.items[i].x + x0, this.items[i].y + y0, this.get('scale_size'), this.get('scale_color'), false);
 
-		this.T.fillText(this.items[i].text, this.items[i].textX + tx, this.items[i].textY + ty, false, this.get('color'), 'lr', this.get('text_height'));
-	}
-},
+			this.T.fillText(this.items[i].text, this.items[i].textX + tx, this.items[i].textY + ty, false, this.get('color'), 'lr', this.get('text_height'));
+		}
+	},
 	doConfig : function() {
 		iChart.KeDu.superclass.doConfig.call(this);
 		iChart.Assert.isNumber(this.get('distance'), 'distance');
@@ -204,11 +204,15 @@ iChart.KeDu = iChart.extend(iChart.Component, {
 		} else {
 			iChart.Assert.isTrue(iChart.isNumber(max_scale) || iChart.isNumber(end_scale), 'max_scale&end_scale');
 
-			// end_scale must greater than maxScale
+			/**
+			 * end_scale must greater than maxScale
+			 */
 			if (!end_scale || end_scale < max_scale) {
 				end_scale = this.push('end_scale', iChart.ceil(max_scale));
 			}
-			// startScale must less than minScale
+			/**
+			 * startScale must less than minScale
+			 */
 			if (start_scale > min_scale) {
 				this.push('start_scale', iChart.floor(min_scale));
 			}
@@ -217,7 +221,9 @@ iChart.KeDu = iChart.extend(iChart.Component, {
 				this.push('scale_share', (end_scale - start_scale) / scale_space);
 			}
 
-			// value of each scale
+			/**
+			 * value of each scale
+			 */
 			if (!scale_space || scale_space > end_scale - start_scale) {
 				scale_space = this.push('scale', (end_scale - start_scale) / this.get('scale_share'));
 			}
@@ -225,7 +231,9 @@ iChart.KeDu = iChart.extend(iChart.Component, {
 			this.number = this.get('scale_share');
 		}
 
-		// the real distance of each scale
+		/**
+		 * the real distance of each scale
+		 */
 		this.push('distanceOne', this.get('valid_distance') / this.number);
 
 		var text, maxwidth = 0, x, y;
@@ -234,7 +242,9 @@ iChart.KeDu = iChart.extend(iChart.Component, {
 		this.push('which', this.get('which').toLowerCase());
 		this.isH = this.get('which') == 'h';
 
-		// 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
+		/**
+		 * 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
+		 */
 		for ( var i = 0; i <= this.number; i++) {
 			text = customLabel ? this.get('labels')[i] : (scale_space * i + start_scale).toFixed(this.get('decimalsnum'));
 			x = this.isH ? this.get('valid_x') + i * this.get('distanceOne') : this.x;
@@ -249,8 +259,10 @@ iChart.KeDu = iChart.extend(iChart.Component, {
 			maxwidth = Math.max(maxwidth, this.T.measureText(text));
 		}
 
-		// what does follow code doing?
-				this.left = this.right = this.top = this.bottom = 0, ts = this.get('text_space');
+		/**
+		 * what does follow code doing?
+		 */
+		this.left = this.right = this.top = this.bottom = 0, ts = this.get('text_space');
 		ta = this.get('textAlign');
 		sa = this.get('scaleAlign'), w = this.get('scale_width'), w2 = w / 2;
 
@@ -374,7 +386,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 						enable : false
 					},
 					/**
-					 * @cfg {Object} Specifies style of the crosshair. .Note that this option only applies when crosshair.enable = true.
+					 * @cfg {Object} Specifies style of the crosshair.Note that this option only applies when crosshair.enable = true.
 					 */
 					crosshair_style : {
 						width : 1,
@@ -389,8 +401,10 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					height : undefined,
 					/**
-					 * @cfg {Object} the option for axis of this coordinate. default to : { enable : true, //True to display the axis color : '#666666',//Specifies the color of each axis width : 1 //{Number/Array} Specifies the width of each axis,If given the a array,there must
-					 *      be have have 4 element,like this:[1,0,0,1](top-right-bottom-left) }
+					 * @cfg {Object} the option for axis of this coordinate. Available property are:
+					 * @Option enable {Boolean} True to display the axis.(default to true)
+					 * @Option color {String} Specifies the color of each axis.(default to '#666666')
+					 * @Option width {Number/Array} Specifies the width of each axis, If given the a array,there must be have have 4 element, like this:[1,0,0,1](top-right-bottom-left).(default to 1)
 					 */
 					axis : {
 						enable : true,
@@ -665,17 +679,17 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 
 		this.set({
 			/**
-			 * @cfg {Number} Three-dimensional rotation X in degree(angle).socpe{0-90},normally this will accord with the chart.(default to 60)
+			 * @cfg {Number} Three-dimensional rotation X in degree(angle).socpe{0-90},Normally, this will accord with the chart.(default to 60)
 			 */
 			xAngle : 60,
 			/**
-			 * @cfg {Number} Three-dimensional rotation Y in degree(angle).socpe{0-90},normally this will accord with the chart.(default to 20)
+			 * @cfg {Number} Three-dimensional rotation Y in degree(angle).socpe{0-90},Normally, this will accord with the chart.(default to 20)
 			 */
 			yAngle : 20,
 			xAngle_ : undefined,
 			yAngle_ : undefined,
 			/**
-			 * @cfg {Number} Required,Specifies the z-axis deep of this coordinate,normally this will given by chart.(default to 0)
+			 * @cfg {Number} Required,Specifies the z-axis deep of this coordinate,Normally, this will given by chart.(default to 0)
 			 */
 			zHeight : 0,
 			/**
@@ -719,9 +733,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 			 */
 			shadow_offsety : 2,
 			/**
-			 * @cfg {Array} Specifies the style of board(wall) of this coordinate. 
-			 * the array length must be 3 and each object option has two property.
-			 * Available property are:
+			 * @cfg {Array} Specifies the style of board(wall) of this coordinate. the array length must be 3 and each object option has two property. Available property are:
 			 * @Option color the color of wall
 			 * @Option alpha the opacity of wall
 			 */

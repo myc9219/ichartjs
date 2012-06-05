@@ -975,8 +975,13 @@ $.Element = function(config) {
 		 */
 		fontweight : 'normal',
 		/**
-		 * @cfg {Object} Specifies the border for this element
-		 * 
+		 * @cfg {Object} Specifies the border for this element.
+		 * Available property are:
+		 * @Option enable {boolean} If enable the border
+		 * @Option color {String} the border's color.(default to '#BCBCBC')
+		 * @Option style {String} the border's style.(default to 'solid')
+		 * @Option width {Number/Array} the border's width.(default to 1)
+		 * @Option radius {Number} the border's radius.(default to 5)
 		 */
 		border : {
 			enable : false,
@@ -994,15 +999,15 @@ $.Element = function(config) {
 		 */
 		shadow_color : '#666666',
 		/**
-		 * @cfg {Number} How blur you want your shadow to be.(default to 4)
+		 * @cfg {Number} Specifies How blur you want your shadow to be.(default to 4)
 		 */
 		shadow_blur : 4,
 		/**
-		 * @cfg {Number} Horizontal distance (x-axis) between the shadow and the shape in pixel.(default to 0)
+		 * @cfg {Number} Specifies Horizontal distance (x-axis) between the shadow and the shape in pixel.(default to 0)
 		 */
 		shadow_offsetx : 0,
 		/**
-		 * @cfg {Number} Vertical distance (y-axis) between the shadow and the shape in pixel.(default to 0)
+		 * @cfg {Number} Specifies Vertical distance (y-axis) between the shadow and the shape in pixel.(default to 0)
 		 */
 		shadow_offsety : 0
 	});
@@ -1326,11 +1331,11 @@ $.Html = $.extend($.Element,{
 		this.set({
 			 animation:true,
 			 /**
-			  * @inner The width of this element in pixels.
+			  * @inner Specifies the width of this element in pixels.
 			  */
 			 width:0,
 			 /**
-			  * @inner The height of this element in pixels.
+			  * @inner Specifies the height of this element in pixels.
 			  */
 			 height:0,
 			 /**
@@ -1857,21 +1862,35 @@ $.Html = $.extend($.Element,{
 			this.type = 'crosshair';
 			
 			this.set({
-				 text:'',
+				yAngle_ : undefined,
+				/**
+				 * @inner {Number} Specifies the position top,normally this will given by chart.(default to 0)
+				 */
 				 top:0,
+				 /**
+				 * @inner {Number} Specifies the position left,normally this will given by chart.(default to 0)
+				 */
 				 left:0,
 				 /**
-				  * @cfg {Boolean} private use 
+				  * @inner {Boolean} private use 
 				  */
 				 hcross:true,
 				  /**
-				  * @cfg {Boolean} private use 
+				  * @inner {Boolean} private use 
 				  */
 				 vcross:true,
+				 /**
+				  * @inner {Function} private use 
+				  */
 				 invokeOffset:null,
+				 /**
+				 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
+				 */
 				 line_width:1,
-				 line_color:'green',
-				 shadow_color:'#dedede',
+				 /**
+				 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
+				 */
+				 line_color:'#1a1a1a',
 				 delay:200
 			});
 		},
@@ -1960,11 +1979,29 @@ $.Legend = $.extend($.Component, {
 		this.type = 'legend';
 
 		this.set({
+			/**
+			 * @cfg {Array} Required,The datasource of Legend.Normally,this will given by chart.(default to undefined)
+			 */
 			data : undefined,
+			/**
+			 * @cfg {Number} Specifies the width.Note if set to 'auto' will be fit the actual width.(default to 'auto')
+			 */
 			width : 'auto',
+			/**
+			 * @cfg {Number/String} Specifies the number of column.(default to 1) Note:If set to 'max',the list will be lie on the property row
+			 */
 			column : 1,
+			/**
+			 * @cfg {Number/String} Specifies the number of column.(default to 'max') Note:If set to 'max',the list will be lie on the property column
+			 */
 			row : 'max',
+			/**
+			 * @cfg {Number} Specifies the limited width.Normally,this will given by chart.(default to 0)
+			 */
 			maxwidth : 0,
+			/**
+			 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 16)
+			 */
 			line_height : 16,
 			/**
 			 * @cfg {String} the shape of legend' sign (default to 'square') The following list provides all available value you can use：
@@ -1982,10 +2019,16 @@ $.Legend = $.extend($.Component, {
 			 * @cfg {Number} the distance of legend' sign and text (default to 5)
 			 */
 			sign_space : 5,
-			legendspace : 5,
+			/**
+			 * @cfg {Number} Specifies the space between the sign and text.(default to 5)
+			 */
+			legend_space : 5,
+			/**
+			 * @cfg {Boolean} If true the text's color will accord with sign's.(default to false)
+			 */
 			text_with_sign_color : false,
 			/**
-			 * @cfg {String} this property specifies the horizontal position of the legend in an module (defaults to 'right') The following list provides all available value you can use：
+			 * @cfg {String} Specifies the horizontal position of the legend in chart.(defaults to 'right').Available value are:
 			 * @Option 'left'
 			 * @Option 'center' Only applies when valign = 'top|bottom'
 			 * @Option 'right'
@@ -1993,7 +2036,7 @@ $.Legend = $.extend($.Component, {
 			align : 'right',
 
 			/**
-			 * @cfg {String} this property specifies the vertical position of the legend in an module (defaults to 'middle') Available value are:
+			 * @cfg {String} this property specifies the vertical position of the legend in an module (defaults to 'middle'). Available value are:
 			 * @Option 'top'
 			 * @Option 'middle' Only applies when align = 'left|right'
 			 * @Option 'bottom'
@@ -2036,7 +2079,7 @@ $.Legend = $.extend($.Component, {
 				d.x = x;
 				d.y = y;
 			}
-			x += this.columnwidth[j] + this.get('signwidth') + this.get('legendspace');
+			x += this.columnwidth[j] + this.get('signwidth') + this.get('legend_space');
 			suffix++;
 		}
 	},
@@ -2072,40 +2115,40 @@ $.Legend = $.extend($.Component, {
 			y += this.get('line_height');
 		}
 	},
-	calculate:function(data,D){
+	calculate : function(data, D) {
 		this.data = data;
-		
+
 		var suffix = 0, maxwidth = w = this.get('width'), width = 0, wauto = (w == 'auto'), c = $.isNumber(this.get('column')), r = $.isNumber(this.get('row')), L = this.data.length, d, h, g = this.container;
 
 		if (!c && !r)
 			c = 1;
-		
+
 		if (c && !r)
 			this.push('row', Math.ceil(L / this.get('column')));
 		if (!c && r)
 			this.push('column', Math.ceil(L / this.get('row')));
-		
+
 		c = this.get('column');
 		r = this.get('row');
-		
-		if(L>r*c){
-			r +=Math.ceil((L - r*c)/c);
-			this.push('row',r);
+
+		if (L > r * c) {
+			r += Math.ceil((L - r * c) / c);
+			this.push('row', r);
 		}
-		
+
 		this.columnwidth = new Array(c);
-		
+
 		if (wauto) {
 			maxwidth = 0;// 行最大宽度
 		}
-		
+
 		// calculate the width each item will used
-		D.each(function(d,i){
+		D.each(function(d, i) {
 			$.merge(d, this.fireEvent(this, 'parse', [d, i]));
 			d.text = d.text || d.name;
 			d.width = this.T.measureText(d.text);
-		},this);
-		
+		}, this);
+
 		// calculate the each column's width it will used
 		for ( var i = 0; i < c; i++) {
 			width = 0;
@@ -2119,7 +2162,7 @@ $.Legend = $.extend($.Component, {
 		}
 
 		if (wauto) {
-			w = this.push('width', maxwidth + this.get('hpadding') + this.get('signwidth') * c + (c - 1) * this.get('legendspace'));
+			w = this.push('width', maxwidth + this.get('hpadding') + this.get('signwidth') * c + (c - 1) * this.get('legend_space'));
 		}
 
 		if (w > this.get('maxwidth')) {
@@ -2130,7 +2173,6 @@ $.Legend = $.extend($.Component, {
 
 		this.width = w;
 		this.height = h = this.push('height', r * this.get('line_height') + this.get('vpadding'));
-
 
 		if (this.get('valign') == 'top') {
 			this.y = g.get('t_originy');
@@ -2154,17 +2196,17 @@ $.Legend = $.extend($.Component, {
 	doConfig : function() {
 		$.Legend.superclass.doConfig.call(this);
 		$.Assert.isNotEmpty(this.get('data'), this.type + '[data]');
-		
-		var  ss = this.get('sign_size'), g = this.container;
-		
+
+		var ss = this.get('sign_size'), g = this.container;
+
 		this.T.textFont(this.get('fontStyle'));
-		
+
 		this.push('signwidth', (ss + this.get('sign_space')));
 
 		if (this.get('line_height') < ss) {
 			this.push('line_height', ss + ss / 5);
 		}
-		
+
 		// if the position is incompatible,rectify it.
 		if (this.get('align') == 'center' && this.get('valign') == 'middle') {
 			this.push('valign', 'top');
@@ -2176,132 +2218,152 @@ $.Legend = $.extend($.Component, {
 				this.push('align', 'right');
 			}
 		}
-		
-		this.calculate(this.data,this.data);
+
+		this.calculate(this.data, this.data);
 
 	}
-});//@end
-	/**
-	 * @overview this component use for abc
-	 * @component#$.Label
-	 * @extend#$.Component
-	 */
-	$.Label = $.extend($.Component,{
-		configure:function(){
+});// @end
+
+/**
+ * @overview this component use for abc
+ * @component#$.Label
+ * @extend#$.Component
+ */
+$.Label = $.extend($.Component, {
+	configure : function() {
+		/**
+		 * invoked the super class's configuration
+		 */
+		$.Label.superclass.configure.apply(this, arguments);
+
+		/**
+		 * indicate the legend's type
+		 */
+		this.type = 'legend';
+
+		this.set({
 			/**
-			 * invoked the super class's  configuration
+			 * @cfg {String} Specifies the text of this label,Normally,this will given by chart.(default to '').
 			 */
-			$.Label.superclass.configure.apply(this,arguments);
-			
+			text : '',
 			/**
-			 * indicate the legend's type
+			 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 16).
 			 */
-			this.type = 'legend';
-			
-			this.set({
-				 text:'',
-				 line_height:16,
-				 /**
-				  * @cfg {String} the shape of legend' sign (default to 'square')
-				  
-				  * The following list provides all available value you can use：
-				  
-				  * @Option 'round'
-				  * @Option 'square'
-				  */
-				 sign:'square',
-				 /**
-				  * @cfg {Number} the size of legend' sign (default to 12)
-				  */
-				 sign_size:12,
-				 padding:5,
-				 offsety:2,
-				 sign_space:5,
-				 highlight:false,
-				 background_color:'#efefef',
-				 text_with_sign_color:false,
-				 border:{
-					radius:2
-				 }
-			});
-			
-			this.registerEvent(
-				'beforeDrawRow',
-				'highlight',
-				'drawRow'
-			);
-				
-		},
-		isEventValid:function(e){ 
-			return {valid:$.inRange(this.labelx,this.labelx+this.width,e.offsetX)&&$.inRange(this.labely,this.labely+this.height,e.offsetY)};
-		},
-		text:function(text){
-			if(text)
-			this.push('text',text);
-			this.width = this.T.measureText(this.get('text'))+this.get('hpadding')+this.get('sign_size')+this.get('sign_space');
-		},
-		doDraw:function(opts){
-			opts = opts || {};
-			if(opts.invoke){
-				this.updateLcb(opts.invoke);
-			}
-			
+			line_height : 16,
 			/**
-			 * when highlight fire
+			 * @cfg {String} Specifies the shape of legend' sign (default to 'square').Available value are：
+			 * @Option 'round'
+			 * @Option 'square'
 			 */
-			if(opts.highlight){
-				this.fireEvent(this,'highlight');
+			sign : 'square',
+			/**
+			 * @cfg {Number} Specifies the size of legend' sign in pixel.(default to 12)
+			 */
+			sign_size : 12,
+			/**
+			 * @cfg {Number} Specifies the size of legend' sign in pixel.(default to 12)
+			 */
+			padding : 5,
+			/**
+			 * @cfg {Number} Override the default as 2 in pixel.
+			 */
+			offsety : 2,
+			/**
+			 * @cfg {Number} Specifies the space between the sign and text.(default to 5)
+			 */
+			sign_space : 5,
+			/**
+			 * @inner {Boolean} 
+			 */
+			highlight : false,
+			/**
+			 * @cfg {Number} Override the default as '#efefef'.
+			 */
+			background_color : '#efefef',
+			/**
+			 * @cfg {Boolean} If true the text's color will accord with sign's.(default to false)
+			 */
+			text_with_sign_color : false,
+			/**
+			 * @cfg {Object} Override the default as border.radius = 2
+			 */
+			border : {
+				radius : 2
 			}
-			
-			/**drawBorder**/
-			this.lineFn.call(this);
-			this.T.drawBorder(this.labelx,this.labely,this.width,this.height,this.get('border.width'),this.get('border.color'),this.get('border.radius'),this.get('background_color'),false,this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
-			
-			
-			this.T.textStyle('left','top',this.get('fontStyle'));
-			
-			var x = this.labelx+this.get('padding_left'),
-				y = this.labely+this.get('padding_top')+this.get('offsety'),
-				ss = this.get('sign_size');
-			
-			var textcolor = this.get('color');
-			if(this.get('text_with_sign_color')){
-				textcolor = this.get('scolor');
-			}
-			if(this.get('sign')=='square'){				
-				this.T.rectangle(x,y,ss,ss,this.get('scolor'),1);
-			}else{		
-				this.T.round(x+ss/2,y+ss/2,ss/2,this.get('scolor'),1);
-			}	
-			
-			this.T.fillText(this.get('text'),x+ss+this.get('sign_space'),y,this.get('textwidth'),textcolor);
-		},
-		updateLcb:function(L){
-			this.lineFn = L.lineFn;
-			var XY = L.labelXY.call(this);
-			this.labelx = XY.labelx;
-			this.labely = XY.labely;
-			this.x = L.origin.x;
-			this.y = L.origin.y;
-			//console.log(this.x+","+this.y+","+this.labelx+","+this.labely);
-		},
-		doConfig:function(){
-			$.Label.superclass.doConfig.call(this);
-			
-			this.T.textFont($.getFont(this.get('fontweight'),this.get('fontsize'),this.get('font')));
-			this.height = this.get('line_height')+this.get('vpadding');
-			
-			this.text();
-			
-			var lcb = this.get('lineCB');
-			if(lcb){
-				this.updateLcb(lcb);
-			}
-			
-			
-			
+		});
+
+		this.registerEvent('beforeDrawRow', 'highlight', 'drawRow');
+
+	},
+	isEventValid : function(e) {
+		return {
+			valid : $.inRange(this.labelx, this.labelx + this.width, e.offsetX) && $.inRange(this.labely, this.labely + this.height, e.offsetY)
+		};
+	},
+	text : function(text) {
+		if (text)
+			this.push('text', text);
+		this.width = this.T.measureText(this.get('text')) + this.get('hpadding') + this.get('sign_size') + this.get('sign_space');
+	},
+	doDraw : function(opts) {
+		opts = opts || {};
+		if (opts.invoke) {
+			this.updateLcb(opts.invoke);
 		}
-});//@end
+
+		/**
+		 * when highlight fire
+		 */
+		if (opts.highlight) {
+			this.fireEvent(this, 'highlight');
+		}
+
+		/** drawBorder* */
+		this.lineFn.call(this);
+		this.T.drawBorder(this.labelx, this.labely, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('background_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this
+				.get('shadow_offsetx'), this.get('shadow_offsety'));
+
+		this.T.textStyle('left', 'top', this.get('fontStyle'));
+
+		var x = this.labelx + this.get('padding_left'), y = this.labely + this.get('padding_top') + this.get('offsety'), ss = this.get('sign_size');
+
+		var textcolor = this.get('color');
+		if (this.get('text_with_sign_color')) {
+			textcolor = this.get('scolor');
+		}
+		if (this.get('sign') == 'square') {
+			this.T.rectangle(x, y, ss, ss, this.get('scolor'), 1);
+		} else {
+			this.T.round(x + ss / 2, y + ss / 2, ss / 2, this.get('scolor'), 1);
+		}
+
+		this.T.fillText(this.get('text'), x + ss + this.get('sign_space'), y, this.get('textwidth'), textcolor);
+	},
+	updateLcb : function(L) {
+		this.lineFn = L.lineFn;
+		var XY = L.labelXY.call(this);
+		this.labelx = XY.labelx;
+		this.labely = XY.labely;
+		this.x = L.origin.x;
+		this.y = L.origin.y;
+		// console.log(this.x+","+this.y+","+this.labelx+","+this.labely);
+	},
+	doConfig : function() {
+		$.Label.superclass.doConfig.call(this);
+
+		this.T.textFont($.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
+		this.height = this.get('line_height') + this.get('vpadding');
+
+		this.text();
+
+		var lcb = this.get('lineCB');
+		if (lcb) {
+			this.updateLcb(lcb);
+		}
+
+	}
+});// @end
+
 	/**
 	 * @overview this component use for abc
 	 * @component#$.Text
@@ -2993,7 +3055,7 @@ $.Legend = $.extend($.Component, {
 			this.set({
 				render : '',
 				/**
-				 * @cfg {Array} Required array of Chart.must be not empty
+				 * @cfg {Array} Required,The datasource of Chart.must be not empty.
 				 */
 				data : [],
 				/**
@@ -3055,7 +3117,7 @@ $.Legend = $.extend($.Component, {
 				 */
 				title_color : 'black',
 				/**
-				 * @cfg {Number} Specifies the height of title will be use.(default to 25)
+				 * @cfg {Number} Specifies the height of title will be take.(default to 25)
 				 */
 				title_height : 25,
 				/**
@@ -3501,8 +3563,14 @@ $.Legend = $.extend($.Component, {
 			this.type = 'custom';
 			
 			this.set({
+				/**
+				 * @cfg {Function} Specifies the customize function.(default to emptyFn)
+				 */
 				drawFn:$.emptyFn,
-				eventValid:null	
+				/**
+				 * @cfg {Function} Specifies the customize event valid function.(default to undefined)
+				 */
+				eventValid:undefined	
 			});
 			
 			this.registerEvent();
@@ -3642,15 +3710,11 @@ $.KeDu = $.extend($.Component, {
 
 		this.registerEvent(
 		/**
-		 * @cfg {Function} the event when parse text、you can return a object like this:{text:'',textX:100,textY:100} to override the given Available param are:
-		 * @param text:item's
-		 *            text
-		 * @param textX:coordinate-x
-		 *            of item's text
-		 * @param textY:coordinate-y
-		 *            of item's text
-		 * @param index:item's
-		 *            index (text,x,y,index)
+		 * @event Fires the event when parse text、you can return a object like this:{text:'',textX:100,textY:100} to override the given.
+		 * @paramter string#text item's text
+		 * @paramter int#textX coordinate-x of item's text
+		 * @paramter int#textY coordinate-y of item's text
+		 * @paramter int#index item's index
 		 */
 		'parseText');
 
@@ -3703,18 +3767,22 @@ $.KeDu = $.extend($.Component, {
 				tx = -ts;
 			}
 		}
-		// 将上述的配置部分转移到config中?
+		/**
+		 * 将上述的配置部分转移到config中?
+		 */
 
-	// 每一个text的个性化问题?
-	this.T.textFont(this.get('fontStyle'));
+		/**
+		 * 每一个text的个性化问题?
+		 */
+		this.T.textFont(this.get('fontStyle'));
 
-	for ( var i = 0; i < this.items.length; i++) {
-		if (this.get('scale_enable'))
-			this.T.line(this.items[i].x + x, this.items[i].y + y, this.items[i].x + x0, this.items[i].y + y0, this.get('scale_size'), this.get('scale_color'), false);
+		for ( var i = 0; i < this.items.length; i++) {
+			if (this.get('scale_enable'))
+				this.T.line(this.items[i].x + x, this.items[i].y + y, this.items[i].x + x0, this.items[i].y + y0, this.get('scale_size'), this.get('scale_color'), false);
 
-		this.T.fillText(this.items[i].text, this.items[i].textX + tx, this.items[i].textY + ty, false, this.get('color'), 'lr', this.get('text_height'));
-	}
-},
+			this.T.fillText(this.items[i].text, this.items[i].textX + tx, this.items[i].textY + ty, false, this.get('color'), 'lr', this.get('text_height'));
+		}
+	},
 	doConfig : function() {
 		$.KeDu.superclass.doConfig.call(this);
 		$.Assert.isNumber(this.get('distance'), 'distance');
@@ -3726,11 +3794,15 @@ $.KeDu = $.extend($.Component, {
 		} else {
 			$.Assert.isTrue($.isNumber(max_scale) || $.isNumber(end_scale), 'max_scale&end_scale');
 
-			// end_scale must greater than maxScale
+			/**
+			 * end_scale must greater than maxScale
+			 */
 			if (!end_scale || end_scale < max_scale) {
 				end_scale = this.push('end_scale', $.ceil(max_scale));
 			}
-			// startScale must less than minScale
+			/**
+			 * startScale must less than minScale
+			 */
 			if (start_scale > min_scale) {
 				this.push('start_scale', $.floor(min_scale));
 			}
@@ -3739,7 +3811,9 @@ $.KeDu = $.extend($.Component, {
 				this.push('scale_share', (end_scale - start_scale) / scale_space);
 			}
 
-			// value of each scale
+			/**
+			 * value of each scale
+			 */
 			if (!scale_space || scale_space > end_scale - start_scale) {
 				scale_space = this.push('scale', (end_scale - start_scale) / this.get('scale_share'));
 			}
@@ -3747,7 +3821,9 @@ $.KeDu = $.extend($.Component, {
 			this.number = this.get('scale_share');
 		}
 
-		// the real distance of each scale
+		/**
+		 * the real distance of each scale
+		 */
 		this.push('distanceOne', this.get('valid_distance') / this.number);
 
 		var text, maxwidth = 0, x, y;
@@ -3756,7 +3832,9 @@ $.KeDu = $.extend($.Component, {
 		this.push('which', this.get('which').toLowerCase());
 		this.isH = this.get('which') == 'h';
 
-		// 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
+		/**
+		 * 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
+		 */
 		for ( var i = 0; i <= this.number; i++) {
 			text = customLabel ? this.get('labels')[i] : (scale_space * i + start_scale).toFixed(this.get('decimalsnum'));
 			x = this.isH ? this.get('valid_x') + i * this.get('distanceOne') : this.x;
@@ -3771,8 +3849,10 @@ $.KeDu = $.extend($.Component, {
 			maxwidth = Math.max(maxwidth, this.T.measureText(text));
 		}
 
-		// what does follow code doing?
-				this.left = this.right = this.top = this.bottom = 0, ts = this.get('text_space');
+		/**
+		 * what does follow code doing?
+		 */
+		this.left = this.right = this.top = this.bottom = 0, ts = this.get('text_space');
 		ta = this.get('textAlign');
 		sa = this.get('scaleAlign'), w = this.get('scale_width'), w2 = w / 2;
 
@@ -3896,7 +3976,7 @@ $.Coordinate2D = $.extend($.Component,
 						enable : false
 					},
 					/**
-					 * @cfg {Object} Specifies style of the crosshair. .Note that this option only applies when crosshair.enable = true.
+					 * @cfg {Object} Specifies style of the crosshair.Note that this option only applies when crosshair.enable = true.
 					 */
 					crosshair_style : {
 						width : 1,
@@ -3911,8 +3991,10 @@ $.Coordinate2D = $.extend($.Component,
 					 */
 					height : undefined,
 					/**
-					 * @cfg {Object} the option for axis of this coordinate. default to : { enable : true, //True to display the axis color : '#666666',//Specifies the color of each axis width : 1 //{Number/Array} Specifies the width of each axis,If given the a array,there must
-					 *      be have have 4 element,like this:[1,0,0,1](top-right-bottom-left) }
+					 * @cfg {Object} the option for axis of this coordinate. Available property are:
+					 * @Option enable {Boolean} True to display the axis.(default to true)
+					 * @Option color {String} Specifies the color of each axis.(default to '#666666')
+					 * @Option width {Number/Array} Specifies the width of each axis, If given the a array,there must be have have 4 element, like this:[1,0,0,1](top-right-bottom-left).(default to 1)
 					 */
 					axis : {
 						enable : true,
@@ -4187,17 +4269,17 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 
 		this.set({
 			/**
-			 * @cfg {Number} Three-dimensional rotation X in degree(angle).socpe{0-90},normally this will accord with the chart.(default to 60)
+			 * @cfg {Number} Three-dimensional rotation X in degree(angle).socpe{0-90},Normally, this will accord with the chart.(default to 60)
 			 */
 			xAngle : 60,
 			/**
-			 * @cfg {Number} Three-dimensional rotation Y in degree(angle).socpe{0-90},normally this will accord with the chart.(default to 20)
+			 * @cfg {Number} Three-dimensional rotation Y in degree(angle).socpe{0-90},Normally, this will accord with the chart.(default to 20)
 			 */
 			yAngle : 20,
 			xAngle_ : undefined,
 			yAngle_ : undefined,
 			/**
-			 * @cfg {Number} Required,Specifies the z-axis deep of this coordinate,normally this will given by chart.(default to 0)
+			 * @cfg {Number} Required,Specifies the z-axis deep of this coordinate,Normally, this will given by chart.(default to 0)
 			 */
 			zHeight : 0,
 			/**
@@ -4241,9 +4323,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			 */
 			shadow_offsety : 2,
 			/**
-			 * @cfg {Array} Specifies the style of board(wall) of this coordinate. 
-			 * the array length must be 3 and each object option has two property.
-			 * Available property are:
+			 * @cfg {Array} Specifies the style of board(wall) of this coordinate. the array length must be 3 and each object option has two property. Available property are:
 			 * @Option color the color of wall
 			 * @Option alpha the opacity of wall
 			 */

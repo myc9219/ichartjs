@@ -646,7 +646,7 @@
 			this.set({
 				render : '',
 				/**
-				 * @cfg {Array} Required array of Chart.must be not empty
+				 * @cfg {Array} Required,The datasource of Chart.must be not empty.
 				 */
 				data : [],
 				/**
@@ -708,7 +708,7 @@
 				 */
 				title_color : 'black',
 				/**
-				 * @cfg {Number} Specifies the height of title will be use.(default to 25)
+				 * @cfg {Number} Specifies the height of title will be take.(default to 25)
 				 */
 				title_height : 25,
 				/**

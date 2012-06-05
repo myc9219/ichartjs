@@ -18,7 +18,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		
 		this.set({
 			/**
-			 * @cfg {Float (0~)} the pie's radius
+			 * @cfg {Float (0~)} Specifythe pie's radius.(default to calculate by the size of chart)
 			 */
 			radius : 0,
 			/**

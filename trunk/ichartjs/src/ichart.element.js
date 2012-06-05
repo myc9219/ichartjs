@@ -38,8 +38,13 @@ iChart.Element = function(config) {
 		 */
 		fontweight : 'normal',
 		/**
-		 * @cfg {Object} Specifies the border for this element
-		 * 
+		 * @cfg {Object} Specifies the border for this element.
+		 * Available property are:
+		 * @Option enable {boolean} If enable the border
+		 * @Option color {String} the border's color.(default to '#BCBCBC')
+		 * @Option style {String} the border's style.(default to 'solid')
+		 * @Option width {Number/Array} the border's width.(default to 1)
+		 * @Option radius {Number} the border's radius.(default to 5)
 		 */
 		border : {
 			enable : false,
@@ -57,15 +62,15 @@ iChart.Element = function(config) {
 		 */
 		shadow_color : '#666666',
 		/**
-		 * @cfg {Number} How blur you want your shadow to be.(default to 4)
+		 * @cfg {Number} Specifies How blur you want your shadow to be.(default to 4)
 		 */
 		shadow_blur : 4,
 		/**
-		 * @cfg {Number} Horizontal distance (x-axis) between the shadow and the shape in pixel.(default to 0)
+		 * @cfg {Number} Specifies Horizontal distance (x-axis) between the shadow and the shape in pixel.(default to 0)
 		 */
 		shadow_offsetx : 0,
 		/**
-		 * @cfg {Number} Vertical distance (y-axis) between the shadow and the shape in pixel.(default to 0)
+		 * @cfg {Number} Specifies Vertical distance (y-axis) between the shadow and the shape in pixel.(default to 0)
 		 */
 		shadow_offsety : 0
 	});
