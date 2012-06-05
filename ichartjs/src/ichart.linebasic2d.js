@@ -15,9 +15,7 @@
 			
 			this.type = 'basicline2d';
 			
-			this.set({
-				
-			});
+			//this.set({});
 			 
 			this.registerEvent();
 			
@@ -83,7 +81,7 @@
 					points.push(iChart.merge({x:x,y:y,value:d[i].value[j]},this.fireEvent(this,'parsePoint',[d[i].value[j],x,y,j])));
 				}
 				
-				this.push('segment_style.spacing',sp);
+				this.push('segment_style.point_space',sp);
 				this.push('segment_style.points',points);
 				this.push('segment_style.brushsize',d[i].linewidth||1);
 				this.push('segment_style.background_color',d[i].color);

@@ -16,14 +16,33 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		this.type = 'legend';
 
 		this.set({
+			/**
+			 * @cfg {Array} Required,The datasource of Legend.Normally,this will given by chart.(default to undefined)
+			 */
 			data : undefined,
+			/**
+			 * @cfg {Number} Specifies the width.Note if set to 'auto' will be fit the actual width.(default to 'auto')
+			 */
 			width : 'auto',
+			/**
+			 * @cfg {Number/String} Specifies the number of column.(default to 1) Note:If set to 'max',the list will be lie on the property row
+			 */
 			column : 1,
+			/**
+			 * @cfg {Number/String} Specifies the number of column.(default to 'max') Note:If set to 'max',the list will be lie on the property column
+			 */
 			row : 'max',
+			/**
+			 * @cfg {Number} Specifies the limited width.Normally,this will given by chart.(default to 0)
+			 */
 			maxwidth : 0,
+			/**
+			 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 16)
+			 */
 			line_height : 16,
 			/**
-			 * @cfg {String} the shape of legend' sign (default to 'square') The following list provides all available value you can use：
+			 * @cfg {String} Specifies the shape of legend' sign (default to 'square') 
+			 * Available value are：
 			 * @Option 'round'
 			 * @Option 'square'
 			 * @Option 'round-bar'
@@ -38,10 +57,16 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			 * @cfg {Number} the distance of legend' sign and text (default to 5)
 			 */
 			sign_space : 5,
-			legendspace : 5,
+			/**
+			 * @cfg {Number} Specifies the space between the sign and text.(default to 5)
+			 */
+			legend_space : 5,
+			/**
+			 * @cfg {Boolean} If true the text's color will accord with sign's.(default to false)
+			 */
 			text_with_sign_color : false,
 			/**
-			 * @cfg {String} this property specifies the horizontal position of the legend in an module (defaults to 'right') The following list provides all available value you can use：
+			 * @cfg {String} Specifies the horizontal position of the legend in chart.(defaults to 'right').Available value are:
 			 * @Option 'left'
 			 * @Option 'center' Only applies when valign = 'top|bottom'
 			 * @Option 'right'
@@ -49,7 +74,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			align : 'right',
 
 			/**
-			 * @cfg {String} this property specifies the vertical position of the legend in an module (defaults to 'middle') Available value are:
+			 * @cfg {String} this property specifies the vertical position of the legend in an module (defaults to 'middle'). Available value are:
 			 * @Option 'top'
 			 * @Option 'middle' Only applies when align = 'left|right'
 			 * @Option 'bottom'
@@ -92,7 +117,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 				d.x = x;
 				d.y = y;
 			}
-			x += this.columnwidth[j] + this.get('signwidth') + this.get('legendspace');
+			x += this.columnwidth[j] + this.get('signwidth') + this.get('legend_space');
 			suffix++;
 		}
 	},
@@ -128,40 +153,40 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			y += this.get('line_height');
 		}
 	},
-	calculate:function(data,D){
+	calculate : function(data, D) {
 		this.data = data;
-		
+
 		var suffix = 0, maxwidth = w = this.get('width'), width = 0, wauto = (w == 'auto'), c = iChart.isNumber(this.get('column')), r = iChart.isNumber(this.get('row')), L = this.data.length, d, h, g = this.container;
 
 		if (!c && !r)
 			c = 1;
-		
+
 		if (c && !r)
 			this.push('row', Math.ceil(L / this.get('column')));
 		if (!c && r)
 			this.push('column', Math.ceil(L / this.get('row')));
-		
+
 		c = this.get('column');
 		r = this.get('row');
-		
-		if(L>r*c){
-			r +=Math.ceil((L - r*c)/c);
-			this.push('row',r);
+
+		if (L > r * c) {
+			r += Math.ceil((L - r * c) / c);
+			this.push('row', r);
 		}
-		
+
 		this.columnwidth = new Array(c);
-		
+
 		if (wauto) {
 			maxwidth = 0;// 行最大宽度
 		}
-		
+
 		// calculate the width each item will used
-		D.each(function(d,i){
+		D.each(function(d, i) {
 			iChart.merge(d, this.fireEvent(this, 'parse', [d, i]));
 			d.text = d.text || d.name;
 			d.width = this.T.measureText(d.text);
-		},this);
-		
+		}, this);
+
 		// calculate the each column's width it will used
 		for ( var i = 0; i < c; i++) {
 			width = 0;
@@ -175,7 +200,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		}
 
 		if (wauto) {
-			w = this.push('width', maxwidth + this.get('hpadding') + this.get('signwidth') * c + (c - 1) * this.get('legendspace'));
+			w = this.push('width', maxwidth + this.get('hpadding') + this.get('signwidth') * c + (c - 1) * this.get('legend_space'));
 		}
 
 		if (w > this.get('maxwidth')) {
@@ -186,7 +211,6 @@ iChart.Legend = iChart.extend(iChart.Component, {
 
 		this.width = w;
 		this.height = h = this.push('height', r * this.get('line_height') + this.get('vpadding'));
-
 
 		if (this.get('valign') == 'top') {
 			this.y = g.get('t_originy');
@@ -210,17 +234,17 @@ iChart.Legend = iChart.extend(iChart.Component, {
 	doConfig : function() {
 		iChart.Legend.superclass.doConfig.call(this);
 		iChart.Assert.isNotEmpty(this.get('data'), this.type + '[data]');
-		
-		var  ss = this.get('sign_size'), g = this.container;
-		
+
+		var ss = this.get('sign_size'), g = this.container;
+
 		this.T.textFont(this.get('fontStyle'));
-		
+
 		this.push('signwidth', (ss + this.get('sign_space')));
 
 		if (this.get('line_height') < ss) {
 			this.push('line_height', ss + ss / 5);
 		}
-		
+
 		// if the position is incompatible,rectify it.
 		if (this.get('align') == 'center' && this.get('valign') == 'middle') {
 			this.push('valign', 'top');
@@ -232,8 +256,8 @@ iChart.Legend = iChart.extend(iChart.Component, {
 				this.push('align', 'right');
 			}
 		}
-		
-		this.calculate(this.data,this.data);
+
+		this.calculate(this.data, this.data);
 
 	}
-});//@end
+});// @end

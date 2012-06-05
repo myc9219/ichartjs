@@ -16,8 +16,14 @@
 			this.type = 'custom';
 			
 			this.set({
+				/**
+				 * @cfg {Function} Specifies the customize function.(default to emptyFn)
+				 */
 				drawFn:iChart.emptyFn,
-				eventValid:null	
+				/**
+				 * @cfg {Function} Specifies the customize event valid function.(default to undefined)
+				 */
+				eventValid:undefined	
 			});
 			
 			this.registerEvent();

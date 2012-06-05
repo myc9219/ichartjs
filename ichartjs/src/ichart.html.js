@@ -23,11 +23,11 @@ iChart.Html = iChart.extend(iChart.Element,{
 		this.set({
 			 animation:true,
 			 /**
-			  * @inner The width of this element in pixels.
+			  * @inner Specifies the width of this element in pixels.
 			  */
 			 width:0,
 			 /**
-			  * @inner The height of this element in pixels.
+			  * @inner Specifies the height of this element in pixels.
 			  */
 			 height:0,
 			 /**
