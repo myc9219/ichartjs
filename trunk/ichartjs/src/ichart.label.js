@@ -65,6 +65,11 @@ iChart.Label = iChart.extend(iChart.Component, {
 				radius : 2
 			}
 		});
+		
+		/**
+		 * this element support boxMode
+		 */
+		this.atomic = true;
 
 		this.registerEvent('beforeDrawRow', 'highlight', 'drawRow');
 

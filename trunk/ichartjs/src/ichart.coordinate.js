@@ -484,11 +484,11 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				iChart.Coordinate2D.superclass.doConfig.call(this);
 				iChart.Assert.isNumber(this.get('width'), 'width');
 				iChart.Assert.isNumber(this.get('height'), 'height');
-				// console.log(this.get('wall_style'));
-
-				this.on('mouseover', function(e) {
-					this.T.css("cursor", "default");
-				});
+				
+				/**
+				 * this element not atomic because it is a container,so this is a particular case.
+				 */
+				this.atomic = false;
 
 				if (!this.get('valid_width') || this.get('valid_width') > this.get('width')) {
 					this.push('valid_width', this.get('width'));

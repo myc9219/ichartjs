@@ -78,23 +78,14 @@
 		doConfig:function(){
 			iChart.Bar.superclass.doConfig.call(this);
 			/**
-			 * apply the coordinate feature
+			 * Apply the coordinate feature
 			 */
 			iChart.Interface.coordinate.call(this);
 			/**
-			 * quick config to all rectangle
+			 * Quick config to all rectangle
 			 */
 			iChart.apply(this.get('rectangle'),iChart.clone(['label','tip','border'],this.options));
 			
-			/**
-			 * register event
-			 */
-			this.on('rectangleover',function(e,r){
-				this.T.css("cursor","pointer");
-				
-			}).on('rectanglemouseout',function(e,r){
-				this.T.css("cursor","default");
-			});
 		}
 		
 });//@end

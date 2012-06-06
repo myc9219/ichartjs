@@ -81,6 +81,11 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			 */
 			valign : 'middle'
 		});
+		
+		/**
+		 * this element support boxMode
+		 */
+		this.atomic = true;
 
 		this.registerEvent('drawCell', 'parse', 'drawRaw');
 

@@ -48,7 +48,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			 */
 			rectangle:{}
 		});
-
+		
 		this.registerEvent('rectangleover', 'rectanglemouseout', 'rectangleclick','parseValue','parseText');
 
 		this.rectangles = [];
@@ -78,15 +78,6 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		 */
 		iChart.apply(this.get('rectangle'),iChart.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'],this.options));
 		
-		/**
-		 * register event
-		 */
-		this.on('rectangleover', function(e, r) {
-			this.T.css("cursor", "pointer");
-
-		}).on('rectanglemouseout', function(e, r) {
-			this.T.css("cursor", "default");
-		});
 
 	}
 

@@ -100,11 +100,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		 * @paramter int#index
 		 */
 		'rebound');
-
+		
 		this.sectors = [];
 	},
 	/**
-	 * @method Add item(s) into the Chart at the given index or not.. This method accepts either a single object of data config or a array of items's config
+	 * @method this is a experimental method.Add item(s) into the Chart at the given index or not.This method accepts either a single object of data config or a array of items's config
 	 * @paramter data#Object/Array the data's config
 	 * @paramter index#int The start index at which to add the item.(default to append)
 	 * @paramter animate#boolean if has a animation when drawing

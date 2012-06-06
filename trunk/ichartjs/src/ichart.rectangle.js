@@ -63,6 +63,11 @@
 				shadow_offsety:-1
 			});
 			
+			/**
+			 * this element support boxMode
+			 */
+			this.atomic = true;
+			
 			this.registerEvent();
 			
 		},
