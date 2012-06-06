@@ -84,7 +84,7 @@
 			/**
 			 * quick config to all rectangle
 			 */
-			iChart.applyIf(this.get('rectangle'),iChart.clone(['label','tip','border'],this.options));
+			iChart.apply(this.get('rectangle'),iChart.clone(['label','tip','border'],this.options));
 			
 			/**
 			 * register event

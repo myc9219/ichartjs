@@ -16,6 +16,9 @@
 			this.type = 'sector2d';
 			
 			this.set({
+				/**
+				 * @cfg {Float (0~)} Specify the sector's radius.Normally,this will given by chart.(default to 0)
+				 */
 				radius:0
 			});
 			

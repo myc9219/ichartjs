@@ -16,6 +16,9 @@
 			this.type = 'rectangle2d';
 			
 			this.set({
+				/**
+				 * @cfg {Number} Override the default as -2
+				 */
 				shadow_offsety:-2
 			});
 			

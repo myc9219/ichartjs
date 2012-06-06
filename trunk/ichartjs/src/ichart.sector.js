@@ -11,47 +11,56 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		this.type = 'sector';
 		
 		this.set({
-			name:'',
+			/**
+			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
+			 */
 			counterclockwise : false,
+			/**
+			 * @cfg {Number} Specify the start angle of this sector.Normally,this will given by chart.(default to 0)
+			 */
 			startAngle : 0,
+			/**
+			 * @cfg {Number} middleAngle = (endAngle - startAngle)/2.Normally,this will given by chart.(default to 0)
+			 */
 			middleAngle : 0,
+			/**
+			 * @cfg {Number} Specify the end angle of this sector.Normally,this will given by chart.(default to 0)
+			 */
 			endAngle : 0,
+			/**
+			 * @cfg {Number} Specify total angle of this sector,totalAngle = (endAngle - startAngle).Normally,this will given by chart.(default to 0)
+			 */
 			totalAngle : 0,
 			/**
 			 * @cfg {String} the event's name trigger pie bound(default to 'click'). 
-			 * Available value are:
-			 * @Option 'left'
-			 * @Option 'center'
-			 * @Option 'right'
 			 */
 			bound_event : 'click',
+			/**
+			 * @cfg {Boolean} True to bound this sector.(default to false)
+			 */
 			expand : false,
 			/**
-			 * @cfg {Boolean} if it has animate when a piece popd (default to false)
+			 * @inner {Boolean} True to has animation when bound.(default to false)
 			 */
 			pop_animate : false,
 			/**
-			 * @cfg {Boolean} if the piece mutex,it means just one piece could pop (default to true)
+			 * @cfg {Boolean} if true means just one piece could bound at same time.(default to false)
 			 */
 			mutex : false,
+			/**
+			 * @cfg {Number} Specify the offset when bounded.Normally,this will given by chart.(default to undefined)
+			 */
 			increment : undefined,
-			shadow : true,
+			/**
+			 * @cfg {Boolean} True to apply the gradient.(default to true)
+			 */
 			gradient : true,
 			/**
-			 * @cfg {Boolean} if the label displayed (default to true)
+			 * @cfg {Boolean} option of label
 			 */
 			label : {
 				enable : true,
-				/**
-				 * label's length
-				 */
 				linelength : undefined
-			},
-			tip : {
-				enable : false,
-				border : {
-					width : 2
-				}
 			}
 		});
 

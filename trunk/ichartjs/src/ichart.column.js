@@ -44,7 +44,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 				padding : 5
 			},
 			/**
-			 * @cfg {Object} the option for rectangle
+			 * @cfg {Object} option of rectangle
 			 */
 			rectangle:{}
 		});
@@ -76,8 +76,8 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		/**
 		 * quick config to all rectangle
 		 */
-		this.push('rectangle', iChart.clone(['customize_layout', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options));
-
+		iChart.apply(this.get('rectangle'),iChart.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'],this.options));
+		
 		/**
 		 * register event
 		 */

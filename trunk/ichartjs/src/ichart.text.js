@@ -16,14 +16,35 @@
 			this.type = 'text';
 			
 			this.set({
+				/**
+				 * @cfg {String} Specifies the text want to disply.(default to '')
+				 */
 				text:'',
-				//textAlign：文字水平对齐方式。可取属性值: start, end, left,right, center。默认值:
+				/**
+				 * @cfg {String} Specifies the textAlign of html5.(default to 'center')
+				 * Available value are:
+				 * @Option start
+				 * @Option end
+				 * @Option left
+				 * @Option right
+				 * @Option center
+				 */
 				textAlign:'center',
-				//textBaseline可取属性值：top, hanging, middle,alphabetic, ideographic, bottom。默认值：alphabetic.
+				/**
+				 * @cfg {String} Specifies the textBaseline of html5.(default to 'top')
+				 * Available value are:
+				 * @Option top
+				 * @Option hanging
+				 * @Option middle
+				 * @Option alphabetic
+				 * @Option ideographic
+				 * @Option bottom
+				 */
 				textBaseline:'top'
 			});
 			
 			this.registerEvent();
+			
 			/**
 			 * indicate this component not need support event
 			 */

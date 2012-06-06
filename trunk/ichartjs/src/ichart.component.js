@@ -19,7 +19,16 @@
 				/**
 				 * @cfg {Boolean} indicate whether there has a effect of color gradient.(default to false)
 				 */
-				gradient : false
+				gradient : false,
+				/**
+				 * @cfg {Object} Specify the option of tip
+				 */
+				tip : {
+					enable : false,
+					border : {
+						width : 2
+					}
+				}
 			});
 	
 			this.inject(c);

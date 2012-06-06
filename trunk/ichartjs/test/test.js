@@ -90,6 +90,7 @@ function test(){
 		return new iChart.Pie2D({
 			render :canvas,
 			title : 'Test Pie2D',
+			shadow:true,
 			data:data,
 			radius:140,
 			offsetAngle:45
@@ -100,7 +101,6 @@ function test(){
 		return new iChart.Pie2D({
 			render :canvas,
 			title : 'Test Pie2D No Shadow',
-			shadow:false,
 			data:data,
 			radius:140,
 			offsetAngle:45
@@ -113,6 +113,7 @@ function test(){
 			title : 'Test Pie3D',
 			data : data,
 			padding : '10',
+			shadow:true,
 			radius:240,
 			yHeight:30,
 			zRotate:45,
@@ -135,7 +136,6 @@ function test(){
 			radius:240,
 			yHeight:30,
 			zRotate:45,
-			shadow:false,
 			showpercent:true,
 			legend:{
 				enable:true
@@ -151,6 +151,7 @@ function test(){
 			render :canvas,
 			title : 'Test Column2D',
 			data: data,
+			shadow:true,
 			align:'center',
 			coordinate:{
 				width:600,
@@ -195,6 +196,7 @@ function test(){
 			title : 'Test Column3D',
 			data: data,
 			align:'center',
+			shadow:true,
 			coordinate:{
 				width:600,
 				height:300,
@@ -242,6 +244,7 @@ function test(){
 			title : 'Test Bar2D',
 			data: data,
 			align:'center',
+			shadow:true,
 			coordinate:{
 				width:600,
 				height:400
@@ -263,6 +266,7 @@ function test(){
 			render :canvas,
 			title : 'Test ColumnMulti2D',
 			data: data2,
+			shadow:true,
 			columnKeys:columnKeys,
 			align:'center',
 			coordinate:{
@@ -292,6 +296,7 @@ function test(){
 			title : 'Test LineBasic2D',
 			data: data4,
 			align:'center',
+			shadow:true,
 			labels:lineLabels1,
 			listeners:{
 				parsePoint:function(v,x,y){
@@ -306,6 +311,7 @@ function test(){
 			render :canvas,
 			title : 'Test LineBasic2D More Point',
 			data: data6,
+			shadow:true,
 			align:'center',
 			tip:{
 				enable:true,
@@ -365,6 +371,7 @@ function test(){
 			title : 'Test Area2D',
 			data: data7,
 			align:'center',
+			shadow:true,
 			width : 800,
 			height : 400,
 			labels:lineLabels1,
@@ -400,6 +407,7 @@ function test(){
 				render :canvas,
 				title : 'Test Bar2d',
 				data:data,
+				shadow:true,
 				coordinate:{
 					width:600,
 					height:400

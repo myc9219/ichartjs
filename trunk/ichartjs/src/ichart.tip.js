@@ -7,7 +7,7 @@
 		configure:function(){
 			
 			/**
-			 * invoked the super class's  configuration
+			 * invoked the super class's configuration
 			 */
 			iChart.Tip.superclass.configure.apply(this,arguments);
 			
@@ -17,24 +17,39 @@
 			this.type = 'tip';
 			
 			this.set({
+				/**
+				 * @cfg {String} Specifies the text want to disply.(default to '')
+				 */
 				 text:'',
 				 /**
-				  * 
-				  * @param {String} {'fixed','follow'}(default to 'follow')
-				  */
+				 * @cfg {String} Specifies the tip's type.(default to 'follow') Available value are:
+				 * @Option follow
+				 * @Option fixed
+				 */
 				 showType:'follow',
+				 /**
+				  * @cfg {Function} Specifies Function to calculate the position.(default to null)
+				  */
 				 invokeOffset:null,
 				 /**
-				  * @cfg {Number}  ms
-				  */
+				 * @cfg {Number} Specifies the duration when fadeIn/fadeOut in millisecond.(default to 300)
+				 */
 				 fade_duration:300,
-				 move_duration:100,
-				 shadow:true,
 				 /**
-				  * @cfg {Boolean}  if  calculate the position every time (default to false)
-				  */
+				 * @cfg {Number} Specifies the duration when move in millisecond.(default to 100)
+				 */
+				 move_duration:100,
+				 /**
+				 * @cfg {Boolean} if calculate the position every time (default to false)
+				 */
 				 invokeOffsetDynamic:false,
+				 /**
+				 * @cfg {String} Specifies the css of this Dom.
+				 */
 				 style:'textAlign:left;padding:4px 5px;cursor:pointer;backgroundColor:rgba(239,239,239,.85);fontSize:12px;color:black;',
+				 /**
+				 * @cfg {Object} Override the default as enable = true
+				 */
 				 border:{
 					enable:true
 				 },
@@ -128,4 +143,4 @@
 			}
 			
 		}
-});//@end
+});// @end
