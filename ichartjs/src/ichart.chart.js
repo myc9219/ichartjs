@@ -1,4 +1,5 @@
-;(function($) {
+;
+(function($) {
 
 	var inc = Math.PI / 90, PI = Math.PI, PI2 = 2 * Math.PI, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
 		return w <= 1 ? (Math.floor(c) + 0.5) : Math.floor(c);
@@ -665,6 +666,10 @@
 				 */
 				align : 'center',
 				/**
+				 * @cfg {Boolean} If true mouse change to a pointer when a mouseover fired.(defaults to true)
+				 */
+				default_mouseover_css:true,
+				/**
 				 * @cfg {Boolean} indicate if the chart clear segment of canvas(defaults to true)
 				 */
 				segmentRect : true,
@@ -790,12 +795,11 @@
 			this.total = 0;
 
 		},
-		pushComponent : function(c, b){
+		pushComponent : function(c, b) {
 			if (!!b)
-					this.components.unshift(c);
-				else
-					this.components.push(c);;
-					
+				this.components.unshift(c);
+			else
+				this.components.push(c);;
 		},
 		plugin : function(c, b) {
 			this.init();
@@ -847,19 +851,22 @@
 		/**
 		 * the common config
 		 */
-		add:function(data,index,animate){
-			if(this.processAnimation){
-				this.variable.animation.queue.push({handler:'add',arguments:[data,index,animate]});
+		add : function(data, index, animate) {
+			if (this.processAnimation) {
+				this.variable.animation.queue.push({
+					handler : 'add',
+					arguments : [data, index, animate]
+				});
 				return false;
 			}
 			iChart.isNumber(index)
-			index = iChart.between(0,this.data.length,index);
-			data = $.Interface.parser.call(this,data,index);
-			
+			index = iChart.between(0, this.data.length, index);
+			data = $.Interface.parser.call(this, data, index);
+
 			if (this.get('legend.enable')) {
-				this.legend.calculate(this.data,data);
+				this.legend.calculate(this.data, data);
 			}
-			
+
 			return data;
 		},
 		commonDraw : function() {
@@ -889,10 +896,10 @@
 
 			this.segmentRect();
 
-			this.components.eachAll(function(c,i){
+			this.components.eachAll(function(c, i) {
 				c.draw();
-			},this);
-			
+			}, this);
+
 			this.resetCanvas();
 			/**
 			 * console.timeEnd('Test for draw');
@@ -931,9 +938,9 @@
 			/**
 			 * default should to calculate the size of warp?
 			 */
-			this.width = this.pushIf('width',400);
-			this.height = this.pushIf('height',300);
-			
+			this.width = this.pushIf('width', 400);
+			this.height = this.pushIf('height', 300);
+
 			var style = "width:" + this.width + "px;height:" + this.height + "px;padding:0px;overflow:hidden;position:relative;";
 
 			var id = $.iGather(this.type);
@@ -964,48 +971,47 @@
 				else if (typeof r == 'object')
 					this.create(r);
 			}
-			
+
 			if (this.get('data').length > 0 && this.rendered && !this.initialization) {
-				$.Interface.parser.call(this,this.get('data'));
+				$.Interface.parser.call(this, this.get('data'));
 				this.doConfig();
 				this.initialization = true;
 			}
 		},
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
-			
-			
+
 			/**
 			 * for compress
 			 */
-			var _ = this, E = _.variable.event;
-			
+			var _ = this, E = _.variable.event,mCSS = _.get('default_mouseover_css'),O ,AO;
+
 			$.Assert.isArray(_.data);
 			$.Interface._3D.call(_);
 
 			_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
-			
+
 			_.processAnimation = _.get('animation');
 			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
 			_.variable.animation = {
-				type:0,
+				type : 0,
 				time : 0,
-				queue:[]
+				queue : []
 			};
-			
+
 			_.animationArithmetic = $.getAnimationArithmetic(_.get('animation_timing_function'));
-			
+
 			_.on('afterAnimation', function() {
 				var N = _.variable.animation.queue.shift();
-				if(N){
-					_[N.handler].apply(_,N.arguments);
+				if (N) {
+					_[N.handler].apply(_, N.arguments);
 				}
 			});
-			
-			
+
 			['click', 'dblclick', 'mousemove'].each(function(it) {
 				_.T.addEvent(it, function(e) {
-					if(_.processAnimation)return;
+					if (_.processAnimation)
+						return;
 					_.fireEvent(_, it, [_, $.Event.fix(e)]);
 				}, false);
 			});
@@ -1027,17 +1033,22 @@
 			});
 
 			_.on('mousemove', function(_, e) {
-				var O = false;
+				O = AO = false;
 				_.components.eachAll(function(cot) {
 					if (!cot.preventEvent) {
 						var cE = cot.variable.event, M = cot.isMouseOver(e);
 						if (M.valid) {
 							O = true;
+							AO = AO || cot.atomic;
 							if (!E.mouseover) {
 								E.mouseover = true;
-								_.T.css("cursor", "pointer");
 								_.fireEvent(_, 'mouseover', [e]);
 							}
+							
+							if(mCSS&&AO){
+								_.T.css("cursor", "pointer");
+							}
+							
 							if (!cE.mouseover) {
 								cE.mouseover = true;
 								cot.fireEvent(cot, 'mouseover', [e, M]);
@@ -1052,13 +1063,17 @@
 					}
 				});
 
+				if(mCSS&&!AO && E.mouseover){
+					_.T.css("cursor", "default");
+				}
+				
+				//console.log(O+":"+E.mouseover);
 				if (!O && E.mouseover) {
 					E.mouseover = false;
-					_.T.css("cursor", "default");
 					_.fireEvent(_, 'mouseout', [e]);
 				}
 			});
-
+			
 			_.push('l_originx', _.get('padding_left'));
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('t_originy', _.get('padding_top'));
@@ -1134,4 +1149,4 @@
 		}
 	});
 })(iChart);
-//@end
+// @end

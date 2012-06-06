@@ -30,7 +30,12 @@
 					}
 				}
 			});
-	
+			
+			/**
+			 * If this element can split or contain others.(default to false)
+			 */
+			this.atomic = false;
+			
 			this.inject(c);
 			
 			this.final_parameter = {};

@@ -27,10 +27,7 @@
 				 yHeight:30
 			});
 			
-			this.registerEvent(
-				'beforeDrawRow',
-				'drawRow'
-			);
+			//this.registerEvent();
 		},
 		doSector:function(d,i){
 			this.doParse(d,i);

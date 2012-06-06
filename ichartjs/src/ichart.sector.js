@@ -63,7 +63,12 @@ iChart.Sector = iChart.extend(iChart.Component, {
 				linelength : undefined
 			}
 		});
-
+		
+		/**
+		 * this element support boxMode
+		 */
+		this.atomic = true;
+		
 		this.registerEvent('changed');
 
 		this.label = null;

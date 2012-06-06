@@ -1,5 +1,6 @@
 /**
  * @overview This is base class of all element.All must extend this so that has ability for configuration
+ * this class include some base attribute
  * @component#iChart.Element
  * @extend#Object
  */
@@ -86,7 +87,7 @@ iChart.Element = function(config) {
 	this.events = {};
 	this.preventEvent = false;
 	this.initialization = false;
-
+	
 	
 	//this.registerEvent();
 	/**

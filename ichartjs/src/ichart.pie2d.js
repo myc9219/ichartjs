@@ -17,7 +17,7 @@ iChart.Pie2D = iChart.extend(iChart.Pie, {
 
 		//this.set({});
 		
-		this.registerEvent();
+		//this.registerEvent();
 	},
 	doSector:function(d,i){
 		this.doParse(d,i);

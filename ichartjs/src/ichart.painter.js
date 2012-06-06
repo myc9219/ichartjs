@@ -83,7 +83,8 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		this.variable.event = {
 			mouseover : false
 		};
-
+		
+		
 		/**
 		 * register the common event
 		 */

@@ -62,9 +62,9 @@
 			return {valid:false};
 		},
 		tipInvoke:function(){
-			var _ = this,r = _.get('radius');
+			var _ = this;
 			return function(w,h){
-				var P = iChart.p2Point(_.x,_.y,_.get('middleAngle'),r*0.8),Q  = iChart.quadrantd(_.get('middleAngle'));
+				var P = iChart.p2Point(_.x,_.y,_.get('middleAngle'),_.r*0.8),Q  = iChart.quadrantd(_.get('middleAngle'));
 				return {
 					left:(Q>=2&&Q<=3)?(P.x - w):P.x,
 					top:Q>=3?(P.y - h):P.y
