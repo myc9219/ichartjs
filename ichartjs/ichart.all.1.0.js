@@ -1450,7 +1450,16 @@ $.Html = $.extend($.Element,{
 				/**
 				 * @cfg {Boolean} indicate whether there has a effect of color gradient.(default to false)
 				 */
-				gradient : false
+				gradient : false,
+				/**
+				 * @cfg {Object} Specify the option of tip
+				 */
+				tip : {
+					enable : false,
+					border : {
+						width : 2
+					}
+				}
 			});
 	
 			this.inject(c);
@@ -1720,7 +1729,7 @@ $.Html = $.extend($.Element,{
 		configure:function(){
 			
 			/**
-			 * invoked the super class's  configuration
+			 * invoked the super class's configuration
 			 */
 			$.Tip.superclass.configure.apply(this,arguments);
 			
@@ -1730,24 +1739,39 @@ $.Html = $.extend($.Element,{
 			this.type = 'tip';
 			
 			this.set({
+				/**
+				 * @cfg {String} Specifies the text want to disply.(default to '')
+				 */
 				 text:'',
 				 /**
-				  * 
-				  * @param {String} {'fixed','follow'}(default to 'follow')
-				  */
+				 * @cfg {String} Specifies the tip's type.(default to 'follow') Available value are:
+				 * @Option follow
+				 * @Option fixed
+				 */
 				 showType:'follow',
+				 /**
+				  * @cfg {Function} Specifies Function to calculate the position.(default to null)
+				  */
 				 invokeOffset:null,
 				 /**
-				  * @cfg {Number}  ms
-				  */
+				 * @cfg {Number} Specifies the duration when fadeIn/fadeOut in millisecond.(default to 300)
+				 */
 				 fade_duration:300,
-				 move_duration:100,
-				 shadow:true,
 				 /**
-				  * @cfg {Boolean}  if  calculate the position every time (default to false)
-				  */
+				 * @cfg {Number} Specifies the duration when move in millisecond.(default to 100)
+				 */
+				 move_duration:100,
+				 /**
+				 * @cfg {Boolean} if calculate the position every time (default to false)
+				 */
 				 invokeOffsetDynamic:false,
+				 /**
+				 * @cfg {String} Specifies the css of this Dom.
+				 */
 				 style:'textAlign:left;padding:4px 5px;cursor:pointer;backgroundColor:rgba(239,239,239,.85);fontSize:12px;color:black;',
+				 /**
+				 * @cfg {Object} Override the default as enable = true
+				 */
 				 border:{
 					enable:true
 				 },
@@ -1841,7 +1865,8 @@ $.Html = $.extend($.Element,{
 			}
 			
 		}
-});//@end
+});// @end
+
 
 	/**
 	 * @overview this component use for abc
@@ -2004,7 +2029,8 @@ $.Legend = $.extend($.Component, {
 			 */
 			line_height : 16,
 			/**
-			 * @cfg {String} the shape of legend' sign (default to 'square') The following list provides all available value you can use：
+			 * @cfg {String} Specifies the shape of legend' sign (default to 'square') 
+			 * Available value are：
 			 * @Option 'round'
 			 * @Option 'square'
 			 * @Option 'round-bar'
@@ -2382,14 +2408,35 @@ $.Label = $.extend($.Component, {
 			this.type = 'text';
 			
 			this.set({
+				/**
+				 * @cfg {String} Specifies the text want to disply.(default to '')
+				 */
 				text:'',
-				//textAlign：文字水平对齐方式。可取属性值: start, end, left,right, center。默认值:
+				/**
+				 * @cfg {String} Specifies the textAlign of html5.(default to 'center')
+				 * Available value are:
+				 * @Option start
+				 * @Option end
+				 * @Option left
+				 * @Option right
+				 * @Option center
+				 */
 				textAlign:'center',
-				//textBaseline可取属性值：top, hanging, middle,alphabetic, ideographic, bottom。默认值：alphabetic.
+				/**
+				 * @cfg {String} Specifies the textBaseline of html5.(default to 'top')
+				 * Available value are:
+				 * @Option top
+				 * @Option hanging
+				 * @Option middle
+				 * @Option alphabetic
+				 * @Option ideographic
+				 * @Option bottom
+				 */
 				textBaseline:'top'
 			});
 			
 			this.registerEvent();
+			
 			/**
 			 * indicate this component not need support event
 			 */
@@ -4441,18 +4488,50 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			this.type = 'rectangle';
 			
 			this.set({
+				/**
+				 * @cfg {Number} Specifies the width of this element in pixels,Normally,this will given by chart.(default to 0)
+				 */
 				width:0,
+				/**
+				 * @cfg {Number} Specifies the height of this element in pixels,Normally,this will given by chart.(default to 0)
+				 */
 				height:0,
 				value_space:10,
+				/**
+				 * @cfg {String} Specifies the text of this element,Normally,this will given by chart.(default to '')
+				 */
 				value:'',
+				/**
+				 * @cfg {String} Specifies the tip alignment of chart(defaults to 'top').Available value are:
+				 * @Option 'left'
+				 * @Option 'right'
+				 * @Option 'top'
+				 * @Option 'bottom'
+				 */
 				tipAlign:'top',
+				/**
+				 * @cfg {String} Specifies the value's text alignment of chart(defaults to 'top') Available value are:
+				 * @Option 'left'
+				 * @Option 'right'
+				 * @Option 'top'
+				 * @Option 'bottom'
+				 */
 				valueAlign:'top',
+				/**
+				 * @inner
+				 */
 				textAlign:'center',
+				/**
+				 * @inner
+				 */
 				textBaseline:'top',
-				color_factor:0.16,
-				shadow:true,
+				/**
+				 * @cfg {Number} Override the default as 3
+				 */
 				shadow_blur:3,
-				shadow_offsetx:0,
+				/**
+				 * @cfg {Number} Override the default as -1
+				 */
 				shadow_offsety:-1
 			});
 			
@@ -4468,7 +4547,6 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			$.Assert.gtZero(this.get('width'),'width');
 			this.width = this.get('width');
 			this.height = this.get('height');
-			
 			
 			this.centerX = this.x + this.width/2;
 			this.centerY = this.y + this.height/2;
@@ -4531,6 +4609,9 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			this.type = 'rectangle2d';
 			
 			this.set({
+				/**
+				 * @cfg {Number} Override the default as -2
+				 */
 				shadow_offsety:-2
 			});
 			
@@ -4632,11 +4713,23 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			this.dimension = $._3D;
 			
 			this.set({
+				/**
+				 * @cfg {Number} Specifies Three-dimensional z-axis deep in pixels.Normally,this will given by chart.(default to undefined)
+				 */
 				zHeight:undefined,
-				xAngle:60,//有范围限制
-				yAngle:20,//有范围限制
+				/**
+				 * @cfg {Number} Three-dimensional rotation X in degree(angle).socpe{0-90}.Normally,this will given by chart.(default to 60)
+				 */
+				xAngle:60,
+				/**
+				 * @cfg {Number} Three-dimensional rotation Y in degree(angle).socpe{0-90}.Normally,this will given by chart.(default to 20)
+				 */
+				yAngle:20,
 				xAngle_:undefined,
 				yAngle_:undefined,
+				/**
+				 * @cfg {Number} Override the default as 2
+				 */
 				shadow_offsetx:2
 			});
 			
@@ -4709,47 +4802,56 @@ $.Sector = $.extend($.Component, {
 		this.type = 'sector';
 		
 		this.set({
-			name:'',
+			/**
+			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
+			 */
 			counterclockwise : false,
+			/**
+			 * @cfg {Number} Specify the start angle of this sector.Normally,this will given by chart.(default to 0)
+			 */
 			startAngle : 0,
+			/**
+			 * @cfg {Number} middleAngle = (endAngle - startAngle)/2.Normally,this will given by chart.(default to 0)
+			 */
 			middleAngle : 0,
+			/**
+			 * @cfg {Number} Specify the end angle of this sector.Normally,this will given by chart.(default to 0)
+			 */
 			endAngle : 0,
+			/**
+			 * @cfg {Number} Specify total angle of this sector,totalAngle = (endAngle - startAngle).Normally,this will given by chart.(default to 0)
+			 */
 			totalAngle : 0,
 			/**
 			 * @cfg {String} the event's name trigger pie bound(default to 'click'). 
-			 * Available value are:
-			 * @Option 'left'
-			 * @Option 'center'
-			 * @Option 'right'
 			 */
 			bound_event : 'click',
+			/**
+			 * @cfg {Boolean} True to bound this sector.(default to false)
+			 */
 			expand : false,
 			/**
-			 * @cfg {Boolean} if it has animate when a piece popd (default to false)
+			 * @inner {Boolean} True to has animation when bound.(default to false)
 			 */
 			pop_animate : false,
 			/**
-			 * @cfg {Boolean} if the piece mutex,it means just one piece could pop (default to true)
+			 * @cfg {Boolean} if true means just one piece could bound at same time.(default to false)
 			 */
 			mutex : false,
+			/**
+			 * @cfg {Number} Specify the offset when bounded.Normally,this will given by chart.(default to undefined)
+			 */
 			increment : undefined,
-			shadow : true,
+			/**
+			 * @cfg {Boolean} True to apply the gradient.(default to true)
+			 */
 			gradient : true,
 			/**
-			 * @cfg {Boolean} if the label displayed (default to true)
+			 * @cfg {Boolean} option of label
 			 */
 			label : {
 				enable : true,
-				/**
-				 * label's length
-				 */
 				linelength : undefined
-			},
-			tip : {
-				enable : false,
-				border : {
-					width : 2
-				}
 			}
 		});
 
@@ -4856,6 +4958,9 @@ $.Sector = $.extend($.Component, {
 			this.type = 'sector2d';
 			
 			this.set({
+				/**
+				 * @cfg {Float (0~)} Specify the sector's radius.Normally,this will given by chart.(default to 0)
+				 */
 				radius:0
 			});
 			
@@ -4968,17 +5073,17 @@ $.Sector = $.extend($.Component, {
 			
 			this.set({
 				/**
-				 * @cfg {Number}  major semiaxis of ellipse
+				 * @cfg {Number}  Specify major semiaxis of ellipse.Normally,this will given by chart.(default to 0)
 				 */
 				semi_major_axis:0,
 				/**
-				 * @cfg {Number} minor semiaxis of ellipse
+				 * @cfg {Number} Specify minor semiaxis of ellipse.Normally,this will given by chart.(default to 0)
 				 */
 				semi_minor_axis:0,
-				cylinder_height:0,
-				 border:{
-					color:'#BCBCBC'
-				 }
+				/**
+				 * @cfg {Float (0~)} Specify the sector's height(thickness).Normally,this will given by chart.(default to 0)
+				 */
+				cylinder_height:0
 			});
 			
 			this.registerEvent(
@@ -5116,7 +5221,7 @@ $.Pie = $.extend($.Chart, {
 		
 		this.set({
 			/**
-			 * @cfg {Float (0~)} the pie's radius
+			 * @cfg {Float (0~)} Specify the pie's radius.(default to calculate by the size of chart)
 			 */
 			radius : 0,
 			/**
@@ -5140,7 +5245,7 @@ $.Pie = $.extend($.Chart, {
 			 */
 			customize_layout : false,
 			/**
-			 * @cfg {Boolean} Specify as true make sector will counterclockwise.(default to false)
+			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
 			 */
 			counterclockwise : false,
 			/**
@@ -5152,7 +5257,7 @@ $.Pie = $.extend($.Chart, {
 			 */
 			mutex : false,
 			/**
-			 * @cfg {Boolean} if the apply the gradient,if set to true that will be gradient color of each sector(default to true)
+			 * @cfg {Boolean} True to apply the gradient,if set to true that will be gradient color of each sector(default to true)
 			 */
 			gradient : true,
 			/**
@@ -5168,7 +5273,7 @@ $.Pie = $.extend($.Chart, {
 				padding : 5
 			},
 			/**
-			 * @cfg {Object} Specify the config of tip
+			 * @cfg {Object} Specify the option of tip
 			 */
 			tip : {
 				enable : false,
@@ -5176,7 +5281,11 @@ $.Pie = $.extend($.Chart, {
 					width : 2,
 					radius : 5
 				}
-			}
+			},
+			/**
+			 * @cfg {Object} option of sector
+			 */
+			sector:{}
 		});
 
 		this.registerEvent(
@@ -5358,9 +5467,8 @@ $.Pie = $.extend($.Chart, {
 		}
 		this.push('originy', this.get('centery') + this.get('offsety'));
 
-		this.push('sector', $.clone([
-				'originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'
-		], this.options));
+		$.apply(this.get('sector'),$.clone(['originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'],this.options));
+		
 
 	}
 });//@end 
@@ -5423,10 +5531,13 @@ $.Pie2D = $.extend($.Pie, {
 			this.dimension = $._3D;
 			
 			this.set({
-				 /**
-				 * @cfg {Float} {range:(0~90]} z轴旋转角度
+				/**
+				 * @cfg {Number} Three-dimensional rotation Z in degree(angle).socpe{0-90}.(default to 45)
 				 */
 				 zRotate:45,
+				 /**
+				 * @cfg {Number} Specifies the pie's thickness in pixels.(default to 30)
+				 */
 				 yHeight:30
 			});
 			
@@ -5504,7 +5615,7 @@ $.Column = $.extend($.Chart, {
 				padding : 5
 			},
 			/**
-			 * @cfg {Object} the option for rectangle
+			 * @cfg {Object} option of rectangle
 			 */
 			rectangle:{}
 		});
@@ -5536,8 +5647,8 @@ $.Column = $.extend($.Chart, {
 		/**
 		 * quick config to all rectangle
 		 */
-		this.push('rectangle', $.clone(['customize_layout', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options));
-
+		$.apply(this.get('rectangle'),$.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'],this.options));
+		
 		/**
 		 * register event
 		 */
@@ -5609,7 +5720,7 @@ $.Column = $.extend($.Chart, {
 				text = this.data[i].name;
 				value = this.data[i].value;
 				t = text+":"+value;
-				h = (this.data[i].value-S.start)*H/S.distance;
+				h = (value-S.start)*H/S.distance;
 				
 				if(Le){
 					this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[this.data[i],i],t));
@@ -5988,7 +6099,7 @@ $.Column = $.extend($.Chart, {
 			/**
 			 * quick config to all rectangle
 			 */
-			$.applyIf(this.get('rectangle'),$.clone(['label','tip','border'],this.options));
+			$.apply(this.get('rectangle'),$.clone(['label','tip','border'],this.options));
 			
 			/**
 			 * register event
@@ -6224,355 +6335,382 @@ $.Column = $.extend($.Chart, {
 			}
 			
 	});//@end
-	/**
-	 * Line ability for real-time show 
-	 * @overview this component use for abc
-	 * @component#$.LineSegment
-	 * @extend#$.Component
-	 */
-	$.LineSegment = $.extend($.Component,{
-		configure:function(){
-			/**
-			 * invoked the super class's  configuration
-			 */
-			$.LineSegment.superclass.configure.apply(this,arguments);
-			
-			/**
-			 * indicate the component's type
-			 */
-			this.type = 'linesegment';
-			
-			this.set({
-				 /**
-				  * @cfg {Boolean} if highlight the point when Line-line intersection(default to true)
-				  */
-				 intersection:true,
-				 /**
-				 *@cfg {Boolean} if the label displayed (default to false)
-				 */
-				 label:false,
-				 /**
-				  * @cfg {String} the shape of two line segment' point(default to 'round').Only applies when intersection is true
-				  * @Option 'round'
-				  */
-				 point_style:'round',
-				 point_hollow:true,
-				 /**
-				  * @cfg {Number} the size of point(default size 4).Only applies when intersection is true
-				  */
-				 point_size:3,
-				 /**
-				  * @cfg {Array} the set of points to compose line segment
-				  */
-				 points:[],
-				 keep_with_coordinate:false,
-				 shadow:true,
-				 shadow_blur:1,
-				 shadow_offsetx:0,
-				 shadow_offsety:1,
-				 spacing:0,
-				 coordinate:null,
-				 event_range_x:0,
-				 /**
-				  * @cfg {Boolean} if true tip show when the mouse must enter the valid distance of axis y
-				  */
-				 limit_y:false,
-				 /**
-				 * @cfg {Number} The distance between the tip and point
-				 */
-				 tip_offset:2,
-				 event_range_y:0,
-				 area:false,
-				 area_opacity:0.4,
-				 tip:{
-					 enable:false,
-					 border:{
-						width:2
-					 }
-				 }
-			});
-			
-			this.label = null;
-			this.tip = null;
-		},
-		drawLabel:function(){
-			if(this.get('intersection')&&this.get('label')){
-				var p = this.get('points');
-				for(var i=0;i<p.length;i++){
-					this.T.textStyle('center','bottom',$.getFont(this.get('fontweight'),this.get('fontsize'),this.get('font')));
-					this.T.fillText(p[i].value,this.x+p[i].x,this.y-p[i].y-this.get('point_size')*3/2,false,this.get('background_color'),'lr',16);
-				}
-			}
-		},
-		drawLineSegment:function(){
-			this.T.shadowOn(this.get('shadow'),this.get('shadow_color'),this.get('shadow_blur'),this.get('shadow_offsetx'),this.get('shadow_offsety'));
-			var p = this.get('points');
-			
-			if(this.get('area')){
-				var polygons = [this.x,this.y];
-				for(var i=0;i<p.length;i++){
-					polygons.push(this.x+p[i].x);
-					polygons.push(this.y-p[i].y);
-				}
-				polygons.push(this.x+this.get('width'));
-				polygons.push(this.y);
-				var bg = this.get('light_color');
-				if(this.get('gradient')){
-					bg = this.T.avgLinearGradient(this.x,this.y-this.get('height'),this.x,this.y,[this.get('light_color2'),bg]);
-				}
-				//NEXT Config the area polygon
-				this.T.polygon(bg,false,1,'',false,'',0,0,0,this.get('area_opacity'),polygons);
-			}
-			
-			
-			for(var i=0;i<p.length-1;i++){
-				this.T.line(this.x+p[i].x,this.y-p[i].y,this.x+p[i+1].x,this.y-p[i+1].y,this.get('brushsize'),this.get('fill_color'),false);
-			}
-			
-			if(this.get('intersection')){
-				for(var i=0;i<p.length;i++){
-					if(this.get('point_hollow')){
-						this.T.round(this.x+p[i].x,this.y-p[i].y,this.get('point_size'),'#FEFEFE',this.get('brushsize'),this.get('fill_color'));
-					}else{
-						this.T.round(this.x+p[i].x,this.y-p[i].y,this.get('point_size'),this.get('fill_color'));
-					}
-				}
-			}
-			
-			if(this.get('shadow')){
-		    	this.T.shadowOff();
-		    }
-		},
-		doDraw:function(opts){
-			this.drawLineSegment();
-			this.drawLabel();
-		},
-		isEventValid:function(e){
-			return {valid:false};
-		},
-		tipInvoke:function(){
-			var x  = this.x,
-				y = this.y,
-				o = this.get('tip_offset'),
-				s = this.get('point_size')+o,
-				_ = this;
-			return function(w,h,m){
-				var l = m.left,t = m.top;
-				l = ((_.tipPosition<3&&(m.left-w-x-o>0))||(_.tipPosition>2&&(m.left-w-x-o<0)))?l-(w+o):l+o;
-				t = _.tipPosition%2==0?m.top+s:m.top-h-s;
-				return {
-					left:l,
-					top:t
-				}
-			}
-		},
-		doConfig:function(){
-			$.LineSegment.superclass.doConfig.call(this);
-			$.Assert.gtZero(this.get('spacing'),'spacing');
-			
-			var _ = this,
-				sp = this.get('spacing'),
-				ry = _.get('event_range_y'),
-				rx = _.get('event_range_x'),
-				heap = _.get('tipInvokeHeap'),
-				p = _.get('points');
-			_.points = p;
-			
-			for(var i=0;i<p.length;i++){
-				p[i].width = p[i].x;
-				p[i].height = p[i].y;
-			}
-			
-			if(rx==0){
-				rx = _.push('event_range_x',Math.floor(sp/2));
-			}else{
-				rx = _.push('event_range_x',$.between(1,Math.floor(sp/2),rx));
-			}
-			if(ry==0){
-				ry = _.push('event_range_y',Math.floor(_.get('point_size')));
-			}
-			
-			if(_.get('tip.enable')){
-				//_ use for tip coincidence
-				_.on('mouseover',function(e,m){
-					heap.push(_);
-					_.tipPosition = heap.length;
-				}).on('mouseout',function(e,m){
-					heap.pop();
-				});
-				_.push('tip.invokeOffsetDynamic',true);
-				_.tip = new $.Tip(_.get('tip'),_);
-			}
-			
-			var c = _.get('coordinate'),
-				ly = _.get('limit_y'),
-				k = _.get('keep_with_coordinate'),
-				valid =function(i,x,y){
-					if(Math.abs(x-(_.x+p[i].x))<rx&&(!ly||(ly&&Math.abs(y-(_.y-p[i].y))<ry))){
-						return true;
-					}
-					return false;
-				},
-				to = function(i){
-					return {valid:true,text:p[i].value,top:_.y-p[i].y,left:_.x+p[i].x,hit:true};
-				};
-			
-			/**
-			 * override the default method
-			 */
-			_.isEventValid =  function(e){
-				//console.time('mouseover');
-				if(c&&!c.isEventValid(e).valid){
-					return {valid:false};
-				}
-				var ii = Math.floor((e.offsetX-_.x)/sp);
-				if(ii<0||ii>=(p.length-1)){
-					ii = $.between(0,p.length-1,ii);
-					if(valid(ii,e.offsetX,e.offsetY))
-						return to(ii);
-					else
-						return {valid:k};	
-				}
-				//calculate the pointer's position will between which two point?this function can improve location speed 
-				for(var i=ii;i<=ii+1;i++){
-					if(valid(i,e.offsetX,e.offsetY))
-						return to(i);
-				}
-				//console.timeEnd('mouseover');
-				return {valid:k};
-			}
-			
-		}
-});//@end
-	/**
-	 * @overview this component use for abc
-	 * @component#$.Line
-	 * @extend#$.Chart
-	 */
-	$.Line = $.extend($.Chart,{
+/**
+ * Line ability for real-time show
+ * 
+ * @overview this component use for abc
+ * @component#$.LineSegment
+ * @extend#$.Component
+ */
+$.LineSegment = $.extend($.Component, {
+	configure : function() {
 		/**
-		 * initialize the context for the line
+		 * invoked the super class's configuration
 		 */
-		configure:function(){
+		$.LineSegment.superclass.configure.apply(this, arguments);
+
+		/**
+		 * indicate the component's type
+		 */
+		this.type = 'linesegment';
+
+		this.set({
 			/**
-			 * invoked the super class's  configuration
+			 * @cfg {Boolean} If true there show a point when Line-line intersection(default to true)
 			 */
-			$.Line.superclass.configure.call(this);
-			
-			this.type = 'line';
-			
-			this.dataType='simple';
-				
-			this.set({
-				/**
-				 * @cfg {Object} the option for coordinate
-				 */
-				coordinate:{},
-				/**
-				 * @cfg {String} the align of scale(default to 'left')
-				 * Available value are:
-				 * @Option 'left'
-				 * @Option 'right'
-				 */
-				keduAlign:'left',
-				/**
-				  *@cfg {String} the align of label(default to 'bottom')
-				  * Available value are:
-				  * @Option 'top,'bottom'
-			 	 */
-				labelAlign:'bottom',
-				/**
-				  *@cfg {Array} the array of labels close to the axis
-			 	 */
-				labels:[],
-				/**
-				 * @cfg {Number} the distance of column's bottom and text(default to 6)
-				 */
-				label_space:6,
-				/**
-				 *@cfg {Boolean} Can Line smooth?now has unavailable
-				 */
-				smooth:false,
-				/**
-				 *@cfg {Boolean} if the point are proportional space(default to true)
-				 */
-				proportional_spacing:true,
-				/**
-				 * @inner {Number} the space of each label
-				 */
-				label_spacing:0,
-				/**
-				 * @cfg {Object} the option for linesegment
-				 */
-				segment_style:{},
-				/**
-				 *@cfg {Boolean} if the tip displayed (default to false).Note that this option only applies when showPoint = true. 
-				 */
-				tip:{
-					enable:false
-				},
-				/**
-				 * {Object} the option for legend
-				 */
-				legend:{
-					sign:'round-bar',
-				 	sign_size:14
+			intersection : true,
+			/**
+			 * @cfg {Boolean} if the label displayed (default to false)
+			 */
+			label : false,
+			/**
+			 * @cfg {String} Specifies the shape of two line segment' point(default to 'round').Only applies when intersection is true Available value are:
+			 * @Option 'round'
+			 */
+			point_style : 'round',
+			/**
+			 * @cfg {Boolean} If true the centre of point will be hollow.(default to true)
+			 */
+			point_hollow : true,
+			/**
+			 * @cfg {Number} Specifies the size of point.(default size 4).Only applies when intersection is true
+			 */
+			point_size : 3,
+			/**
+			 * @inner {Array} the set of points to compose line segment
+			 */
+			points : [],
+			/**
+			 * @inner {Boolean} If true the event accord width coordinate.(default to false)
+			 */
+			keep_with_coordinate : false,
+			/**
+			 * @cfg {Number} Override the default as 1
+			 */
+			shadow_blur : 1,
+			/**
+			 * @cfg {Number} Override the default as 1
+			 */
+			shadow_offsety : 1,
+			/**
+			 * @inner {Number} Specifies the space between two point
+			 */
+			point_space : 0,
+			/**
+			 * @inner {Object} reference of coordinate
+			 */
+			coordinate : null,
+			/**
+			 * @cfg {Number} Specifies the valid range of x-direction.(default to 0)
+			 */
+			event_range_x : 0,
+			/**
+			 * @cfg {Boolean} If true tip show when the mouse must enter the valid distance of axis y.(default to false)
+			 */
+			limit_y : false,
+			/**
+			 * @cfg {Number} Specifies the space between the tip and point.(default to 2)
+			 */
+			tip_offset : 2,
+			/**
+			 * @cfg {Number} Specifies the valid range of y-direction.(default to 0)
+			 */
+			event_range_y : 0,
+			/**
+			 * @cfg {Boolean} If true the linesegment will turn into a area.(default to false)
+			 */
+			area : false,
+			/**
+			 * @cfg {Float} Specifies the opacity of area.scope{0.1-1}(default to 0.4) Note:Only applies when area = true
+			 */
+			area_opacity : 0.4,
+			/**
+			 * @cfg {Object} the options of tip 
+			 */
+			tip : {
+				enable : false,
+				border : {
+					width : 2
 				}
-			});
-			
-			this.registerEvent(
-				'parsePoint',
-				'beforeLineAnimation',
-				'afterLineAnimation'
-			);
-			
-			this.lines = [];
-		},
-		doConfig:function(){
-			$.Line.superclass.doConfig.call(this);
-			
-			/**
-			 * apply the coordinate feature
-			 */
-			$.Interface.coordinate.call(this);
-			
-			this.push('line_start',(this.get('coordinate.width')-this.get('coordinate.valid_width'))/2);
-			this.push('line_end',this.get('coordinate.width')-this.get('line_start'));
-			
-			if(this.get('proportional_spacing'))
-			this.push('label_spacing',this.get('coordinate.valid_width')/(this.get('maxItemSize')-1));
-			
-			
-			this.push('segment_style.originx',this.get('originx')+this.get('line_start'));
-			
-			//NEXT y also has line_start and line end
-			this.push('segment_style.originy',this.get('originy')+this.get('coordinate.height'));
-			
-			this.push('segment_style.width',this.get('coordinate.valid_width'));
-			this.push('segment_style.height',this.get('coordinate.valid_height'));
-			
-			this.push('segment_style.limit_y',this.data.length>1);
-			
-			this.push('segment_style.keep_with_coordinate',true&&this.data.length==1);
-			
-			var single = this.data.length==1,self = this;
-			
-			if(this.get('coordinate.crosshair.enable')){
-				this.push('coordinate.crosshair.hcross',single);
-				this.push('coordinate.crosshair.invokeOffset',function(e,m){
-					var r = self.lines[0].isEventValid(e);//NEXT how fire muti line?
-					return r.valid?r:false;
-				});
 			}
-			
-			if(!this.get('segment_style.tip')){
-				this.push('segment_style.tip',this.get('tip'));
-			}else{
-				this.push('segment_style.tip.wrap',this.get('tip.wrap'));
+		});
+
+		this.label = null;
+		this.tip = null;
+	},
+	drawLabel : function() {
+		if (this.get('intersection') && this.get('label')) {
+			var p = this.get('points');
+			for ( var i = 0; i < p.length; i++) {
+				this.T.textStyle('center', 'bottom', $.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
+				this.T.fillText(p[i].value, this.x + p[i].x, this.y - p[i].y - this.get('point_size') * 3 / 2, false, this.get('background_color'), 'lr', 16);
 			}
 		}
-		
-});//@end
+	},
+	drawLineSegment : function() {
+		this.T.shadowOn(this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
+		var p = this.get('points');
+
+		if (this.get('area')) {
+			var polygons = [this.x, this.y];
+			for ( var i = 0; i < p.length; i++) {
+				polygons.push(this.x + p[i].x);
+				polygons.push(this.y - p[i].y);
+			}
+			polygons.push(this.x + this.get('width'));
+			polygons.push(this.y);
+			var bg = this.get('light_color');
+			if (this.get('gradient')) {
+				bg = this.T.avgLinearGradient(this.x, this.y - this.get('height'), this.x, this.y, [this.get('light_color2'), bg]);
+			}
+			// NEXT Config the area polygon
+	this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
+}
+
+for ( var i = 0; i < p.length - 1; i++) {
+	this.T.line(this.x + p[i].x, this.y - p[i].y, this.x + p[i + 1].x, this.y - p[i + 1].y, this.get('brushsize'), this.get('fill_color'), false);
+}
+
+if (this.get('intersection')) {
+	for ( var i = 0; i < p.length; i++) {
+		if (this.get('point_hollow')) {
+			this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('fill_color'));
+		} else {
+			this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), this.get('fill_color'));
+		}
+	}
+}
+
+if (this.get('shadow')) {
+	this.T.shadowOff();
+}
+},
+	doDraw : function(opts) {
+		this.drawLineSegment();
+		this.drawLabel();
+	},
+	isEventValid : function(e) {
+		return {
+			valid : false
+		};
+	},
+	tipInvoke : function() {
+		var x = this.x, y = this.y, o = this.get('tip_offset'), s = this.get('point_size') + o, _ = this;
+		return function(w, h, m) {
+			var l = m.left, t = m.top;
+			l = ((_.tipPosition < 3 && (m.left - w - x - o > 0)) || (_.tipPosition > 2 && (m.left - w - x - o < 0))) ? l - (w + o) : l + o;
+			t = _.tipPosition % 2 == 0 ? m.top + s : m.top - h - s;
+			return {
+				left : l,
+				top : t
+			}
+		}
+	},
+	doConfig : function() {
+		$.LineSegment.superclass.doConfig.call(this);
+		$.Assert.gtZero(this.get('point_space'), 'point_space');
+
+		var _ = this, sp = this.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points');
+		_.points = p;
+
+		for ( var i = 0; i < p.length; i++) {
+			p[i].width = p[i].x;
+			p[i].height = p[i].y;
+		}
+
+		if (rx == 0) {
+			rx = _.push('event_range_x', Math.floor(sp / 2));
+		} else {
+			rx = _.push('event_range_x', $.between(1, Math.floor(sp / 2), rx));
+		}
+		if (ry == 0) {
+			ry = _.push('event_range_y', Math.floor(_.get('point_size')));
+		}
+
+		if (_.get('tip.enable')) {
+			// _ use for tip coincidence
+			_.on('mouseover', function(e, m) {
+				heap.push(_);
+				_.tipPosition = heap.length;
+			}).on('mouseout', function(e, m) {
+				heap.pop();
+			});
+			_.push('tip.invokeOffsetDynamic', true);
+			_.tip = new $.Tip(_.get('tip'), _);
+		}
+
+		var c = _.get('coordinate'), ly = _.get('limit_y'), k = _.get('keep_with_coordinate'), valid = function(i, x, y) {
+			if (Math.abs(x - (_.x + p[i].x)) < rx && (!ly || (ly && Math.abs(y - (_.y - p[i].y)) < ry))) {
+				return true;
+			}
+			return false;
+		}, to = function(i) {
+			return {
+				valid : true,
+				text : p[i].value,
+				top : _.y - p[i].y,
+				left : _.x + p[i].x,
+				hit : true
+			};
+		};
+
+		/**
+		 * override the default method
+		 */
+		_.isEventValid = function(e) {
+			// console.time('mouseover');
+			if (c && !c.isEventValid(e).valid) {
+				return {
+					valid : false
+				};
+			}
+			var ii = Math.floor((e.offsetX - _.x) / sp);
+			if (ii < 0 || ii >= (p.length - 1)) {
+				ii = $.between(0, p.length - 1, ii);
+				if (valid(ii, e.offsetX, e.offsetY))
+					return to(ii);
+				else
+					return {
+						valid : k
+					};
+			}
+			// calculate the pointer's position will between which two point?this function can improve location speed
+			for ( var i = ii; i <= ii + 1; i++) {
+				if (valid(i, e.offsetX, e.offsetY))
+					return to(i);
+			}
+			// console.timeEnd('mouseover');
+			return {
+				valid : k
+			};
+		}
+
+	}
+});// @end
+
+/**
+ * @overview this component use for abc
+ * @component#$.Line
+ * @extend#$.Chart
+ */
+$.Line = $.extend($.Chart,{
+	/**
+	 * initialize the context for the line
+	 */
+	configure : function() {
+		/**
+		 * invoked the super class's configuration
+		 */
+		$.Line.superclass.configure.call(this);
+
+		this.type = 'line';
+
+		this.dataType = 'simple';
+
+		this.set({
+			/**
+			 * @cfg {Object} the option for coordinate
+			 */
+			coordinate : {},
+			/**
+			 * @cfg {String} the align of scale.(default to 'left') Available value are:
+			 * @Option 'left'
+			 * @Option 'right'
+			 */
+			keduAlign : 'left',
+			/**
+			 * @cfg {String} the align of label.(default to 'bottom') Available value are:
+			 * @Option 'top,'bottom'
+			 */
+			labelAlign : 'bottom',
+			/**
+			 * @cfg {Array} the array of labels close to the axis
+			 */
+			labels : [],
+			/**
+			 * @cfg {Number} the distance of column's bottom and text.(default to 6)
+			 */
+			label_space : 6,
+			/**
+			 * @cfg {Boolean} Can Line smooth?now has unavailable
+			 */
+			smooth : false,
+			/**
+			 * @cfg {Boolean} if the point are proportional space.(default to true)
+			 */
+			proportional_spacing : true,
+			/**
+			 * @inner {Number} the space of each label
+			 */
+			label_spacing : 0,
+			/**
+			 * @cfg {Object} the option for linesegment
+			 */
+			segment_style : {},
+			/**
+			 * @cfg {Boolean} If the tip displayed.(default enable to false). Note that this option only applies when showPoint = true.
+			 */
+			tip : {
+				enable : false
+			},
+			/**
+			 * {Object} the option for legend.
+			 */
+			legend : {
+				sign : 'round-bar',
+				sign_size : 14
+			}
+		});
+
+		this.registerEvent('parsePoint', 'beforeLineAnimation', 'afterLineAnimation');
+
+		this.lines = [];
+	},
+	doConfig : function() {
+		$.Line.superclass.doConfig.call(this);
+
+		/**
+		 * apply the coordinate feature
+		 */
+		$.Interface.coordinate.call(this);
+
+		this.push('line_start', (this.get('coordinate.width') - this.get('coordinate.valid_width')) / 2);
+		this.push('line_end', this.get('coordinate.width') - this.get('line_start'));
+
+		if (this.get('proportional_spacing'))
+			this.push('label_spacing', this.get('coordinate.valid_width') / (this.get('maxItemSize') - 1));
+
+		this.push('segment_style.originx', this.get('originx') + this.get('line_start'));
+
+		// NEXT y also has line_start and line end
+	this.push('segment_style.originy', this.get('originy') + this.get('coordinate.height'));
+
+	this.push('segment_style.width', this.get('coordinate.valid_width'));
+	this.push('segment_style.height', this.get('coordinate.valid_height'));
+
+	this.push('segment_style.limit_y', this.data.length > 1);
+
+	this.push('segment_style.keep_with_coordinate', this.data.length == 1);
+
+	var single = this.data.length == 1, self = this;
+
+	if (this.get('coordinate.crosshair.enable')) {
+		this.push('coordinate.crosshair.hcross', single);
+		this.push('coordinate.crosshair.invokeOffset', function(e, m) {
+			var r = self.lines[0].isEventValid(e);// NEXT how fire muti line?
+				return r.valid ? r : false;
+			});
+	}
+
+	if (!this.get('segment_style.tip')) {
+		this.push('segment_style.tip', this.get('tip'));
+	} else {
+		this.push('segment_style.tip.wrap', this.get('tip.wrap'));
+	}
+}
+
+});// @end
+
 	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.LineBasic2D
@@ -6590,9 +6728,7 @@ $.Column = $.extend($.Chart, {
 			
 			this.type = 'basicline2d';
 			
-			this.set({
-				
-			});
+			//this.set({});
 			 
 			this.registerEvent();
 			
@@ -6658,7 +6794,7 @@ $.Column = $.extend($.Chart, {
 					points.push($.merge({x:x,y:y,value:d[i].value[j]},this.fireEvent(this,'parsePoint',[d[i].value[j],x,y,j])));
 				}
 				
-				this.push('segment_style.spacing',sp);
+				this.push('segment_style.point_space',sp);
 				this.push('segment_style.points',points);
 				this.push('segment_style.brushsize',d[i].linewidth||1);
 				this.push('segment_style.background_color',d[i].color);

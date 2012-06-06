@@ -18,7 +18,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		
 		this.set({
 			/**
-			 * @cfg {Float (0~)} Specifythe pie's radius.(default to calculate by the size of chart)
+			 * @cfg {Float (0~)} Specify the pie's radius.(default to calculate by the size of chart)
 			 */
 			radius : 0,
 			/**
@@ -42,7 +42,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			customize_layout : false,
 			/**
-			 * @cfg {Boolean} Specify as true make sector will counterclockwise.(default to false)
+			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
 			 */
 			counterclockwise : false,
 			/**
@@ -54,7 +54,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			mutex : false,
 			/**
-			 * @cfg {Boolean} if the apply the gradient,if set to true that will be gradient color of each sector(default to true)
+			 * @cfg {Boolean} True to apply the gradient,if set to true that will be gradient color of each sector(default to true)
 			 */
 			gradient : true,
 			/**
@@ -70,7 +70,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 				padding : 5
 			},
 			/**
-			 * @cfg {Object} Specify the config of tip
+			 * @cfg {Object} Specify the option of tip
 			 */
 			tip : {
 				enable : false,
@@ -78,7 +78,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 					width : 2,
 					radius : 5
 				}
-			}
+			},
+			/**
+			 * @cfg {Object} option of sector
+			 */
+			sector:{}
 		});
 
 		this.registerEvent(
@@ -260,9 +264,8 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		}
 		this.push('originy', this.get('centery') + this.get('offsety'));
 
-		this.push('sector', iChart.clone([
-				'originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'
-		], this.options));
+		iChart.apply(this.get('sector'),iChart.clone(['originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'],this.options));
+		
 
 	}
 });//@end 

@@ -17,11 +17,23 @@
 			this.dimension = iChart._3D;
 			
 			this.set({
+				/**
+				 * @cfg {Number} Specifies Three-dimensional z-axis deep in pixels.Normally,this will given by chart.(default to undefined)
+				 */
 				zHeight:undefined,
-				xAngle:60,//有范围限制
-				yAngle:20,//有范围限制
+				/**
+				 * @cfg {Number} Three-dimensional rotation X in degree(angle).socpe{0-90}.Normally,this will given by chart.(default to 60)
+				 */
+				xAngle:60,
+				/**
+				 * @cfg {Number} Three-dimensional rotation Y in degree(angle).socpe{0-90}.Normally,this will given by chart.(default to 20)
+				 */
+				yAngle:20,
 				xAngle_:undefined,
 				yAngle_:undefined,
+				/**
+				 * @cfg {Number} Override the default as 2
+				 */
 				shadow_offsetx:2
 			});
 			

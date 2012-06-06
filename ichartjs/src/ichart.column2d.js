@@ -55,7 +55,7 @@
 				text = this.data[i].name;
 				value = this.data[i].value;
 				t = text+":"+value;
-				h = (this.data[i].value-S.start)*H/S.distance;
+				h = (value-S.start)*H/S.distance;
 				
 				if(Le){
 					this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[this.data[i],i],t));

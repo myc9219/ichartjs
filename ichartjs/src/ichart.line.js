@@ -3,7 +3,7 @@
  * @component#iChart.Line
  * @extend#iChart.Chart
  */
-iChart.Line = iChart.extend(iChart.Chart, {
+iChart.Line = iChart.extend(iChart.Chart,{
 	/**
 	 * initialize the context for the line
 	 */

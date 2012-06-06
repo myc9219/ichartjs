@@ -17,10 +17,13 @@
 			this.dimension = iChart._3D;
 			
 			this.set({
-				 /**
-				 * @cfg {Float} {range:(0~90]} z轴旋转角度
+				/**
+				 * @cfg {Number} Three-dimensional rotation Z in degree(angle).socpe{0-90}.(default to 45)
 				 */
 				 zRotate:45,
+				 /**
+				 * @cfg {Number} Specifies the pie's thickness in pixels.(default to 30)
+				 */
 				 yHeight:30
 			});
 			

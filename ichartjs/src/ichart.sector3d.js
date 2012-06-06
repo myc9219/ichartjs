@@ -18,17 +18,17 @@
 			
 			this.set({
 				/**
-				 * @cfg {Number}  major semiaxis of ellipse
+				 * @cfg {Number}  Specify major semiaxis of ellipse.Normally,this will given by chart.(default to 0)
 				 */
 				semi_major_axis:0,
 				/**
-				 * @cfg {Number} minor semiaxis of ellipse
+				 * @cfg {Number} Specify minor semiaxis of ellipse.Normally,this will given by chart.(default to 0)
 				 */
 				semi_minor_axis:0,
-				cylinder_height:0,
-				 border:{
-					color:'#BCBCBC'
-				 }
+				/**
+				 * @cfg {Float (0~)} Specify the sector's height(thickness).Normally,this will given by chart.(default to 0)
+				 */
+				cylinder_height:0
 			});
 			
 			this.registerEvent(
