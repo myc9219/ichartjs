@@ -50,14 +50,8 @@
 			});
 			
 			this.registerEvent(
-					'rectangleover',
-					'rectanglemouseout',
-					'rectangleclick',
 					'parseValue',
-					'parseText',
-					'beforeRectangleAnimation',
-					'afterRectangleAnimation'
-					
+					'parseText'
 				);
 				
 			this.rectangles = [];
@@ -68,11 +62,9 @@
 			this.coo.draw();
 			for(var i=0;i<this.rectangles.length;i++){
 				r = this.rectangles[i]; 
-				this.fireEvent(this,'beforeRectangleAnimation',[this,r]);
 				r.push('width',Math.ceil(this.animationArithmetic(t,0,r.width,d)));
 				this.labels[i].draw();
 				r.drawRectangle();
-				this.fireEvent(this,'afterRectangleAnimation',[this,r]);
 			}
 		},
 		doConfig:function(){

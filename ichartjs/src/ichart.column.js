@@ -49,8 +49,8 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			rectangle:{}
 		});
 		
-		this.registerEvent('rectangleover', 'rectanglemouseout', 'rectangleclick','parseValue','parseText');
-
+		this.registerEvent('parseValue','parseText');
+		
 		this.rectangles = [];
 		this.labels = [];
 	},
@@ -65,6 +65,9 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			this.labels[i].draw();
 			r.drawRectangle();
 		}
+	},
+	doParse : function(d, i) {
+		
 	},
 	doConfig : function() {
 		iChart.Column.superclass.doConfig.call(this);

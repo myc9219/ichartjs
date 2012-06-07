@@ -24,7 +24,6 @@
 				W = this.get('coordinate.width'),
 				hw = this.pushIf('hiswidth',W/(L*2+1));
 			
-			
 			if(hw*L>W){
 				hw = this.push('hiswidth',W/(L*2+1));
 			}
@@ -67,6 +66,7 @@
 				
 				text = this.fireString(this,'parseText',[this.data[i],i],text);
 				value = this.fireString(this,'parseValue',[this.data[i],i],value);
+				
 				/**
 				 * x = this.x + space*(i+1) + width*i
 				 */
