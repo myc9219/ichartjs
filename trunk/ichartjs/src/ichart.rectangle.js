@@ -88,7 +88,6 @@
 				if(this.get('tip.showType')!='follow'){
 					this.push('tip.invokeOffsetDynamic',false);
 				}
-				
 				this.tip = new iChart.Tip(this.get('tip'),this);
 			}
 			
@@ -99,27 +98,16 @@
 				this.variable.event.highlight = true;
 				this.redraw();
 				this.variable.event.highlight = false;
-				/**
-				 * notify the chart so that can control whole situation
-				 */
-				this.container.fireEvent(this.container,'rectangleover',[e,this]);
 				//console.timeEnd('mouseover');
 			}).on('mouseout',function(e){
 				//console.time('mouseout');
 				this.variable.event.highlight = false;
 				this.redraw();
-				this.container.fireEvent(this.container,'rectanglemouseout',[e,this]);
 				//console.timeEnd('mouseout');
-			}).on('click',function(e){
-				this.container.fireEvent(this.container,'rectangleclick',[e,this]);
 			});
 			
 			this.on('beforedraw',function(){
-				if(this.variable.event.highlight){
-					this.push('fill_color',this.get('light_color'));
-				}else{
-					this.push('fill_color',this.get('background_color'));
-				}
+				this.push('fill_color',this.variable.event.highlight?this.get('light_color'):this.get('background_color'));
 				return true;
 			});
 		}
