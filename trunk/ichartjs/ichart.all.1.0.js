@@ -928,7 +928,7 @@ Array.prototype.each = function(f,s)
 };
 Array.prototype.eachAll = function(f,s)
 {
-	this.each(function(d,i){if(iChart_.isArray(d))d.eachAll(f, s);else s?f.call(s,d,i):f(d,i);},s);
+	this.each(function(d,i){if(iChart_.isArray(d)){d.eachAll(f, s);}else{s?f.call(s,d,i):f(d,i);}},s);
 };
 window.iChart = window.$ = iChart_;
 
@@ -937,6 +937,7 @@ window.iChart = window.$ = iChart_;
 ;(function($){
 /**
  * @overview This is base class of all element.All must extend this so that has ability for configuration
+ * this class include some base attribute
  * @component#$.Element
  * @extend#Object
  */
@@ -1023,7 +1024,7 @@ $.Element = function(config) {
 	this.events = {};
 	this.preventEvent = false;
 	this.initialization = false;
-
+	
 	
 	//this.registerEvent();
 	/**
@@ -1162,7 +1163,8 @@ $.Painter = $.extend($.Element, {
 		this.variable.event = {
 			mouseover : false
 		};
-
+		
+		
 		/**
 		 * register the common event
 		 */
@@ -1461,7 +1463,12 @@ $.Html = $.extend($.Element,{
 					}
 				}
 			});
-	
+			
+			/**
+			 * If this element can split or contain others.(default to false)
+			 */
+			this.atomic = false;
+			
 			this.inject(c);
 			
 			this.final_parameter = {};
@@ -1653,28 +1660,35 @@ $.Html = $.extend($.Element,{
 					this.push('yAngle_',P.y);
 				}
 			},
-			_2D:'2d',
-			coordinate2d:function(){
-				return new $.Coordinate2D($.apply({
-					kedu:{
-						 position:this.get('keduAlign'),	
-						 max_scale:this.get('maxValue'),
-						 min_scale:this.get('minValue')
-					}
-				},this.get('coordinate')),this);
+			_2D:function(){
 			},
-			coordinate3d:function(){
-				return new $.Coordinate3D($.apply({
-					kedu:{
-						 position:this.get('keduAlign'),	
-						 scaleAlign:this.get('keduAlign'),	
-						 max_scale:this.get('maxValue'),
-						 min_scale:this.get('minValue')
-					}
-				},this.get('coordinate')),this);
+			coordinate_:function(){
+				if(this.dimension == $._2D){
+					return new $.Coordinate2D($.apply({
+						kedu:{
+							 position:this.get('keduAlign'),	
+							 max_scale:this.get('maxValue'),
+							 min_scale:this.get('minValue')
+						}
+					},this.get('coordinate')),this);
+				}else{
+					this.push('coordinate.xAngle_',this.get('xAngle_'));
+					this.push('coordinate.yAngle_',this.get('yAngle_'));
+					
+					//the Coordinate' Z is same as long as the column's
+					this.push('coordinate.zHeight',this.get('zHeight')*this.get('bottom_scale'));
+					
+					return new $.Coordinate3D($.apply({
+						kedu:{
+							 position:this.get('keduAlign'),	
+							 scaleAlign:this.get('keduAlign'),	
+							 max_scale:this.get('maxValue'),
+							 min_scale:this.get('minValue')
+						}
+					},this.get('coordinate')),this);
+				}
 			},
 			coordinate:function(){
-				
 				/**
 				 * calculate  chart's measurement
 				 */
@@ -2069,6 +2083,11 @@ $.Legend = $.extend($.Component, {
 			 */
 			valign : 'middle'
 		});
+		
+		/**
+		 * this element support boxMode
+		 */
+		this.atomic = true;
 
 		this.registerEvent('drawCell', 'parse', 'drawRaw');
 
@@ -2317,6 +2336,11 @@ $.Label = $.extend($.Component, {
 				radius : 2
 			}
 		});
+		
+		/**
+		 * this element support boxMode
+		 */
+		this.atomic = true;
 
 		this.registerEvent('beforeDrawRow', 'highlight', 'drawRow');
 
@@ -2454,7 +2478,8 @@ $.Label = $.extend($.Component, {
 			
 		}
 });//@end
-;(function($) {
+;
+(function($) {
 
 	var inc = Math.PI / 90, PI = Math.PI, PI2 = 2 * Math.PI, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
 		return w <= 1 ? (Math.floor(c) + 0.5) : Math.floor(c);
@@ -3121,6 +3146,10 @@ $.Label = $.extend($.Component, {
 				 */
 				align : 'center',
 				/**
+				 * @cfg {Boolean} If true mouse change to a pointer when a mouseover fired.(defaults to true)
+				 */
+				default_mouseover_css:true,
+				/**
 				 * @cfg {Boolean} indicate if the chart clear segment of canvas(defaults to true)
 				 */
 				segmentRect : true,
@@ -3246,12 +3275,11 @@ $.Label = $.extend($.Component, {
 			this.total = 0;
 
 		},
-		pushComponent : function(c, b){
+		pushComponent : function(c, b) {
 			if (!!b)
-					this.components.unshift(c);
-				else
-					this.components.push(c);;
-					
+				this.components.unshift(c);
+			else
+				this.components.push(c);;
 		},
 		plugin : function(c, b) {
 			this.init();
@@ -3303,19 +3331,22 @@ $.Label = $.extend($.Component, {
 		/**
 		 * the common config
 		 */
-		add:function(data,index,animate){
-			if(this.processAnimation){
-				this.variable.animation.queue.push({handler:'add',arguments:[data,index,animate]});
+		add : function(data, index, animate) {
+			if (this.processAnimation) {
+				this.variable.animation.queue.push({
+					handler : 'add',
+					arguments : [data, index, animate]
+				});
 				return false;
 			}
 			$.isNumber(index)
-			index = $.between(0,this.data.length,index);
-			data = $.Interface.parser.call(this,data,index);
-			
+			index = $.between(0, this.data.length, index);
+			data = $.Interface.parser.call(this, data, index);
+
 			if (this.get('legend.enable')) {
-				this.legend.calculate(this.data,data);
+				this.legend.calculate(this.data, data);
 			}
-			
+
 			return data;
 		},
 		commonDraw : function() {
@@ -3345,10 +3376,10 @@ $.Label = $.extend($.Component, {
 
 			this.segmentRect();
 
-			this.components.eachAll(function(c,i){
+			this.components.eachAll(function(c, i) {
 				c.draw();
-			},this);
-			
+			}, this);
+
 			this.resetCanvas();
 			/**
 			 * console.timeEnd('Test for draw');
@@ -3387,9 +3418,9 @@ $.Label = $.extend($.Component, {
 			/**
 			 * default should to calculate the size of warp?
 			 */
-			this.width = this.pushIf('width',400);
-			this.height = this.pushIf('height',300);
-			
+			this.width = this.pushIf('width', 400);
+			this.height = this.pushIf('height', 300);
+
 			var style = "width:" + this.width + "px;height:" + this.height + "px;padding:0px;overflow:hidden;position:relative;";
 
 			var id = $.iGather(this.type);
@@ -3420,48 +3451,47 @@ $.Label = $.extend($.Component, {
 				else if (typeof r == 'object')
 					this.create(r);
 			}
-			
+
 			if (this.get('data').length > 0 && this.rendered && !this.initialization) {
-				$.Interface.parser.call(this,this.get('data'));
+				$.Interface.parser.call(this, this.get('data'));
 				this.doConfig();
 				this.initialization = true;
 			}
 		},
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
-			
-			
+
 			/**
 			 * for compress
 			 */
-			var _ = this, E = _.variable.event;
-			
+			var _ = this, E = _.variable.event,mCSS = _.get('default_mouseover_css'),O ,AO;
+
 			$.Assert.isArray(_.data);
 			$.Interface._3D.call(_);
 
 			_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
-			
+
 			_.processAnimation = _.get('animation');
 			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
 			_.variable.animation = {
-				type:0,
+				type : 0,
 				time : 0,
-				queue:[]
+				queue : []
 			};
-			
+
 			_.animationArithmetic = $.getAnimationArithmetic(_.get('animation_timing_function'));
-			
+
 			_.on('afterAnimation', function() {
 				var N = _.variable.animation.queue.shift();
-				if(N){
-					_[N.handler].apply(_,N.arguments);
+				if (N) {
+					_[N.handler].apply(_, N.arguments);
 				}
 			});
-			
-			
+
 			['click', 'dblclick', 'mousemove'].each(function(it) {
 				_.T.addEvent(it, function(e) {
-					if(_.processAnimation)return;
+					if (_.processAnimation)
+						return;
 					_.fireEvent(_, it, [_, $.Event.fix(e)]);
 				}, false);
 			});
@@ -3483,17 +3513,22 @@ $.Label = $.extend($.Component, {
 			});
 
 			_.on('mousemove', function(_, e) {
-				var O = false;
+				O = AO = false;
 				_.components.eachAll(function(cot) {
 					if (!cot.preventEvent) {
 						var cE = cot.variable.event, M = cot.isMouseOver(e);
 						if (M.valid) {
 							O = true;
+							AO = AO || cot.atomic;
 							if (!E.mouseover) {
 								E.mouseover = true;
-								_.T.css("cursor", "pointer");
 								_.fireEvent(_, 'mouseover', [e]);
 							}
+							
+							if(mCSS&&AO){
+								_.T.css("cursor", "pointer");
+							}
+							
 							if (!cE.mouseover) {
 								cE.mouseover = true;
 								cot.fireEvent(cot, 'mouseover', [e, M]);
@@ -3508,13 +3543,17 @@ $.Label = $.extend($.Component, {
 					}
 				});
 
+				if(mCSS&&!AO && E.mouseover){
+					_.T.css("cursor", "default");
+				}
+				
+				//console.log(O+":"+E.mouseover);
 				if (!O && E.mouseover) {
 					E.mouseover = false;
-					_.T.css("cursor", "default");
 					_.fireEvent(_, 'mouseout', [e]);
 				}
 			});
-
+			
 			_.push('l_originx', _.get('padding_left'));
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('t_originy', _.get('padding_top'));
@@ -3590,7 +3629,7 @@ $.Label = $.extend($.Component, {
 		}
 	});
 })($);
-//@end
+// @end
 
 	/**
 	 * @overview this component use for abc
@@ -4121,11 +4160,11 @@ $.Coordinate2D = $.extend($.Component,
 				$.Coordinate2D.superclass.doConfig.call(this);
 				$.Assert.isNumber(this.get('width'), 'width');
 				$.Assert.isNumber(this.get('height'), 'height');
-				// console.log(this.get('wall_style'));
-
-				this.on('mouseover', function(e) {
-					this.T.css("cursor", "default");
-				});
+				
+				/**
+				 * this element not atomic because it is a container,so this is a particular case.
+				 */
+				this.atomic = false;
 
 				if (!this.get('valid_width') || this.get('valid_width') > this.get('width')) {
 					this.push('valid_width', this.get('width'));
@@ -4535,6 +4574,11 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				shadow_offsety:-1
 			});
 			
+			/**
+			 * this element support boxMode
+			 */
+			this.atomic = true;
+			
 			this.registerEvent();
 			
 		},
@@ -4555,7 +4599,6 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				if(this.get('tip.showType')!='follow'){
 					this.push('tip.invokeOffsetDynamic',false);
 				}
-				
 				this.tip = new $.Tip(this.get('tip'),this);
 			}
 			
@@ -4566,27 +4609,16 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				this.variable.event.highlight = true;
 				this.redraw();
 				this.variable.event.highlight = false;
-				/**
-				 * notify the chart so that can control whole situation
-				 */
-				this.container.fireEvent(this.container,'rectangleover',[e,this]);
 				//console.timeEnd('mouseover');
 			}).on('mouseout',function(e){
 				//console.time('mouseout');
 				this.variable.event.highlight = false;
 				this.redraw();
-				this.container.fireEvent(this.container,'rectanglemouseout',[e,this]);
 				//console.timeEnd('mouseout');
-			}).on('click',function(e){
-				this.container.fireEvent(this.container,'rectangleclick',[e,this]);
 			});
 			
 			this.on('beforedraw',function(){
-				if(this.variable.event.highlight){
-					this.push('fill_color',this.get('light_color'));
-				}else{
-					this.push('fill_color',this.get('background_color'));
-				}
+				this.push('fill_color',this.variable.event.highlight?this.get('light_color'):this.get('background_color'));
 				return true;
 			});
 		}
@@ -4854,7 +4886,12 @@ $.Sector = $.extend($.Component, {
 				linelength : undefined
 			}
 		});
-
+		
+		/**
+		 * this element support boxMode
+		 */
+		this.atomic = true;
+		
 		this.registerEvent('changed');
 
 		this.label = null;
@@ -5004,9 +5041,9 @@ $.Sector = $.extend($.Component, {
 			return {valid:false};
 		},
 		tipInvoke:function(){
-			var _ = this,r = _.get('radius');
+			var _ = this;
 			return function(w,h){
-				var P = $.p2Point(_.x,_.y,_.get('middleAngle'),r*0.8),Q  = $.quadrantd(_.get('middleAngle'));
+				var P = $.p2Point(_.x,_.y,_.get('middleAngle'),_.r*0.8),Q  = $.quadrantd(_.get('middleAngle'));
 				return {
 					left:(Q>=2&&Q<=3)?(P.x - w):P.x,
 					top:Q>=3?(P.y - h):P.y
@@ -5303,11 +5340,11 @@ $.Pie = $.extend($.Chart, {
 		 * @paramter int#index
 		 */
 		'rebound');
-
+		
 		this.sectors = [];
 	},
 	/**
-	 * @method Add item(s) into the Chart at the given index or not.. This method accepts either a single object of data config or a array of items's config
+	 * @method this is a experimental method.Add item(s) into the Chart at the given index or not.This method accepts either a single object of data config or a array of items's config
 	 * @paramter data#Object/Array the data's config
 	 * @paramter index#int The start index at which to add the item.(default to append)
 	 * @paramter animate#boolean if has a animation when drawing
@@ -5491,7 +5528,7 @@ $.Pie2D = $.extend($.Pie, {
 
 		//this.set({});
 		
-		this.registerEvent();
+		//this.registerEvent();
 	},
 	doSector:function(d,i){
 		this.doParse(d,i);
@@ -5541,10 +5578,7 @@ $.Pie2D = $.extend($.Pie, {
 				 yHeight:30
 			});
 			
-			this.registerEvent(
-				'beforeDrawRow',
-				'drawRow'
-			);
+			//this.registerEvent();
 		},
 		doSector:function(d,i){
 			this.doParse(d,i);
@@ -5600,8 +5634,7 @@ $.Column = $.extend($.Chart, {
 			 */
 			text_space : 6,
 			/**
-			 * @cfg {String} the align of scale(default to 'left')
-			 * Available value are:
+			 * @cfg {String} the align of scale(default to 'left') Available value are:
 			 * @Option 'left'
 			 * @Option 'right'
 			 */
@@ -5617,25 +5650,43 @@ $.Column = $.extend($.Chart, {
 			/**
 			 * @cfg {Object} option of rectangle
 			 */
-			rectangle:{}
+			rectangle : {}
 		});
 
-		this.registerEvent('rectangleover', 'rectanglemouseout', 'rectangleclick','parseValue','parseText');
+		this.registerEvent('parseValue', 'parseText');
 
 		this.rectangles = [];
 		this.labels = [];
+		this.labels.ignore = true;
 	},
 	doAnimation : function(t, d) {
 		var r, h;
 		this.coo.draw();
+		for ( var i = 0; i < this.labels.length; i++) {
+			this.labels[i].draw();
+		}
 		for ( var i = 0; i < this.rectangles.length; i++) {
 			r = this.rectangles[i];
 			h = Math.ceil(this.animationArithmetic(t, 0, r.height, d));
 			r.push('originy', r.y + (r.height - h));
 			r.push('height', h);
-			this.labels[i].draw();
 			r.drawRectangle();
 		}
+	},
+	doParse : function(d, i, id, x, y, h) {
+		if (this.get('label.enable'))
+			this.push('rectangle.label.text', this.fireString(this, 'parseLabelText', [d, i], d.name + ":" + d.value));
+		if (this.get('tip.enable'))
+			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, i], d.name + ":" + d.value));
+
+		this.push('rectangle.value', d.value);
+		this.push('rectangle.background_color', d.color);
+
+		this.push('rectangle.id', id);
+		this.push('rectangle.originx', x);
+		this.push('rectangle.originy', y);
+		this.push('rectangle.height', h);
+
 	},
 	doConfig : function() {
 		$.Column.superclass.doConfig.call(this);
@@ -5644,122 +5695,93 @@ $.Column = $.extend($.Chart, {
 		 * apply the coordinate feature
 		 */
 		$.Interface.coordinate.call(this);
+
+		if (this.dataType == 'simple') {
+			var L = this.data.length, W = this.get('coordinate.width'), hw = this.pushIf('hiswidth', W / (L * 2 + 1));
+
+			if (hw * L > W) {
+				hw = this.push('hiswidth', W / (L * 2 + 1));
+			}
+
+			/**
+			 * the space of two column
+			 */
+			this.push('hispace', (W - hw * L) / (L + 1));
+
+		}
+		
+		if (this.is3D()){
+			this.push('zHeight', this.get('hiswidth') * this.get('zScale'));
+		}
+		
+		/**
+		 * use option create a coordinate
+		 */
+		this.coo = $.Interface.coordinate_.call(this);
+
+		this.pushComponent(this.coo, true);
+
 		/**
 		 * quick config to all rectangle
 		 */
-		$.apply(this.get('rectangle'),$.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'],this.options));
-		
-		/**
-		 * register event
-		 */
-		this.on('rectangleover', function(e, r) {
-			this.T.css("cursor", "pointer");
+		$.apply(this.get('rectangle'), $.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options));
 
-		}).on('rectanglemouseout', function(e, r) {
-			this.T.css("cursor", "default");
-		});
-
+		this.push('rectangle.width', this.get('hiswidth'));
 	}
 
 });// @end
 
+/**
+ * @overview this component use for abc
+ * @component#@chart#$.Column2D
+ * @extend#$.Column
+ */
+$.Column2D = $.extend($.Column, {
 	/**
-	 * @overview this component use for abc
-	 * @component#@chart#$.Column2D
-	 * @extend#$.Column
+	 * initialize the context for the Column2D
 	 */
-	$.Column2D = $.extend($.Column,{ 
+	configure : function() {
 		/**
-		 * initialize the context for the Column2D
+		 * invoked the super class's configuration
 		 */
-		configure:function(){
-			/**
-			 * invoked the super class's  configuration
-			 */
-			$.Column2D.superclass.configure.call(this);
+		$.Column2D.superclass.configure.call(this);
+
+		this.type = 'column2d';
+
+		/**
+		 * this.set({});
+		 */
+	},
+	doConfig : function() {
+		$.Column2D.superclass.doConfig.call(this);
+
+		/**
+		 * get the max/min scale of this coordinate for calculated the height
+		 */
+		var S = this.coo.getScale(this.get('keduAlign')), bs = this.coo.get('brushsize'), H = this.coo.get('height'), h2 = this.get('hiswidth') / 2, gw = this.get('hiswidth') + this.get('hispace'), h;
+
+		this.data.each(function(d, i) {
+			h = (d.value - S.start) * H / S.distance;
 			
-			this.type = 'column2d';
+			this.doParse(d, i, i, this.x + this.get('hispace') + i * gw, this.y + H - h - bs, h);
+			d.reference = new $.Rectangle2D(this.get('rectangle'), this);
+			this.rectangles.push(d.reference);
 			
-			//this.set({});
-		},
-		doConfig:function(){
-			$.Column2D.superclass.doConfig.call(this);
-			
-			var L = this.data.length,
-				W = this.get('coordinate.width'),
-				hw = this.pushIf('hiswidth',W/(L*2+1));
-			
-			
-			if(hw*L>W){
-				hw = this.push('hiswidth',W/(L*2+1));
-			}
-			
-			//the space of two column
-			this.push('hispace',(W - hw*L)/(L+1));
-			
-			//use option create a coordinate
-			this.coo = $.Interface.coordinate2d.call(this);
-			
-			this.pushComponent(this.coo,true);
-			
-			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('keduAlign')),
-				bs = this.coo.get('brushsize'),
-				H = this.coo.get('height'),
-				Le = this.get('label.enable'),
-				Te = this.get('tip.enable'),
-				gw = hw+this.get('hispace'),
-				t,h,text,value;
-				
-			/**
-			 * quick config to all rectangle
-			 */
-			this.push('rectangle.width',hw);
-			
-			for(var i=0;i<L;i++){
-				text = this.data[i].name;
-				value = this.data[i].value;
-				t = text+":"+value;
-				h = (value-S.start)*H/S.distance;
-				
-				if(Le){
-					this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[this.data[i],i],t));
-				}
-				
-				if(Te){
-					this.push('rectangle.tip.text',this.fireString(this,'parseTipText',[this.data[i],i],t));
-				}
-				
-				text = this.fireString(this,'parseText',[this.data[i],i],text);
-				value = this.fireString(this,'parseValue',[this.data[i],i],value);
-				/**
-				 * x = this.x + space*(i+1) + width*i
-				 */
-				this.push('rectangle.originx',this.x+this.get('hispace')+i*gw);
-				/**
-				 * y = this.y + brushsize + h
-				 */
-				this.push('rectangle.originy',this.y + H - h - bs);
-				this.push('rectangle.value',value);
-				this.push('rectangle.height',h);
-				this.push('rectangle.background_color',this.data[i].color);
-				this.push('rectangle.id',i);
-				this.rectangles.push(new $.Rectangle2D(this.get('rectangle'),this));
-				
-				this.labels.push(new $.Text({
-					id:i,
-					text:text,
-					originx:this.x + this.get('hispace')+gw*i+hw/2,
-	 				originy:this.y+H+this.get('text_space')
-				},this));
-				
-			}
-			this.pushComponent(this.labels);
-			this.pushComponent(this.rectangles);
-			
-		}
-		
-});//@end
+			this.labels.push(new $.Text({
+				id : i,
+				text : d.name,
+				originx : this.x + this.get('hispace') + gw * i + h2,
+				originy : this.y + H + this.get('text_space')
+			}, this));
+
+		}, this);
+
+		this.pushComponent(this.labels);
+		this.pushComponent(this.rectangles);
+	}
+
+});// @end
+
 	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.Column3D
@@ -5780,19 +5802,19 @@ $.Column = $.extend($.Chart, {
 			
 			this.set({
 				/**
-				 * @cfg {Number} Three-dimensional rotation X in degree(angle).socpe{0-90}(default to 60)
+				 * @cfg {Number(0~90)} Three-dimensional rotation X in degree(angle).(default to 60)
 				 */
 				xAngle:60,
 				/**
-				 * @cfg {Number} Three-dimensional rotation Y in degree(angle).socpe{0-90}(default to 20)
+				 * @cfg {Number(0~90)} Three-dimensional rotation Y in degree(angle).(default to 20)
 				 */
 				yAngle:20,
 				/**
-				 * @cfg {Number} Three-dimensional z-axis deep factor.frame of reference is width(default to 1)
+				 * @cfg {Number} Three-dimensional z-axis deep factor.frame of reference is width.(default to 1)
 				 */
 				zScale:1,
 				/**
-				 * @cfg {Number} Three-dimensional z-axis deep factor of pedestal.frame of reference is width(default to 1.4)
+				 * @cfg {Number(1~)} Three-dimensional z-axis deep factor of pedestal.frame of reference is width.(default to 1.4)
 				 */
 				bottom_scale:1.4
 			});
@@ -5800,97 +5822,35 @@ $.Column = $.extend($.Chart, {
 		doConfig:function(){
 			$.Column3D.superclass.doConfig.call(this);
 			
-			var L = this.data.length,W = this.get('coordinate.width'),
-			hw = this.pushIf('hiswidth',W/(L*2+1));
-			/**
-			 * common config
-			 */
-			if(this.get('bottom_scale')<1){
-				hw = this.push('bottom_scale',1);
-			}
-			
-			if(hw*L>W){
-				this.push('hiswidth',W/(L*2+1));
-			}
-			
-			this.push('zHeight',hw*this.get('zScale'));
-			
-			this.push('hispace',(W - hw*L)/(L+1));
-			
-			/**
-			 * initialize coordinate
-			 */
-			this.push('coordinate.xAngle_',this.get('xAngle_'));
-			this.push('coordinate.yAngle_',this.get('yAngle_'));
-			
-			//the Coordinate' Z is same as long as the column's
-			this.push('coordinate.zHeight',this.get('zHeight')*this.get('bottom_scale'));
-			
-			//use option create a coordinate
-			this.coo = $.Interface.coordinate3d.call(this);
-			
-			this.pushComponent(this.coo,true);
-			
-			/**
-			 * initialize rectangles
-			 */
-			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('keduAlign')),
-				Le = this.get('label.enable'),
-				Te = this.get('tip.enable'),
-				zh = this.get('zHeight')*(this.get('bottom_scale')-1)/2*this.get('yAngle_'),
-				t,lt,tt,h,text,value,
-				gw = hw+this.get('hispace'),
-				H = this.coo.get('height');
-			
-			
 			/**
 			 * quick config to all rectangle
 			 */
 			this.push('rectangle.xAngle_',this.get('xAngle_'));
 			this.push('rectangle.yAngle_',this.get('yAngle_'));
-			this.push('rectangle.width',hw);
 			
-			for(var i=0;i<L;i++){
-				text = this.data[i].name;
-				value = this.data[i].value;
-				t = text+":"+value;
-				h = (this.data[i].value-S.start)*H/S.distance;
+			//get the max/min scale of this coordinate for calculated the height
+			var S = this.coo.getScale(this.get('keduAlign')),
+				zh = this.get('zHeight')*(this.get('bottom_scale')-1)/2*this.get('yAngle_'),
+				h2 = this.get('hiswidth')/2,
+				gw = this.get('hiswidth')+this.get('hispace'),
+				H = this.coo.get('height'),h;
+			
+			this.data.each(function(d, i) {
+				h = (d.value - S.start) * H / S.distance;
 				
-				if(Le){
-					this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[this.data[i],i],t));
-				}
+				this.doParse(d, i, i, this.x + this.get('hispace') + i * gw, this.y +(H-h)-zh, h);
+				d.reference = new $.Rectangle3D(this.get('rectangle'), this);
+				this.rectangles.push(d.reference);
 				
-				if(Te){
-					this.push('rectangle.tip.text',this.fireString(this,'parseTipText',[this.data[i],i],t));
-				}
-				
-				text = this.fireString(this,'parseText',[this.data[i],i],text);
-				value = this.fireString(this,'parseValue',[this.data[i],i],value);
-				
-				/**
-				 * x = this.x + space*(i+1) + width*i
-				 */
-				this.push('rectangle.originx',this.x+this.get('hispace')+i*gw);//+this.get('xAngle_')*hw/2
-				/**
-				 * y = this.y + brushsize + h
-				 */
-				this.push('rectangle.originy',this.y +(H-h)-zh);
-				this.push('rectangle.text',text);
-				this.push('rectangle.value',value);
-				this.push('rectangle.height',h);
-				this.push('rectangle.background_color',this.data[i].color);
-				this.push('rectangle.id',i);
-				
-				this.rectangles.push(new $.Rectangle3D(this.get('rectangle'),this));
 				this.labels.push(new $.Text({
-					id:i,
-					text:text,
-					originx:this.x + this.get('hispace')+gw*i+hw/2,
-	 				originy:this.y+H+this.get('text_space')
-				},this));
+					id : i,
+					text : d.name,
+					originx : this.x + this.get('hispace') + gw * i + h2,
+					originy : this.y + H + this.get('text_space')
+				}, this));
 				
-			}
+			}, this);
+			
 			this.pushComponent(this.labels);
 			this.pushComponent(this.rectangles);
 		}
@@ -5919,21 +5879,10 @@ $.Column = $.extend($.Chart, {
 			//this.registerEvent();
 			this.columns = [];
 		},
-		doAnimation:function(t,d){
-			var r,h;
-			this.coo.draw();
-			for(var i=0;i<this.labels.length;i++){
-				this.labels[i].draw();
-			}
-			for(var i=0;i<this.rectangles.length;i++){
-				r = this.rectangles[i]; 
-				this.fireEvent(this,'beforeRectangleAnimation',[this,r]);
-				h = Math.ceil(this.animationArithmetic(t,0,r.height,d));
-				r.push('originy',r.y+(r.height-h));
-				r.push('height',h);
-				r.drawRectangle();
-				this.fireEvent(this,'afterRectangleAnimation',[this,r]);
-			}
+		doRectangle : function(d, i, id, x, y, h) {
+			this.doParse(d, i, id, x, y, h);
+			d.reference = new $.Rectangle2D(this.get('rectangle'), this);
+			this.rectangles.push(d.reference);
 		},
 		doConfig:function(){
 			$.ColumnMulti2D.superclass.doConfig.call(this);
@@ -5951,168 +5900,169 @@ $.Column = $.extend($.Chart, {
 			
 			this.push('hispace',(W - bw*total)/(KL+1));
 			
-			//use option create a coordinate
-			this.coo = $.Interface.coordinate2d.call(this);
-						
-			this.pushComponent(this.coo,true);
-			
 			//get the max/min scale of this coordinate for calculated the height
 			var S = this.coo.getScale(this.get('keduAlign')),
 				bs = this.coo.get('brushsize'),
-				Le = this.get('label.enable'),
-				Te = this.get('tip.enable'),
 				gw = this.data.length*bw+this.get('hispace'),
-				item,t,lt,tt,h,text,value;
+				h;
 			
 			/**
 			 * quick config to all rectangle
 			 */
 			this.push('rectangle.width',bw);
 			
-			for(var i=0;i<this.columns.length;i++){
-				item  = this.columns[i].item;
-				text = this.fireString(this,'parseText',[this.columns[i],i],this.columns[i].name);
+			this.columns.each(function(column, i) {
 				
-				for(var j=0;j<item.length;j++){
-					h = (item[j].value-S.start)*H/S.distance;
+				column.item.each(function(d, j) {
+					h = (d.value - S.start) * H / S.distance;
+					this.doParse(d, j, i+'-'+j, this.x + this.get('hispace')+j*bw+i*gw, this.y + H - h - bs, h);
+					d.reference = new $.Rectangle2D(this.get('rectangle'), this);
+					this.rectangles.push(d.reference);
 					
-					t = item[j].name+":"+item[j].value;
-					if(Le)
-						this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[item[j],i],t));
-					
-					if(Te)
-						this.push('rectangle.tip.text',this.fireString(this,'parseTipText',[item[j],i],t));
-					
-					value = this.fireString(this,'parseValue',[item[j],i],item[j].value);
-					
-					/**
-					 * x = this.x + space*(i+1) + width*(j+i*length)
-					 */
-					this.push('rectangle.originx',this.x + this.get('hispace')+j*bw+i*gw);//+this.get('xAngle_')*bw/2
-					/**
-					 * y = this.y + brushsize + h
-					 */
-					this.push('rectangle.originy',this.y + H - h - bs);
-					//this.push('rectangle.text',text);
-					this.push('rectangle.value',value);
-					this.push('rectangle.height',h);
-					this.push('rectangle.background_color',item[j].color);
-					this.push('rectangle.id',i+'-'+j);
-					
-					this.rectangles.push(new $.Rectangle2D(this.get('rectangle'),this));
-				}
+				}, this);
+				
 				this.labels.push(new $.Text({
 					id:i,
-					text:text,
+					text:column.name,
 					originx:this.x +this.get('hispace')*0.5+(i+0.5)*gw,
 	 				originy:this.get('originy')+H+this.get('text_space')
 				},this));
 				
-			}
+			}, this);
+			
 			this.pushComponent(this.labels);
 			this.pushComponent(this.rectangles);
 		}
 });//@end
-
+/**
+ * @overview this component use for abc
+ * @component#$.Bar
+ * @extend#$.Chart
+ */
+$.Bar = $.extend($.Chart, {
 	/**
-	 * @overview this component use for abc
-	 * @component#$.Bar
-	 * @extend#$.Chart
+	 * initialize the context for the bar
 	 */
-	$.Bar = $.extend($.Chart,{
+	configure : function() {
 		/**
-		 * initialize the context for the bar
+		 * invoked the super class's configuration
 		 */
-		configure:function(){
+		$.Bar.superclass.configure.call(this);
+
+		this.type = 'bar';
+		this.dataType = 'simple';
+		this.set({
 			/**
-			 * invoked the super class's  configuration
+			 * @cfg {Object} the option for coordinate
 			 */
-			$.Bar.superclass.configure.call(this);
-			
-			this.type = 'bar';
-			this.dataType = 'simple';
-			this.set({
-				/**
-				 * @cfg {Object} the option for coordinate
-				 */
-				coordinate:{},
-				/**
-				 * @cfg {Number} the width of each bar(default to calculate according to coordinate's height)
-				 */
-				barheight:undefined,
-				/**
-				 * @cfg {Number} the distance of column's bottom and text(default to 6)
-				 */
-				text_space:6,
-				/**
-				  *@cfg {String} the align of scale(default to 'bottom')
-				  * Available value are:
-				  * @Option 'top,'bottom'
-			 	 */
-				keduAlign:'bottom',
-				/**
-				 *@cfg {Object}  the option for label
-				 *@extend $.Chart
-				 *@see $.Chart#label
-				 */
-				label:{
-					padding:5
-				},
-				/**
-				 * @cfg {Object} the option for rectangle
-				 */
-				rectangle:{}
-			});
-			
-			this.registerEvent(
-					'rectangleover',
-					'rectanglemouseout',
-					'rectangleclick',
-					'parseValue',
-					'parseText',
-					'beforeRectangleAnimation',
-					'afterRectangleAnimation'
-					
-				);
-				
-			this.rectangles = [];
-			this.labels = [];
-		},
-		doAnimation:function(t,d){
-			var r;
-			this.coo.draw();
-			for(var i=0;i<this.rectangles.length;i++){
-				r = this.rectangles[i]; 
-				this.fireEvent(this,'beforeRectangleAnimation',[this,r]);
-				r.push('width',Math.ceil(this.animationArithmetic(t,0,r.width,d)));
-				this.labels[i].draw();
-				r.drawRectangle();
-				this.fireEvent(this,'afterRectangleAnimation',[this,r]);
+			coordinate : {},
+			/**
+			 * @cfg {Number} the width of each bar(default to calculate according to coordinate's height)
+			 */
+			barheight : undefined,
+			/**
+			 * @cfg {Number} the distance of column's bottom and text(default to 6)
+			 */
+			text_space : 6,
+			/**
+			 * @cfg {String} the align of scale(default to 'bottom') Available value are:
+			 * @Option 'top,'bottom'
+			 */
+			keduAlign : 'bottom',
+			/**
+			 * @cfg {Object} the option for label
+			 * @extend $.Chart
+			 * @see $.Chart#label
+			 */
+			label : {
+				padding : 5
+			},
+			/**
+			 * @cfg {Object} the option for rectangle
+			 */
+			rectangle : {}
+		});
+
+		this.registerEvent('parseValue', 'parseText');
+
+		this.rectangles = [];
+		this.labels = [];
+	},
+	doParse : function(d, i, id, x, y, w) {
+		if (this.get('label.enable'))
+			this.push('rectangle.label.text', this.fireString(this, 'parseLabelText', [d, i], d.name + ":" + d.value));
+		if (this.get('tip.enable'))
+			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, i], d.name + ":" + d.value));
+
+		this.push('rectangle.value', d.value);
+		this.push('rectangle.background_color', d.color);
+
+		this.push('rectangle.id', id);
+		//this.push('rectangle.originx', x);
+		this.push('rectangle.originy', y);
+		this.push('rectangle.width', w);
+
+	},
+	doAnimation:function(t,d){
+		this.coo.draw();
+		this.labels.each(function(l, i) {
+			l.draw();
+		}, this);
+		
+		this.rectangles.each(function(r, i) {
+			r.push('width', Math.ceil(this.animationArithmetic(t, 0, r.width, d)));
+			r.drawRectangle();
+		}, this);
+	},
+	doConfig : function() {
+		$.Bar.superclass.doConfig.call(this);
+		/**
+		 * Apply the coordinate feature
+		 */
+		$.Interface.coordinate.call(this);
+
+		if (this.dataType == 'simple') {
+
+			var L = this.data.length, H = this.get('coordinate.height'), bh = this.pushIf('barheight', H / (L * 2 + 1));
+			/**
+			 * bar's height
+			 */
+			if (bh * L > H) {
+				bh = this.push('barheight', H / (L * 2 + 1));
 			}
-		},
-		doConfig:function(){
-			$.Bar.superclass.doConfig.call(this);
 			/**
-			 * apply the coordinate feature
+			 * the space of two bar
 			 */
-			$.Interface.coordinate.call(this);
-			/**
-			 * quick config to all rectangle
-			 */
-			$.apply(this.get('rectangle'),$.clone(['label','tip','border'],this.options));
-			
-			/**
-			 * register event
-			 */
-			this.on('rectangleover',function(e,r){
-				this.T.css("cursor","pointer");
-				
-			}).on('rectanglemouseout',function(e,r){
-				this.T.css("cursor","default");
-			});
+			this.push('barspace', (H - bh * L) / (L + 1));
 		}
 		
-});//@end
+		if (this.is3D()){
+			
+		}
+		/**
+		 * use option create a coordinate
+		 */
+		this.coo = $.Interface.coordinate_.call(this);
+		this.pushComponent(this.coo, true);
+
+		/**
+		 * Quick config to all rectangle
+		 */
+		$.apply(this.get('rectangle'), $.clone(['label', 'tip', 'border'], this.options));
+			
+		/**
+		 * quick config to all rectangle
+		 */
+		this.push('rectangle.height',bh);
+		this.push('rectangle.valueAlign','right');
+		this.push('rectangle.tipAlign','right');
+		this.push('rectangle.originx',this.x + this.coo.get('brushsize'));
+		
+		
+	}
+
+});// @end
+
 	
 	/**
 	 * @overview this component use for abc
@@ -6131,86 +6081,39 @@ $.Column = $.extend($.Chart, {
 			
 			this.type = 'bar2d';
 			
-			//this.set({});
+			/**
+			 * this.set({});
+			 */
 		},
 		doConfig:function(){
 			$.Bar2D.superclass.doConfig.call(this);
-			var L = this.data.length,
-				H = this.get('coordinate.height'),
-				bh = this.pushIf('barheight',H/(L*2+1));
 			
-			//bar's height 
-			if(bh*L>H){
-				bh = this.push('barheight',H/(L*2+1));
-			}
-			
-			//the space of two bar
-			this.push('barspace',(H - bh*L)/(L+1));
-			
-			//use option create a coordinate
-			this.coo = $.Interface.coordinate2d.call(this);
-			this.pushComponent(this.coo,true);
-			
-			
-			
-			//get the max/min scale of this coordinate for calculated the height
+			/**
+			 * get the max/min scale of this coordinate for calculated the height
+			 */
 			var S = this.coo.getScale(this.get('keduAlign')),
 				W = this.coo.get('width'),
-				Le = this.get('label.enable'),
-				Te = this.get('tip.enable'),
-				gw = bh+this.get('barspace'),
-				t,w,text,value;
-				
-			/**
-			 * quick config to all rectangle
-			 */
-			this.push('rectangle.height',bh);
-			this.push('rectangle.valueAlign','right');
-			this.push('rectangle.tipAlign','right');
-			this.push('rectangle.originx',this.x + this.coo.get('brushsize'));
+				h2 = this.get('barheight')/2,
+				gw = this.get('barheight')+this.get('barspace');
 			
-			for(var i=0;i<L;i++){
-				text = this.data[i].name;
-				value = this.data[i].value;
-				t = text+":"+value;
+			this.data.each(function(d, i) {
 				
-				w = (this.data[i].value-S.start)*W/S.distance;
-				
-				if(Le){
-					this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[this.data[i],i],t));
-				}
-				if(Te){
-					this.push('rectangle.tip.text',this.fireString(this,'parseTipText',[this.data[i],i],t));
-				}
-				
-				text = this.fireString(this,'parseText',[this.data[i],i],text);
-				value = this.fireString(this,'parseValue',[this.data[i],i],value);
-				
-				/**
-				 * y = this.y + brushsize + h
-				 */
-				this.push('rectangle.originy',this.y+this.get('barspace')+i*gw);
-				
-				this.push('rectangle.value',value);
-				this.push('rectangle.width',w);
-				this.push('rectangle.background_color',this.data[i].color);
-				this.push('rectangle.id',i);
-				
-				this.rectangles.push(new $.Rectangle2D(this.get('rectangle'),this));
+				this.doParse(d, i, i, 0, this.y+this.get('barspace')+i*gw, (d.value - S.start) * W / S.distance);
+				d.reference = new $.Rectangle2D(this.get('rectangle'), this);
+				this.rectangles.push(d.reference);
 				
 				this.labels.push(new $.Text({
 					id:i,
 					textAlign:'right',
 					textBaseline:'middle',
-					text:text,
+					text:d.name,
 					originx:this.x - this.get('text_space'),
-	 				originy:this.y + this.get('barspace')+i*gw +bh/2
+	 				originy:this.y + this.get('barspace')+i*gw +h2
 				},this));
-				
-			}
+			}, this);
+			
 			this.pushComponent(this.labels);
 			this.pushComponent(this.rectangles);
-			
 		}
 		
 });//@end
@@ -6238,98 +6141,57 @@ $.Column = $.extend($.Chart, {
 				//this.registerEvent();
 				this.columns = [];
 			},
-			doAnimation:function(t,d){
-				var r,h;
-				this.coo.draw();
-				for(var i=0;i<this.labels.length;i++){
-					this.labels[i].draw();
-				}
-				for(var i=0;i<this.rectangles.length;i++){
-					r = this.rectangles[i]; 
-					this.fireEvent(this,'beforeRectangleAnimation',[this,r]);
-					h = Math.ceil(this.animationArithmetic(t,0,r.height,d));
-					r.push('originy',r.y+(r.height-h));
-					r.push('height',h);
-					r.drawRectangle();
-					this.fireEvent(this,'afterRectangleAnimation',[this,r]);
-				}
-			},
 			doConfig:function(){
 				$.BarMulti2D.superclass.doConfig.call(this);
 				
 				var L = this.data.length,
 					KL= this.columnKeys.length,
-					W = this.get('coordinate.width'),
-					H = this.get('coordinate.height'),
+					W = this.coo.get('width'),
+					H = this.coo.get('height'),
 					total = KL*L,
-					// bar's height
+					/**
+					 * bar's height
+					 */
 					bh = this.pushIf('barheight',H/(KL+1+total));
 				
 				if(bh*L>H){
 					bh = this.push('barheight',H/(KL+1+total));
 				}
 				
-				//the space of two bar
+				/**
+				 * the space of two bar
+				 */
 				this.push('barspace',(H - bh*total)/(KL+1));
 				
-				
-				//use option create a coordinate
-				this.coo = $.Interface.coordinate2d.call(this);
-							
-				this.pushComponent(this.coo,true);
-				
-				//get the max/min scale of this coordinate for calculated the height
-				var S = this.coo.getScale(this.get('keduAlign')),
-					Le = this.get('label.enable'),
-					Te = this.get('tip.enable'),
-					gw = L*bh+this.get('barspace'),
-					item,t,w,text,value;
-				
 				/**
-				 * quick config to all rectangle
+				 * get the max/min scale of this coordinate for calculated the height
 				 */
-				this.push('rectangle.height',bh);
-				this.push('rectangle.originx',this.x + this.coo.get('brushsize'));
-				this.push('rectangle.valueAlign','right');
-				this.push('rectangle.tipAlign','right');
+				var S = this.coo.getScale(this.get('keduAlign')),
+					gw = L*bh+this.get('barspace'),
+					h2 = this.get('barheight')/2,
+					w;
 				
-				for(var i=0;i<this.columns.length;i++){
-					item  = this.columns[i].item;
+				this.push('rectangle.height',bh);
+				
+				this.columns.each(function(column, i) {
+					column.item.each(function(d, j) {
+						w = (d.value - S.start) * H / S.distance;
+						this.doParse(d, j, i+'-'+j, this.x + this.get('hispace')+j*bh+i*gw,this.y + this.get('barspace')+j*bh+i*gw, w);
+						d.reference = new $.Rectangle2D(this.get('rectangle'), this);
+						this.rectangles.push(d.reference);
+					}, this);
 					
-					text = this.fireString(this,'parseText',[this.columns[i],i],this.columns[i].name);
-					
-					for(var j=0;j<item.length;j++){
-						w = (item[j].value-S.start)*W/S.distance;
-						t = item[j].name+":"+item[j].value;
-						if(Le)
-							this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[item[j],i],t));
-						
-						if(Te)
-							this.push('rectangle.tip.text',this.fireString(this,'parseTipText',[item[j],i],t));
-						
-						value = this.fireString(this,'parseValue',[item[j],i],item[j].value);
-						
-						/**
-						 * y = this.y + brushsize + h
-						 */
-						this.push('rectangle.originy',this.y + this.get('barspace')+j*bh+i*gw);
-						
-						this.push('rectangle.value',value);
-						this.push('rectangle.width',w);
-						this.push('rectangle.background_color',item[j].color);
-						this.push('rectangle.id',i+'-'+j);
-						
-						this.rectangles.push(new $.Rectangle2D(this.get('rectangle'),this));
-					}
 					this.labels.push(new $.Text({
 						id:i,
-						text:text,
+						text:column.name,
 						textAlign:'right',
 						textBaseline:'middle',
 						originx:this.x - this.get('text_space'),
 		 				originy:this.y + this.get('barspace')*0.5+(i+0.5)*gw
 					},this));
-				}
+					
+				}, this);
+				
 				this.pushComponent(this.labels);
 				this.pushComponent(this.rectangles);
 			}
