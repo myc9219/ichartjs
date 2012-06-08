@@ -18,117 +18,58 @@
 			
 			this.set({
 				/**
-				 * @cfg {Number} Three-dimensional rotation X in degree(angle).socpe{0-90}(default to 60)
+				 * @cfg {Number(0~90)} Three-dimensional rotation X in degree(angle).(default to 60)
 				 */
 				xAngle:60,
 				/**
-				 * @cfg {Number} Three-dimensional rotation Y in degree(angle).socpe{0-90}(default to 20)
+				 * @cfg {Number(0~90)} Three-dimensional rotation Y in degree(angle).(default to 20)
 				 */
 				yAngle:20,
 				/**
-				 * @cfg {Number} Three-dimensional z-axis deep factor.frame of reference is width(default to 1)
+				 * @cfg {Number} Three-dimensional z-axis deep factor.frame of reference is width.(default to 1)
 				 */
 				zScale:1,
 				/**
-				 * @cfg {Number} Three-dimensional z-axis deep factor of pedestal.frame of reference is width(default to 1.4)
+				 * @cfg {Number(1~)} Three-dimensional z-axis deep factor of pedestal.frame of reference is width.(default to 1.4)
 				 */
 				bottom_scale:1.4
 			});
 		},
+		doRectangle : function(d, i, id, x, y, h) {
+			this.doParse(d, i, id, x, y, h);
+			d.reference = new iChart.Rectangle3D(this.get('rectangle'), this);
+			this.rectangles.push(d.reference);
+		},
 		doConfig:function(){
 			iChart.Column3D.superclass.doConfig.call(this);
-			
-			var L = this.data.length,W = this.get('coordinate.width'),
-			hw = this.pushIf('hiswidth',W/(L*2+1));
-			/**
-			 * common config
-			 */
-			if(this.get('bottom_scale')<1){
-				hw = this.push('bottom_scale',1);
-			}
-			
-			if(hw*L>W){
-				this.push('hiswidth',W/(L*2+1));
-			}
-			
-			this.push('zHeight',hw*this.get('zScale'));
-			
-			this.push('hispace',(W - hw*L)/(L+1));
-			
-			/**
-			 * initialize coordinate
-			 */
-			this.push('coordinate.xAngle_',this.get('xAngle_'));
-			this.push('coordinate.yAngle_',this.get('yAngle_'));
-			
-			//the Coordinate' Z is same as long as the column's
-			this.push('coordinate.zHeight',this.get('zHeight')*this.get('bottom_scale'));
-			
-			//use option create a coordinate
-			this.coo = iChart.Interface.coordinate3d.call(this);
-			
-			this.pushComponent(this.coo,true);
-			
-			/**
-			 * initialize rectangles
-			 */
-			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('keduAlign')),
-				Le = this.get('label.enable'),
-				Te = this.get('tip.enable'),
-				zh = this.get('zHeight')*(this.get('bottom_scale')-1)/2*this.get('yAngle_'),
-				t,lt,tt,h,text,value,
-				gw = hw+this.get('hispace'),
-				H = this.coo.get('height');
-			
 			
 			/**
 			 * quick config to all rectangle
 			 */
 			this.push('rectangle.xAngle_',this.get('xAngle_'));
 			this.push('rectangle.yAngle_',this.get('yAngle_'));
-			this.push('rectangle.width',hw);
 			
-			for(var i=0;i<L;i++){
-				text = this.data[i].name;
-				value = this.data[i].value;
-				t = text+":"+value;
-				h = (this.data[i].value-S.start)*H/S.distance;
+			//get the max/min scale of this coordinate for calculated the height
+			var S = this.coo.getScale(this.get('keduAlign')),
+				zh = this.get('zHeight')*(this.get('bottom_scale')-1)/2*this.get('yAngle_'),
+				h2 = this.get('hiswidth')/2,
+				gw = this.get('hiswidth')+this.get('hispace'),
+				H = this.coo.get('height'),h;
+			
+			this.data.each(function(d, i) {
+				h = (d.value - S.start) * H / S.distance;
 				
-				if(Le){
-					this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[this.data[i],i],t));
-				}
-				
-				if(Te){
-					this.push('rectangle.tip.text',this.fireString(this,'parseTipText',[this.data[i],i],t));
-				}
-				
-				text = this.fireString(this,'parseText',[this.data[i],i],text);
-				value = this.fireString(this,'parseValue',[this.data[i],i],value);
-				
-				/**
-				 * x = this.x + space*(i+1) + width*i
-				 */
-				this.push('rectangle.originx',this.x+this.get('hispace')+i*gw);//+this.get('xAngle_')*hw/2
-				/**
-				 * y = this.y + brushsize + h
-				 */
-				this.push('rectangle.originy',this.y +(H-h)-zh);
-				this.push('rectangle.text',text);
-				this.push('rectangle.value',value);
-				this.push('rectangle.height',h);
-				this.push('rectangle.background_color',this.data[i].color);
-				this.push('rectangle.id',i);
-				
-				this.rectangles.push(new iChart.Rectangle3D(this.get('rectangle'),this));
+				this.doRectangle(d, i, i, this.x + this.get('hispace') + i * gw, this.y +(H-h)-zh, h);
+
 				this.labels.push(new iChart.Text({
-					id:i,
-					text:text,
-					originx:this.x + this.get('hispace')+gw*i+hw/2,
-	 				originy:this.y+H+this.get('text_space')
-				},this));
+					id : i,
+					text : d.name,
+					originx : this.x + this.get('hispace') + gw * i + h2,
+					originy : this.y + H + this.get('text_space')
+				}, this));
 				
-			}
+			}, this);
+			
 			this.pushComponent(this.labels);
 			this.pushComponent(this.rectangles);
 		}

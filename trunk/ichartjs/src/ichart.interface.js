@@ -110,28 +110,35 @@
 					this.push('yAngle_',P.y);
 				}
 			},
-			_2D:'2d',
-			coordinate2d:function(){
-				return new iChart.Coordinate2D(iChart.apply({
-					kedu:{
-						 position:this.get('keduAlign'),	
-						 max_scale:this.get('maxValue'),
-						 min_scale:this.get('minValue')
-					}
-				},this.get('coordinate')),this);
+			_2D:function(){
 			},
-			coordinate3d:function(){
-				return new iChart.Coordinate3D(iChart.apply({
-					kedu:{
-						 position:this.get('keduAlign'),	
-						 scaleAlign:this.get('keduAlign'),	
-						 max_scale:this.get('maxValue'),
-						 min_scale:this.get('minValue')
-					}
-				},this.get('coordinate')),this);
+			coordinate_:function(){
+				if(this.dimension == iChart._2D){
+					return new iChart.Coordinate2D(iChart.apply({
+						kedu:{
+							 position:this.get('keduAlign'),	
+							 max_scale:this.get('maxValue'),
+							 min_scale:this.get('minValue')
+						}
+					},this.get('coordinate')),this);
+				}else{
+					this.push('coordinate.xAngle_',this.get('xAngle_'));
+					this.push('coordinate.yAngle_',this.get('yAngle_'));
+					
+					//the Coordinate' Z is same as long as the column's
+					this.push('coordinate.zHeight',this.get('zHeight')*this.get('bottom_scale'));
+					
+					return new iChart.Coordinate3D(iChart.apply({
+						kedu:{
+							 position:this.get('keduAlign'),	
+							 scaleAlign:this.get('keduAlign'),	
+							 max_scale:this.get('maxValue'),
+							 min_scale:this.get('minValue')
+						}
+					},this.get('coordinate')),this);
+				}
 			},
 			coordinate:function(){
-				
 				/**
 				 * calculate  chart's measurement
 				 */
