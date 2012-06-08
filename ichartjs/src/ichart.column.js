@@ -103,11 +103,12 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			 */
 			this.push('hispace', (W - hw * L) / (L + 1));
 
-			if (this.is3D())
-				this.push('zHeight', this.get('hiswidth') * this.get('zScale'));
-
 		}
-
+		
+		if (this.is3D()){
+			this.push('zHeight', this.get('hiswidth') * this.get('zScale'));
+		}
+		
 		/**
 		 * use option create a coordinate
 		 */
