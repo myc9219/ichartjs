@@ -21,21 +21,10 @@
 			//this.registerEvent();
 			this.columns = [];
 		},
-		doAnimation:function(t,d){
-			var r,h;
-			this.coo.draw();
-			for(var i=0;i<this.labels.length;i++){
-				this.labels[i].draw();
-			}
-			for(var i=0;i<this.rectangles.length;i++){
-				r = this.rectangles[i]; 
-				this.fireEvent(this,'beforeRectangleAnimation',[this,r]);
-				h = Math.ceil(this.animationArithmetic(t,0,r.height,d));
-				r.push('originy',r.y+(r.height-h));
-				r.push('height',h);
-				r.drawRectangle();
-				this.fireEvent(this,'afterRectangleAnimation',[this,r]);
-			}
+		doRectangle : function(d, i, id, x, y, h) {
+			this.doParse(d, i, id, x, y, h);
+			d.reference = new iChart.Rectangle2D(this.get('rectangle'), this);
+			this.rectangles.push(d.reference);
 		},
 		doConfig:function(){
 			iChart.ColumnMulti2D.superclass.doConfig.call(this);
@@ -53,64 +42,33 @@
 			
 			this.push('hispace',(W - bw*total)/(KL+1));
 			
-			//use option create a coordinate
-			this.coo = iChart.Interface.coordinate2d.call(this);
-						
-			this.pushComponent(this.coo,true);
-			
 			//get the max/min scale of this coordinate for calculated the height
 			var S = this.coo.getScale(this.get('keduAlign')),
 				bs = this.coo.get('brushsize'),
-				Le = this.get('label.enable'),
-				Te = this.get('tip.enable'),
 				gw = this.data.length*bw+this.get('hispace'),
-				item,t,lt,tt,h,text,value;
+				h;
 			
 			/**
 			 * quick config to all rectangle
 			 */
 			this.push('rectangle.width',bw);
 			
-			for(var i=0;i<this.columns.length;i++){
-				item  = this.columns[i].item;
-				text = this.fireString(this,'parseText',[this.columns[i],i],this.columns[i].name);
+			this.columns.each(function(column, i) {
 				
-				for(var j=0;j<item.length;j++){
-					h = (item[j].value-S.start)*H/S.distance;
-					
-					t = item[j].name+":"+item[j].value;
-					if(Le)
-						this.push('rectangle.label.text',this.fireString(this,'parseLabelText',[item[j],i],t));
-					
-					if(Te)
-						this.push('rectangle.tip.text',this.fireString(this,'parseTipText',[item[j],i],t));
-					
-					value = this.fireString(this,'parseValue',[item[j],i],item[j].value);
-					
-					/**
-					 * x = this.x + space*(i+1) + width*(j+i*length)
-					 */
-					this.push('rectangle.originx',this.x + this.get('hispace')+j*bw+i*gw);//+this.get('xAngle_')*bw/2
-					/**
-					 * y = this.y + brushsize + h
-					 */
-					this.push('rectangle.originy',this.y + H - h - bs);
-					//this.push('rectangle.text',text);
-					this.push('rectangle.value',value);
-					this.push('rectangle.height',h);
-					this.push('rectangle.background_color',item[j].color);
-					this.push('rectangle.id',i+'-'+j);
-					
-					this.rectangles.push(new iChart.Rectangle2D(this.get('rectangle'),this));
-				}
+				column.item.each(function(d, j) {
+					h = (d.value - S.start) * H / S.distance;
+					this.doRectangle(d, j, i+'-'+j, this.x + this.get('hispace')+j*bw+i*gw, this.y + H - h - bs, h);
+				}, this);
+				
 				this.labels.push(new iChart.Text({
 					id:i,
-					text:text,
+					text:column.name,
 					originx:this.x +this.get('hispace')*0.5+(i+0.5)*gw,
 	 				originy:this.get('originy')+H+this.get('text_space')
 				},this));
 				
-			}
+			}, this);
+			
 			this.pushComponent(this.labels);
 			this.pushComponent(this.rectangles);
 		}

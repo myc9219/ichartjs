@@ -29,8 +29,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			 */
 			text_space : 6,
 			/**
-			 * @cfg {String} the align of scale(default to 'left')
-			 * Available value are:
+			 * @cfg {String} the align of scale(default to 'left') Available value are:
 			 * @Option 'left'
 			 * @Option 'right'
 			 */
@@ -46,28 +45,43 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {Object} option of rectangle
 			 */
-			rectangle:{}
+			rectangle : {}
 		});
-		
-		this.registerEvent('parseValue','parseText');
-		
+
+		this.registerEvent('parseValue', 'parseText');
+
 		this.rectangles = [];
 		this.labels = [];
+		this.labels.ignore = true;
 	},
 	doAnimation : function(t, d) {
 		var r, h;
 		this.coo.draw();
+		for ( var i = 0; i < this.labels.length; i++) {
+			this.labels[i].draw();
+		}
 		for ( var i = 0; i < this.rectangles.length; i++) {
 			r = this.rectangles[i];
 			h = Math.ceil(this.animationArithmetic(t, 0, r.height, d));
 			r.push('originy', r.y + (r.height - h));
 			r.push('height', h);
-			this.labels[i].draw();
 			r.drawRectangle();
 		}
 	},
-	doParse : function(d, i) {
-		
+	doParse : function(d, i, id, x, y, h) {
+		if (this.get('label.enable'))
+			this.push('rectangle.label.text', this.fireString(this, 'parseLabelText', [d, i], d.name + ":" + d.value));
+		if (this.get('tip.enable'))
+			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, i], d.name + ":" + d.value));
+
+		this.push('rectangle.value', d.value);
+		this.push('rectangle.background_color', d.color);
+
+		this.push('rectangle.id', id);
+		this.push('rectangle.originx', x);
+		this.push('rectangle.originy', y);
+		this.push('rectangle.height', h);
+
 	},
 	doConfig : function() {
 		iChart.Column.superclass.doConfig.call(this);
@@ -76,12 +90,37 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		 * apply the coordinate feature
 		 */
 		iChart.Interface.coordinate.call(this);
+
+		if (this.dataType == 'simple') {
+			var L = this.data.length, W = this.get('coordinate.width'), hw = this.pushIf('hiswidth', W / (L * 2 + 1));
+
+			if (hw * L > W) {
+				hw = this.push('hiswidth', W / (L * 2 + 1));
+			}
+
+			/**
+			 * the space of two column
+			 */
+			this.push('hispace', (W - hw * L) / (L + 1));
+
+			if (this.is3D())
+				this.push('zHeight', this.get('hiswidth') * this.get('zScale'));
+
+		}
+
+		/**
+		 * use option create a coordinate
+		 */
+		this.coo = iChart.Interface.coordinate_.call(this);
+
+		this.pushComponent(this.coo, true);
+
 		/**
 		 * quick config to all rectangle
 		 */
-		iChart.apply(this.get('rectangle'),iChart.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'],this.options));
-		
+		iChart.apply(this.get('rectangle'), iChart.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options));
 
+		this.push('rectangle.width', this.get('hiswidth'));
 	}
 
 });// @end
