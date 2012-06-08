@@ -35,11 +35,6 @@
 				bottom_scale:1.4
 			});
 		},
-		doRectangle : function(d, i, id, x, y, h) {
-			this.doParse(d, i, id, x, y, h);
-			d.reference = new iChart.Rectangle3D(this.get('rectangle'), this);
-			this.rectangles.push(d.reference);
-		},
 		doConfig:function(){
 			iChart.Column3D.superclass.doConfig.call(this);
 			
@@ -59,8 +54,10 @@
 			this.data.each(function(d, i) {
 				h = (d.value - S.start) * H / S.distance;
 				
-				this.doRectangle(d, i, i, this.x + this.get('hispace') + i * gw, this.y +(H-h)-zh, h);
-
+				this.doParse(d, i, i, this.x + this.get('hispace') + i * gw, this.y +(H-h)-zh, h);
+				d.reference = new iChart.Rectangle3D(this.get('rectangle'), this);
+				this.rectangles.push(d.reference);
+				
 				this.labels.push(new iChart.Text({
 					id : i,
 					text : d.name,

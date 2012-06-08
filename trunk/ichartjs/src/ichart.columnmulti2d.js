@@ -57,7 +57,10 @@
 				
 				column.item.each(function(d, j) {
 					h = (d.value - S.start) * H / S.distance;
-					this.doRectangle(d, j, i+'-'+j, this.x + this.get('hispace')+j*bw+i*gw, this.y + H - h - bs, h);
+					this.doParse(d, j, i+'-'+j, this.x + this.get('hispace')+j*bw+i*gw, this.y + H - h - bs, h);
+					d.reference = new iChart.Rectangle2D(this.get('rectangle'), this);
+					this.rectangles.push(d.reference);
+					
 				}, this);
 				
 				this.labels.push(new iChart.Text({

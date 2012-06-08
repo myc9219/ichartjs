@@ -19,11 +19,6 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 		 * this.set({});
 		 */
 	},
-	doRectangle : function(d, i, id, x, y, h) {
-		this.doParse(d, i, id, x, y, h);
-		d.reference = new iChart.Rectangle2D(this.get('rectangle'), this);
-		this.rectangles.push(d.reference);
-	},
 	doConfig : function() {
 		iChart.Column2D.superclass.doConfig.call(this);
 
@@ -34,8 +29,11 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 
 		this.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
-			this.doRectangle(d, i, i, this.x + this.get('hispace') + i * gw, this.y + H - h - bs, h);
-
+			
+			this.doParse(d, i, i, this.x + this.get('hispace') + i * gw, this.y + H - h - bs, h);
+			d.reference = new iChart.Rectangle2D(this.get('rectangle'), this);
+			this.rectangles.push(d.reference);
+			
 			this.labels.push(new iChart.Text({
 				id : i,
 				text : d.name,
