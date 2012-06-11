@@ -16,7 +16,9 @@
 			this.type = 'area2d';
 			
 			this.set({
-				area:true,
+				/**
+				 * @cfg {Float} Specify the opacity of this area.(default to 0.3)
+				 */
 				area_opacity:0.3
 			});
 			

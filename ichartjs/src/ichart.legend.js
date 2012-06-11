@@ -41,8 +41,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			 */
 			line_height : 16,
 			/**
-			 * @cfg {String} Specifies the shape of legend' sign (default to 'square') 
-			 * Available value are：
+			 * @cfg {String} Specifies the shape of legend' sign (default to 'square') Available value are：
 			 * @Option 'round'
 			 * @Option 'square'
 			 * @Option 'round-bar'
@@ -81,13 +80,32 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			 */
 			valign : 'middle'
 		});
-		
+
 		/**
 		 * this element support boxMode
 		 */
 		this.atomic = true;
 
-		this.registerEvent('drawCell', 'parse', 'drawRaw');
+		this.registerEvent(
+		/**
+		 * @event Fires when parse this element'data.Return text value will override existing.
+		 * @paramter iChart.Chart#this
+		 * @paramter string#text the text will display
+		 * @paramter int#i the index of data
+		 * @return string
+		 */
+		'parse',
+		/**
+		 * @event Fires after raw was drawed
+		 * @paramter iChart.Chart#this
+		 * @paramter int#i the index of legend
+		 */
+		'drawRaw',
+		/**
+		 * @event Fires after a cell was drawed
+		 * @paramter iChart.Chart#this
+		 */
+		'drawCell');
 
 	},
 	drawCell : function(x, y, text, color) {
@@ -110,7 +128,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		}
 		this.T.fillText(text, x + this.get('signwidth'), y + s / 2, this.get('textwidth'), textcolor);
 
-		this.fireEvent(this, 'drawCell', [x, y, text, color]);
+		this.fireEvent(this, 'drawCell', [this]);
 	},
 	drawRow : function(suffix, x, y) {
 		var d;
@@ -153,9 +171,9 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		var x = this.x + this.get('padding_left'), y = this.y + this.get('padding_top'), text, c = this.get('column'), r = this.get('row');
 
 		for ( var i = 0; i < r; i++) {
-			this.fireEvent(this, 'drawRaw', [i * c]);
 			this.drawRow(i * c, x, y);
 			y += this.get('line_height');
+			this.fireEvent(this, 'drawRaw', [this, i * c]);
 		}
 	},
 	calculate : function(data, D) {
@@ -187,7 +205,9 @@ iChart.Legend = iChart.extend(iChart.Component, {
 
 		// calculate the width each item will used
 		D.each(function(d, i) {
-			iChart.merge(d, this.fireEvent(this, 'parse', [d, i]));
+			iChart.merge(d, {
+				text : this.fireEvent(this, 'parse', [this, d.name, i])
+			});
 			d.text = d.text || d.name;
 			d.width = this.T.measureText(d.text);
 		}, this);

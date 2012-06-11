@@ -3,7 +3,7 @@
  * @component#iChart.Line
  * @extend#iChart.Chart
  */
-iChart.Line = iChart.extend(iChart.Chart,{
+iChart.Line = iChart.extend(iChart.Chart, {
 	/**
 	 * initialize the context for the line
 	 */
@@ -72,7 +72,20 @@ iChart.Line = iChart.extend(iChart.Chart,{
 			}
 		});
 
-		this.registerEvent('parsePoint', 'beforeLineAnimation', 'afterLineAnimation');
+		this.registerEvent(
+		/**
+		 * @event Fires when parse this element'data.Return value will override existing.
+		 * @paramter iChart.Chart#this
+		 * @paramter int# the value of point
+		 * @paramter int#x coordinate-x of point
+		 * @paramter int#y coordinate-y of point
+		 * @paramter int#index the index of point
+		 * @return Object object Detail:
+		 * @property x coordinate-x of point
+		 * @property y coordinate-y of point
+		 * @property value the value of point
+		 */
+		'parsePoint');
 
 		this.lines = [];
 	},
@@ -92,31 +105,36 @@ iChart.Line = iChart.extend(iChart.Chart,{
 
 		this.push('segment_style.originx', this.get('originx') + this.get('line_start'));
 
-		// NEXT y also has line_start and line end
-	this.push('segment_style.originy', this.get('originy') + this.get('coordinate.height'));
+		/**
+		 * y also has line_start and line end
+		 */
+		this.push('segment_style.originy', this.get('originy') + this.get('coordinate.height'));
 
-	this.push('segment_style.width', this.get('coordinate.valid_width'));
-	this.push('segment_style.height', this.get('coordinate.valid_height'));
+		this.push('segment_style.width', this.get('coordinate.valid_width'));
+		this.push('segment_style.height', this.get('coordinate.valid_height'));
 
-	this.push('segment_style.limit_y', this.data.length > 1);
+		this.push('segment_style.limit_y', this.data.length > 1);
 
-	this.push('segment_style.keep_with_coordinate', this.data.length == 1);
+		this.push('segment_style.keep_with_coordinate', this.data.length == 1);
 
-	var single = this.data.length == 1, self = this;
+		var single = this.data.length == 1, self = this;
 
-	if (this.get('coordinate.crosshair.enable')) {
-		this.push('coordinate.crosshair.hcross', single);
-		this.push('coordinate.crosshair.invokeOffset', function(e, m) {
-			var r = self.lines[0].isEventValid(e);// NEXT how fire muti line?
-				return r.valid ? r : false;
-			});
+		if (this.get('coordinate.crosshair.enable')) {
+			this.push('coordinate.crosshair.hcross', single);
+			this.push('coordinate.crosshair.invokeOffset', function(e, m) {
+				var r = self.lines[0].isEventValid(e);
+					/**
+					 * TODO how fire muti line?
+					 */
+					return r.valid ? r : false;
+				});
+		}
+
+		if (!this.get('segment_style.tip')) {
+			this.push('segment_style.tip', this.get('tip'));
+		} else {
+			this.push('segment_style.tip.wrap', this.get('tip.wrap'));
+		}
 	}
-
-	if (!this.get('segment_style.tip')) {
-		this.push('segment_style.tip', this.get('tip'));
-	} else {
-		this.push('segment_style.tip.wrap', this.get('tip.wrap'));
-	}
-}
 
 });// @end
