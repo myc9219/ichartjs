@@ -26,7 +26,7 @@
 			/**
 			 * get the max/min scale of this coordinate for calculated the height
 			 */
-			var S = this.coo.getScale(this.get('keduAlign')),
+			var S = this.coo.getScale(this.get('scaleAlign')),
 				W = this.coo.get('width'),
 				h2 = this.get('barheight')/2,
 				gw = this.get('barheight')+this.get('barspace');

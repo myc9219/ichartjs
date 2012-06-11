@@ -32,7 +32,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 			 * @cfg {String} the align of scale(default to 'bottom') Available value are:
 			 * @Option 'top,'bottom'
 			 */
-			keduAlign : 'bottom',
+			scaleAlign : 'bottom',
 			/**
 			 * @cfg {Object} the option for label
 			 * @extend iChart.Chart

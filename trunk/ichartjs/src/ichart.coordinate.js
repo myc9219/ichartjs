@@ -1,20 +1,20 @@
 /**
  * @overview this is inner use for axis
- * @component#iChart.KeDu
+ * @component#iChart.Scale
  * @extend#iChart.Component
  */
-iChart.KeDu = iChart.extend(iChart.Component, {
+iChart.Scale = iChart.extend(iChart.Component, {
 	configure : function() {
 
 		/**
 		 * invoked the super class's configuration
 		 */
-		iChart.KeDu.superclass.configure.apply(this, arguments);
+		iChart.Scale.superclass.configure.apply(this, arguments);
 
 		/**
 		 * indicate the component's type
 		 */
-		this.type = 'kedu';
+		this.type = 'scale';
 
 		this.set({
 			/**
@@ -182,7 +182,7 @@ iChart.KeDu = iChart.extend(iChart.Component, {
 		 */
 
 		/**
-		 * 每一个text的个性化问题?
+		 * individuation text?
 		 */
 		this.T.textFont(this.get('fontStyle'));
 
@@ -194,7 +194,7 @@ iChart.KeDu = iChart.extend(iChart.Component, {
 		}
 	},
 	doConfig : function() {
-		iChart.KeDu.superclass.doConfig.call(this);
+		iChart.Scale.superclass.doConfig.call(this);
 		iChart.Assert.isNumber(this.get('distance'), 'distance');
 
 		var customLabel = this.get('labels').length, min_scale = this.get('min_scale'), max_scale = this.get('max_scale'), scale_space = this.get('scale_space'), end_scale = this.get('end_scale'), start_scale = this.get('start_scale');
@@ -326,9 +326,9 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					sign_space : 5,
 					/**
-					 * @cfg {Array} the option for kedu
+					 * @cfg {Array} the option for scale
 					 */
-					kedu : [],
+					scale : [],
 					/**
 					 * @cfg {Number} Specifies the valid width,less than the width of coordinate.(default same as width)
 					 */
@@ -350,7 +350,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					gridlinesVisible : true,
 					/**
-					 * @cfg {Boolean} indicate whether the grid is accord with kedu,on the premise of grids is not specify. this just give a convenient way bulid grid for default.and actual value depend on kedu's scale2grid
+					 * @cfg {Boolean} indicate whether the grid is accord with scale,on the premise of grids is not specify. this just give a convenient way bulid grid for default.and actual value depend on scale's scale2grid
 					 */
 					scale2grid : true,
 					/**
@@ -416,13 +416,13 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 
 				this.registerEvent();
 
-				this.kedu = [];
+				this.scale = [];
 				this.gridlines = [];
 			},
 			getScale : function(p) {
 
-				for ( var i = 0; i < this.kedu.length; i++) {
-					var k = this.kedu[i];
+				for ( var i = 0; i < this.scale.length; i++) {
+					var k = this.scale[i];
 					if (k.get('position') == p) {
 						return {
 							start : k.get('start_scale'),
@@ -476,8 +476,8 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					}
 					this.T.line(gl[i].x1, gl[i].y1, gl[i].x2, gl[i].y2, this.get('grid_line_width'), this.get('grid_color'));
 				}
-				for ( var i = 0; i < this.kedu.length; i++) {
-					this.kedu[i].draw();
+				for ( var i = 0; i < this.scale.length; i++) {
+					this.scale[i].draw();
 				}
 			},
 			doConfig : function() {
@@ -525,15 +525,15 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 						&& !(hg && vg), sw = (w - vw) / 2;
 				sh = (h - vh) / 2, axis = this.get('axis.width');
 
-				if (!iChart.isArray(this.get('kedu'))) {
-					if (iChart.isObject(this.get('kedu')))
-						this.push('kedu', [this.get('kedu')]);
+				if (!iChart.isArray(this.get('scale'))) {
+					if (iChart.isObject(this.get('scale')))
+						this.push('scale', [this.get('scale')]);
 					else
-						this.push('kedu', []);
+						this.push('scale', []);
 				}
 
-				for ( var i = 0; i < this.get('kedu').length; i++) {
-					kd = this.get('kedu')[i];
+				for ( var i = 0; i < this.get('scale').length; i++) {
+					kd = this.get('scale')[i];
 					jp = kd['position'];
 					jp = jp || 'left';
 					jp = jp.toLowerCase();
@@ -564,7 +564,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 						kd['distance'] = h;
 						kd['valid_distance'] = vh;
 					}
-					this.kedu.push(new iChart.KeDu(kd, this.container));
+					this.scale.push(new iChart.Scale(kd, this.container));
 				}
 
 				var iol = this.push('ignoreOverlap', this.get('ignoreOverlap') && this.get('axis.enable') || this.get('ignoreEdge'));
@@ -582,32 +582,32 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				}
 
 				if (k2g) {
-					var kedu, x, y;
-					for ( var i = 0; i < this.kedu.length; i++) {
-						kedu = this.kedu[i];
+					var scale, x, y;
+					for ( var i = 0; i < this.scale.length; i++) {
+						scale = this.scale[i];
 						// disable,given specfiy grid will ignore scale2grid
-						if (iChart.isFalse(kedu.get('scale2grid')) || hg && kedu.get('which') == 'v' || vg && kedu.get('which') == 'h') {
+						if (iChart.isFalse(scale.get('scale2grid')) || hg && scale.get('which') == 'v' || vg && scale.get('which') == 'h') {
 							continue;
 						}
 						x = y = 0;
-						if (kedu.get('position') == 'top') {
+						if (scale.get('position') == 'top') {
 							y = h;
-						} else if (kedu.get('position') == 'right') {
+						} else if (scale.get('position') == 'right') {
 							x = -w;
-						} else if (kedu.get('position') == 'bottom') {
+						} else if (scale.get('position') == 'bottom') {
 							y = -h;
 						} else {
 							x = w;
 						}
-						for ( var j = 0; j < kedu.items.length; j++) {
+						for ( var j = 0; j < scale.items.length; j++) {
 							if (iol)
-								if (ignoreOverlap.call(this, kedu.get('which'), kedu.items[j].x, kedu.items[j].y))
+								if (ignoreOverlap.call(this, scale.get('which'), scale.items[j].x, scale.items[j].y))
 									continue;
 							this.gridlines.push({
-								x1 : kedu.items[j].x,
-								y1 : kedu.items[j].y,
-								x2 : kedu.items[j].x + x,
-								y2 : kedu.items[j].y + y
+								x1 : scale.items[j].x,
+								y1 : scale.items[j].y,
+								x2 : scale.items[j].x + x,
+								y2 : scale.items[j].y + y
 							});
 						}
 					}
@@ -765,8 +765,8 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 			this.T.line(gl[i].x1 + offx, gl[i].y1 - offy, gl[i].x2 + offx, gl[i].y2 - offy, this.get('grid_line_width'), this.get('grid_color'));
 		}
 
-		for ( var i = 0; i < this.kedu.length; i++) {
-			this.kedu[i].draw();
+		for ( var i = 0; i < this.scale.length; i++) {
+			this.scale[i].draw();
 		}
 	},
 	doConfig : function() {

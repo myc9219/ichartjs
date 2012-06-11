@@ -37,8 +37,8 @@
 			iChart.LineBasic2D.superclass.doConfig.call(this);
 			
 			this.coo = new iChart.Coordinate2D(iChart.merge({
-					kedu:[{
-						 position:this.get('keduAlign'),	
+					scale:[{
+						 position:this.get('scaleAlign'),	
 						 max_scale:this.get('maxValue')
 					},{
 						 position:this.get('labelAlign'),	
@@ -62,7 +62,7 @@
 			
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('keduAlign')),
+			var S = this.coo.getScale(this.get('scaleAlign')),
 				H=this.get('coordinate.valid_height'),
 				sp=this.get('label_spacing'),
 				points,x,y,
