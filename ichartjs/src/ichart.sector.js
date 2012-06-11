@@ -44,7 +44,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 */
 			pop_animate : false,
 			/**
-			 * @cfg {Boolean} if true means just one piece could bound at same time.(default to false)
+			 * @cfg {Boolean} If true means just one piece could bound at same time.(default to false)
 			 */
 			mutex : false,
 			/**

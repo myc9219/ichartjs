@@ -717,7 +717,7 @@
 				 */
 				title_height : 25,
 				/**
-				 * @cfg {Boolean} if true element will has a animation when show, false to skip the animation.(default to false)
+				 * @cfg {Boolean} If true element will has a animation when show, false to skip the animation.(default to false)
 				 */
 				animation : false,
 				/**
