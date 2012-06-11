@@ -1665,8 +1665,8 @@ $.Html = $.extend($.Element,{
 			coordinate_:function(){
 				if(this.dimension == $._2D){
 					return new $.Coordinate2D($.apply({
-						kedu:{
-							 position:this.get('keduAlign'),	
+						scale:{
+							 position:this.get('scaleAlign'),	
 							 max_scale:this.get('maxValue'),
 							 min_scale:this.get('minValue')
 						}
@@ -1679,9 +1679,9 @@ $.Html = $.extend($.Element,{
 					this.push('coordinate.zHeight',this.get('zHeight')*this.get('bottom_scale'));
 					
 					return new $.Coordinate3D($.apply({
-						kedu:{
-							 position:this.get('keduAlign'),	
-							 scaleAlign:this.get('keduAlign'),	
+						scale:{
+							 position:this.get('scaleAlign'),	
+							 scaleAlign:this.get('scaleAlign'),	
 							 max_scale:this.get('maxValue'),
 							 min_scale:this.get('minValue')
 						}
@@ -1883,15 +1883,15 @@ $.Html = $.extend($.Element,{
 
 
 	/**
-	 * @overview this component use for abc
+	 * @overview this element simulate the crosshair on the coordinate.actually this composed of some div of html. 
 	 * @component#$.CrossHair
-	 * @extend#$.Element
+	 * @extend#$.Html
 	 */
 	$.CrossHair = $.extend($.Html,{
 		configure:function(){
 		
 			/**
-			 * invoked the super class's  configuration
+			 * invoked the super class's configuration
 			 */
 			$.CrossHair.superclass.configure.apply(this,arguments);
 			
@@ -1907,33 +1907,35 @@ $.Html = $.extend($.Element,{
 				 */
 				 top:0,
 				 /**
-				 * @inner {Number} Specifies the position left,normally this will given by chart.(default to 0)
-				 */
+					 * @inner {Number} Specifies the position left,normally this will given by chart.(default to 0)
+					 */
 				 left:0,
 				 /**
-				  * @inner {Boolean} private use 
-				  */
+					 * @inner {Boolean} private use
+					 */
 				 hcross:true,
 				  /**
-				  * @inner {Boolean} private use 
-				  */
+					 * @inner {Boolean} private use
+					 */
 				 vcross:true,
 				 /**
-				  * @inner {Function} private use 
-				  */
+					 * @inner {Function} private use
+					 */
 				 invokeOffset:null,
 				 /**
-				 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
-				 */
+					 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
+					 */
 				 line_width:1,
 				 /**
-				 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
-				 */
-				 line_color:'#1a1a1a',
+					 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
+					 */
+				 line_color:'#1A1A1A',
 				 delay:200
 			});
 		},
-		//this function will implement at every target object,and this just default effect
+		/**
+		 * this function will implement at every target object,and this just default effect
+		 */
 		follow:function(e,m){
 			if(this.get('invokeOffset')){
 				var o = this.get('invokeOffset')(e,m);
@@ -1942,7 +1944,9 @@ $.Html = $.extend($.Element,{
 					this.vertical.style.left = (o.left-this.left)+"px";
 				}
 			}else{
-				//set the 1px offset will make the line at the top left all the time 
+				/**
+				 * set the 1px offset will make the line at the top left all the time
+				 */
 				this.horizontal.style.top = (e.offsetY-this.top-1)+"px";
 				this.vertical.style.left = (e.offsetX-this.left-1)+"px";
 			}
@@ -1960,7 +1964,9 @@ $.Html = $.extend($.Element,{
 			
 			this.dom.style.zIndex=this.get('index');
 			this.dom.style.position="absolute";
-			//set size zero make  integration with vertical and horizontal
+			/**
+			 * set size zero make integration with vertical and horizontal
+			 */
 			this.dom.style.width= $.toPixel(0);
 			this.dom.style.height=$.toPixel(0);
 			this.dom.style.top=$.toPixel(this.get('top'));
@@ -1999,7 +2005,8 @@ $.Html = $.extend($.Element,{
 			});
 			
 		}
-});//@end
+});// @end
+
 /**
  * @overview this component use for abc
  * @component#$.Legend
@@ -2492,10 +2499,6 @@ $.Label = $.extend($.Component, {
 		},
 		doConfig:function(){
 			$.Text.superclass.doConfig.call(this);
-			
-			
-			
-			
 		}
 });//@end
 ;
@@ -3696,21 +3699,21 @@ $.Label = $.extend($.Component, {
 });//@end
 /**
  * @overview this is inner use for axis
- * @component#$.KeDu
+ * @component#$.Scale
  * @extend#$.Component
  */
-$.KeDu = $.extend($.Component, {
+$.Scale = $.extend($.Component, {
 	configure : function() {
 
 		/**
 		 * invoked the super class's configuration
 		 */
-		$.KeDu.superclass.configure.apply(this, arguments);
+		$.Scale.superclass.configure.apply(this, arguments);
 
 		/**
 		 * indicate the component's type
 		 */
-		this.type = 'kedu';
+		this.type = 'scale';
 
 		this.set({
 			/**
@@ -3878,7 +3881,7 @@ $.KeDu = $.extend($.Component, {
 		 */
 
 		/**
-		 * 每一个text的个性化问题?
+		 * individuation text?
 		 */
 		this.T.textFont(this.get('fontStyle'));
 
@@ -3890,7 +3893,7 @@ $.KeDu = $.extend($.Component, {
 		}
 	},
 	doConfig : function() {
-		$.KeDu.superclass.doConfig.call(this);
+		$.Scale.superclass.doConfig.call(this);
 		$.Assert.isNumber(this.get('distance'), 'distance');
 
 		var customLabel = this.get('labels').length, min_scale = this.get('min_scale'), max_scale = this.get('max_scale'), scale_space = this.get('scale_space'), end_scale = this.get('end_scale'), start_scale = this.get('start_scale');
@@ -4022,9 +4025,9 @@ $.Coordinate2D = $.extend($.Component,
 					 */
 					sign_space : 5,
 					/**
-					 * @cfg {Array} the option for kedu
+					 * @cfg {Array} the option for scale
 					 */
-					kedu : [],
+					scale : [],
 					/**
 					 * @cfg {Number} Specifies the valid width,less than the width of coordinate.(default same as width)
 					 */
@@ -4046,7 +4049,7 @@ $.Coordinate2D = $.extend($.Component,
 					 */
 					gridlinesVisible : true,
 					/**
-					 * @cfg {Boolean} indicate whether the grid is accord with kedu,on the premise of grids is not specify. this just give a convenient way bulid grid for default.and actual value depend on kedu's scale2grid
+					 * @cfg {Boolean} indicate whether the grid is accord with scale,on the premise of grids is not specify. this just give a convenient way bulid grid for default.and actual value depend on scale's scale2grid
 					 */
 					scale2grid : true,
 					/**
@@ -4112,13 +4115,13 @@ $.Coordinate2D = $.extend($.Component,
 
 				this.registerEvent();
 
-				this.kedu = [];
+				this.scale = [];
 				this.gridlines = [];
 			},
 			getScale : function(p) {
 
-				for ( var i = 0; i < this.kedu.length; i++) {
-					var k = this.kedu[i];
+				for ( var i = 0; i < this.scale.length; i++) {
+					var k = this.scale[i];
 					if (k.get('position') == p) {
 						return {
 							start : k.get('start_scale'),
@@ -4172,8 +4175,8 @@ $.Coordinate2D = $.extend($.Component,
 					}
 					this.T.line(gl[i].x1, gl[i].y1, gl[i].x2, gl[i].y2, this.get('grid_line_width'), this.get('grid_color'));
 				}
-				for ( var i = 0; i < this.kedu.length; i++) {
-					this.kedu[i].draw();
+				for ( var i = 0; i < this.scale.length; i++) {
+					this.scale[i].draw();
 				}
 			},
 			doConfig : function() {
@@ -4221,15 +4224,15 @@ $.Coordinate2D = $.extend($.Component,
 						&& !(hg && vg), sw = (w - vw) / 2;
 				sh = (h - vh) / 2, axis = this.get('axis.width');
 
-				if (!$.isArray(this.get('kedu'))) {
-					if ($.isObject(this.get('kedu')))
-						this.push('kedu', [this.get('kedu')]);
+				if (!$.isArray(this.get('scale'))) {
+					if ($.isObject(this.get('scale')))
+						this.push('scale', [this.get('scale')]);
 					else
-						this.push('kedu', []);
+						this.push('scale', []);
 				}
 
-				for ( var i = 0; i < this.get('kedu').length; i++) {
-					kd = this.get('kedu')[i];
+				for ( var i = 0; i < this.get('scale').length; i++) {
+					kd = this.get('scale')[i];
 					jp = kd['position'];
 					jp = jp || 'left';
 					jp = jp.toLowerCase();
@@ -4260,7 +4263,7 @@ $.Coordinate2D = $.extend($.Component,
 						kd['distance'] = h;
 						kd['valid_distance'] = vh;
 					}
-					this.kedu.push(new $.KeDu(kd, this.container));
+					this.scale.push(new $.Scale(kd, this.container));
 				}
 
 				var iol = this.push('ignoreOverlap', this.get('ignoreOverlap') && this.get('axis.enable') || this.get('ignoreEdge'));
@@ -4278,32 +4281,32 @@ $.Coordinate2D = $.extend($.Component,
 				}
 
 				if (k2g) {
-					var kedu, x, y;
-					for ( var i = 0; i < this.kedu.length; i++) {
-						kedu = this.kedu[i];
+					var scale, x, y;
+					for ( var i = 0; i < this.scale.length; i++) {
+						scale = this.scale[i];
 						// disable,given specfiy grid will ignore scale2grid
-						if ($.isFalse(kedu.get('scale2grid')) || hg && kedu.get('which') == 'v' || vg && kedu.get('which') == 'h') {
+						if ($.isFalse(scale.get('scale2grid')) || hg && scale.get('which') == 'v' || vg && scale.get('which') == 'h') {
 							continue;
 						}
 						x = y = 0;
-						if (kedu.get('position') == 'top') {
+						if (scale.get('position') == 'top') {
 							y = h;
-						} else if (kedu.get('position') == 'right') {
+						} else if (scale.get('position') == 'right') {
 							x = -w;
-						} else if (kedu.get('position') == 'bottom') {
+						} else if (scale.get('position') == 'bottom') {
 							y = -h;
 						} else {
 							x = w;
 						}
-						for ( var j = 0; j < kedu.items.length; j++) {
+						for ( var j = 0; j < scale.items.length; j++) {
 							if (iol)
-								if (ignoreOverlap.call(this, kedu.get('which'), kedu.items[j].x, kedu.items[j].y))
+								if (ignoreOverlap.call(this, scale.get('which'), scale.items[j].x, scale.items[j].y))
 									continue;
 							this.gridlines.push({
-								x1 : kedu.items[j].x,
-								y1 : kedu.items[j].y,
-								x2 : kedu.items[j].x + x,
-								y2 : kedu.items[j].y + y
+								x1 : scale.items[j].x,
+								y1 : scale.items[j].y,
+								x2 : scale.items[j].x + x,
+								y2 : scale.items[j].y + y
 							});
 						}
 					}
@@ -4461,8 +4464,8 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			this.T.line(gl[i].x1 + offx, gl[i].y1 - offy, gl[i].x2 + offx, gl[i].y2 - offy, this.get('grid_line_width'), this.get('grid_color'));
 		}
 
-		for ( var i = 0; i < this.kedu.length; i++) {
-			this.kedu[i].draw();
+		for ( var i = 0; i < this.scale.length; i++) {
+			this.scale[i].draw();
 		}
 	},
 	doConfig : function() {
@@ -5642,7 +5645,8 @@ $.Column = $.extend($.Chart, {
 		this.dataType = 'simple';
 		this.set({
 			/**
-			 * @cfg {Object} the option for coordinate
+			 * @cfg {Object} the option for coordinate.
+			 * @see<link>$.Coordinate2D<link>
 			 */
 			coordinate : {},
 			/**
@@ -5658,7 +5662,7 @@ $.Column = $.extend($.Chart, {
 			 * @Option 'left'
 			 * @Option 'right'
 			 */
-			keduAlign : 'left',
+			scaleAlign : 'left',
 			/**
 			 * @inner {Object} the option for label
 			 * @extend $.Chart
@@ -5778,7 +5782,7 @@ $.Column2D = $.extend($.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = this.coo.getScale(this.get('keduAlign')), bs = this.coo.get('brushsize'), H = this.coo.get('height'), h2 = this.get('hiswidth') / 2, gw = this.get('hiswidth') + this.get('hispace'), h;
+		var S = this.coo.getScale(this.get('scaleAlign')), bs = this.coo.get('brushsize'), H = this.coo.get('height'), h2 = this.get('hiswidth') / 2, gw = this.get('hiswidth') + this.get('hispace'), h;
 
 		this.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
@@ -5849,7 +5853,7 @@ $.Column2D = $.extend($.Column, {
 			this.push('rectangle.yAngle_',this.get('yAngle_'));
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('keduAlign')),
+			var S = this.coo.getScale(this.get('scaleAlign')),
 				zh = this.get('zHeight')*(this.get('bottom_scale')-1)/2*this.get('yAngle_'),
 				h2 = this.get('hiswidth')/2,
 				gw = this.get('hiswidth')+this.get('hispace'),
@@ -5921,7 +5925,7 @@ $.Column2D = $.extend($.Column, {
 			this.push('hispace',(W - bw*total)/(KL+1));
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('keduAlign')),
+			var S = this.coo.getScale(this.get('scaleAlign')),
 				bs = this.coo.get('brushsize'),
 				gw = this.data.length*bw+this.get('hispace'),
 				h;
@@ -5988,7 +5992,7 @@ $.Bar = $.extend($.Chart, {
 			 * @cfg {String} the align of scale(default to 'bottom') Available value are:
 			 * @Option 'top,'bottom'
 			 */
-			keduAlign : 'bottom',
+			scaleAlign : 'bottom',
 			/**
 			 * @cfg {Object} the option for label
 			 * @extend $.Chart
@@ -6111,7 +6115,7 @@ $.Bar = $.extend($.Chart, {
 			/**
 			 * get the max/min scale of this coordinate for calculated the height
 			 */
-			var S = this.coo.getScale(this.get('keduAlign')),
+			var S = this.coo.getScale(this.get('scaleAlign')),
 				W = this.coo.get('width'),
 				h2 = this.get('barheight')/2,
 				gw = this.get('barheight')+this.get('barspace');
@@ -6186,7 +6190,7 @@ $.Bar = $.extend($.Chart, {
 				/**
 				 * get the max/min scale of this coordinate for calculated the height
 				 */
-				var S = this.coo.getScale(this.get('keduAlign')),
+				var S = this.coo.getScale(this.get('scaleAlign')),
 					gw = L*bh+this.get('barspace'),
 					h2 = this.get('barheight')/2,
 					w;
@@ -6503,7 +6507,7 @@ $.Line = $.extend($.Chart, {
 			 * @Option 'left'
 			 * @Option 'right'
 			 */
-			keduAlign : 'left',
+			scaleAlign : 'left',
 			/**
 			 * @cfg {String} the align of label.(default to 'bottom') Available value are:
 			 * @Option 'top,'bottom'
@@ -6654,8 +6658,8 @@ $.Line = $.extend($.Chart, {
 			$.LineBasic2D.superclass.doConfig.call(this);
 			
 			this.coo = new $.Coordinate2D($.merge({
-					kedu:[{
-						 position:this.get('keduAlign'),	
+					scale:[{
+						 position:this.get('scaleAlign'),	
 						 max_scale:this.get('maxValue')
 					},{
 						 position:this.get('labelAlign'),	
@@ -6679,7 +6683,7 @@ $.Line = $.extend($.Chart, {
 			
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('keduAlign')),
+			var S = this.coo.getScale(this.get('scaleAlign')),
 				H=this.get('coordinate.valid_height'),
 				sp=this.get('label_spacing'),
 				points,x,y,
@@ -6802,8 +6806,8 @@ $.Line = $.extend($.Chart, {
 			}
 			
 			self.coo = new $.Coordinate2D($.merge( {
-				kedu : [ {
-					position : self.get('keduAlign'),
+				scale : [ {
+					position : self.get('scaleAlign'),
 					max_scale : self.get('maxValue')
 				}, {
 					position : self.get('labelAlign'),
@@ -6833,7 +6837,7 @@ $.Line = $.extend($.Chart, {
 			self.push('segment_style.keep_with_coordinate',true);
 			
 			//get the max/min scale of this coordinate for calculated the height
-			self.S = self.coo.getScale(self.get('keduAlign'));
+			self.S = self.coo.getScale(self.get('scaleAlign'));
 			self.S.uh = self.get('coordinate.valid_height')/ self.S.distance;
 			
 

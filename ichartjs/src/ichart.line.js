@@ -27,7 +27,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 * @Option 'left'
 			 * @Option 'right'
 			 */
-			keduAlign : 'left',
+			scaleAlign : 'left',
 			/**
 			 * @cfg {String} the align of label.(default to 'bottom') Available value are:
 			 * @Option 'top,'bottom'

@@ -203,7 +203,7 @@ ul{
 	background-color: #eeeeee;
 }
 .ichartjs_table_parameter{
-	width:140px;
+	width:180px;
 }
 .ichartjs_table_type{
 	width:100px;
@@ -268,7 +268,7 @@ ul{
 	line-height:30px;
 	font-size:13px;
 	font-weight:600;
-	background-color: #dcdcdc;
+	background-color: #0d506c;
 	cursor:pointer;
 }
 .ichartjs_menu{
@@ -279,6 +279,7 @@ ul{
 	font-weight:600;
 	color:#095688;
 	cursor:pointer;
+	background-color:#dfe6e4;
 	border-bottom: 1px solid #dddddd;
 }
 .ichartjs_anchor{
@@ -288,6 +289,22 @@ ul{
 	text-decoration:underline;
 	float: left;
 }
+
+.ichartjs_home a:LINK{
+	color:#FEFEFE;
+	text-decoration: none;
+}
+.ichartjs_home a:VISITED{
+	color:#FEFEFE;
+}
+.ichartjs_home a:HOVER{
+	color:#d9e8ec;
+	text-decoration:underline;
+}
+.ichartjs_home a:ACTIVE{
+	color:#d9e8ec;
+}	
+	
 a:LINK{
 	color:#095688;
 	text-decoration: none;

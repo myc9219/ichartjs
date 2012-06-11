@@ -43,7 +43,7 @@
 			this.push('hispace',(W - bw*total)/(KL+1));
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('keduAlign')),
+			var S = this.coo.getScale(this.get('scaleAlign')),
 				bs = this.coo.get('brushsize'),
 				gw = this.data.length*bw+this.get('hispace'),
 				h;

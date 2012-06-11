@@ -272,7 +272,7 @@ function test(){
 			coordinate:{
 				width:600,
 				height:400,
-				kedu:{
+				scale:{
 					 position:'left',	
 					 end_scale:150,
 					 scale:30
@@ -333,7 +333,7 @@ function test(){
 				crosshair:{
 					enable:true
 				},
-				kedu:[{
+				scale:[{
 					 position:'left',	
 					 start_scale:0,
 					 end_scale:48,
@@ -427,7 +427,7 @@ function test(){
 			data: data9,
 			columnKeys:columnKeys1,
 			coordinate:{
-				kedu:{
+				scale:{
 					 position:'bottom',	
 					 end_scale:150,
 					 scale:30

@@ -95,8 +95,8 @@
 			}
 			
 			self.coo = new iChart.Coordinate2D(iChart.merge( {
-				kedu : [ {
-					position : self.get('keduAlign'),
+				scale : [ {
+					position : self.get('scaleAlign'),
 					max_scale : self.get('maxValue')
 				}, {
 					position : self.get('labelAlign'),
@@ -126,7 +126,7 @@
 			self.push('segment_style.keep_with_coordinate',true);
 			
 			//get the max/min scale of this coordinate for calculated the height
-			self.S = self.coo.getScale(self.get('keduAlign'));
+			self.S = self.coo.getScale(self.get('scaleAlign'));
 			self.S.uh = self.get('coordinate.valid_height')/ self.S.distance;
 			
 

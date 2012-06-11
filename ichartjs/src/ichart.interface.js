@@ -115,8 +115,8 @@
 			coordinate_:function(){
 				if(this.dimension == iChart._2D){
 					return new iChart.Coordinate2D(iChart.apply({
-						kedu:{
-							 position:this.get('keduAlign'),	
+						scale:{
+							 position:this.get('scaleAlign'),	
 							 max_scale:this.get('maxValue'),
 							 min_scale:this.get('minValue')
 						}
@@ -129,9 +129,9 @@
 					this.push('coordinate.zHeight',this.get('zHeight')*this.get('bottom_scale'));
 					
 					return new iChart.Coordinate3D(iChart.apply({
-						kedu:{
-							 position:this.get('keduAlign'),	
-							 scaleAlign:this.get('keduAlign'),	
+						scale:{
+							 position:this.get('scaleAlign'),	
+							 scaleAlign:this.get('scaleAlign'),	
 							 max_scale:this.get('maxValue'),
 							 min_scale:this.get('minValue')
 						}

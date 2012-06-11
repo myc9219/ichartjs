@@ -17,7 +17,8 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		this.dataType = 'simple';
 		this.set({
 			/**
-			 * @cfg {Object} the option for coordinate
+			 * @cfg {Object} the option for coordinate.
+			 * @see<link>iChart.Coordinate2D<link>
 			 */
 			coordinate : {},
 			/**
@@ -33,7 +34,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			 * @Option 'left'
 			 * @Option 'right'
 			 */
-			keduAlign : 'left',
+			scaleAlign : 'left',
 			/**
 			 * @inner {Object} the option for label
 			 * @extend iChart.Chart
