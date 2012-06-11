@@ -1,14 +1,14 @@
 
 	/**
-	 * @overview this component use for abc
+	 * @overview this element simulate the crosshair on the coordinate.actually this composed of some div of html. 
 	 * @component#iChart.CrossHair
-	 * @extend#iChart.Element
+	 * @extend#iChart.Html
 	 */
 	iChart.CrossHair = iChart.extend(iChart.Html,{
 		configure:function(){
 		
 			/**
-			 * invoked the super class's  configuration
+			 * invoked the super class's configuration
 			 */
 			iChart.CrossHair.superclass.configure.apply(this,arguments);
 			
@@ -24,33 +24,35 @@
 				 */
 				 top:0,
 				 /**
-				 * @inner {Number} Specifies the position left,normally this will given by chart.(default to 0)
-				 */
+					 * @inner {Number} Specifies the position left,normally this will given by chart.(default to 0)
+					 */
 				 left:0,
 				 /**
-				  * @inner {Boolean} private use 
-				  */
+					 * @inner {Boolean} private use
+					 */
 				 hcross:true,
 				  /**
-				  * @inner {Boolean} private use 
-				  */
+					 * @inner {Boolean} private use
+					 */
 				 vcross:true,
 				 /**
-				  * @inner {Function} private use 
-				  */
+					 * @inner {Function} private use
+					 */
 				 invokeOffset:null,
 				 /**
-				 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
-				 */
+					 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
+					 */
 				 line_width:1,
 				 /**
-				 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
-				 */
-				 line_color:'#1a1a1a',
+					 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
+					 */
+				 line_color:'#1A1A1A',
 				 delay:200
 			});
 		},
-		//this function will implement at every target object,and this just default effect
+		/**
+		 * this function will implement at every target object,and this just default effect
+		 */
 		follow:function(e,m){
 			if(this.get('invokeOffset')){
 				var o = this.get('invokeOffset')(e,m);
@@ -59,7 +61,9 @@
 					this.vertical.style.left = (o.left-this.left)+"px";
 				}
 			}else{
-				//set the 1px offset will make the line at the top left all the time 
+				/**
+				 * set the 1px offset will make the line at the top left all the time
+				 */
 				this.horizontal.style.top = (e.offsetY-this.top-1)+"px";
 				this.vertical.style.left = (e.offsetX-this.left-1)+"px";
 			}
@@ -77,7 +81,9 @@
 			
 			this.dom.style.zIndex=this.get('index');
 			this.dom.style.position="absolute";
-			//set size zero make  integration with vertical and horizontal
+			/**
+			 * set size zero make integration with vertical and horizontal
+			 */
 			this.dom.style.width= iChart.toPixel(0);
 			this.dom.style.height=iChart.toPixel(0);
 			this.dom.style.top=iChart.toPixel(this.get('top'));
@@ -116,4 +122,4 @@
 			});
 			
 		}
-});//@end
+});// @end
