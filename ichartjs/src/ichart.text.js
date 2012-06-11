@@ -56,9 +56,5 @@
 		},
 		doConfig:function(){
 			iChart.Text.superclass.doConfig.call(this);
-			
-			
-			
-			
 		}
 });//@end
