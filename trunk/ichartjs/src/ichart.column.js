@@ -48,7 +48,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			rectangle : {}
 		});
 
-		this.registerEvent('parseValue', 'parseText');
+		this.registerEvent();
 
 		this.rectangles = [];
 		this.labels = [];

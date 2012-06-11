@@ -26,16 +26,11 @@
 			this.coo.draw();
 			for(var i=0;i<this.lines.length;i++){
 				l = this.lines[i]; 
-				this.fireEvent(this,'beforeLineAnimation',[this,l]);
-				
 				for(var j=0;j<l.points.length;j++){
 					p = l.points[j];
 					p.y = Math.ceil(this.animationArithmetic(t,0,p.height,d));
 				}
-				
 				l.drawLineSegment();
-				
-				this.fireEvent(this,'afterLineAnimation',[this,l]);
 			}
 		},
 		doConfig:function(){
@@ -78,7 +73,7 @@
 				for(var j=0;j<d[i].value.length;j++){
 					x = sp*j;
 					y = (d[i].value[j]-S.start)*H/S.distance;
-					points.push(iChart.merge({x:x,y:y,value:d[i].value[j]},this.fireEvent(this,'parsePoint',[d[i].value[j],x,y,j])));
+					points.push(iChart.merge({x:x,y:y,value:d[i].value[j]},this.fireEvent(this,'parsePoint',[this,d[i].value[j],x,y,j])));
 				}
 				
 				this.push('segment_style.point_space',sp);

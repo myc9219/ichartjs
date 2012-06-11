@@ -2043,8 +2043,7 @@ $.Legend = $.extend($.Component, {
 			 */
 			line_height : 16,
 			/**
-			 * @cfg {String} Specifies the shape of legend' sign (default to 'square') 
-			 * Available value are：
+			 * @cfg {String} Specifies the shape of legend' sign (default to 'square') Available value are：
 			 * @Option 'round'
 			 * @Option 'square'
 			 * @Option 'round-bar'
@@ -2083,13 +2082,32 @@ $.Legend = $.extend($.Component, {
 			 */
 			valign : 'middle'
 		});
-		
+
 		/**
 		 * this element support boxMode
 		 */
 		this.atomic = true;
 
-		this.registerEvent('drawCell', 'parse', 'drawRaw');
+		this.registerEvent(
+		/**
+		 * @event Fires when parse this element'data.Return text value will override existing.
+		 * @paramter $.Chart#this
+		 * @paramter string#text the text will display
+		 * @paramter int#i the index of data
+		 * @return string
+		 */
+		'parse',
+		/**
+		 * @event Fires after raw was drawed
+		 * @paramter $.Chart#this
+		 * @paramter int#i the index of legend
+		 */
+		'drawRaw',
+		/**
+		 * @event Fires after a cell was drawed
+		 * @paramter $.Chart#this
+		 */
+		'drawCell');
 
 	},
 	drawCell : function(x, y, text, color) {
@@ -2112,7 +2130,7 @@ $.Legend = $.extend($.Component, {
 		}
 		this.T.fillText(text, x + this.get('signwidth'), y + s / 2, this.get('textwidth'), textcolor);
 
-		this.fireEvent(this, 'drawCell', [x, y, text, color]);
+		this.fireEvent(this, 'drawCell', [this]);
 	},
 	drawRow : function(suffix, x, y) {
 		var d;
@@ -2155,9 +2173,9 @@ $.Legend = $.extend($.Component, {
 		var x = this.x + this.get('padding_left'), y = this.y + this.get('padding_top'), text, c = this.get('column'), r = this.get('row');
 
 		for ( var i = 0; i < r; i++) {
-			this.fireEvent(this, 'drawRaw', [i * c]);
 			this.drawRow(i * c, x, y);
 			y += this.get('line_height');
+			this.fireEvent(this, 'drawRaw', [this, i * c]);
 		}
 	},
 	calculate : function(data, D) {
@@ -2189,7 +2207,9 @@ $.Legend = $.extend($.Component, {
 
 		// calculate the width each item will used
 		D.each(function(d, i) {
-			$.merge(d, this.fireEvent(this, 'parse', [d, i]));
+			$.merge(d, {
+				text : this.fireEvent(this, 'parse', [this, d.name, i])
+			});
 			d.text = d.text || d.name;
 			d.width = this.T.measureText(d.text);
 		}, this);
@@ -2341,8 +2361,8 @@ $.Label = $.extend($.Component, {
 		 * this element support boxMode
 		 */
 		this.atomic = true;
-
-		this.registerEvent('beforeDrawRow', 'highlight', 'drawRow');
+		
+		this.registerEvent();
 
 	},
 	isEventValid : function(e) {
@@ -5653,7 +5673,7 @@ $.Column = $.extend($.Chart, {
 			rectangle : {}
 		});
 
-		this.registerEvent('parseValue', 'parseText');
+		this.registerEvent();
 
 		this.rectangles = [];
 		this.labels = [];
@@ -5983,7 +6003,7 @@ $.Bar = $.extend($.Chart, {
 			rectangle : {}
 		});
 
-		this.registerEvent('parseValue', 'parseText');
+		this.registerEvent();
 
 		this.rectangles = [];
 		this.labels = [];
@@ -6287,7 +6307,7 @@ $.LineSegment = $.extend($.Component, {
 			 */
 			area_opacity : 0.4,
 			/**
-			 * @cfg {Object} the options of tip 
+			 * @cfg {Object} the options of tip
 			 */
 			tip : {
 				enable : false,
@@ -6325,28 +6345,30 @@ $.LineSegment = $.extend($.Component, {
 			if (this.get('gradient')) {
 				bg = this.T.avgLinearGradient(this.x, this.y - this.get('height'), this.x, this.y, [this.get('light_color2'), bg]);
 			}
-			// NEXT Config the area polygon
-	this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
-}
-
-for ( var i = 0; i < p.length - 1; i++) {
-	this.T.line(this.x + p[i].x, this.y - p[i].y, this.x + p[i + 1].x, this.y - p[i + 1].y, this.get('brushsize'), this.get('fill_color'), false);
-}
-
-if (this.get('intersection')) {
-	for ( var i = 0; i < p.length; i++) {
-		if (this.get('point_hollow')) {
-			this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('fill_color'));
-		} else {
-			this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), this.get('fill_color'));
+			/**
+			 * NEXT Config the area polygon
+			 */
+			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
 		}
-	}
-}
 
-if (this.get('shadow')) {
-	this.T.shadowOff();
-}
-},
+		for ( var i = 0; i < p.length - 1; i++) {
+			this.T.line(this.x + p[i].x, this.y - p[i].y, this.x + p[i + 1].x, this.y - p[i + 1].y, this.get('brushsize'), this.get('fill_color'), false);
+		}
+
+		if (this.get('intersection')) {
+			for ( var i = 0; i < p.length; i++) {
+				if (this.get('point_hollow')) {
+					this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('fill_color'));
+				} else {
+					this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), this.get('fill_color'));
+				}
+			}
+		}
+
+		if (this.get('shadow')) {
+			this.T.shadowOff();
+		}
+	},
 	doDraw : function(opts) {
 		this.drawLineSegment();
 		this.drawLabel();
@@ -6390,7 +6412,9 @@ if (this.get('shadow')) {
 		}
 
 		if (_.get('tip.enable')) {
-			// _ use for tip coincidence
+			/**
+			 * _ use for tip coincidence
+			 */
 			_.on('mouseover', function(e, m) {
 				heap.push(_);
 				_.tipPosition = heap.length;
@@ -6455,7 +6479,7 @@ if (this.get('shadow')) {
  * @component#$.Line
  * @extend#$.Chart
  */
-$.Line = $.extend($.Chart,{
+$.Line = $.extend($.Chart, {
 	/**
 	 * initialize the context for the line
 	 */
@@ -6524,7 +6548,20 @@ $.Line = $.extend($.Chart,{
 			}
 		});
 
-		this.registerEvent('parsePoint', 'beforeLineAnimation', 'afterLineAnimation');
+		this.registerEvent(
+		/**
+		 * @event Fires when parse this element'data.Return value will override existing.
+		 * @paramter $.Chart#this
+		 * @paramter int# the value of point
+		 * @paramter int#x coordinate-x of point
+		 * @paramter int#y coordinate-y of point
+		 * @paramter int#index the index of point
+		 * @return Object object Detail:
+		 * @property x coordinate-x of point
+		 * @property y coordinate-y of point
+		 * @property value the value of point
+		 */
+		'parsePoint');
 
 		this.lines = [];
 	},
@@ -6544,32 +6581,37 @@ $.Line = $.extend($.Chart,{
 
 		this.push('segment_style.originx', this.get('originx') + this.get('line_start'));
 
-		// NEXT y also has line_start and line end
-	this.push('segment_style.originy', this.get('originy') + this.get('coordinate.height'));
+		/**
+		 * y also has line_start and line end
+		 */
+		this.push('segment_style.originy', this.get('originy') + this.get('coordinate.height'));
 
-	this.push('segment_style.width', this.get('coordinate.valid_width'));
-	this.push('segment_style.height', this.get('coordinate.valid_height'));
+		this.push('segment_style.width', this.get('coordinate.valid_width'));
+		this.push('segment_style.height', this.get('coordinate.valid_height'));
 
-	this.push('segment_style.limit_y', this.data.length > 1);
+		this.push('segment_style.limit_y', this.data.length > 1);
 
-	this.push('segment_style.keep_with_coordinate', this.data.length == 1);
+		this.push('segment_style.keep_with_coordinate', this.data.length == 1);
 
-	var single = this.data.length == 1, self = this;
+		var single = this.data.length == 1, self = this;
 
-	if (this.get('coordinate.crosshair.enable')) {
-		this.push('coordinate.crosshair.hcross', single);
-		this.push('coordinate.crosshair.invokeOffset', function(e, m) {
-			var r = self.lines[0].isEventValid(e);// NEXT how fire muti line?
-				return r.valid ? r : false;
-			});
+		if (this.get('coordinate.crosshair.enable')) {
+			this.push('coordinate.crosshair.hcross', single);
+			this.push('coordinate.crosshair.invokeOffset', function(e, m) {
+				var r = self.lines[0].isEventValid(e);
+					/**
+					 * TODO how fire muti line?
+					 */
+					return r.valid ? r : false;
+				});
+		}
+
+		if (!this.get('segment_style.tip')) {
+			this.push('segment_style.tip', this.get('tip'));
+		} else {
+			this.push('segment_style.tip.wrap', this.get('tip.wrap'));
+		}
 	}
-
-	if (!this.get('segment_style.tip')) {
-		this.push('segment_style.tip', this.get('tip'));
-	} else {
-		this.push('segment_style.tip.wrap', this.get('tip.wrap'));
-	}
-}
 
 });// @end
 
@@ -6601,16 +6643,11 @@ $.Line = $.extend($.Chart,{
 			this.coo.draw();
 			for(var i=0;i<this.lines.length;i++){
 				l = this.lines[i]; 
-				this.fireEvent(this,'beforeLineAnimation',[this,l]);
-				
 				for(var j=0;j<l.points.length;j++){
 					p = l.points[j];
 					p.y = Math.ceil(this.animationArithmetic(t,0,p.height,d));
 				}
-				
 				l.drawLineSegment();
-				
-				this.fireEvent(this,'afterLineAnimation',[this,l]);
 			}
 		},
 		doConfig:function(){
@@ -6653,7 +6690,7 @@ $.Line = $.extend($.Chart,{
 				for(var j=0;j<d[i].value.length;j++){
 					x = sp*j;
 					y = (d[i].value[j]-S.start)*H/S.distance;
-					points.push($.merge({x:x,y:y,value:d[i].value[j]},this.fireEvent(this,'parsePoint',[d[i].value[j],x,y,j])));
+					points.push($.merge({x:x,y:y,value:d[i].value[j]},this.fireEvent(this,'parsePoint',[this,d[i].value[j],x,y,j])));
 				}
 				
 				this.push('segment_style.point_space',sp);
@@ -6822,7 +6859,9 @@ $.Line = $.extend($.Chart,{
 			this.type = 'area2d';
 			
 			this.set({
-				area:true,
+				/**
+				 * @cfg {Float} Specify the opacity of this area.(default to 0.3)
+				 */
 				area_opacity:0.3
 			});
 			

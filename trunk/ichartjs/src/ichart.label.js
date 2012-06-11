@@ -70,8 +70,8 @@ iChart.Label = iChart.extend(iChart.Component, {
 		 * this element support boxMode
 		 */
 		this.atomic = true;
-
-		this.registerEvent('beforeDrawRow', 'highlight', 'drawRow');
+		
+		this.registerEvent();
 
 	},
 	isEventValid : function(e) {

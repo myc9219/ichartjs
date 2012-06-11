@@ -88,7 +88,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			 */
 			area_opacity : 0.4,
 			/**
-			 * @cfg {Object} the options of tip 
+			 * @cfg {Object} the options of tip
 			 */
 			tip : {
 				enable : false,
@@ -126,28 +126,30 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			if (this.get('gradient')) {
 				bg = this.T.avgLinearGradient(this.x, this.y - this.get('height'), this.x, this.y, [this.get('light_color2'), bg]);
 			}
-			// NEXT Config the area polygon
-	this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
-}
-
-for ( var i = 0; i < p.length - 1; i++) {
-	this.T.line(this.x + p[i].x, this.y - p[i].y, this.x + p[i + 1].x, this.y - p[i + 1].y, this.get('brushsize'), this.get('fill_color'), false);
-}
-
-if (this.get('intersection')) {
-	for ( var i = 0; i < p.length; i++) {
-		if (this.get('point_hollow')) {
-			this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('fill_color'));
-		} else {
-			this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), this.get('fill_color'));
+			/**
+			 * NEXT Config the area polygon
+			 */
+			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
 		}
-	}
-}
 
-if (this.get('shadow')) {
-	this.T.shadowOff();
-}
-},
+		for ( var i = 0; i < p.length - 1; i++) {
+			this.T.line(this.x + p[i].x, this.y - p[i].y, this.x + p[i + 1].x, this.y - p[i + 1].y, this.get('brushsize'), this.get('fill_color'), false);
+		}
+
+		if (this.get('intersection')) {
+			for ( var i = 0; i < p.length; i++) {
+				if (this.get('point_hollow')) {
+					this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('fill_color'));
+				} else {
+					this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), this.get('fill_color'));
+				}
+			}
+		}
+
+		if (this.get('shadow')) {
+			this.T.shadowOff();
+		}
+	},
 	doDraw : function(opts) {
 		this.drawLineSegment();
 		this.drawLabel();
@@ -191,7 +193,9 @@ if (this.get('shadow')) {
 		}
 
 		if (_.get('tip.enable')) {
-			// _ use for tip coincidence
+			/**
+			 * _ use for tip coincidence
+			 */
 			_.on('mouseover', function(e, m) {
 				heap.push(_);
 				_.tipPosition = heap.length;
