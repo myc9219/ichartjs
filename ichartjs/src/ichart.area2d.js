@@ -22,8 +22,6 @@
 				area_opacity:0.3
 			});
 			
-			this.registerEvent();
-			
 		},
 		doConfig:function(){
 			/**

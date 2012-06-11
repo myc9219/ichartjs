@@ -17,9 +17,6 @@
 				
 				this.dataType = 'complex';
 				
-				//this.set({});
-				
-				//this.registerEvent();
 				this.columns = [];
 			},
 			doConfig:function(){

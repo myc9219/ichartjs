@@ -651,11 +651,11 @@
 				 */
 				data : [],
 				/**
-				 * @cfg {Number} the width of this canvas
+				 * @cfg {Number} Specify the width of this canvas
 				 */
 				width : undefined,
 				/**
-				 * @cfg {Number} the height of this canvas
+				 * @cfg {Number} Specify the height of this canvas
 				 */
 				height : undefined,
 				/**
@@ -670,11 +670,11 @@
 				 */
 				default_mouseover_css:true,
 				/**
-				 * @cfg {Boolean} indicate if the chart clear segment of canvas(defaults to true)
+				 * @cfg {Boolean} Indicate if the chart clear segment of canvas(defaults to true)
 				 */
 				segmentRect : true,
 				/**
-				 * @cfg {String} if the title is empty,then will not display (default to '')
+				 * @cfg {String} If the title is empty,then will not display (default to '')
 				 */
 				title : '',
 				/**
@@ -733,17 +733,17 @@
 				 */
 				animation_timing_function : 'easeInOut',
 				/**
-				 * @cfg {Number}
+				 * @cfg {Number} Specifies the duration between two frame in millisecond.(default to 1600)
 				 */
 				duration_animation_duration : 1600,
 				/**
-				 * @cfg {Boolean} if the legend displayed (default to false)
+				 * @cfg {Boolean} If the legend displayed (default to false)
 				 */
 				legend : {
 					enable : false
 				},
 				/**
-				 * @cfg {Boolean} if the tip enabled (default to false)
+				 * @cfg {Boolean} If the tip enabled (default to false)
 				 */
 				tip : {
 					enable : false
@@ -992,6 +992,7 @@
 			_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');
+			
 			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
 			_.variable.animation = {
 				type : 0,
