@@ -61,16 +61,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 				enable : true
 			},
 			/**
-			 * @cfg {Object} Specifies the option of tip.For details see <link>iChart.Tip</link>
-			 */
-			tip : {
-				enable : false,
-				border : {
-					width : 2,
-					radius : 5
-				}
-			},
-			/**
 			 * @cfg {Object} option of sector.Note,Pie2d depend on Sector2d and pie3d depend on Sector3d.For details see <link>iChart.Sector</link>
 			 */
 			sector:{}
