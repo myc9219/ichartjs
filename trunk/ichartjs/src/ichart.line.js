@@ -58,7 +58,8 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 */
 			segment_style : {},
 			/**
-			 * @cfg {Boolean} If the tip displayed.(default enable to false). Note that this option only applies when showPoint = true.
+			 * @cfg {Boolean} Note that this option only applies when showPoint = true.
+			 * For details see <link>iChart.Chart#tip</link>
 			 */
 			tip : {
 				enable : false

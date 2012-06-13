@@ -2,7 +2,7 @@
 /**
  * 
  * @overview this component use for 画图的基类、其他组件要继承此组件
- * @component#iChart.Painter
+ * @component#iChart.Html
  * @extend#iChart.Element
  */
 iChart.Html = iChart.extend(iChart.Element,{

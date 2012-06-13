@@ -102,7 +102,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			 */
 			textAlign : 'left',
 			/**
-			 * @cfg {Number} Specify the number of decimal.(default to 1)
+			 * @cfg {Number} Specifies the number of decimal.(default to 1)
 			 */
 			decimalsnum : 0,
 			/**
@@ -380,17 +380,11 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					alternate_color : true,
 					/**
-					 * @cfg {Object} the option for crosshair.(default enable to false)
+					 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>iChart.iChart.CrossHair</link>
+					 * Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
 					 */
 					crosshair : {
 						enable : false
-					},
-					/**
-					 * @cfg {Object} Specifies style of the crosshair.Note that this option only applies when crosshair.enable = true.
-					 */
-					crosshair_style : {
-						width : 1,
-						color : 'blank'
 					},
 					/**
 					 * @cfg {Number} Required,Specifies the width of this coordinate.(default to undefined)
@@ -401,7 +395,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					height : undefined,
 					/**
-					 * @cfg {Object} the option for axis of this coordinate. Available property are:
+					 * @cfg {Object} Specifies style for axis of this coordinate. Available property are:
 					 * @Option enable {Boolean} True to display the axis.(default to true)
 					 * @Option color {String} Specifies the color of each axis.(default to '#666666')
 					 * @Option width {Number/Array} Specifies the width of each axis, If given the a array,there must be have have 4 element, like this:[1,0,0,1](top-right-bottom-left).(default to 1)
@@ -409,8 +403,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					axis : {
 						enable : true,
 						color : '#666666',
-						width : 1,
-						style : ''
+						width : 1
 					}
 				});
 

@@ -47,7 +47,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 			 */
 			sign_space : 5,
 			/**
-			 * @inner {Boolean} 
+			 * @inner {Boolean}
 			 */
 			highlight : false,
 			/**
@@ -65,12 +65,12 @@ iChart.Label = iChart.extend(iChart.Component, {
 				radius : 2
 			}
 		});
-		
+
 		/**
 		 * this element support boxMode
 		 */
 		this.atomic = true;
-		
+
 		this.registerEvent();
 
 	},
@@ -125,7 +125,6 @@ iChart.Label = iChart.extend(iChart.Component, {
 		this.labely = XY.labely;
 		this.x = L.origin.x;
 		this.y = L.origin.y;
-		// console.log(this.x+","+this.y+","+this.labelx+","+this.labely);
 	},
 	doConfig : function() {
 		iChart.Label.superclass.doConfig.call(this);

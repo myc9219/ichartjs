@@ -17,11 +17,8 @@
 	
 			this.set({
 				/**
-				 * @cfg {Boolean} indicate whether there has a effect of color gradient.(default to false)
-				 */
-				gradient : false,
-				/**
-				 * @cfg {Object} Specify the option of tip
+				 * @cfg {Boolean} Specifies the config of Tip.For details see <link>iChart.Tip</link>
+				 * Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 				 */
 				tip : {
 					enable : false,

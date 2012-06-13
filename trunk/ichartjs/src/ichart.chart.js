@@ -651,11 +651,11 @@
 				 */
 				data : [],
 				/**
-				 * @cfg {Number} Specify the width of this canvas
+				 * @cfg {Number} Specifies the width of this canvas
 				 */
 				width : undefined,
 				/**
-				 * @cfg {Number} Specify the height of this canvas
+				 * @cfg {Number} Specifies the height of this canvas
 				 */
 				height : undefined,
 				/**
@@ -737,13 +737,15 @@
 				 */
 				duration_animation_duration : 1600,
 				/**
-				 * @cfg {Boolean} If the legend displayed (default to false)
+				 * @cfg {Boolean}Specifies the config of Legend.For details see <link>iChart.Legend</link>
+				 * Note:this has a extra property named 'enable',indicate whether legend available(default to false)
 				 */
 				legend : {
 					enable : false
 				},
 				/**
-				 * @cfg {Boolean} If the tip enabled (default to false)
+				 * @cfg {Boolean} Specifies the config of Tip.For details see <link>iChart.Tip</link>
+				 * Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 				 */
 				tip : {
 					enable : false

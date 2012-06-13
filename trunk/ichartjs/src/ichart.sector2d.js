@@ -17,16 +17,11 @@
 			
 			this.set({
 				/**
-				 * @cfg {Float (0~)} Specify the sector's radius.Normally,this will given by chart.(default to 0)
+				 * @cfg {Float (0~)} Specifies the sector's radius.Normally,this will given by chart.(default to 0)
 				 */
 				radius:0
 			});
 			
-			this.registerEvent(
-				'beforepop',
-				'analysing',
-				'drawRow'
-			);
 		},
 		drawSector:function(){
 			this.T.sector(

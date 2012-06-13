@@ -18,7 +18,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		
 		this.set({
 			/**
-			 * @cfg {Float (0~)} Specify the pie's radius.(default to calculate by the size of chart)
+			 * @cfg {Float (0~)} Specifies the pie's radius.(default to calculate by the size of chart)
 			 */
 			radius : 0,
 			/**
@@ -26,21 +26,17 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			offsetAngle : 0,
 			/**
-			 * @cfg {Boolean} Specify as true to display with percent.(default to true)
+			 * @cfg {Boolean} Specifies as true to display with percent.(default to true)
 			 */
 			showpercent : true,
 			/**
-			 * @cfg {Number} Specify the number of decimal when use percent.(default to 1)
+			 * @cfg {Number} Specifies the number of decimal when use percent.(default to 1)
 			 */
 			decimalsnum : 1,
 			/**
 			 * @cfg {String} the event's name trigger pie pop(default to 'click')
 			 */
 			bound_event : 'click',
-			/**
-			 * @cfg {Boolean}
-			 */
-			customize_layout : false,
 			/**
 			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
 			 */
@@ -50,27 +46,22 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			pop_animate : false,
 			/**
-			 * @cfg {Boolean} Specify as true it means just one piece could pop (default to true)
+			 * @cfg {Boolean} Specifies as true it means just one piece could pop (default to true)
 			 */
 			mutex : false,
 			/**
-			 * @cfg {Boolean} True to apply the gradient,if set to true that will be gradient color of each sector(default to true)
-			 */
-			gradient : true,
-			/**
-			 * @cfg {Number} Specify the length when sector bounded.(default to 1/8 radius,and minimum is 5), 
+			 * @cfg {Number} Specifies the length when sector bounded.(default to 1/8 radius,and minimum is 5), 
 			 */
 			increment : undefined,
 			/**
-			 * @cfg {Object} Specify the config of label
+			 * @cfg {Object} Specifies the config of label.For details see <link>iChart.Label</link>
+			 * Note:this has a extra property named 'enable',indicate whether label available(default to true)
 			 */
 			label : {
-				enable : true,
-				linelength : undefined,
-				padding : 5
+				enable : true
 			},
 			/**
-			 * @cfg {Object} Specify the option of tip
+			 * @cfg {Object} Specifies the option of tip.For details see <link>iChart.Tip</link>
 			 */
 			tip : {
 				enable : false,
@@ -80,7 +71,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 				}
 			},
 			/**
-			 * @cfg {Object} option of sector
+			 * @cfg {Object} option of sector.Note,Pie2d depend on Sector2d and pie3d depend on Sector3d.For details see <link>iChart.Sector</link>
 			 */
 			sector:{}
 		});
@@ -110,7 +101,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @paramter animate#boolean if has a animation when drawing
 	 * @return void
 	 */
-	add:function(data,index,animate){
+	add : function(data,index,animate){
 		data = iChart.Pie.superclass.add.call(this,data,index,animate);
 		if(!data)return; 
 			
@@ -149,7 +140,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		this.draw();
 	},
 	/**
-	 * @method toggle sector 
+	 * @method Toggle sector bound or rebound  by a specific index.
 	 * @paramter int#i the index of sector
 	 * @return void
 	 */
@@ -157,7 +148,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		this.data[i].reference.toggle();
 	},
 	/**
-	 * @method bound sector
+	 * @method bound sector by a specific index.
 	 * @paramter int#i the index of sector
 	 * @return void
 	 */
@@ -165,12 +156,19 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		this.data[i].reference.bound();
 	},
 	/**
-	 * @method rebound sector
+	 * @method rebound sector  by a specific index.
 	 * @paramter int#i the index of sector
 	 * @return void
 	 */
 	rebound:function(i){
 		this.data[i].reference.rebound();
+	},
+	/**
+	 * @method Returns an array containing all sectors of this pie
+	 * @return Array#the collection of sectors
+	 */
+	getSectors : function() {
+		return this.sectors;
 	},
 	doAnimation : function(t, d) {
 		var s, si = 0, cs = this.offsetAngle;
@@ -184,13 +182,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 				s.drawSector();
 			}, this);
 	},
-	/**
-	 * @method Returns an array containing all sectors of this pie
-	 * @return Array#the collection of sectors
-	 */
-	getSectors : function() {
-		return this.sectors;
-	},
 	doParse : function(d, i) {
 		var _ = this, t = d.name + (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : '');
 		if (_.get('label.enable'))
@@ -201,7 +192,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			_.push('sector.tip.text', _.fireString(_, 'parseTipText', [
 					d, i
 			], t));
-
+		
 		_.push('sector.id', i);
 		_.push('sector.name', d.name);
 		_.push('sector.listeners.changed', function(se, st, i) {

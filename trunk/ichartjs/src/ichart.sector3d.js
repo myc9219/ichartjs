@@ -18,24 +18,19 @@
 			
 			this.set({
 				/**
-				 * @cfg {Number}  Specify major semiaxis of ellipse.Normally,this will given by chart.(default to 0)
+				 * @cfg {Number}  Specifies major semiaxis of ellipse.Normally,this will given by chart.(default to 0)
 				 */
 				semi_major_axis:0,
 				/**
-				 * @cfg {Number} Specify minor semiaxis of ellipse.Normally,this will given by chart.(default to 0)
+				 * @cfg {Number} Specifies minor semiaxis of ellipse.Normally,this will given by chart.(default to 0)
 				 */
 				semi_minor_axis:0,
 				/**
-				 * @cfg {Float (0~)} Specify the sector's height(thickness).Normally,this will given by chart.(default to 0)
+				 * @cfg {Float (0~)} Specifies the sector's height(thickness).Normally,this will given by chart.(default to 0)
 				 */
 				cylinder_height:0
 			});
 			
-			this.registerEvent(
-				'beforepop',
-				'analysing',
-				'drawRow'
-			);
 			
 		},
 		drawSector:function(){

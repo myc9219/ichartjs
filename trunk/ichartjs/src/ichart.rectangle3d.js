@@ -37,12 +37,6 @@
 				shadow_offsetx:2
 			});
 			
-			this.registerEvent(
-				'beforepop',
-				'analysing',
-				'drawRow'
-			);
-			
 		},
 		drawValue:function(){
 			if(this.get('value')!='')
