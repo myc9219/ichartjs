@@ -737,14 +737,14 @@
 				 */
 				duration_animation_duration : 1600,
 				/**
-				 * @cfg {Boolean}Specifies the config of Legend.For details see <link>iChart.Legend</link>
+				 * @cfg {Object}Specifies the config of Legend.For details see <link>iChart.Legend</link>
 				 * Note:this has a extra property named 'enable',indicate whether legend available(default to false)
 				 */
 				legend : {
 					enable : false
 				},
 				/**
-				 * @cfg {Boolean} Specifies the config of Tip.For details see <link>iChart.Tip</link>
+				 * @cfg {Object} Specifies the config of Tip.For details see <link>iChart.Tip</link>
 				 * Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 				 */
 				tip : {
