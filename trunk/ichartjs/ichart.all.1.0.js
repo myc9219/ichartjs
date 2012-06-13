@@ -1079,7 +1079,8 @@ $.Element.prototype = {
 }//@end
 
 /**
- * @overview this element use for 画图的基类、其他组件要继承此组件
+ * @overview The interface this class defined include draw and event,so the sub class has must capability to draw and aware of event.
+ * this class is a abstract class,so you should not try to initialize it.
  * @component#$.Painter
  * @extend#$.Element
  */
@@ -1136,6 +1137,10 @@ $.Painter = $.extend($.Element, {
 			 * @cfg {float} Specifies the factor make color dark or light for this element,relative to background-color,the bigger the value you set,the larger the color changed.scope{0.01 - 0.5}.(defaults to '0.15')
 			 */
 			color_factor : 0.15,
+			/**
+			 * @cfg {Boolean} True to apply the gradient.(default to false)
+			 */
+			gradient : false,
 			/**
 			 * @cfg {String} ('2d','3d')
 			 */
@@ -1246,6 +1251,10 @@ $.Painter = $.extend($.Element, {
 	is3D : function() {
 		return this.dimension == $._3D;
 	},
+	/**
+	 * @method The commnd fire to draw the chart use configuration,this is a abstract method.Currently known,both <link>$.Chart</link> and <link>$.Component</link> implement this method.
+	 * @return void
+	 */
 	draw : function(o) {
 		this.init();
 		this.draw = function(o){
@@ -1312,7 +1321,7 @@ $.Painter = $.extend($.Element, {
 /**
  * 
  * @overview this component use for 画图的基类、其他组件要继承此组件
- * @component#$.Painter
+ * @component#$.Html
  * @extend#$.Element
  */
 $.Html = $.extend($.Element,{
@@ -1450,11 +1459,8 @@ $.Html = $.extend($.Element,{
 	
 			this.set({
 				/**
-				 * @cfg {Boolean} indicate whether there has a effect of color gradient.(default to false)
-				 */
-				gradient : false,
-				/**
-				 * @cfg {Object} Specifies the option of tip
+				 * @cfg {Boolean} Specifies the config of Tip.For details see <link>$.Tip</link>
+				 * Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 				 */
 				tip : {
 					enable : false,
@@ -2214,13 +2220,11 @@ $.Legend = $.extend($.Component, {
 
 		// calculate the width each item will used
 		D.each(function(d, i) {
-			$.merge(d, {
-				text : this.fireEvent(this, 'parse', [this, d.name, i])
-			});
+			$.merge(d,this.fireEvent(this, 'parse', [this, d.name, i]));
 			d.text = d.text || d.name;
 			d.width = this.T.measureText(d.text);
 		}, this);
-
+		
 		// calculate the each column's width it will used
 		for ( var i = 0; i < c; i++) {
 			width = 0;
@@ -2345,7 +2349,7 @@ $.Label = $.extend($.Component, {
 			 */
 			sign_space : 5,
 			/**
-			 * @inner {Boolean} 
+			 * @inner {Boolean}
 			 */
 			highlight : false,
 			/**
@@ -2363,12 +2367,12 @@ $.Label = $.extend($.Component, {
 				radius : 2
 			}
 		});
-		
+
 		/**
 		 * this element support boxMode
 		 */
 		this.atomic = true;
-		
+
 		this.registerEvent();
 
 	},
@@ -2423,7 +2427,6 @@ $.Label = $.extend($.Component, {
 		this.labely = XY.labely;
 		this.x = L.origin.x;
 		this.y = L.origin.y;
-		// console.log(this.x+","+this.y+","+this.labelx+","+this.labely);
 	},
 	doConfig : function() {
 		$.Label.superclass.doConfig.call(this);
@@ -3154,11 +3157,11 @@ $.Label = $.extend($.Component, {
 				 */
 				data : [],
 				/**
-				 * @cfg {Number} the width of this canvas
+				 * @cfg {Number} Specifies the width of this canvas
 				 */
 				width : undefined,
 				/**
-				 * @cfg {Number} the height of this canvas
+				 * @cfg {Number} Specifies the height of this canvas
 				 */
 				height : undefined,
 				/**
@@ -3173,11 +3176,11 @@ $.Label = $.extend($.Component, {
 				 */
 				default_mouseover_css:true,
 				/**
-				 * @cfg {Boolean} indicate if the chart clear segment of canvas(defaults to true)
+				 * @cfg {Boolean} Indicate if the chart clear segment of canvas(defaults to true)
 				 */
 				segmentRect : true,
 				/**
-				 * @cfg {String} if the title is empty,then will not display (default to '')
+				 * @cfg {String} If the title is empty,then will not display (default to '')
 				 */
 				title : '',
 				/**
@@ -3220,7 +3223,7 @@ $.Label = $.extend($.Component, {
 				 */
 				title_height : 25,
 				/**
-				 * @cfg {Boolean} if true element will has a animation when show, false to skip the animation.(default to false)
+				 * @cfg {Boolean} If true element will has a animation when show, false to skip the animation.(default to false)
 				 */
 				animation : false,
 				/**
@@ -3236,17 +3239,19 @@ $.Label = $.extend($.Component, {
 				 */
 				animation_timing_function : 'easeInOut',
 				/**
-				 * @cfg {Number}
+				 * @cfg {Number} Specifies the duration between two frame in millisecond.(default to 1600)
 				 */
 				duration_animation_duration : 1600,
 				/**
-				 * @cfg {Boolean} if the legend displayed (default to false)
+				 * @cfg {Object}Specifies the config of Legend.For details see <link>$.Legend</link>
+				 * Note:this has a extra property named 'enable',indicate whether legend available(default to false)
 				 */
 				legend : {
 					enable : false
 				},
 				/**
-				 * @cfg {Boolean} if the tip enabled (default to false)
+				 * @cfg {Object} Specifies the config of Tip.For details see <link>$.Tip</link>
+				 * Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 				 */
 				tip : {
 					enable : false
@@ -3495,6 +3500,7 @@ $.Label = $.extend($.Component, {
 			_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');
+			
 			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
 			_.variable.animation = {
 				type : 0,
@@ -4079,17 +4085,11 @@ $.Coordinate2D = $.extend($.Component,
 					 */
 					alternate_color : true,
 					/**
-					 * @cfg {Object} the option for crosshair.(default enable to false)
+					 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>$.$.CrossHair</link>
+					 * Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
 					 */
 					crosshair : {
 						enable : false
-					},
-					/**
-					 * @cfg {Object} Specifies style of the crosshair.Note that this option only applies when crosshair.enable = true.
-					 */
-					crosshair_style : {
-						width : 1,
-						color : 'blank'
 					},
 					/**
 					 * @cfg {Number} Required,Specifies the width of this coordinate.(default to undefined)
@@ -4100,7 +4100,7 @@ $.Coordinate2D = $.extend($.Component,
 					 */
 					height : undefined,
 					/**
-					 * @cfg {Object} the option for axis of this coordinate. Available property are:
+					 * @cfg {Object} Specifies style for axis of this coordinate. Available property are:
 					 * @Option enable {Boolean} True to display the axis.(default to true)
 					 * @Option color {String} Specifies the color of each axis.(default to '#666666')
 					 * @Option width {Number/Array} Specifies the width of each axis, If given the a array,there must be have have 4 element, like this:[1,0,0,1](top-right-bottom-left).(default to 1)
@@ -4108,8 +4108,7 @@ $.Coordinate2D = $.extend($.Component,
 					axis : {
 						enable : true,
 						color : '#666666',
-						width : 1,
-						style : ''
+						width : 1
 					}
 				});
 
@@ -4602,8 +4601,6 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			 */
 			this.atomic = true;
 			
-			this.registerEvent();
-			
 		},
 		doDraw:function(opts){
 			this.drawRectangle();
@@ -4788,12 +4785,6 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				shadow_offsetx:2
 			});
 			
-			this.registerEvent(
-				'beforepop',
-				'analysing',
-				'drawRow'
-			);
-			
 		},
 		drawValue:function(){
 			if(this.get('value')!='')
@@ -4844,6 +4835,11 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			
 		}
 });//@end
+/**
+ * @overview this component use for abc
+ * @component#$.Sector
+ * @extend#$.Component
+ */
 $.Sector = $.extend($.Component, {
 	configure : function() {
 		/**
@@ -4855,7 +4851,7 @@ $.Sector = $.extend($.Component, {
 		 * indicate the component's type
 		 */
 		this.type = 'sector';
-		
+
 		this.set({
 			/**
 			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
@@ -4878,7 +4874,7 @@ $.Sector = $.extend($.Component, {
 			 */
 			totalAngle : 0,
 			/**
-			 * @cfg {String} the event's name trigger pie bound(default to 'click'). 
+			 * @cfg {String} the event's name trigger pie bound(default to 'click').
 			 */
 			bound_event : 'click',
 			/**
@@ -4890,7 +4886,7 @@ $.Sector = $.extend($.Component, {
 			 */
 			pop_animate : false,
 			/**
-			 * @cfg {Boolean} if true means just one piece could bound at same time.(default to false)
+			 * @cfg {Boolean} If true means just one piece could bound at same time.(default to false)
 			 */
 			mutex : false,
 			/**
@@ -4898,38 +4894,34 @@ $.Sector = $.extend($.Component, {
 			 */
 			increment : undefined,
 			/**
-			 * @cfg {Boolean} True to apply the gradient.(default to true)
-			 */
-			gradient : true,
-			/**
-			 * @cfg {Boolean} option of label
+			 * @cfg {Object} Specifies the config of label.For details see <link>$.Label</link>
+			 * Note:this has a extra property named 'enable',indicate whether label available(default to true)
 			 */
 			label : {
-				enable : true,
-				linelength : undefined
+				enable : true
 			}
 		});
-		
+
 		/**
 		 * this element support boxMode
 		 */
 		this.atomic = true;
-		
+
 		this.registerEvent('changed');
 
 		this.label = null;
 		this.tip = null;
 	},
 	bound : function() {
-		if(!this.expanded)
+		if (!this.expanded)
 			this.toggle();
 	},
 	rebound : function() {
-		if(this.expanded)
+		if (this.expanded)
 			this.toggle();
 	},
 	toggle : function() {
-		this.fireEvent(this,this.get('bound_event'),[this]);
+		this.fireEvent(this, this.get('bound_event'), [this]);
 	},
 	drawLabel : function() {
 		if (this.get('label.enable')) {
@@ -4948,9 +4940,9 @@ $.Sector = $.extend($.Component, {
 	},
 	doConfig : function() {
 		$.Sector.superclass.doConfig.call(this);
-		
+
 		var _ = this;
-		
+
 		_.push('totalAngle', _.get('endAngle') - _.get('startAngle'));
 
 		/**
@@ -4959,7 +4951,7 @@ $.Sector = $.extend($.Component, {
 		_.push('label.scolor', _.get('background_color'));
 
 		_.variable.event.status = _.expanded = _.get('expand');
-		
+
 		if (_.get('tip.enable')) {
 			if (_.get('tip.showType') != 'follow') {
 				_.push('tip.invokeOffsetDynamic', false);
@@ -4969,7 +4961,7 @@ $.Sector = $.extend($.Component, {
 
 		_.variable.event.poped = false;
 
-		_.on(_.get('bound_event'), function(_,e,r) {
+		_.on(_.get('bound_event'), function(_, e, r) {
 			// console.profile('Test for pop');
 				// console.time('Test for pop');
 				_.variable.event.poped = true;
@@ -4983,8 +4975,8 @@ $.Sector = $.extend($.Component, {
 		_.on('beforedraw', function() {
 			_.x = _.get('originx');
 			_.y = _.get('originy');
-			if(_.variable.event.status!=_.expanded){
-				_.fireEvent(_,'changed',[_,_.expanded]);
+			if (_.variable.event.status != _.expanded) {
+				_.fireEvent(_, 'changed', [_, _.expanded]);
 			}
 			_.variable.event.status = _.expanded;
 			if (_.expanded) {
@@ -4999,7 +4991,8 @@ $.Sector = $.extend($.Component, {
 		});
 
 	}
-});//@end
+});// @end
+
 	/**
 	 * @overview this component use for abc
 	 * @component#$.Sector2D
@@ -5024,11 +5017,6 @@ $.Sector = $.extend($.Component, {
 				radius:0
 			});
 			
-			this.registerEvent(
-				'beforepop',
-				'analysing',
-				'drawRow'
-			);
 		},
 		drawSector:function(){
 			this.T.sector(
@@ -5146,11 +5134,6 @@ $.Sector = $.extend($.Component, {
 				cylinder_height:0
 			});
 			
-			this.registerEvent(
-				'beforepop',
-				'analysing',
-				'drawRow'
-			);
 			
 		},
 		drawSector:function(){
@@ -5301,10 +5284,6 @@ $.Pie = $.extend($.Chart, {
 			 */
 			bound_event : 'click',
 			/**
-			 * @cfg {Boolean}
-			 */
-			customize_layout : false,
-			/**
 			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
 			 */
 			counterclockwise : false,
@@ -5317,33 +5296,18 @@ $.Pie = $.extend($.Chart, {
 			 */
 			mutex : false,
 			/**
-			 * @cfg {Boolean} True to apply the gradient,if set to true that will be gradient color of each sector(default to true)
-			 */
-			gradient : true,
-			/**
 			 * @cfg {Number} Specifies the length when sector bounded.(default to 1/8 radius,and minimum is 5), 
 			 */
 			increment : undefined,
 			/**
-			 * @cfg {Object} Specifies the config of label
+			 * @cfg {Object} Specifies the config of label.For details see <link>$.Label</link>
+			 * Note:this has a extra property named 'enable',indicate whether label available(default to true)
 			 */
 			label : {
-				enable : true,
-				linelength : undefined,
-				padding : 5
+				enable : true
 			},
 			/**
-			 * @cfg {Object} Specifies the option of tip
-			 */
-			tip : {
-				enable : false,
-				border : {
-					width : 2,
-					radius : 5
-				}
-			},
-			/**
-			 * @cfg {Object} option of sector
+			 * @cfg {Object} option of sector.Note,Pie2d depend on Sector2d and pie3d depend on Sector3d.For details see <link>$.Sector</link>
 			 */
 			sector:{}
 		});
@@ -5373,7 +5337,7 @@ $.Pie = $.extend($.Chart, {
 	 * @paramter animate#boolean if has a animation when drawing
 	 * @return void
 	 */
-	add:function(data,index,animate){
+	add : function(data,index,animate){
 		data = $.Pie.superclass.add.call(this,data,index,animate);
 		if(!data)return; 
 			
@@ -5412,7 +5376,7 @@ $.Pie = $.extend($.Chart, {
 		this.draw();
 	},
 	/**
-	 * @method toggle sector 
+	 * @method Toggle sector bound or rebound  by a specific index.
 	 * @paramter int#i the index of sector
 	 * @return void
 	 */
@@ -5420,7 +5384,7 @@ $.Pie = $.extend($.Chart, {
 		this.data[i].reference.toggle();
 	},
 	/**
-	 * @method bound sector
+	 * @method bound sector by a specific index.
 	 * @paramter int#i the index of sector
 	 * @return void
 	 */
@@ -5428,12 +5392,19 @@ $.Pie = $.extend($.Chart, {
 		this.data[i].reference.bound();
 	},
 	/**
-	 * @method rebound sector
+	 * @method rebound sector  by a specific index.
 	 * @paramter int#i the index of sector
 	 * @return void
 	 */
 	rebound:function(i){
 		this.data[i].reference.rebound();
+	},
+	/**
+	 * @method Returns an array containing all sectors of this pie
+	 * @return Array#the collection of sectors
+	 */
+	getSectors : function() {
+		return this.sectors;
 	},
 	doAnimation : function(t, d) {
 		var s, si = 0, cs = this.offsetAngle;
@@ -5447,13 +5418,6 @@ $.Pie = $.extend($.Chart, {
 				s.drawSector();
 			}, this);
 	},
-	/**
-	 * @method Returns an array containing all sectors of this pie
-	 * @return Array#the collection of sectors
-	 */
-	getSectors : function() {
-		return this.sectors;
-	},
 	doParse : function(d, i) {
 		var _ = this, t = d.name + (_.get('showpercent') ? $.toPercent(d.value / _.total, _.get('decimalsnum')) : '');
 		if (_.get('label.enable'))
@@ -5464,7 +5428,7 @@ $.Pie = $.extend($.Chart, {
 			_.push('sector.tip.text', _.fireString(_, 'parseTipText', [
 					d, i
 			], t));
-
+		
 		_.push('sector.id', i);
 		_.push('sector.name', d.name);
 		_.push('sector.listeners.changed', function(se, st, i) {
@@ -5645,8 +5609,7 @@ $.Column = $.extend($.Chart, {
 		this.dataType = 'simple';
 		this.set({
 			/**
-			 * @cfg {Object} the option for coordinate.
-			 * see<link>$.Coordinate2D<link>
+			 * @cfg {Object} the option for coordinate. see <link>$.Coordinate2D</link>
 			 */
 			coordinate : {},
 			/**
@@ -5664,15 +5627,7 @@ $.Column = $.extend($.Chart, {
 			 */
 			scaleAlign : 'left',
 			/**
-			 * @inner {Object} the option for label
-			 * @extend $.Chart
-			 * see $.Chart#label
-			 */
-			label : {
-				padding : 5
-			},
-			/**
-			 * @cfg {Object} option of rectangle
+			 * @cfg {Object} option of rectangle.see <link>$.Rectangle</link>
 			 */
 			rectangle : {}
 		});
@@ -5698,8 +5653,6 @@ $.Column = $.extend($.Chart, {
 		}
 	},
 	doParse : function(d, i, id, x, y, h) {
-		if (this.get('label.enable'))
-			this.push('rectangle.label.text', this.fireString(this, 'parseLabelText', [d, i], d.name + ":" + d.value));
 		if (this.get('tip.enable'))
 			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, i], d.name + ":" + d.value));
 
@@ -5714,7 +5667,6 @@ $.Column = $.extend($.Chart, {
 	},
 	doConfig : function() {
 		$.Column.superclass.doConfig.call(this);
-
 		/**
 		 * apply the coordinate feature
 		 */
@@ -5733,11 +5685,11 @@ $.Column = $.extend($.Chart, {
 			this.push('hispace', (W - hw * L) / (L + 1));
 
 		}
-		
-		if (this.is3D()){
+
+		if (this.is3D()) {
 			this.push('zHeight', this.get('hiswidth') * this.get('zScale'));
 		}
-		
+
 		/**
 		 * use option create a coordinate
 		 */
@@ -5977,32 +5929,24 @@ $.Bar = $.extend($.Chart, {
 		this.dataType = 'simple';
 		this.set({
 			/**
-			 * @cfg {Object} the option for coordinate
+			 * @cfg {Object} Specifies the option for coordinate.For details see <link>$.Coordinate2D</link>
 			 */
 			coordinate : {},
 			/**
-			 * @cfg {Number} the width of each bar(default to calculate according to coordinate's height)
+			 * @cfg {Number} Specifies the width of each bar(default to calculate according to coordinate's height)
 			 */
 			barheight : undefined,
 			/**
-			 * @cfg {Number} the distance of column's bottom and text(default to 6)
+			 * @cfg {Number} Specifies the distance of column's bottom and text(default to 6)
 			 */
 			text_space : 6,
 			/**
-			 * @cfg {String} the align of scale(default to 'bottom') Available value are:
+			 * @cfg {String} Specifies the align of scale(default to 'bottom') Available value are:
 			 * @Option 'top,'bottom'
 			 */
 			scaleAlign : 'bottom',
 			/**
-			 * @cfg {Object} the option for label
-			 * @extend $.Chart
-			 * see $.Chart#label
-			 */
-			label : {
-				padding : 5
-			},
-			/**
-			 * @cfg {Object} the option for rectangle
+			 * @cfg {Object} option of rectangle.see <link>$.Rectangle</link>
 			 */
 			rectangle : {}
 		});
@@ -6013,8 +5957,6 @@ $.Bar = $.extend($.Chart, {
 		this.labels = [];
 	},
 	doParse : function(d, i, id, x, y, w) {
-		if (this.get('label.enable'))
-			this.push('rectangle.label.text', this.fireString(this, 'parseLabelText', [d, i], d.name + ":" + d.value));
 		if (this.get('tip.enable'))
 			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, i], d.name + ":" + d.value));
 
@@ -6022,17 +5964,17 @@ $.Bar = $.extend($.Chart, {
 		this.push('rectangle.background_color', d.color);
 
 		this.push('rectangle.id', id);
-		//this.push('rectangle.originx', x);
-		this.push('rectangle.originy', y);
-		this.push('rectangle.width', w);
+		// this.push('rectangle.originx', x);
+	this.push('rectangle.originy', y);
+	this.push('rectangle.width', w);
 
-	},
-	doAnimation:function(t,d){
+},
+	doAnimation : function(t, d) {
 		this.coo.draw();
 		this.labels.each(function(l, i) {
 			l.draw();
 		}, this);
-		
+
 		this.rectangles.each(function(r, i) {
 			r.push('width', Math.ceil(this.animationArithmetic(t, 0, r.width, d)));
 			r.drawRectangle();
@@ -6059,9 +6001,9 @@ $.Bar = $.extend($.Chart, {
 			 */
 			this.push('barspace', (H - bh * L) / (L + 1));
 		}
-		
-		if (this.is3D()){
-			
+
+		if (this.is3D()) {
+
 		}
 		/**
 		 * use option create a coordinate
@@ -6073,16 +6015,15 @@ $.Bar = $.extend($.Chart, {
 		 * Quick config to all rectangle
 		 */
 		$.apply(this.get('rectangle'), $.clone(['label', 'tip', 'border'], this.options));
-			
+
 		/**
 		 * quick config to all rectangle
 		 */
-		this.push('rectangle.height',bh);
-		this.push('rectangle.valueAlign','right');
-		this.push('rectangle.tipAlign','right');
-		this.push('rectangle.originx',this.x + this.coo.get('brushsize'));
-		
-		
+		this.push('rectangle.height', bh);
+		this.push('rectangle.valueAlign', 'right');
+		this.push('rectangle.tipAlign', 'right');
+		this.push('rectangle.originx', this.x + this.coo.get('brushsize'));
+
 	}
 
 });// @end
@@ -6105,9 +6046,6 @@ $.Bar = $.extend($.Chart, {
 			
 			this.type = 'bar2d';
 			
-			/**
-			 * this.set({});
-			 */
 		},
 		doConfig:function(){
 			$.Bar2D.superclass.doConfig.call(this);
@@ -6160,9 +6098,6 @@ $.Bar = $.extend($.Chart, {
 				
 				this.dataType = 'complex';
 				
-				//this.set({});
-				
-				//this.registerEvent();
 				this.columns = [];
 			},
 			doConfig:function(){
@@ -6309,16 +6244,7 @@ $.LineSegment = $.extend($.Component, {
 			/**
 			 * @cfg {Float} Specifies the opacity of area.scope{0.1-1}(default to 0.4) Note:Only applies when area = true
 			 */
-			area_opacity : 0.4,
-			/**
-			 * @cfg {Object} the options of tip
-			 */
-			tip : {
-				enable : false,
-				border : {
-					width : 2
-				}
-			}
+			area_opacity : 0.4
 		});
 
 		this.label = null;
@@ -6538,7 +6464,8 @@ $.Line = $.extend($.Chart, {
 			 */
 			segment_style : {},
 			/**
-			 * @cfg {Boolean} If the tip displayed.(default enable to false). Note that this option only applies when showPoint = true.
+			 * @cfg {Boolean} Note that this option only applies when showPoint = true.
+			 * For details see <link>$.Chart#tip</link>
 			 */
 			tip : {
 				enable : false
@@ -6868,8 +6795,6 @@ $.Line = $.extend($.Chart, {
 				 */
 				area_opacity:0.3
 			});
-			
-			this.registerEvent();
 			
 		},
 		doConfig:function(){
