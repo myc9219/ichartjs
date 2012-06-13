@@ -17,32 +17,24 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		this.dataType = 'simple';
 		this.set({
 			/**
-			 * @cfg {Object} Specify the option for coordinate
+			 * @cfg {Object} Specifies the option for coordinate.For details see <link>iChart.Coordinate2D</link>
 			 */
 			coordinate : {},
 			/**
-			 * @cfg {Number} Specify the width of each bar(default to calculate according to coordinate's height)
+			 * @cfg {Number} Specifies the width of each bar(default to calculate according to coordinate's height)
 			 */
 			barheight : undefined,
 			/**
-			 * @cfg {Number} Specify the distance of column's bottom and text(default to 6)
+			 * @cfg {Number} Specifies the distance of column's bottom and text(default to 6)
 			 */
 			text_space : 6,
 			/**
-			 * @cfg {String} Specify the align of scale(default to 'bottom') Available value are:
+			 * @cfg {String} Specifies the align of scale(default to 'bottom') Available value are:
 			 * @Option 'top,'bottom'
 			 */
 			scaleAlign : 'bottom',
 			/**
-			 * @cfg {Object} Specify the option for label
-			 * @extend iChart.Chart
-			 * @see iChart.Chart#label
-			 */
-			label : {
-				padding : 5
-			},
-			/**
-			 * @cfg {Object} Specify the option for rectangle
+			 * @cfg {Object} option of rectangle.see <link>iChart.Rectangle</link>
 			 */
 			rectangle : {}
 		});
@@ -53,8 +45,6 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		this.labels = [];
 	},
 	doParse : function(d, i, id, x, y, w) {
-		if (this.get('label.enable'))
-			this.push('rectangle.label.text', this.fireString(this, 'parseLabelText', [d, i], d.name + ":" + d.value));
 		if (this.get('tip.enable'))
 			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, i], d.name + ":" + d.value));
 
@@ -62,17 +52,17 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		this.push('rectangle.background_color', d.color);
 
 		this.push('rectangle.id', id);
-		//this.push('rectangle.originx', x);
-		this.push('rectangle.originy', y);
-		this.push('rectangle.width', w);
+		// this.push('rectangle.originx', x);
+	this.push('rectangle.originy', y);
+	this.push('rectangle.width', w);
 
-	},
-	doAnimation:function(t,d){
+},
+	doAnimation : function(t, d) {
 		this.coo.draw();
 		this.labels.each(function(l, i) {
 			l.draw();
 		}, this);
-		
+
 		this.rectangles.each(function(r, i) {
 			r.push('width', Math.ceil(this.animationArithmetic(t, 0, r.width, d)));
 			r.drawRectangle();
@@ -99,9 +89,9 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 			 */
 			this.push('barspace', (H - bh * L) / (L + 1));
 		}
-		
-		if (this.is3D()){
-			
+
+		if (this.is3D()) {
+
 		}
 		/**
 		 * use option create a coordinate
@@ -113,16 +103,15 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		 * Quick config to all rectangle
 		 */
 		iChart.apply(this.get('rectangle'), iChart.clone(['label', 'tip', 'border'], this.options));
-			
+
 		/**
 		 * quick config to all rectangle
 		 */
-		this.push('rectangle.height',bh);
-		this.push('rectangle.valueAlign','right');
-		this.push('rectangle.tipAlign','right');
-		this.push('rectangle.originx',this.x + this.coo.get('brushsize'));
-		
-		
+		this.push('rectangle.height', bh);
+		this.push('rectangle.valueAlign', 'right');
+		this.push('rectangle.tipAlign', 'right');
+		this.push('rectangle.originx', this.x + this.coo.get('brushsize'));
+
 	}
 
 });// @end

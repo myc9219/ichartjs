@@ -205,13 +205,11 @@ iChart.Legend = iChart.extend(iChart.Component, {
 
 		// calculate the width each item will used
 		D.each(function(d, i) {
-			iChart.merge(d, {
-				text : this.fireEvent(this, 'parse', [this, d.name, i])
-			});
+			iChart.merge(d,this.fireEvent(this, 'parse', [this, d.name, i]));
 			d.text = d.text || d.name;
 			d.width = this.T.measureText(d.text);
 		}, this);
-
+		
 		// calculate the each column's width it will used
 		for ( var i = 0; i < c; i++) {
 			width = 0;

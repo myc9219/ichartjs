@@ -86,16 +86,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			/**
 			 * @cfg {Float} Specifies the opacity of area.scope{0.1-1}(default to 0.4) Note:Only applies when area = true
 			 */
-			area_opacity : 0.4,
-			/**
-			 * @cfg {Object} the options of tip
-			 */
-			tip : {
-				enable : false,
-				border : {
-					width : 2
-				}
-			}
+			area_opacity : 0.4
 		});
 
 		this.label = null;

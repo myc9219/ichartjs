@@ -1454,7 +1454,7 @@ $.Html = $.extend($.Element,{
 				 */
 				gradient : false,
 				/**
-				 * @cfg {Object} Specify the option of tip
+				 * @cfg {Object} Specifies the option of tip
 				 */
 				tip : {
 					enable : false,
@@ -3801,7 +3801,7 @@ $.Scale = $.extend($.Component, {
 			 */
 			textAlign : 'left',
 			/**
-			 * @cfg {Number} Specify the number of decimal.(default to 1)
+			 * @cfg {Number} Specifies the number of decimal.(default to 1)
 			 */
 			decimalsnum : 0,
 			/**
@@ -4862,7 +4862,7 @@ $.Sector = $.extend($.Component, {
 			 */
 			counterclockwise : false,
 			/**
-			 * @cfg {Number} Specify the start angle of this sector.Normally,this will given by chart.(default to 0)
+			 * @cfg {Number} Specifies the start angle of this sector.Normally,this will given by chart.(default to 0)
 			 */
 			startAngle : 0,
 			/**
@@ -4870,11 +4870,11 @@ $.Sector = $.extend($.Component, {
 			 */
 			middleAngle : 0,
 			/**
-			 * @cfg {Number} Specify the end angle of this sector.Normally,this will given by chart.(default to 0)
+			 * @cfg {Number} Specifies the end angle of this sector.Normally,this will given by chart.(default to 0)
 			 */
 			endAngle : 0,
 			/**
-			 * @cfg {Number} Specify total angle of this sector,totalAngle = (endAngle - startAngle).Normally,this will given by chart.(default to 0)
+			 * @cfg {Number} Specifies total angle of this sector,totalAngle = (endAngle - startAngle).Normally,this will given by chart.(default to 0)
 			 */
 			totalAngle : 0,
 			/**
@@ -4894,7 +4894,7 @@ $.Sector = $.extend($.Component, {
 			 */
 			mutex : false,
 			/**
-			 * @cfg {Number} Specify the offset when bounded.Normally,this will given by chart.(default to undefined)
+			 * @cfg {Number} Specifies the offset when bounded.Normally,this will given by chart.(default to undefined)
 			 */
 			increment : undefined,
 			/**
@@ -5019,7 +5019,7 @@ $.Sector = $.extend($.Component, {
 			
 			this.set({
 				/**
-				 * @cfg {Float (0~)} Specify the sector's radius.Normally,this will given by chart.(default to 0)
+				 * @cfg {Float (0~)} Specifies the sector's radius.Normally,this will given by chart.(default to 0)
 				 */
 				radius:0
 			});
@@ -5133,15 +5133,15 @@ $.Sector = $.extend($.Component, {
 			
 			this.set({
 				/**
-				 * @cfg {Number}  Specify major semiaxis of ellipse.Normally,this will given by chart.(default to 0)
+				 * @cfg {Number}  Specifies major semiaxis of ellipse.Normally,this will given by chart.(default to 0)
 				 */
 				semi_major_axis:0,
 				/**
-				 * @cfg {Number} Specify minor semiaxis of ellipse.Normally,this will given by chart.(default to 0)
+				 * @cfg {Number} Specifies minor semiaxis of ellipse.Normally,this will given by chart.(default to 0)
 				 */
 				semi_minor_axis:0,
 				/**
-				 * @cfg {Float (0~)} Specify the sector's height(thickness).Normally,this will given by chart.(default to 0)
+				 * @cfg {Float (0~)} Specifies the sector's height(thickness).Normally,this will given by chart.(default to 0)
 				 */
 				cylinder_height:0
 			});
@@ -5281,7 +5281,7 @@ $.Pie = $.extend($.Chart, {
 		
 		this.set({
 			/**
-			 * @cfg {Float (0~)} Specify the pie's radius.(default to calculate by the size of chart)
+			 * @cfg {Float (0~)} Specifies the pie's radius.(default to calculate by the size of chart)
 			 */
 			radius : 0,
 			/**
@@ -5289,11 +5289,11 @@ $.Pie = $.extend($.Chart, {
 			 */
 			offsetAngle : 0,
 			/**
-			 * @cfg {Boolean} Specify as true to display with percent.(default to true)
+			 * @cfg {Boolean} Specifies as true to display with percent.(default to true)
 			 */
 			showpercent : true,
 			/**
-			 * @cfg {Number} Specify the number of decimal when use percent.(default to 1)
+			 * @cfg {Number} Specifies the number of decimal when use percent.(default to 1)
 			 */
 			decimalsnum : 1,
 			/**
@@ -5313,7 +5313,7 @@ $.Pie = $.extend($.Chart, {
 			 */
 			pop_animate : false,
 			/**
-			 * @cfg {Boolean} Specify as true it means just one piece could pop (default to true)
+			 * @cfg {Boolean} Specifies as true it means just one piece could pop (default to true)
 			 */
 			mutex : false,
 			/**
@@ -5321,11 +5321,11 @@ $.Pie = $.extend($.Chart, {
 			 */
 			gradient : true,
 			/**
-			 * @cfg {Number} Specify the length when sector bounded.(default to 1/8 radius,and minimum is 5), 
+			 * @cfg {Number} Specifies the length when sector bounded.(default to 1/8 radius,and minimum is 5), 
 			 */
 			increment : undefined,
 			/**
-			 * @cfg {Object} Specify the config of label
+			 * @cfg {Object} Specifies the config of label
 			 */
 			label : {
 				enable : true,
@@ -5333,7 +5333,7 @@ $.Pie = $.extend($.Chart, {
 				padding : 5
 			},
 			/**
-			 * @cfg {Object} Specify the option of tip
+			 * @cfg {Object} Specifies the option of tip
 			 */
 			tip : {
 				enable : false,
@@ -5646,7 +5646,7 @@ $.Column = $.extend($.Chart, {
 		this.set({
 			/**
 			 * @cfg {Object} the option for coordinate.
-			 * @see<link>$.Coordinate2D<link>
+			 * see<link>$.Coordinate2D<link>
 			 */
 			coordinate : {},
 			/**
@@ -5666,7 +5666,7 @@ $.Column = $.extend($.Chart, {
 			/**
 			 * @inner {Object} the option for label
 			 * @extend $.Chart
-			 * @see $.Chart#label
+			 * see $.Chart#label
 			 */
 			label : {
 				padding : 5
@@ -5996,7 +5996,7 @@ $.Bar = $.extend($.Chart, {
 			/**
 			 * @cfg {Object} the option for label
 			 * @extend $.Chart
-			 * @see $.Chart#label
+			 * see $.Chart#label
 			 */
 			label : {
 				padding : 5
@@ -6864,7 +6864,7 @@ $.Line = $.extend($.Chart, {
 			
 			this.set({
 				/**
-				 * @cfg {Float} Specify the opacity of this area.(default to 0.3)
+				 * @cfg {Float} Specifies the opacity of this area.(default to 0.3)
 				 */
 				area_opacity:0.3
 			});

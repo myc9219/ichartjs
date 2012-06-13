@@ -1,3 +1,8 @@
+/**
+ * @overview this component use for abc
+ * @component#iChart.Sector
+ * @extend#iChart.Component
+ */
 iChart.Sector = iChart.extend(iChart.Component, {
 	configure : function() {
 		/**
@@ -9,14 +14,14 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		 * indicate the component's type
 		 */
 		this.type = 'sector';
-		
+
 		this.set({
 			/**
 			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
 			 */
 			counterclockwise : false,
 			/**
-			 * @cfg {Number} Specify the start angle of this sector.Normally,this will given by chart.(default to 0)
+			 * @cfg {Number} Specifies the start angle of this sector.Normally,this will given by chart.(default to 0)
 			 */
 			startAngle : 0,
 			/**
@@ -24,15 +29,15 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 */
 			middleAngle : 0,
 			/**
-			 * @cfg {Number} Specify the end angle of this sector.Normally,this will given by chart.(default to 0)
+			 * @cfg {Number} Specifies the end angle of this sector.Normally,this will given by chart.(default to 0)
 			 */
 			endAngle : 0,
 			/**
-			 * @cfg {Number} Specify total angle of this sector,totalAngle = (endAngle - startAngle).Normally,this will given by chart.(default to 0)
+			 * @cfg {Number} Specifies total angle of this sector,totalAngle = (endAngle - startAngle).Normally,this will given by chart.(default to 0)
 			 */
 			totalAngle : 0,
 			/**
-			 * @cfg {String} the event's name trigger pie bound(default to 'click'). 
+			 * @cfg {String} the event's name trigger pie bound(default to 'click').
 			 */
 			bound_event : 'click',
 			/**
@@ -48,42 +53,38 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 */
 			mutex : false,
 			/**
-			 * @cfg {Number} Specify the offset when bounded.Normally,this will given by chart.(default to undefined)
+			 * @cfg {Number} Specifies the offset when bounded.Normally,this will given by chart.(default to undefined)
 			 */
 			increment : undefined,
 			/**
-			 * @cfg {Boolean} True to apply the gradient.(default to true)
-			 */
-			gradient : true,
-			/**
-			 * @cfg {Boolean} option of label
+			 * @cfg {Object} Specifies the config of label.For details see <link>iChart.Label</link>
+			 * Note:this has a extra property named 'enable',indicate whether label available(default to true)
 			 */
 			label : {
-				enable : true,
-				linelength : undefined
+				enable : true
 			}
 		});
-		
+
 		/**
 		 * this element support boxMode
 		 */
 		this.atomic = true;
-		
+
 		this.registerEvent('changed');
 
 		this.label = null;
 		this.tip = null;
 	},
 	bound : function() {
-		if(!this.expanded)
+		if (!this.expanded)
 			this.toggle();
 	},
 	rebound : function() {
-		if(this.expanded)
+		if (this.expanded)
 			this.toggle();
 	},
 	toggle : function() {
-		this.fireEvent(this,this.get('bound_event'),[this]);
+		this.fireEvent(this, this.get('bound_event'), [this]);
 	},
 	drawLabel : function() {
 		if (this.get('label.enable')) {
@@ -102,9 +103,9 @@ iChart.Sector = iChart.extend(iChart.Component, {
 	},
 	doConfig : function() {
 		iChart.Sector.superclass.doConfig.call(this);
-		
+
 		var _ = this;
-		
+
 		_.push('totalAngle', _.get('endAngle') - _.get('startAngle'));
 
 		/**
@@ -113,7 +114,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		_.push('label.scolor', _.get('background_color'));
 
 		_.variable.event.status = _.expanded = _.get('expand');
-		
+
 		if (_.get('tip.enable')) {
 			if (_.get('tip.showType') != 'follow') {
 				_.push('tip.invokeOffsetDynamic', false);
@@ -123,7 +124,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 
 		_.variable.event.poped = false;
 
-		_.on(_.get('bound_event'), function(_,e,r) {
+		_.on(_.get('bound_event'), function(_, e, r) {
 			// console.profile('Test for pop');
 				// console.time('Test for pop');
 				_.variable.event.poped = true;
@@ -137,8 +138,8 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		_.on('beforedraw', function() {
 			_.x = _.get('originx');
 			_.y = _.get('originy');
-			if(_.variable.event.status!=_.expanded){
-				_.fireEvent(_,'changed',[_,_.expanded]);
+			if (_.variable.event.status != _.expanded) {
+				_.fireEvent(_, 'changed', [_, _.expanded]);
 			}
 			_.variable.event.status = _.expanded;
 			if (_.expanded) {
@@ -153,4 +154,4 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		});
 
 	}
-});//@end
+});// @end

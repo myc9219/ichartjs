@@ -1,5 +1,6 @@
 /**
- * @overview this element use for 画图的基类、其他组件要继承此组件
+ * @overview The interface this class defined include draw and event,so the sub class has must capability to draw and aware of event.
+ * this class is a abstract class,so you should not try to initialize it.
  * @component#iChart.Painter
  * @extend#iChart.Element
  */
@@ -56,6 +57,10 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			 * @cfg {float} Specifies the factor make color dark or light for this element,relative to background-color,the bigger the value you set,the larger the color changed.scope{0.01 - 0.5}.(defaults to '0.15')
 			 */
 			color_factor : 0.15,
+			/**
+			 * @cfg {Boolean} True to apply the gradient.(default to false)
+			 */
+			gradient : false,
 			/**
 			 * @cfg {String} ('2d','3d')
 			 */
@@ -166,6 +171,10 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	is3D : function() {
 		return this.dimension == iChart._3D;
 	},
+	/**
+	 * @method The commnd fire to draw the chart use configuration,this is a abstract method.Currently known,both <link>iChart.Chart</link> and <link>iChart.Component</link> implement this method.
+	 * @return void
+	 */
 	draw : function(o) {
 		this.init();
 		this.draw = function(o){

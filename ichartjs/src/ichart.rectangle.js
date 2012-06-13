@@ -68,8 +68,6 @@
 			 */
 			this.atomic = true;
 			
-			this.registerEvent();
-			
 		},
 		doDraw:function(opts){
 			this.drawRectangle();
