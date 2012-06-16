@@ -10,13 +10,13 @@
 		<link rel="stylesheet" href="jq-ui/themes/base/jquery.ui.all.css">
 		<link rel="stylesheet" href="css/style.css" type="text/css"/>
 		<script type="text/javascript">
-			var hash = location.hash;
+			var hash = location.hash,$pre,$win;
 			$(function() {
 				var icons = {
 					header: "ui-icon-circle-arrow-e",
 					headerSelected: "ui-icon-circle-arrow-s"
 				};
-				$( "#accordion" ).accordion({
+				$( "#ichartjs_accordion" ).accordion({
 					icons: icons,
 					collapsible: true,
 					autoHeight: false
@@ -25,8 +25,23 @@
 					hash = hash.substring(1,hash.length);
 					document.getElementById("viewport").src="html/"+hash+".html";
 				}else{
+					document.getElementById("viewport").src="html/area2d_01.html";
 				}
+				$pre = $("#ichartjs_pre");
+				$win = $("#ichartjs_codeview");
+				$win.dialog({
+					width:'auto',
+					maxHeight:600,
+					maxWidth:800,
+					modal: true,
+					autoOpen:false
+				});
 			});
+			function viewCode(html){
+				$pre.html($.trim(html));
+				$( "#ichartjs_codeview" ).dialog( "open" ) 
+			}
+			//7f0074  5400ff
 		</script>
 	</head>
 	<body>
@@ -44,10 +59,10 @@
 	    
 		<div id="ichartjs_body">
 			<div id="ichartjs_menu">
-				<div id="accordion">
+				<div id="ichartjs_accordion">
 					<h3><a href="#">Area2d Charts</a></h3>
 					<div>
-						<a target="viewport" class='ichartjs_item' href='html/area2d_01.html'>area2d</a>
+						<a target="viewport" class='ichartjs_item' href='html/area2d_01.html'>default area2d</a>
 					</div>
 					<h3><a href="#">Bar2d Charts</a></h3>
 					<div>
@@ -94,6 +109,11 @@
 				<iframe width="100%" height="700" frameborder="0" src="" name="viewport" id="viewport" style="border:none;"> </iframe>
 			</div>
 		</div>
+		</div>
+		<div id="ichartjs_codeview" title="View JSCode">
+			<pre id="ichartjs_pre">
+			
+			</pre>
 		</div>
 	</body>
 </html>
