@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="jq-ui/themes/base/jquery.ui.all.css">
 		<link rel="stylesheet" href="css/style.css" type="text/css"/>
 		<script type="text/javascript">
+			var hash = location.hash;
 			$(function() {
 				var icons = {
 					header: "ui-icon-circle-arrow-e",
@@ -20,6 +21,11 @@
 					collapsible: true,
 					autoHeight: false
 				});
+				if(hash.indexOf("#")!=-1){
+					hash = hash.substring(1,hash.length);
+					document.getElementById("viewport").src="html/"+hash+".html";
+				}else{
+				}
 			});
 		</script>
 	</head>
@@ -39,25 +45,28 @@
 		<div id="ichartjs_body">
 			<div id="ichartjs_menu">
 				<div id="accordion">
+					<h3><a href="#">Area2d Charts</a></h3>
+					<div>
+						<a target="viewport" class='ichartjs_item' href='html/bar2d_01.html'>bar2d</a>
+					</div>
 					<h3><a href="#">Bar2d Charts</a></h3>
 					<div>
-						<p>Mauris mauris ante, blandit et, </p>
+						<a target="viewport" class='ichartjs_item' href='html/bar2d_01.html'>bar2d</a>
+						<a target="viewport" class='ichartjs_item' href='html/bar2d_01.html'>bar2d</a>
+						<a target="viewport" class='ichartjs_item' href='html/bar2d_01.html'>bar2d</a>
 					</div>
+					
 					<h3><a href="#">Column2d Charts</a></h3>
 					<div>
-						<p>Sed non urna. Donec et ante. </p>
+						<a target="viewport" class='ichartjs_item' href='html/column2d_01.html'>column2d</a>
 					</div>
 					<h3><a href="#">Column3d Charts</a></h3>
 					<div>
-						<ul>
-							<li>List item one</li>
-							<li>List item two</li>
-							<li>List item three</li>
-						</ul>
+						<a target="viewport" class='ichartjs_item' href='html/column3d_01.html'>column3d</a>
 					</div>
-					<h3><a href="#">Line and Area Charts</a></h3>
+					<h3><a href="#">Line2d Charts</a></h3>
 					<div>
-						<p> Aenean lacinia mauris vel est. </p><p>Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>
+						<a target="viewport" class='ichartjs_item' href='html/column3d_01.html'>column3d</a>
 					</div>
 					<h3><a href="#">Pie2d Charts</a></h3>
 					<div>
@@ -82,9 +91,8 @@
 				</div>
 			</div>
 			<div id="ichartjs_view">
-				<iframe width="100%" height="700" frameborder="0" src="html/bar2d_01.html" name="viewport" id="viewport" style="border:none;"> </iframe>
+				<iframe width="100%" height="700" frameborder="0" src="" name="viewport" id="viewport" style="border:none;"> </iframe>
 			</div>
-			
 		</div>
 		</div>
 	</body>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>test</title>
+		<meta name="Description" content="" />
+		<meta name="Keywords" content="" />
+		<script type="text/javascript" src="../../ichart.min.1.0.js"></script>
+		<script type="text/javascript" src="../data.js"></script>
+		<style type="text/css">
+			body{
+				margin-top:10px;
+				text-align: center;
+			}
+			#myCanvas div{
+			margin:0px auto;
+		}
+		</style>
+		<script type="text/javascript">
+				$(function(){
+					var column2d = new iChart.Column2D({
+						render : 'myCanvas',
+						data: data,
+						align:'center',
+						coordinate:{
+							width:600,
+							height:400
+						},
+						legend:{
+							enable:true
+						},
+						tip:{
+							enable:true,
+							shadow:true,
+							showType:'fixed'
+						},
+						title : 'Column2d sample',
+						width : 800,
+						height : 600,
+						listeners:{
+							mouseover:function(e){
+								//console.log("mouseover..");
+							},
+							mouseout:function(e){
+								//console.log("mouseout..");
+							}
+						}
+					});
+				
+				//开始画图
+				column2d.draw();
+			});
+				
+			</script>
+		</head>
+		<body>
+			<div id='myCanvas'></div>
+		</body>
+</html>

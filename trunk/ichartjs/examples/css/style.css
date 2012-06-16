@@ -9,7 +9,7 @@ body {
 
 #ichartjs_wrapper{
 	margin:0px auto;
-	height:910px;
+	height:810px;
 	width:1150px;
 	-webkit-box-shadow:0px 0px 10px #202936;
 	-moz-box-shadow:0px 0px 10px #202936;
@@ -51,7 +51,7 @@ body {
 }
 
 #ichartjs_body{
-	height:800px;
+	height:700px;
 	width:1150px;
 	background-color: #FEFEFE;
 }
@@ -61,15 +61,30 @@ body {
 	float:left;
 	background-color: #FEFEFE;
 }
+#accordion{
+	text-align: left;
+}
 #accordion h3{
 	font-size: 14px;
 	text-align: left;
 	font-weight:600;
 }
+.ichartjs_item{
+	height:25px;
+	font-size:12px;
+	line-height:25px;
+	display: block;
+	padding-left:24px;
+	background:url(../images/ichart_arrow.png);
+	background-repeat:no-repeat;
+}
+.ui-accordion .ui-accordion-content{
+	padding: 5px 10px;
+}
 
 #ichartjs_view{
 	width:920px;
-	height:600px;
+	height:700px;
 	float:right;
 	background-color: #EFEFEF;
 }

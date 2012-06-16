@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>test</title>
+		<meta name="Description" content="" />
+		<meta name="Keywords" content="" />
+		<script type="text/javascript" src="../src/ichart.core.js"></script>
+		<script type="text/javascript" src="../src/ichart.element.js"></script>
+		<script type="text/javascript" src="../src/ichart.html.js"></script>
+		<script type="text/javascript" src="../src/ichart.painter.js"></script>
+		<script type="text/javascript" src="../src/ichart.component.js"></script>
+		<script type="text/javascript" src="../src/ichart.interface.js"></script>
+		<script type="text/javascript" src="../src/ichart.legend.js"></script>
+		<script type="text/javascript" src="../src/ichart.label.js"></script>
+		<script type="text/javascript" src="../src/ichart.style.js"></script>
+		<script type="text/javascript" src="../src/ichart.chart.js"></script>
+		<script type="text/javascript" src="../src/ichart.coordinate.js"></script>
+		<script type="text/javascript" src="../src/ichart.crosshair.js"></script>
+		<script type="text/javascript" src="../src/ichart.tip.js"></script>
+		<script type="text/javascript" src="../src/ichart.text.js"></script>
+		<script type="text/javascript" src="../src/ichart.rectangle.js"></script>
+		<script type="text/javascript" src="../src/ichart.rectangle3d.js"></script>
+		<script type="text/javascript" src="../src/ichart.column.js"></script>
+		<script type="text/javascript" src="../src/ichart.column3d.js"></script>
+		<script type="text/javascript" src="data.js"></script>
+		<style type="text/css">
+			body{
+				margin-top:10px;
+				text-align: center;
+			}
+			#myCanvas div{
+			margin:0px auto;
+		}
+		</style>
+		<script type="text/javascript">
+					$(function(){
+						var column3d = new iChart.Column3D({
+							render : 'myCanvas',
+							data: data,
+							align:'center',
+							coordinate:{
+								width:600,
+								height:300,
+								background_color:'#d6dbd2'
+							},
+							tip:{
+								enable:true,
+								shadow:true,
+								showType:'fixed'
+							},
+							title : 'Column3d sample',
+							width : 800,
+							height : 500,
+							hiswidth:90,
+							xAngle:70,
+							yAngle:30,
+							zScale:1,
+							background_color:'#FEFEFE',
+							listeners:{
+								
+							}
+							
+						});
+					
+					//开始画图
+					column3d.draw();
+				});
+				
+			</script>
+		</head>
+		<body>
+			<div><a href="../index.html">Home</a>&nbsp; Sample</div>
+			<br>
+			<div id='myCanvas'></div>
+		</body>
+</html>
