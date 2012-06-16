@@ -6,23 +6,59 @@
 		<meta name="Description" content="" />
 		<meta name="Keywords" content="" />
 		<script type="text/javascript" src="../../ichart.min.1.0.js"></script>
-		<script type="text/javascript" src="data.js"></script>
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
+			var data = [
+		         	{
+		         		name : '北京',
+		         		value:[8,12,14,20,26,28,30,26,28,20,16,10],
+		         		color:'#1f7e92',
+		         		linewidth:1
+		         	}
+	         ];	
+			var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 			$(function(){
 				new iChart.Area2D({
 						render : 'myCanvas',
-						data: data4,
+						data: data,
 						title : 'Average Temperature Of 2012',
 						width : 800,
 						height : 400,
-						labels:lineLabels1
+						labels:labels
 					}).draw();
 			});
 			</script>
 		</head>
 		<body>
 			<div id='myCanvas'></div>
-			
+			<div class='ichartjs_info'>
+				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
+				<div class='ichartjs_sm'>说明</div>
+				<div class='ichartjs_details'>
+					这是一个基本的区域图例子，例子展示了2012年中12个月的平均温度情况。配置上除了像标题、长宽的基本属性外基本上都是默认的。<br/>
+				</div>
+			</div>
+<!-- the source code -->
+<div id='ichartjs_code'>
+<span class='ichartjs_keyword'>var</span> data = [
+	{
+   		name : '<span class='ichartjs_string'>北京</span>',
+   		value:[8,12,14,20,26,28,30,26,28,20,16,10],
+   		color:'<span class='ichartjs_string'>#1f7e92</span>',
+   		linewidth:1
+   	}
+  ];
+<span class='ichartjs_keyword'>var</span> labels = ["<span class='ichartjs_string'>一月</span>","<span class='ichartjs_string'>二月</span>","<span class='ichartjs_string'>三月</span>","<span class='ichartjs_string'>四月</span>","<span class='ichartjs_string'>五月</span>","<span class='ichartjs_string'>六月</span>","<span class='ichartjs_string'>七月</span>","<span class='ichartjs_string'>八月</span>","<span class='ichartjs_string'>九月</span>","<span class='ichartjs_string'>十月</span>","<span class='ichartjs_string'>十一月</span>","<span class='ichartjs_string'>十二月</span>"];
+$(<span class='ichartjs_keyword'>function</span>(){	
+	<span class='ichartjs_keyword'>new</span> iChart.Area2D({
+		render : '<span class='ichartjs_string'>myCanvas</span>',
+		data: data,
+		title : '<span class='ichartjs_string'>Average Temperature Of 2012</span>',
+		width : 800,
+		height : 400,
+		labels:labels
+	}).draw();
+});
+</div>
 		</body>
 </html>

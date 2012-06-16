@@ -61,10 +61,10 @@ body {
 	float:left;
 	background-color: #FEFEFE;
 }
-#accordion{
+#ichartjs_accordion{
 	text-align: left;
 }
-#accordion h3{
+#ichartjs_accordion h3{
 	font-size: 14px;
 	text-align: left;
 	font-weight:600;
@@ -81,6 +81,9 @@ body {
 .ui-accordion .ui-accordion-content{
 	padding: 5px 10px;
 }
+.ui-widget{
+	font-size:14px;
+}
 
 #ichartjs_view{
 	width:820px;
@@ -89,6 +92,17 @@ body {
 	background-color: #FAFAFA;
 }
 
+#ichartjs_pre{
+	text-align: left;
+	font-size:13px;
+	margin:0px;
+}
+.ichartjs_keyword{
+	color:#7f0074;
+}
+.ichartjs_string{
+	color:#5400ff;
+}
 
 .ichartjs_home a:LINK{
 	color:#FEFEFE;
