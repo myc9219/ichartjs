@@ -46,7 +46,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 	},
 	doParse : function(d, i, id, x, y, w) {
 		if (this.get('tip.enable'))
-			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, i], d.name + ":" + d.value));
+			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i], d.name + ":" + d.value));
 
 		this.push('rectangle.value', d.value);
 		this.push('rectangle.background_color', d.color);

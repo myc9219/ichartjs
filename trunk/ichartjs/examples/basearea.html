@@ -40,11 +40,14 @@
 							align:'center',
 							title : 'Average Temperature Of 2012',
 							width : 800,
+							tip:{
+								enable : true
+							},
 							height : 400,
 							labels:lineLabels1,
 							listeners:{
-								parsePoint:function(v,x,y){
-									return {value:v+"℃"}
+								parseTipText:function(d,t,i){
+									return t+"℃";
 								}
 							}
 						});

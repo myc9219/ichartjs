@@ -63,23 +63,26 @@
 				H=this.get('coordinate.valid_height'),
 				sp=this.get('label_spacing'),
 				points,x,y,
-				d = this.data;
+				p;
 			
-			for(var i=0;i<d.length;i++){
+			this.data.each(function(d,i){
 				points = [];
-				for(var j=0;j<d[i].value.length;j++){
+				d.value.each(function(v,j){
 					x = sp*j;
-					y = (d[i].value[j]-S.start)*H/S.distance;
-					points.push(iChart.merge({x:x,y:y,value:d[i].value[j]},this.fireEvent(this,'parsePoint',[this,d[i].value[j],x,y,j])));
-				}
-				
+					y = (v-S.start)*H/S.distance;
+					p = {x:x,y:y,value:v,text:v};
+					iChart.merge(p,this.fireEvent(this,'parsePoint',[d,x,y,j]))
+					if (this.get('tip.enable'))
+						p.text = this.fireString(this,'parseTipText',[d,v,j],v);
+					points.push(p);
+				},this);	
 				this.push('segment_style.point_space',sp);
 				this.push('segment_style.points',points);
-				this.push('segment_style.brushsize',d[i].linewidth||1);
-				this.push('segment_style.background_color',d[i].color);
+				this.push('segment_style.brushsize',d.linewidth||1);
+				this.push('segment_style.background_color',d.color);
 				
 				this.lines.push(new iChart.LineSegment(this.get('segment_style'),this));
-			}
+			},this);
 			this.pushComponent(this.lines);
 			
 		}
