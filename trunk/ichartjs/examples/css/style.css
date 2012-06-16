@@ -10,14 +10,14 @@ body {
 #ichartjs_wrapper{
 	margin:0px auto;
 	height:810px;
-	width:1150px;
+	width:1050px;
 	-webkit-box-shadow:0px 0px 10px #202936;
 	-moz-box-shadow:0px 0px 10px #202936;
 	box-shadow:0px 0px 10px #202936;
 }
 #ichartjs_header{
 	height:95px;
-	width:1150px;
+	width:1050px;
 	margin-bottom:10px;
 }
 
@@ -52,7 +52,7 @@ body {
 
 #ichartjs_body{
 	height:700px;
-	width:1150px;
+	width:1050px;
 	background-color: #FEFEFE;
 }
 #ichartjs_menu{
@@ -83,10 +83,10 @@ body {
 }
 
 #ichartjs_view{
-	width:920px;
+	width:820px;
 	height:700px;
 	float:right;
-	background-color: #EFEFEF;
+	background-color: #FAFAFA;
 }
 
 

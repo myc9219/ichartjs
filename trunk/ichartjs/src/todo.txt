@@ -5,7 +5,8 @@
 4.附属的组件可以不加入API?
 5.完善doc
 6.配置事件的Doc
-
+shadow============
+line shadow-copy coordinate
 
 
 draw a ipad,then draw charts on ipad

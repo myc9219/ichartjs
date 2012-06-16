@@ -15,10 +15,7 @@
 			
 			this.type = 'basicline2d';
 			
-			//this.set({});
 			 
-			this.registerEvent();
-			
 			this.tipInvokeHeap = [];
 		},
 		doAnimation:function(t,d){
