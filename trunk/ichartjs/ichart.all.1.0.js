@@ -1459,7 +1459,7 @@ $.Html = $.extend($.Element,{
 	
 			this.set({
 				/**
-				 * @cfg {Boolean} Specifies the config of Tip.For details see <link>$.Tip</link>
+				 * @inner {Boolean} Specifies the config of Tip.For details see <link>$.Tip</link>
 				 * Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 				 */
 				tip : {
@@ -3271,18 +3271,11 @@ $.Label = $.extend($.Component, {
 			'parseData',
 			/**
 			 * @event Fires when parse this tip's data.Return value will override existing. Only valid when tip is available
-			 * @paramter $.Chart#this
 			 * @paramter Object#data this tip's data item
+			 * @paramter string#text the current tip's text
 			 * @paramter int#i the index of data
 			 */
 			'parseTipText',
-			/**
-			 * @event Fires when parse this label's data.Return value will override existing. Only valid when label is available
-			 * @paramter $.Chart#this
-			 * @paramter Object#data this label's data item
-			 * @paramter int#i the index of data
-			 */
-			'parseLabelText',
 			/**
 			 * @event Fires before this element Animation.Only valid when <link>animation</link> is true
 			 * @paramter $.Chart#this
@@ -4047,9 +4040,9 @@ $.Coordinate2D = $.extend($.Component,
 					 */
 					grid_line_width : 1,
 					/**
-					 * @cfg {Number} Specifies the color of the grid.(default to '#c4dede')
+					 * @cfg {Number} Specifies the color of the grid.(default to '#dbe1e1')
 					 */
-					grid_color : '#c4dede',
+					grid_color : '#dbe1e1',
 					/**
 					 * @cfg {Boolean} True to display grid line.(default to true)
 					 */
@@ -5326,7 +5319,14 @@ $.Pie = $.extend($.Chart, {
 		 * @paramter string#name
 		 * @paramter int#index
 		 */
-		'rebound');
+		'rebound',
+		/**
+		 * @event Fires when parse this label's data.Return value will override existing. Only valid when label is available
+		 * @paramter Object#data this label's data item
+		 * @paramter string#text the current tip's text
+		 * @paramter int#i the index of data
+		 */
+		'parseLabelText');
 		
 		this.sectors = [];
 	},
@@ -5355,10 +5355,10 @@ $.Pie = $.extend($.Chart, {
 			var t = d.name + (this.get('showpercent') ? $.toPercent(d.value / this.total, this.get('decimalsnum')) : '');
 			
 			if (this.get('label.enable'))
-				d.reference.label.text(this.fireString(this, 'parseLabelText', [d, i], t));
+				d.reference.label.text(this.fireString(this, 'parseLabelText', [d,t,i], t));
 			
 			if (this.get('tip.enable'))
-				d.reference.tip.text(this.fireString(this, 'parseTipText', [d, i], t));
+				d.reference.tip.text(this.fireString(this, 'parseTipText', [d,t,i], t));
 			
 			d.reference.id = i;
 			d.reference.push('startAngle', d.startAngle);
@@ -5654,7 +5654,7 @@ $.Column = $.extend($.Chart, {
 	},
 	doParse : function(d, i, id, x, y, h) {
 		if (this.get('tip.enable'))
-			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, i], d.name + ":" + d.value));
+			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i], d.name + ":" + d.value));
 
 		this.push('rectangle.value', d.value);
 		this.push('rectangle.background_color', d.color);
@@ -5723,10 +5723,7 @@ $.Column2D = $.extend($.Column, {
 		$.Column2D.superclass.configure.call(this);
 
 		this.type = 'column2d';
-
-		/**
-		 * this.set({});
-		 */
+		
 	},
 	doConfig : function() {
 		$.Column2D.superclass.doConfig.call(this);
@@ -5958,7 +5955,7 @@ $.Bar = $.extend($.Chart, {
 	},
 	doParse : function(d, i, id, x, y, w) {
 		if (this.get('tip.enable'))
-			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, i], d.name + ":" + d.value));
+			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i], d.name + ":" + d.value));
 
 		this.push('rectangle.value', d.value);
 		this.push('rectangle.background_color', d.color);
@@ -6363,7 +6360,7 @@ $.LineSegment = $.extend($.Component, {
 		}, to = function(i) {
 			return {
 				valid : true,
-				text : p[i].value,
+				text : p[i].text,
 				top : _.y - p[i].y,
 				left : _.x + p[i].x,
 				hit : true
@@ -6460,11 +6457,12 @@ $.Line = $.extend($.Chart, {
 			 */
 			label_spacing : 0,
 			/**
-			 * @cfg {Object} the option for linesegment
+			 * @cfg {Object} the option for linesegment.
+			 * For details see <link>$.LineSegment</link>
 			 */
 			segment_style : {},
 			/**
-			 * @cfg {Boolean} Note that this option only applies when showPoint = true.
+			 * @cfg {Boolean} Disable the tip,Note that this option only applies when showPoint = true.
 			 * For details see <link>$.Chart#tip</link>
 			 */
 			tip : {
@@ -6482,15 +6480,13 @@ $.Line = $.extend($.Chart, {
 		this.registerEvent(
 		/**
 		 * @event Fires when parse this element'data.Return value will override existing.
-		 * @paramter $.Chart#this
-		 * @paramter int# the value of point
+		 * @paramter object#data the point's data
 		 * @paramter int#x coordinate-x of point
 		 * @paramter int#y coordinate-y of point
 		 * @paramter int#index the index of point
 		 * @return Object object Detail:
 		 * @property x coordinate-x of point
 		 * @property y coordinate-y of point
-		 * @property value the value of point
 		 */
 		'parsePoint');
 
@@ -6536,12 +6532,12 @@ $.Line = $.extend($.Chart, {
 					return r.valid ? r : false;
 				});
 		}
-
-		if (!this.get('segment_style.tip')) {
-			this.push('segment_style.tip', this.get('tip'));
-		} else {
-			this.push('segment_style.tip.wrap', this.get('tip.wrap'));
-		}
+		
+		/**
+		 * quick config to all linesegment
+		 */
+		$.apply(this.get('segment_style'), $.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor','tip'], this.options));
+		
 	}
 
 });// @end
@@ -6563,10 +6559,7 @@ $.Line = $.extend($.Chart, {
 			
 			this.type = 'basicline2d';
 			
-			//this.set({});
 			 
-			this.registerEvent();
-			
 			this.tipInvokeHeap = [];
 		},
 		doAnimation:function(t,d){
@@ -6614,23 +6607,26 @@ $.Line = $.extend($.Chart, {
 				H=this.get('coordinate.valid_height'),
 				sp=this.get('label_spacing'),
 				points,x,y,
-				d = this.data;
+				p;
 			
-			for(var i=0;i<d.length;i++){
+			this.data.each(function(d,i){
 				points = [];
-				for(var j=0;j<d[i].value.length;j++){
+				d.value.each(function(v,j){
 					x = sp*j;
-					y = (d[i].value[j]-S.start)*H/S.distance;
-					points.push($.merge({x:x,y:y,value:d[i].value[j]},this.fireEvent(this,'parsePoint',[this,d[i].value[j],x,y,j])));
-				}
-				
+					y = (v-S.start)*H/S.distance;
+					p = {x:x,y:y,value:v,text:v};
+					$.merge(p,this.fireEvent(this,'parsePoint',[d,x,y,j]))
+					if (this.get('tip.enable'))
+						p.text = this.fireString(this,'parseTipText',[d,v,j],v);
+					points.push(p);
+				},this);	
 				this.push('segment_style.point_space',sp);
 				this.push('segment_style.points',points);
-				this.push('segment_style.brushsize',d[i].linewidth||1);
-				this.push('segment_style.background_color',d[i].color);
+				this.push('segment_style.brushsize',d.linewidth||1);
+				this.push('segment_style.background_color',d.color);
 				
 				this.lines.push(new $.LineSegment(this.get('segment_style'),this));
-			}
+			},this);
 			this.pushComponent(this.lines);
 			
 		}
