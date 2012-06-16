@@ -342,9 +342,9 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					grid_line_width : 1,
 					/**
-					 * @cfg {Number} Specifies the color of the grid.(default to '#c4dede')
+					 * @cfg {Number} Specifies the color of the grid.(default to '#dbe1e1')
 					 */
-					grid_color : '#c4dede',
+					grid_color : '#dbe1e1',
 					/**
 					 * @cfg {Boolean} True to display grid line.(default to true)
 					 */
