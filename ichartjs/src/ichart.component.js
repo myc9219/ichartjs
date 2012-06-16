@@ -17,7 +17,7 @@
 	
 			this.set({
 				/**
-				 * @cfg {Boolean} Specifies the config of Tip.For details see <link>iChart.Tip</link>
+				 * @inner {Boolean} Specifies the config of Tip.For details see <link>iChart.Tip</link>
 				 * Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 				 */
 				tip : {

@@ -54,11 +54,12 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 */
 			label_spacing : 0,
 			/**
-			 * @cfg {Object} the option for linesegment
+			 * @cfg {Object} the option for linesegment.
+			 * For details see <link>iChart.LineSegment</link>
 			 */
 			segment_style : {},
 			/**
-			 * @cfg {Boolean} Note that this option only applies when showPoint = true.
+			 * @cfg {Boolean} Disable the tip,Note that this option only applies when showPoint = true.
 			 * For details see <link>iChart.Chart#tip</link>
 			 */
 			tip : {
@@ -76,15 +77,13 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		this.registerEvent(
 		/**
 		 * @event Fires when parse this element'data.Return value will override existing.
-		 * @paramter iChart.Chart#this
-		 * @paramter int# the value of point
+		 * @paramter object#data the point's data
 		 * @paramter int#x coordinate-x of point
 		 * @paramter int#y coordinate-y of point
 		 * @paramter int#index the index of point
 		 * @return Object object Detail:
 		 * @property x coordinate-x of point
 		 * @property y coordinate-y of point
-		 * @property value the value of point
 		 */
 		'parsePoint');
 
@@ -130,12 +129,12 @@ iChart.Line = iChart.extend(iChart.Chart, {
 					return r.valid ? r : false;
 				});
 		}
-
-		if (!this.get('segment_style.tip')) {
-			this.push('segment_style.tip', this.get('tip'));
-		} else {
-			this.push('segment_style.tip.wrap', this.get('tip.wrap'));
-		}
+		
+		/**
+		 * quick config to all linesegment
+		 */
+		iChart.apply(this.get('segment_style'), iChart.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor','tip'], this.options));
+		
 	}
 
 });// @end

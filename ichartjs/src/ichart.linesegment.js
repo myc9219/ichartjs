@@ -205,7 +205,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		}, to = function(i) {
 			return {
 				valid : true,
-				text : p[i].value,
+				text : p[i].text,
 				top : _.y - p[i].y,
 				left : _.x + p[i].x,
 				hit : true
