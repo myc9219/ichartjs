@@ -17,37 +17,24 @@
 		}
 		</style>
 		<script type="text/javascript">
-					$(function(){
-						var column3d = new iChart.Column3D({
+			$(function(){
+					var line = new iChart.Area2D({
 							render : 'myCanvas',
-							data: data,
+							data: data4,
 							align:'center',
-							coordinate:{
-								width:600,
-								height:300,
-								background_color:'#d6dbd2'
-							},
-							tip:{
-								enable:true,
-								shadow:true,
-								showType:'fixed'
-							},
-							title : 'Column3d sample',
+							title : 'Average Temperature Of 2012',
 							width : 800,
-							height : 500,
-							hiswidth:90,
-							xAngle:70,
-							yAngle:30,
-							zScale:1,
-							background_color:'#FEFEFE',
+							height : 400,
+							labels:lineLabels1,
 							listeners:{
-								
+								parsePoint:function(v,x,y){
+									return {value:v+"℃"}
+								}
 							}
-							
 						});
 					
 					//开始画图
-					column3d.draw();
+					line.draw();
 				});
 				
 			</script>
