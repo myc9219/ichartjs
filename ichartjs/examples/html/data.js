@@ -145,3 +145,10 @@ var data9 = [
          ];
 
  var columnKeys1 = ["北京","上海","广州","成都","深圳"];
+ var data10 = [
+				{name : '广州',value : 80,color:'#b36e0d'},
+				{name : '上海',value : 130,color:'#b32c0d'},
+				{name : '南昌',value : 75,color:'#dad81f'},
+				{name : '哈尔滨',value : 25,color:'#1f7e92'},
+				{name : '北京',value : 105,color:'#17a740'}
+				];

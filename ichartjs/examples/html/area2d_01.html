@@ -6,40 +6,23 @@
 		<meta name="Description" content="" />
 		<meta name="Keywords" content="" />
 		<script type="text/javascript" src="../../ichart.min.1.0.js"></script>
-		<script type="text/javascript" src="../data.js"></script>
-		<style type="text/css">
-			body{
-				margin-top:10px;
-				text-align: center;
-			}
-			#myCanvas div{
-			margin:0px auto;
-		}
-		</style>
+		<script type="text/javascript" src="data.js"></script>
+		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
 			$(function(){
-					var line = new iChart.Area2D({
-							render : 'myCanvas',
-							data: data4,
-							align:'center',
-							title : 'Average Temperature Of 2012',
-							width : 800,
-							height : 400,
-							labels:lineLabels1,
-							listeners:{
-								parsePoint:function(v,x,y){
-									return {value:v+"℃"}
-								}
-							}
-						});
-					
-					//开始画图
-					line.draw();
-				});
-				
+				new iChart.Area2D({
+						render : 'myCanvas',
+						data: data4,
+						title : 'Average Temperature Of 2012',
+						width : 800,
+						height : 400,
+						labels:lineLabels1
+					}).draw();
+			});
 			</script>
 		</head>
 		<body>
 			<div id='myCanvas'></div>
+			
 		</body>
 </html>
