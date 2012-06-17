@@ -674,6 +674,14 @@
 				 */
 				segmentRect : true,
 				/**
+				 * @cfg {Boolean} Specifies as true to display with percent.(default to false)
+				 */
+				showpercent : false,
+				/**
+				 * @cfg {Number} Specifies the number of decimal when use percent.(default to 1)
+				 */
+				decimalsnum : 1,
+				/**
 				 * @cfg {String} If the title is empty,then will not display (default to '')
 				 */
 				title : '',

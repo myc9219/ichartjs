@@ -735,7 +735,7 @@ var iChart_ = (function(window) {//spirit from jquery
 				return (P||'ichartjs') + '-'+new Date().getTime().toString();
 			},
 			toPercent:function(v,d){
-				return '('+(v*100).toFixed(d)+'%)';
+				return (v*100).toFixed(d)+'%';
 			},
 			parseFloat:function(v,d){
 				if(!_.isNumber(v)){
@@ -3180,6 +3180,14 @@ $.Label = $.extend($.Component, {
 				 */
 				segmentRect : true,
 				/**
+				 * @cfg {Boolean} Specifies as true to display with percent.(default to false)
+				 */
+				showpercent : false,
+				/**
+				 * @cfg {Number} Specifies the number of decimal when use percent.(default to 1)
+				 */
+				decimalsnum : 1,
+				/**
 				 * @cfg {String} If the title is empty,then will not display (default to '')
 				 */
 				title : '',
@@ -4550,7 +4558,10 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				 * @cfg {Number} Specifies the height of this element in pixels,Normally,this will given by chart.(default to 0)
 				 */
 				height:0,
-				value_space:10,
+				/**
+				 * @cfg {Number} the distance of column's edge and value in pixels.(default to 4)
+				 */
+				value_space:4,
 				/**
 				 * @cfg {String} Specifies the text of this element,Normally,this will given by chart.(default to '')
 				 */
@@ -5265,14 +5276,6 @@ $.Pie = $.extend($.Chart, {
 			 */
 			offsetAngle : 0,
 			/**
-			 * @cfg {Boolean} Specifies as true to display with percent.(default to true)
-			 */
-			showpercent : true,
-			/**
-			 * @cfg {Number} Specifies the number of decimal when use percent.(default to 1)
-			 */
-			decimalsnum : 1,
-			/**
 			 * @cfg {String} the event's name trigger pie pop(default to 'click')
 			 */
 			bound_event : 'click',
@@ -5419,7 +5422,7 @@ $.Pie = $.extend($.Chart, {
 			}, this);
 	},
 	doParse : function(d, i) {
-		var _ = this, t = d.name + (_.get('showpercent') ? $.toPercent(d.value / _.total, _.get('decimalsnum')) : '');
+		var _ = this, t = d.name + (_.get('showpercent') ? ' '+$.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
 		if (_.get('label.enable'))
 			_.push('sector.label.text', _.fireString(_, 'parseLabelText', [
 					d, i
@@ -5653,10 +5656,12 @@ $.Column = $.extend($.Chart, {
 		}
 	},
 	doParse : function(d, i, id, x, y, h) {
+		var t = (this.get('showpercent') ? $.toPercent(d.value / this.total, this.get('decimalsnum')) : d.value);
+		
 		if (this.get('tip.enable'))
-			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i], d.name + ":" + d.value));
-
-		this.push('rectangle.value', d.value);
+			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i],d.name + ' '+t));
+		
+		this.push('rectangle.value', t);
 		this.push('rectangle.background_color', d.color);
 
 		this.push('rectangle.id', id);
@@ -5954,10 +5959,11 @@ $.Bar = $.extend($.Chart, {
 		this.labels = [];
 	},
 	doParse : function(d, i, id, x, y, w) {
+		var t = (this.get('showpercent') ? $.toPercent(d.value / this.total, this.get('decimalsnum')) : d.value);
 		if (this.get('tip.enable'))
-			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i], d.name + ":" + d.value));
+			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i], d.name + ' ' + t));
 
-		this.push('rectangle.value', d.value);
+		this.push('rectangle.value', t);
 		this.push('rectangle.background_color', d.color);
 
 		this.push('rectangle.id', id);

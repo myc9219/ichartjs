@@ -735,7 +735,7 @@ var iChart_ = (function(window) {//spirit from jquery
 				return (P||'ichartjs') + '-'+new Date().getTime().toString();
 			},
 			toPercent:function(v,d){
-				return '('+(v*100).toFixed(d)+'%)';
+				return (v*100).toFixed(d)+'%';
 			},
 			parseFloat:function(v,d){
 				if(!_.isNumber(v)){

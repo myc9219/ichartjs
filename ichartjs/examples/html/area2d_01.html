@@ -19,7 +19,7 @@
 			var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 			$(function(){
 				new iChart.Area2D({
-						render : 'myCanvas',
+						render : 'canvasDiv',
 						data: data,
 						title : 'Average Temperature Of 2012',
 						width : 800,
@@ -30,13 +30,17 @@
 			</script>
 		</head>
 		<body>
-			<div id='myCanvas'></div>
+			<div id='canvasDiv'></div>
 			<div class='ichartjs_info'>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
 					这是一个基本的区域图例子，例子展示了2012年中12个月的平均温度情况。配置上除了像标题、长宽的基本属性外基本上都是默认的。<br/>
 				</div>
+				<span class='ichartjs_sm'>备注：</span>
+				<span class='ichartjs_details'>
+					数据均为模拟，无实际参考价值。
+				</span>
 			</div>
 <!-- the source code -->
 <div id='ichartjs_code'>
@@ -51,7 +55,7 @@
 <span class='ichartjs_keyword'>var</span> labels = ["<span class='ichartjs_string'>一月</span>","<span class='ichartjs_string'>二月</span>","<span class='ichartjs_string'>三月</span>","<span class='ichartjs_string'>四月</span>","<span class='ichartjs_string'>五月</span>","<span class='ichartjs_string'>六月</span>","<span class='ichartjs_string'>七月</span>","<span class='ichartjs_string'>八月</span>","<span class='ichartjs_string'>九月</span>","<span class='ichartjs_string'>十月</span>","<span class='ichartjs_string'>十一月</span>","<span class='ichartjs_string'>十二月</span>"];
 $(<span class='ichartjs_keyword'>function</span>(){	
 	<span class='ichartjs_keyword'>new</span> iChart.Area2D({
-		render : '<span class='ichartjs_string'>myCanvas</span>',
+		render : '<span class='ichartjs_string'>canvasDiv</span>',
 		data: data,
 		title : '<span class='ichartjs_string'>Average Temperature Of 2012</span>',
 		width : 800,
@@ -60,5 +64,5 @@ $(<span class='ichartjs_keyword'>function</span>(){
 	}).draw();
 });
 </div>
-		</body>
+</body>
 </html>
