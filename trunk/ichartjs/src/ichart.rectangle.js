@@ -24,7 +24,10 @@
 				 * @cfg {Number} Specifies the height of this element in pixels,Normally,this will given by chart.(default to 0)
 				 */
 				height:0,
-				value_space:10,
+				/**
+				 * @cfg {Number} the distance of column's edge and value in pixels.(default to 4)
+				 */
+				value_space:4,
 				/**
 				 * @cfg {String} Specifies the text of this element,Normally,this will given by chart.(default to '')
 				 */

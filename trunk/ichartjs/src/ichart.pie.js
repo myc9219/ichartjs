@@ -26,14 +26,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			offsetAngle : 0,
 			/**
-			 * @cfg {Boolean} Specifies as true to display with percent.(default to true)
-			 */
-			showpercent : true,
-			/**
-			 * @cfg {Number} Specifies the number of decimal when use percent.(default to 1)
-			 */
-			decimalsnum : 1,
-			/**
 			 * @cfg {String} the event's name trigger pie pop(default to 'click')
 			 */
 			bound_event : 'click',
@@ -180,7 +172,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			}, this);
 	},
 	doParse : function(d, i) {
-		var _ = this, t = d.name + (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : '');
+		var _ = this, t = d.name + (_.get('showpercent') ? ' '+iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
 		if (_.get('label.enable'))
 			_.push('sector.label.text', _.fireString(_, 'parseLabelText', [
 					d, i

@@ -61,10 +61,12 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		}
 	},
 	doParse : function(d, i, id, x, y, h) {
+		var t = (this.get('showpercent') ? iChart.toPercent(d.value / this.total, this.get('decimalsnum')) : d.value);
+		
 		if (this.get('tip.enable'))
-			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i], d.name + ":" + d.value));
-
-		this.push('rectangle.value', d.value);
+			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i],d.name + ' '+t));
+		
+		this.push('rectangle.value', t);
 		this.push('rectangle.background_color', d.color);
 
 		this.push('rectangle.id', id);
