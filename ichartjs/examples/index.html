@@ -10,7 +10,7 @@
 		<link rel="stylesheet" href="jq-ui/themes/base/jquery.ui.all.css">
 		<link rel="stylesheet" href="css/style.css" type="text/css"/>
 		<script type="text/javascript">
-			var hash = location.hash,$pre,$win;
+			var hash = location.hash,$pre,$win,index=0;
 			$(function() {
 				var icons = {
 					header: "ui-icon-circle-arrow-e",
@@ -18,15 +18,20 @@
 				};
 				$( "#ichartjs_accordion" ).accordion({
 					icons: icons,
+					active:false,
 					collapsible: true,
 					autoHeight: false
-				});
+				}); 
 				if(hash.indexOf("#")!=-1){
 					hash = hash.substring(1,hash.length);
-					document.getElementById("viewport").src="html/"+hash+".html";
+					hash = hash.split('&');
+					document.getElementById("viewport").src="html/"+hash[0]+".html";
+					index = parseInt(hash[1]) || 0;
 				}else{
 					document.getElementById("viewport").src="html/area2d_01.html";
 				}
+				$( "#ichartjs_accordion" ).accordion( "activate" ,index);
+				
 				$pre = $("#ichartjs_pre");
 				$win = $("#ichartjs_codeview");
 				$win.dialog({
