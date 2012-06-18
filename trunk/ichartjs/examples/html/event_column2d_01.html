@@ -39,6 +39,13 @@
 									}
 								}
 							}]
+						},
+						rectangle:{
+							listeners:{
+								click:function(c,e,m){
+									alert(c.get('name')+' '+c.get('value'));
+								}
+							}
 						}
 					}).draw();
 			});
@@ -51,7 +58,8 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这是一个柱形图例子，该例子展示了2012年2月份市场浏览器占有的情况。此例子中，配置了个性化的值轴。并以百分比的形式展示数据值。
+					这是一个柱形图的例子，该例子展示了2012年2月份市场浏览器占有的情况。此例子中，配置了个性化的值轴。并以百分比的形式展示数据值。<br/>
+					在此例子中为每个柱体注册了一个点击事件的回调函数。回调函数中alert了点击的柱形图的名字和值。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>
@@ -90,6 +98,13 @@ $(<span class='ichartjs_keyword'>function</span>(){
 					}
 				}
 			}]
+		},
+		rectangle:{
+			listeners:{
+				click:function(c,e,m){
+					alert(c.get('<span class='ichartjs_string'>name</span>')+' '+c.get('<span class='ichartjs_string'>value</span>'));
+				}
+			}
 		}
 	}).draw();
 });

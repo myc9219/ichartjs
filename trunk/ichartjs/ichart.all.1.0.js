@@ -4567,6 +4567,10 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				 */
 				value:'',
 				/**
+				 * @cfg {String} Specifies the name of this element,Normally,this will given by chart.(default to '')
+				 */
+				name:'',
+				/**
 				 * @cfg {String} Specifies the tip alignment of chart(defaults to 'top').Available value are:
 				 * @Option 'left'
 				 * @Option 'right'
@@ -5662,6 +5666,7 @@ $.Column = $.extend($.Chart, {
 			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i],d.name + ' '+t));
 		
 		this.push('rectangle.value', t);
+		this.push('rectangle.name', d.name);
 		this.push('rectangle.background_color', d.color);
 
 		this.push('rectangle.id', id);
