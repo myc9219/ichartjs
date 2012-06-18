@@ -33,6 +33,10 @@
 				 */
 				value:'',
 				/**
+				 * @cfg {String} Specifies the name of this element,Normally,this will given by chart.(default to '')
+				 */
+				name:'',
+				/**
 				 * @cfg {String} Specifies the tip alignment of chart(defaults to 'top').Available value are:
 				 * @Option 'left'
 				 * @Option 'right'

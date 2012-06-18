@@ -67,6 +67,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i],d.name + ' '+t));
 		
 		this.push('rectangle.value', t);
+		this.push('rectangle.name', d.name);
 		this.push('rectangle.background_color', d.color);
 
 		this.push('rectangle.id', id);
