@@ -35,7 +35,7 @@
 					});
 
 					/**
-					 *自定义组件,画平均线。
+					 *自定义组件,画矩形区域。
 					 */
 					chart.plugin(new iChart.Custom({
 							drawFn:function(){
@@ -51,11 +51,14 @@
 									H = coo.get('height'),
 									h = (avg - S.start) * H / S.distance,
 									y = chart.y + H - h - bs;
-								
-								chart.target.line(x,y,x+W,y,1,'#b32c0d')
+
+								chart.target.globalAlpha(0.2)
+								.rectangle(x,y,W,h,'#1f7e92')
+								.globalAlpha(1)
 								.textAlign('start')
 								.textBaseline('middle')
 								.fillText('avg:'+avg,x+W+5,y,false,'#b32c0d');
+								
 							}
 					}));	
 						
@@ -103,7 +106,7 @@ $(<span class='ichartjs_keyword'>function</span>(){
 		}
 	});
 	/**
-	 *自定义组件,画平均线。
+	 *自定义组件,画矩形区域。
 	 */
 	chart.plugin(<span class='ichartjs_keyword'>new</span> iChart.Custom({
 			drawFn:<span class='ichartjs_keyword'>function</span>(){
@@ -120,10 +123,12 @@ $(<span class='ichartjs_keyword'>function</span>(){
 					h = (avg - S.start) * H / S.distance,
 					y = chart.y + H - h - bs;
 				
-				chart.target.line(x,y,x+W,y,1,'<span class='ichartjs_string'>#b32c0d</span>')
-				.textAlign('<span class='ichartjs_string'>start</span>')
-				.textBaseline('<span class='ichartjs_string'>middle</span>')
-				.fillText('<span class='ichartjs_string'>avg:</span>'+avg,x+W+5,y,<span class='ichartjs_keyword'>false</span>,'<span class='ichartjs_string'>#b32c0d</span>');
+				chart.target.globalAlpha(0.2)
+					.rectangle(x,y,W,h,'<span class='ichartjs_string'>#1f7e92</span>')
+					.globalAlpha(1)
+					.textAlign('<span class='ichartjs_string'>start</span>')
+					.textBaseline('<span class='ichartjs_string'>middle</span>')
+					.fillText('<span class='ichartjs_string'>avg:</span>'+avg,x+W+5,y,<span class='ichartjs_keyword'>false</span>,'<span class='ichartjs_string'>#b32c0d</span>');
 			}
 	}));
 	

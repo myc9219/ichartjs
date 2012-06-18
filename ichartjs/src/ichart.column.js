@@ -60,6 +60,13 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			r.drawRectangle();
 		}
 	},
+	/**
+	 * @method Returns the coordinate of this element.
+	 * @return iChart.Coordinate2D
+	 */
+	getCoordinate:function(){
+		return this.coo;
+	},
 	doParse : function(d, i, id, x, y, h) {
 		var t = (this.get('showpercent') ? iChart.toPercent(d.value / this.total, this.get('decimalsnum')) : d.value);
 		
@@ -106,7 +113,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		 */
 		this.coo = iChart.Interface.coordinate_.call(this);
 
-		this.pushComponent(this.coo, true);
+		this.pushComponent(this.coo,true);
 
 		/**
 		 * quick config to all rectangle
