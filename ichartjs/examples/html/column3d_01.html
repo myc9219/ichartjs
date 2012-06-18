@@ -7,52 +7,92 @@
 		<meta name="Keywords" content="" />
 		<script type="text/javascript" src="../../ichart.min.1.0.js"></script>
 		<script type="text/javascript" src="data.js"></script>
-		<style type="text/css">
-			body{
-				margin-top:10px;
-				text-align: center;
-			}
-			#myCanvas div{
-			margin:0px auto;
-		}
-		</style>
+		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
-					$(function(){
-						var column3d = new iChart.Column3D({
-							render : 'myCanvas',
-							data: data,
-							align:'center',
-							coordinate:{
-								width:600,
-								height:300,
-								background_color:'#d6dbd2'
-							},
-							tip:{
-								enable:true,
-								shadow:true,
-								showType:'fixed'
-							},
-							title : 'Column3d sample',
-							width : 800,
-							height : 500,
-							hiswidth:90,
-							xAngle:70,
-							yAngle:30,
-							zScale:1,
-							background_color:'#FEFEFE',
-							listeners:{
-								
-							}
-							
-						});
-					
-					//开始画图
-					column3d.draw();
-				});
+				$(function(){
+					var data = [
+					        	{name : 'IE',value : 35.75,color:'#a5c2d5'},
+					        	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
+					        	{name : 'Firefox',value : 24.88,color:'#76a871'},
+					        	{name : 'Safari',value : 6.77,color:'#9f7961'},
+					        	{name : 'Opera',value : 2.02,color:'#a56f8f'},
+					        	{name : 'Other',value : 0.73,color:'#6f83a5'}
+				        	];
+		        	
+					new iChart.Column3D({
+						render : 'canvasDiv',
+						data: data,
+						title : 'Top 5 Browsers from 1 to 29 Feb 2012',
+						showpercent:true,
+						decimalsnum:2,
+						width : 800,
+						height : 400,
+						coordinate:{
+							scale:[{
+								 position:'left',	
+								 start_scale:0,
+								 end_scale:40,
+								 scale_space:8,
+								 listeners:{
+									parseText:function(t,x,y){
+										return {text:t+"%"}
+									}
+								}
+							}]
+						}
+					}).draw();
+			});
 				
 			</script>
 		</head>
 		<body>
-			<div id='myCanvas'></div>
+			<div id='canvasDiv'></div>
+			<div class='ichartjs_info'>
+				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
+				<div class='ichartjs_sm'>说明</div>
+				<div class='ichartjs_details'>
+					这是一个基本的3D柱形图例子，例子展示了2012年2月份市场浏览器占有的情况。此例子中，配置了个性化的值轴。并以百分比的形式展示数据值。<br/>
+				</div>
+				<span class='ichartjs_sm'>备注：</span>
+				<span class='ichartjs_details'>
+					数据均为模拟，无实际参考价值。
+				</span>
+			</div>
+<!-- the source code -->
+<div id='ichartjs_code'>
+<span class='ichartjs_keyword'>var</span> data = [
+	{name : '<span class='ichartjs_keyword'>IE</span>',value : 35.75,color:'<span class='ichartjs_keyword'>#a5c2d5</span>'},
+   	{name : '<span class='ichartjs_keyword'>Chrome</span>',value : 29.84,color:'<span class='ichartjs_keyword'>#cbab4f</span>'},
+   	{name : '<span class='ichartjs_keyword'>Firefox</span>',value : 24.88,color:'<span class='ichartjs_keyword'>#76a871</span>'},
+   	{name : '<span class='ichartjs_keyword'>Safari</span>',value : 6.77,color:'<span class='ichartjs_keyword'>#9f7961</span>'},
+   	{name : '<span class='ichartjs_keyword'>Opera</span>',value : 2.02,color:'<span class='ichartjs_keyword'>#a56f8f</span>'},
+   	{name : '<span class='ichartjs_keyword'>Other</span>',value : 0.73,color:'<span class='ichartjs_keyword'>#6f83a5</span>'}
+ ];
+
+$(<span class='ichartjs_keyword'>function</span>(){	
+	<span class='ichartjs_keyword'>new</span> iChart.Column3D({
+		render : '<span class='ichartjs_string'>canvasDiv</span>',
+		data: data,
+		title : '<span class='ichartjs_string'>Top 5 Browsers from 1 to 29 Feb 2012</span>',
+		showpercent:<span class='ichartjs_keyword'>true</span>,
+		decimalsnum:2,
+		width : 800,
+		height : 400,
+		coordinate:{
+			scale:[{
+				 position:'<span class='ichartjs_string'>left</span>',	
+				 start_scale:0,
+				 end_scale:40,
+				 scale_space:8,
+				 listeners:{
+					parseText:<span class='ichartjs_keyword'>function</span>(t,x,y){
+						<span class='ichartjs_keyword'>return</span> {text:t+"<span class='ichartjs_string'>%</span>"}
+					}
+				}
+			}]
+		}
+	}).draw();
+});
+</div>
 		</body>
 </html>
