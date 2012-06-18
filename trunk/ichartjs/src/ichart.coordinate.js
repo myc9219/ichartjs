@@ -413,7 +413,6 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				this.gridlines = [];
 			},
 			getScale : function(p) {
-
 				for ( var i = 0; i < this.scale.length; i++) {
 					var k = this.scale[i];
 					if (k.get('position') == p) {
