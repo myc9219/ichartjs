@@ -5659,6 +5659,13 @@ $.Column = $.extend($.Chart, {
 			r.drawRectangle();
 		}
 	},
+	/**
+	 * @method Returns the coordinate of this element.
+	 * @return $.Coordinate2D
+	 */
+	getCoordinate:function(){
+		return this.coo;
+	},
 	doParse : function(d, i, id, x, y, h) {
 		var t = (this.get('showpercent') ? $.toPercent(d.value / this.total, this.get('decimalsnum')) : d.value);
 		
@@ -5705,7 +5712,7 @@ $.Column = $.extend($.Chart, {
 		 */
 		this.coo = $.Interface.coordinate_.call(this);
 
-		this.pushComponent(this.coo, true);
+		this.pushComponent(this.coo,true);
 
 		/**
 		 * quick config to all rectangle

@@ -12,10 +12,12 @@
 		         	{
 		         		name : '北京',
 		         		value:[2,12,14,20,28,32,34,36,33,24,14,4],
-		         		color:'#1f7e92'
+		         		color:'#c0abf1'
 		         	}
 	         ];	
+	         
 			var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+			
 			$(function(){
 				new iChart.Area2D({
 						render : 'canvasDiv',
@@ -23,7 +25,30 @@
 						title : 'Average Temperature Of 2012',
 						width : 800,
 						height : 400,
-						labels:labels
+						legend : {
+							enable : true
+						},
+						tip:{
+							enable : true
+						},
+						listeners:{
+							parseTipText:function(d,t,i){
+								return labels[i]+"平均温度:"+t+"℃";
+							}
+						},
+						coordinate:{
+							scale:[{
+								 position:'left',	
+								 start_scale:0,
+								 end_scale:40,
+								 scale_space:5,
+								 listeners:{
+									parseText:function(t,x,y){
+										return {text:t+"℃"}
+									}
+								}
+							}]
+						}
 					}).draw();
 			});
 			</script>
@@ -34,7 +59,7 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这是一个区域图例子，该例子展示了2012年中12个月的平均温度情况。配置上除了像标题、长宽的基本属性外基本上都是默认的。
+					在基本的区域图例子基础上，配置了提示、图例和个性化的值轴。而且改变了一下背景颜色。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>
@@ -47,7 +72,7 @@
 	{
    		name : '<span class='ichartjs_string'>北京</span>',
    		value:[2,12,14,20,28,32,34,36,33,24,14,4],
-   		color:'<span class='ichartjs_string'>#1f7e92</span>',
+   		color:'<span class='ichartjs_string'>#c0abf1</span>',
    		linewidth:1
    	}
   ];
@@ -60,7 +85,30 @@ $(<span class='ichartjs_keyword'>function</span>(){
 		title : '<span class='ichartjs_string'>Average Temperature Of 2012</span>',
 		width : 800,
 		height : 400,
-		labels:labels
+		legend : {
+			enable : <span class='ichartjs_keyword'>true</span>
+		},
+		tip:{
+			enable : <span class='ichartjs_keyword'>true</span>
+		},
+		listeners:{
+			parseTipText:<span class='ichartjs_keyword'>function</span>(d,t,i){
+				<span class='ichartjs_keyword'>return</span> labels[i]+<span class='ichartjs_string'>份平均温度:</span>+t+"<span class='ichartjs_string'>℃</span>";
+			}
+		},
+		coordinate:{
+			scale:[{
+				 position:'<span class='ichartjs_string'>left</span>',	
+				 start_scale:0,
+				 end_scale:40,
+				 scale_space:5,
+				 listeners:{
+					parseText:<span class='ichartjs_keyword'>function</span>(t,x,y){
+						<span class='ichartjs_keyword'>return</span> {text:t+"<span class='ichartjs_string'>℃</span>"}
+					}
+				}
+			}]
+		}
 	}).draw();
 });
 </div>
