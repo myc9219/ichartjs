@@ -9,47 +9,72 @@
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
 			var data = [
-		         	{
-		         		name : '北京',
-		         		value:[2,12,14,20,28,32,34,36,33,24,14,4],
-		         		color:'#c0abf1'
-		         	}
-	         ];	
-	         
+			        	{
+			        		name : '上海',
+			        		value:[4,16,18,20,32,36,38,38,36,26,20,14],
+			        		color:'#dad81f'
+			        	},
+			        	{
+			        		name : '北京',
+			        		value:[2,12,14,20,28,32,34,36,33,24,14,4],
+			        		color:'#1f7e92'
+			        	},
+			        	{
+			        		name : '西安',
+			        		value:[1,12,18,20,28,34,36,34,31,27,24,6],
+			        		color:'#76a871'
+			        	},
+			        	{
+			        		name : '天津',
+			        		value:[3,13,14,20,28,32,34,36,30,24,14,4],
+			        		color:'#6f83a5'
+			        	}
+			        ];
+	        
 			var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 			
 			$(function(){
 				new iChart.Area2D({
-						render : 'canvasDiv',
-						data: data,
-						title : 'Average Temperature Of 2012',
-						width : 800,
-						height : 400,
-						legend : {
-							enable : true
-						},
-						tip:{
-							enable : true
-						},
-						listeners:{
-							parseTipText:function(d,t,i){
-								return labels[i]+"平均温度:"+t+"℃";
-							}
-						},
-						coordinate:{
-							scale:[{
-								 position:'left',	
-								 start_scale:0,
-								 end_scale:40,
-								 scale_space:5,
-								 listeners:{
-									parseText:function(t,x,y){
-										return {text:t+"℃"}
-									}
-								}
-							}]
+					render : 'canvasDiv',
+					data: data,
+					title : 'Average Temperature Of 2012',
+					width : 800,
+					height : 400,
+					area_opacity:0.15,
+					legend : {
+						enable : true
+					},
+					tip:{
+						enable : true
+					},
+					listeners:{
+						parseTipText:function(d,t,i){
+							return d.name+labels[i]+"平均温度:"+t+"℃";
 						}
-					}).draw();
+					},
+					coordinate:{
+						scale:[{
+							 position:'left',	
+							 start_scale:0,
+							 end_scale:40,
+							 scale_space:5,
+							 listeners:{
+								parseText:function(t,x,y){
+									return {text:t+"℃"}
+								}
+							}
+						},{
+							 position:'bottom',	
+							 start_scale:1,
+							 end_scale:12,
+							 parseText:function(t,x,y){
+								return {textY:y+10}
+							 },
+							 labels:labels
+						}]
+					}
+				}).draw();
+			
 			});
 			</script>
 		</head>
@@ -59,7 +84,8 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					在基本的区域图例子基础上，配置了提示、图例和个性化的值轴。而且改变了一下背景颜色。但是没有被指底端的值轴。
+					这是一个多数据区域图例子，该例子展示了4个城市2012年中12个月的平均温度情况。此例中对于重复的数据点的提示进行了排版处理。
+					目前最多也只能处理4个重复点的排版。同时由于有多个区域重复导致背景颜色加深，所以还设置了区域的透明度以减少区域重叠带来的颜色加深问题。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>
@@ -70,9 +96,24 @@
 <div id='ichartjs_code'>
 <span class='ichartjs_keyword'>var</span> data = [
 	{
+   		name : '<span class='ichartjs_string'>上海</span>',
+   		value:[4,16,18,20,32,36,38,38,36,26,20,14],
+   		color:'<span class='ichartjs_string'>#dad81f</span>'
+   	},
+	{
    		name : '<span class='ichartjs_string'>北京</span>',
    		value:[2,12,14,20,28,32,34,36,33,24,14,4],
-   		color:'<span class='ichartjs_string'>#c0abf1</span>'
+   		color:'<span class='ichartjs_string'>#1f7e92</span>'
+   	},
+   	{
+   		name : '<span class='ichartjs_string'>西安</span>',
+   		value:[1,12,18,20,28,34,36,34,31,27,24,6],
+   		color:'<span class='ichartjs_string'>#76a871</span>'
+   	},
+   	{
+   		name : '<span class='ichartjs_string'>天津</span>',
+   		value:[3,13,14,20,28,32,34,36,30,24,14,4],
+   		color:'<span class='ichartjs_string'>#6f83a5</span>'
    	}
   ];
 <span class='ichartjs_keyword'>var</span> labels = ["<span class='ichartjs_string'>一月</span>","<span class='ichartjs_string'>二月</span>","<span class='ichartjs_string'>三月</span>","<span class='ichartjs_string'>四月</span>","<span class='ichartjs_string'>五月</span>","<span class='ichartjs_string'>六月</span>",
@@ -84,6 +125,7 @@ $(<span class='ichartjs_keyword'>function</span>(){
 		title : '<span class='ichartjs_string'>Average Temperature Of 2012</span>',
 		width : 800,
 		height : 400,
+		area_opacity:0.15,
 		legend : {
 			enable : <span class='ichartjs_keyword'>true</span>
 		},
@@ -92,7 +134,7 @@ $(<span class='ichartjs_keyword'>function</span>(){
 		},
 		listeners:{
 			parseTipText:<span class='ichartjs_keyword'>function</span>(d,t,i){
-				<span class='ichartjs_keyword'>return</span> labels[i]+<span class='ichartjs_string'>份平均温度:</span>+t+"<span class='ichartjs_string'>℃</span>";
+				<span class='ichartjs_keyword'>return</span> d.name+labels[i]+<span class='ichartjs_string'>份平均温度:</span>+t+"<span class='ichartjs_string'>℃</span>";
 			}
 		},
 		coordinate:{
@@ -106,6 +148,14 @@ $(<span class='ichartjs_keyword'>function</span>(){
 						<span class='ichartjs_keyword'>return</span> {text:t+"<span class='ichartjs_string'>℃</span>"}
 					}
 				}
+			},{
+				 position:'<span class='ichartjs_string'>bottom</span>',	
+				 start_scale:1,
+				 end_scale:12,
+				 parseText:<span class='ichartjs_keyword'>function</span>(t,x,y){
+					<span class='ichartjs_keyword'>return</span> {textY:y+10}
+				 },
+				 labels:labels
 			}]
 		}
 	}).draw();
