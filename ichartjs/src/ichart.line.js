@@ -42,7 +42,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 */
 			label_space : 6,
 			/**
-			 * @cfg {Boolean} Can Line smooth?now has unavailable
+			 * @inner {Boolean} Can Line smooth?now has unavailable
 			 */
 			smooth : false,
 			/**
@@ -58,13 +58,6 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 * For details see <link>iChart.LineSegment</link>
 			 */
 			segment_style : {},
-			/**
-			 * @cfg {Boolean} Disable the tip,Note that this option only applies when showPoint = true.
-			 * For details see <link>iChart.Chart#tip</link>
-			 */
-			tip : {
-				enable : false
-			},
 			/**
 			 * {Object} the option for legend.
 			 */
@@ -82,6 +75,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		 * @paramter int#y coordinate-y of point
 		 * @paramter int#index the index of point
 		 * @return Object object Detail:
+		 * @property text the text of point
 		 * @property x coordinate-x of point
 		 * @property y coordinate-y of point
 		 */
