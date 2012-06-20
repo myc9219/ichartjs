@@ -26,7 +26,14 @@
 						decimalsnum:2,
 						width : 800,
 						height : 400,
+						legend : {
+							enable : true
+						},
+						tip:{
+							enable : true
+						},
 						coordinate:{
+							width:580,
 							scale:[{
 								 position:'left',	
 								 start_scale:0,
@@ -50,7 +57,7 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这是一个柱形图例子，该例子展示了2012年2月份市场浏览器占有的情况。此例子中，配置了个性化的值轴。并以百分比的形式展示数据值。
+					这是一个柱形图例子，该例子展示了2012年2月份市场浏览器占有的情况。此例子中，配置了图例、提示以及个性化的值轴。并以百分比的形式展示数据值。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>
@@ -77,7 +84,14 @@ $(<span class='ichartjs_keyword'>function</span>(){
 		decimalsnum:2,
 		width : 800,
 		height : 400,
+		legend : {
+			enable : <span class='ichartjs_keyword'>true</span>
+		},
+		tip:{
+			enable : <span class='ichartjs_keyword'>true</span>
+		},
 		coordinate:{
+			width:580,
 			scale:[{
 				 position:'<span class='ichartjs_string'>left</span>',	
 				 start_scale:0,
