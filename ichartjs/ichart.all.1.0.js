@@ -3944,6 +3944,8 @@ $.Scale = $.extend($.Component, {
 				this.push('scale_share', (end_scale - start_scale) / scale_space);
 			}
 			
+			
+			
 			/**
 			 * value of each scale
 			 */
@@ -3974,7 +3976,6 @@ $.Scale = $.extend($.Component, {
 		this.T.textFont(this.get('fontStyle'));
 		this.push('which', this.get('which').toLowerCase());
 		this.isH = this.get('which') == 'h';
-
 		/**
 		 * 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
 		 */
