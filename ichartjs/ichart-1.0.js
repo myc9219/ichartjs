@@ -1093,7 +1093,7 @@ $.Element.prototype = {
 		}
 		return V;
 	}
-}//@end
+}
 
 /**
  * @overview The interface this class defined include draw and event,so the sub class has must capability to draw and aware of event.
@@ -1332,7 +1332,7 @@ $.Painter = $.extend($.Element, {
 		this.id = this.get('id');
 
 	}
-});//@end
+});
 
 
 /**
@@ -1454,7 +1454,7 @@ $.Html = $.extend($.Element,{
 			if(style.length>1)this.css(style[0],style[1]);
 		}
 	}
-});//@end
+});
 
 
 	/**
@@ -1570,7 +1570,7 @@ $.Html = $.extend($.Element,{
 			this.target = this.T = c.T;
 		}
 	}
-	});//@end
+	});
 	$.Interface = function(){
 		var simple = function(c,z) {
 			var M=0,V=0,MI,ML=0;
@@ -2520,7 +2520,7 @@ $.Label = $.extend($.Component, {
 		doConfig:function(){
 			$.Text.superclass.doConfig.call(this);
 		}
-});//@end
+});
 ;
 (function($) {
 
@@ -3720,7 +3720,7 @@ $.Label = $.extend($.Component, {
 		doConfig:function(){
 			$.Custom.superclass.doConfig.call(this);
 		}
-});//@end
+});
 /**
  * @overview this is inner use for axis
  * @component#$.Scale
@@ -4676,7 +4676,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				return true;
 			});
 		}
-});//@end
+});
 	/**
 	 * @overview this component use for abc
 	 * @component#$.Rectangle2D
@@ -4779,7 +4779,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			_.valueX = _.get('value_x');
 			_.valueY = _.get('value_y');
 		}
-});//@end
+});
 	/**
 	 * @overview this component use for abc
 	 * @component#$.Rectangle3D
@@ -4868,7 +4868,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			this.topCenterY=this.y-this.get('width')*this.get('yAngle_')/2;
 			
 		}
-});//@end
+});
 /**
  * @overview this component use for abc
  * @component#$.Sector
@@ -5134,7 +5134,7 @@ $.Sector = $.extend($.Component, {
 				this.label = new $.Label(this.get('label'),this);
 			}
 		}
-});//@end
+});
 	/**
 	 * @overview this component use for abc
 	 * @component#$.Sector3D
@@ -5277,7 +5277,7 @@ $.Sector = $.extend($.Component, {
 				this.label = new $.Label(this.get('label'),this);
 			}
 		}
-});//@end
+});
 /**
  * @overview this component use for abc
  * @component#$.Pie
@@ -5528,7 +5528,7 @@ $.Pie = $.extend($.Chart, {
 		
 
 	}
-});//@end 
+}); 
 /**
  * @overview this component use for abc
  * @component#@chart#$.Pie2D
@@ -5568,7 +5568,7 @@ $.Pie2D = $.extend($.Pie, {
 		
 		this.pushComponent(this.sectors);
 	}
-});//@end
+});
 	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.Pie3D
@@ -5622,7 +5622,7 @@ $.Pie2D = $.extend($.Pie, {
 			this.pushComponent(this.sectors);
 			
 		}
-});//@end
+});
 /**
  * @overview this component use for abc
  * @component#$.Column
@@ -5871,7 +5871,7 @@ $.Column2D = $.extend($.Column, {
 			this.pushComponent(this.rectangles);
 		}
 		
-});//@end
+});
 	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.ColumnMulti2D
@@ -5949,7 +5949,7 @@ $.Column2D = $.extend($.Column, {
 			this.pushComponent(this.labels);
 			this.pushComponent(this.rectangles);
 		}
-});//@end
+});
 /**
  * @overview this component use for abc
  * @component#$.Bar
@@ -6119,7 +6119,7 @@ $.Bar = $.extend($.Chart, {
 			this.pushComponent(this.rectangles);
 		}
 		
-});//@end
+});
 	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.BarMulti2D
@@ -6196,7 +6196,7 @@ $.Bar = $.extend($.Chart, {
 				this.pushComponent(this.rectangles);
 			}
 			
-	});//@end
+	});
 /**
  * Line ability for real-time show
  * 
@@ -6669,7 +6669,7 @@ $.Line = $.extend($.Chart, {
 			
 		}
 		
-});//@end
+});
 ;(function(){
 	var Queue = function(T,L){
 		this.T = T;
@@ -6804,7 +6804,7 @@ $.Line = $.extend($.Chart, {
 
 		}
 
-	});//@end
+	});
 })();
 	/**
 	 * @overview this component use for abc
@@ -6842,5 +6842,5 @@ $.Line = $.extend($.Chart, {
 			
 			
 		}
-	});//@end
+	});
 })(iChart);
