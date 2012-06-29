@@ -102,7 +102,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			 */
 			textAlign : 'left',
 			/**
-			 * @cfg {Number} Specifies the number of decimal.(default to 1)
+			 * @cfg {Number} Specifies the number of decimal.this will change along with scale.(default to 0)
 			 */
 			decimalsnum : 0,
 			/**
@@ -198,18 +198,18 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		iChart.Assert.isNumber(this.get('distance'), 'distance');
 
 		var customLabel = this.get('labels').length, min_scale = this.get('min_scale'), max_scale = this.get('max_scale'), scale_space = this.get('scale_space'), end_scale = this.get('end_scale'), start_scale = this.get('start_scale');
-
 		if (customLabel > 0) {
 			this.number = customLabel - 1;
 		} else {
 			iChart.Assert.isTrue(iChart.isNumber(max_scale) || iChart.isNumber(end_scale), 'max_scale&end_scale');
-
+			
 			/**
 			 * end_scale must greater than maxScale
 			 */
 			if (!end_scale || end_scale < max_scale) {
 				end_scale = this.push('end_scale', iChart.ceil(max_scale));
 			}
+			
 			/**
 			 * startScale must less than minScale
 			 */
@@ -220,28 +220,39 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			if (scale_space && scale_space < end_scale - start_scale) {
 				this.push('scale_share', (end_scale - start_scale) / scale_space);
 			}
-
+			
+			
+			
 			/**
 			 * value of each scale
 			 */
 			if (!scale_space || scale_space > end_scale - start_scale) {
 				scale_space = this.push('scale', (end_scale - start_scale) / this.get('scale_share'));
 			}
-
+			
 			this.number = this.get('scale_share');
+			
+			if(scale_space<1&&this.get('decimalsnum')==0){
+				var dec = scale_space;
+				while(dec<1){
+					dec *=10;
+					this.push('decimalsnum',this.get('decimalsnum')+1);
+				}
+			}
+			
 		}
 
 		/**
 		 * the real distance of each scale
 		 */
 		this.push('distanceOne', this.get('valid_distance') / this.number);
-
+		
+		
 		var text, maxwidth = 0, x, y;
 
 		this.T.textFont(this.get('fontStyle'));
 		this.push('which', this.get('which').toLowerCase());
 		this.isH = this.get('which') == 'h';
-
 		/**
 		 * 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
 		 */
@@ -512,7 +523,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					this.crosshair = new iChart.CrossHair(this.get('crosshair'), this);
 				}
 
-				var kd, jp, cg = !!(this.get('gridlinesVisible') && this.get('grids')), // custom grid
+				var jp, cg = !!(this.get('gridlinesVisible') && this.get('grids')), // custom grid
 				hg = cg && !!this.get('grids.horizontal'), vg = cg && !!this.get('grids.vertical'), h = this.get('height'), w = this.get('width'), vw = this.get('valid_width'), vh = this.get('valid_height'), k2g = this.get('gridlinesVisible') && this.get('scale2grid')
 						&& !(hg && vg), sw = (w - vw) / 2;
 				sh = (h - vh) / 2, axis = this.get('axis.width');
@@ -523,9 +534,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					else
 						this.push('scale', []);
 				}
-
-				for ( var i = 0; i < this.get('scale').length; i++) {
-					kd = this.get('scale')[i];
+				this.get('scale').each(function(kd,i){
 					jp = kd['position'];
 					jp = jp || 'left';
 					jp = jp.toLowerCase();
@@ -557,7 +566,8 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 						kd['valid_distance'] = vh;
 					}
 					this.scale.push(new iChart.Scale(kd, this.container));
-				}
+				},this);
+				
 
 				var iol = this.push('ignoreOverlap', this.get('ignoreOverlap') && this.get('axis.enable') || this.get('ignoreEdge'));
 

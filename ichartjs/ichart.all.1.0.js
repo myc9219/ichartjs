@@ -1,8 +1,11 @@
 /**
- * iChart-core Library
- * version:0.9
- * 
- * email:wanghetommy@gmail.com
+ * ichartjs  Library v1.0
+ * http://ichartjs.sinaapp.com/
+ * Copyright 2012 wanghetommy@gmail.com
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.  
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 
  */
 ;(function(window){
 var ua = navigator.userAgent.toLowerCase(),
@@ -332,7 +335,20 @@ var iChart_ = (function(window) {//spirit from jquery
 				}
 			return s;
 		},
-		factor = function(v){
+		/**
+		 * 如果是纯整数或者纯小数,返回靠近其最小数量级(1/5)的数
+		 * 若有整数和小数,则按照整数部分确定parseInt(value)==value
+		 */
+		factor = function(v,f){
+			if(v==0)return v;
+			f = f || 5;
+			if(parseInt(v)==0){
+				return parseFloat((v/f+"").substring(0,(v+"").length+1));
+			}
+			return Math.ceil(v/f);
+		},
+		/*
+		factor1 = function(v){
 			if(v==0)return v;
 			var f = v/10,i=0;
 				while(f<1){
@@ -350,6 +366,7 @@ var iChart_ = (function(window) {//spirit from jquery
 				}
 			return f;
 		},
+		*/
 		innerColor  = ["navy","olive","silver","gold","lime","fuchsia","aqua","green","red","blue","pink","purple","yellow","maroon","black","gray","white"],	
 		colors = {
 			navy:'rgb(0,0,128)',
@@ -746,16 +763,16 @@ var iChart_ = (function(window) {//spirit from jquery
 				return v;
 			},
 			/**
-			 * 返回向上靠近一个最小数量级的数
+			 * 返回向上靠近一个数量级为f的数
 			 */
-			ceil:function(max){
-				return max+factor(max);
+			ceil:function(max,f){
+				return max+factor(max,f);
 			},
 			/**
-			 * 返回向下靠近一个最小数量级的数 NEXT
+			 * 返回向下靠近一个数量级为f的数
 			 */
-			floor:function(max){
-				return max-factor(max);
+			floor:function(max,f){
+				return max-factor(max,f);
 			},
 			get:function(i){
 			  return innerColor[i%16];
@@ -3808,7 +3825,7 @@ $.Scale = $.extend($.Component, {
 			 */
 			textAlign : 'left',
 			/**
-			 * @cfg {Number} Specifies the number of decimal.(default to 1)
+			 * @cfg {Number} Specifies the number of decimal.this will change along with scale.(default to 0)
 			 */
 			decimalsnum : 0,
 			/**
@@ -3904,18 +3921,18 @@ $.Scale = $.extend($.Component, {
 		$.Assert.isNumber(this.get('distance'), 'distance');
 
 		var customLabel = this.get('labels').length, min_scale = this.get('min_scale'), max_scale = this.get('max_scale'), scale_space = this.get('scale_space'), end_scale = this.get('end_scale'), start_scale = this.get('start_scale');
-
 		if (customLabel > 0) {
 			this.number = customLabel - 1;
 		} else {
 			$.Assert.isTrue($.isNumber(max_scale) || $.isNumber(end_scale), 'max_scale&end_scale');
-
+			
 			/**
 			 * end_scale must greater than maxScale
 			 */
 			if (!end_scale || end_scale < max_scale) {
 				end_scale = this.push('end_scale', $.ceil(max_scale));
 			}
+			
 			/**
 			 * startScale must less than minScale
 			 */
@@ -3926,22 +3943,32 @@ $.Scale = $.extend($.Component, {
 			if (scale_space && scale_space < end_scale - start_scale) {
 				this.push('scale_share', (end_scale - start_scale) / scale_space);
 			}
-
+			
 			/**
 			 * value of each scale
 			 */
 			if (!scale_space || scale_space > end_scale - start_scale) {
 				scale_space = this.push('scale', (end_scale - start_scale) / this.get('scale_share'));
 			}
-
+			
 			this.number = this.get('scale_share');
+			
+			if(scale_space<1&&this.get('decimalsnum')==0){
+				var dec = scale_space;
+				while(dec<1){
+					dec *=10;
+					this.push('decimalsnum',this.get('decimalsnum')+1);
+				}
+			}
+			
 		}
 
 		/**
 		 * the real distance of each scale
 		 */
 		this.push('distanceOne', this.get('valid_distance') / this.number);
-
+		
+		
 		var text, maxwidth = 0, x, y;
 
 		this.T.textFont(this.get('fontStyle'));
@@ -4119,7 +4146,6 @@ $.Coordinate2D = $.extend($.Component,
 				this.gridlines = [];
 			},
 			getScale : function(p) {
-
 				for ( var i = 0; i < this.scale.length; i++) {
 					var k = this.scale[i];
 					if (k.get('position') == p) {
@@ -4219,7 +4245,7 @@ $.Coordinate2D = $.extend($.Component,
 					this.crosshair = new $.CrossHair(this.get('crosshair'), this);
 				}
 
-				var kd, jp, cg = !!(this.get('gridlinesVisible') && this.get('grids')), // custom grid
+				var jp, cg = !!(this.get('gridlinesVisible') && this.get('grids')), // custom grid
 				hg = cg && !!this.get('grids.horizontal'), vg = cg && !!this.get('grids.vertical'), h = this.get('height'), w = this.get('width'), vw = this.get('valid_width'), vh = this.get('valid_height'), k2g = this.get('gridlinesVisible') && this.get('scale2grid')
 						&& !(hg && vg), sw = (w - vw) / 2;
 				sh = (h - vh) / 2, axis = this.get('axis.width');
@@ -4230,9 +4256,7 @@ $.Coordinate2D = $.extend($.Component,
 					else
 						this.push('scale', []);
 				}
-
-				for ( var i = 0; i < this.get('scale').length; i++) {
-					kd = this.get('scale')[i];
+				this.get('scale').each(function(kd,i){
 					jp = kd['position'];
 					jp = jp || 'left';
 					jp = jp.toLowerCase();
@@ -4264,7 +4288,8 @@ $.Coordinate2D = $.extend($.Component,
 						kd['valid_distance'] = vh;
 					}
 					this.scale.push(new $.Scale(kd, this.container));
-				}
+				},this);
+				
 
 				var iol = this.push('ignoreOverlap', this.get('ignoreOverlap') && this.get('axis.enable') || this.get('ignoreEdge'));
 
@@ -6463,7 +6488,7 @@ $.Line = $.extend($.Chart, {
 			 */
 			label_space : 6,
 			/**
-			 * @cfg {Boolean} Can Line smooth?now has unavailable
+			 * @inner {Boolean} Can Line smooth?now has unavailable
 			 */
 			smooth : false,
 			/**
@@ -6479,13 +6504,6 @@ $.Line = $.extend($.Chart, {
 			 * For details see <link>$.LineSegment</link>
 			 */
 			segment_style : {},
-			/**
-			 * @cfg {Boolean} Disable the tip,Note that this option only applies when showPoint = true.
-			 * For details see <link>$.Chart#tip</link>
-			 */
-			tip : {
-				enable : false
-			},
 			/**
 			 * {Object} the option for legend.
 			 */
@@ -6503,6 +6521,7 @@ $.Line = $.extend($.Chart, {
 		 * @paramter int#y coordinate-y of point
 		 * @paramter int#index the index of point
 		 * @return Object object Detail:
+		 * @property text the text of point
 		 * @property x coordinate-x of point
 		 * @property y coordinate-y of point
 		 */
