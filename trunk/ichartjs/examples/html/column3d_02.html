@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Sample</title>
+		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
+		<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
+		<script type="text/javascript" src="../../ichart.min.1.0.js"></script>
+		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
+		<script type="text/javascript">
+		var data = [
+		        	{name : '已服务客户数量',value : 3,color:'#bc6666'},
+		        	{name : '其中已服务VIP数量',value : 0,color:'#6f83a5'},
+		        	{name : '等待中数量',value : 2,color:'#76a871'},
+		        	{name : '处理中数量',value : 1,color:'#2ba5a4'}
+	        	];
+			$(function(){	
+				new iChart.Column3D({
+					render : 'canvasDiv',
+					data: data,
+					title : 'Status Of Customer Service',
+					width : 800,
+					height : 400,
+					coordinate:{
+						scale:[{
+							 position:'left',	
+							 start_scale:0,
+							 end_scale:4,
+							 scale_space:1
+						}]
+					}
+				}).draw();
+			});
+			</script>
+		</head>
+		<body>
+			<div id='canvasDiv'></div>
+			<div class='ichartjs_info'>
+				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
+				<div class='ichartjs_sm'>说明</div>
+				<div class='ichartjs_details'>
+					这是一个3D柱形图例子，该例子展示了目前服务客户的情况。此例子中，配置了个性化的值轴。对于个性化值轴，关键在于能够知道全部数据中的最大值。设置其起始值(start_scale),最大值(end_scale),值间距(scale_space)。
+					当然，如果你的柱形图的值是不确定的，则组件会自动帮你计算最大值。
+				</div>
+				<span class='ichartjs_sm'>备注：</span>
+				<span class='ichartjs_details'>
+					数据均为模拟，无实际参考价值。
+				</span>
+			</div>
+<!-- the source code -->
+<div id='ichartjs_code'>
+<span class='ichartjs_keyword'>var</span> data = [
+	{name : '<span class='ichartjs_keyword'>已服务客户数量</span>',value : 3,color:'<span class='ichartjs_keyword'>#bc6666</span>'},
+   	{name : '<span class='ichartjs_keyword'>其中已服务VIP数量</span>',value : 0,color:'<span class='ichartjs_keyword'>#6f83a5</span>'},
+   	{name : '<span class='ichartjs_keyword'>等待中数量</span>',value : 2,color:'<span class='ichartjs_keyword'>#76a871</span>'},
+   	{name : '<span class='ichartjs_keyword'>处理中数量</span>',value : 1,color:'<span class='ichartjs_keyword'>#2ba5a4</span>'}
+ ];
+
+$(<span class='ichartjs_keyword'>function</span>(){	
+	<span class='ichartjs_keyword'>new</span> iChart.Column3D({
+		render : '<span class='ichartjs_string'>canvasDiv</span>',
+		data: data,
+		title : '<span class='ichartjs_string'>Status Of Customer Service</span>',
+		width : 800,
+		height : 400,
+		coordinate:{
+			scale:[{
+				 position:'<span class='ichartjs_string'>left</span>',	
+				 start_scale:0,
+				 end_scale:4,
+				 scale_space:1
+			}]
+		}
+	}).draw();
+});
+</div>
+		</body>
+</html>

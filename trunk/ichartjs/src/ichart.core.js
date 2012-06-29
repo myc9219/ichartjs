@@ -335,7 +335,20 @@ var iChart_ = (function(window) {//spirit from jquery
 				}
 			return s;
 		},
-		factor = function(v){
+		/**
+		 * 如果是纯整数或者纯小数,返回靠近其最小数量级(1/5)的数
+		 * 若有整数和小数,则按照整数部分确定parseInt(value)==value
+		 */
+		factor = function(v,f){
+			if(v==0)return v;
+			f = f || 5;
+			if(parseInt(v)==0){
+				return parseFloat((v/f+"").substring(0,(v+"").length+1));
+			}
+			return Math.ceil(v/f);
+		},
+		/*
+		factor1 = function(v){
 			if(v==0)return v;
 			var f = v/10,i=0;
 				while(f<1){
@@ -353,6 +366,7 @@ var iChart_ = (function(window) {//spirit from jquery
 				}
 			return f;
 		},
+		*/
 		innerColor  = ["navy","olive","silver","gold","lime","fuchsia","aqua","green","red","blue","pink","purple","yellow","maroon","black","gray","white"],	
 		colors = {
 			navy:'rgb(0,0,128)',
@@ -749,16 +763,16 @@ var iChart_ = (function(window) {//spirit from jquery
 				return v;
 			},
 			/**
-			 * 返回向上靠近一个最小数量级的数
+			 * 返回向上靠近一个数量级为f的数
 			 */
-			ceil:function(max){
-				return max+factor(max);
+			ceil:function(max,f){
+				return max+factor(max,f);
 			},
 			/**
-			 * 返回向下靠近一个最小数量级的数 NEXT
+			 * 返回向下靠近一个数量级为f的数
 			 */
-			floor:function(max){
-				return max-factor(max);
+			floor:function(max,f){
+				return max-factor(max,f);
 			},
 			get:function(i){
 			  return innerColor[i%16];

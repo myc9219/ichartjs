@@ -35,12 +35,20 @@
 		</style>
 		<script type="text/javascript">
 					$(function(){
+						var data = [
+						        	{name : '广州',value : 80,color:'#a5c2d5'},
+						        	{name : '上海',value : 130,color:'#cbab4f'},
+						        	{name : '南昌',value : 75,color:'#76a871'},
+						        	{name : '哈尔滨',value : 25,color:'#9f7961'},
+						        	{name : '北京',value : 105,color:'#a56f8f'}
+						        	];
 						var column3d = new iChart.Column3D({
 							render : 'myCanvas',
 							data: data,
-							animation:true,
+							//animation:true,
 							align:'center',
 							coordinate:{
+								decimalsnum:2,
 								width:600,
 								height:300,
 								background_color:'#d6dbd2'
