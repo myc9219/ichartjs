@@ -17,6 +17,14 @@ iChart.Sector = iChart.extend(iChart.Component, {
 
 		this.set({
 			/**
+			 * @cfg {String} Specifies the value of this element,Normally,this will given by chart.(default to '')
+			 */
+			value:'',
+			/**
+			 * @cfg {String} Specifies the name of this element,Normally,this will given by chart.(default to '')
+			 */
+			name:'',
+			/**
 			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
 			 */
 			counterclockwise : false,
