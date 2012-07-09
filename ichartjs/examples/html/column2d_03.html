@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Sample</title>
+		<meta name="Description" content="" />
+		<meta name="Keywords" content="" />
+		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
+		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
+		<script type="text/javascript">
+				$(function(){
+					
+					var data = [
+					        	{name : 'H',value : 7,color:'#a5c2d5'},
+					        	{name : 'E',value : 5,color:'#cbab4f'},
+					        	{name : 'L',value : 12,color:'#76a871'},
+					        	{name : 'L',value : 12,color:'#76a871'},
+					        	{name : 'O',value : 15,color:'#a56f8f'},
+					        	{name : 'W',value : 13,color:'#c12c44'},
+					        	{name : 'O',value : 15,color:'#a56f8f'},
+					        	{name : 'R',value : 18,color:'#9f7961'},
+					        	{name : 'L',value : 12,color:'#76a871'},
+					        	{name : 'D',value : 4,color:'#6f83a5'}
+				        	];
+		        	
+					new iChart.Column2D({
+						render : 'canvasDiv',
+						data: data,
+						title : 'Hello World\'s Height In Alphabet',
+						width : 800,
+						height : 400,
+						coordinate:{
+							scale:[{
+								 position:'left',	
+								 start_scale:0,
+								 end_scale:26,
+								 scale_space:2,
+								 listeners:{
+										parseText:function(t,x,y){
+											return {text:t+" CM"}
+										}
+									}
+							}]
+						}
+					}).draw();
+			});
+				
+			</script>
+		</head>
+		<body>
+			<div id='canvasDiv'></div>
+			<div class='ichartjs_info'>
+				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
+				<div class='ichartjs_sm'>说明</div>
+				<div class='ichartjs_details'>
+					你一定听过或者见识过各种Hello World，但是你知道把他们的身高(字母表中的位置)比一比是什么样子吗?<br/>
+					这是一个柱形图例子，该例子展示了Hello World中各个字母在字母表中的位置，将其位置换算成了身高以柱形图的形式展示。
+				</div>
+				<span class='ichartjs_sm'>备注：</span>
+				<span class='ichartjs_details'>
+					数据均为模拟，无实际参考价值。
+				</span>
+			</div>
+<!-- the source code -->
+<div id='ichartjs_code'>
+<span class='ichartjs_keyword'>var</span> data = [
+	{name : '<span class='ichartjs_keyword'>H</span>',value : 7,color:'<span class='ichartjs_keyword'>#a5c2d5</span>'},
+   	{name : '<span class='ichartjs_keyword'>E</span>',value : 5,color:'<span class='ichartjs_keyword'>#cbab4f</span>'},
+   	{name : '<span class='ichartjs_keyword'>L</span>',value : 12,color:'<span class='ichartjs_keyword'>#76a871</span>'},
+   	{name : '<span class='ichartjs_keyword'>L</span>',value : 12,color:'<span class='ichartjs_keyword'>#76a871</span>'},
+   	{name : '<span class='ichartjs_keyword'>O</span>',value : 15,color:'<span class='ichartjs_keyword'>#a56f8f</span>'},
+   	{name : '<span class='ichartjs_keyword'>W</span>',value : 13,color:'<span class='ichartjs_keyword'>#c12c44</span>'},
+   	{name : '<span class='ichartjs_keyword'>O</span>',value : 15,color:'<span class='ichartjs_keyword'>#a56f8f</span>'},
+   	{name : '<span class='ichartjs_keyword'>R</span>',value : 18,color:'<span class='ichartjs_keyword'>#9f7961</span>'},
+   	{name : '<span class='ichartjs_keyword'>L</span>',value : 12,color:'<span class='ichartjs_keyword'>#76a871</span>'},
+   	{name : '<span class='ichartjs_keyword'>D</span>',value : 4,color:'<span class='ichartjs_keyword'>#6f83a5</span>'}
+ ];
+$(<span class='ichartjs_keyword'>function</span>(){	
+	<span class='ichartjs_keyword'>new</span> iChart.Column2D({
+		render : '<span class='ichartjs_string'>canvasDiv</span>',
+		data: data,
+		title : '<span class='ichartjs_string'>Hello World\'s Height In Alphabet</span>',
+		width : 800,
+		height : 400,
+		coordinate:{
+			scale:[{
+				 position:'<span class='ichartjs_string'>left</span>',	
+				 start_scale:0,
+				 end_scale:26,
+				 scale_space:2,
+				 listeners:{
+					parseText:<span class='ichartjs_keyword'>function</span>(t,x,y){
+						<span class='ichartjs_keyword'>return</span> {text:t+"<span class='ichartjs_string'> CM</span>"}
+					}
+				}
+			}]
+		}
+	}).draw();
+});
+</div>
+		</body>
+</html>

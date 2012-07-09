@@ -1632,7 +1632,6 @@ $.Html = $.extend($.Element,{
 			this.data = this.data.concat(c);
 			
 			this.data.each(function(d,i){
-				$.Assert.equal(d.value.length,L,this.type+':data length and columnKeys not corresponding.');
 				$.merge(d,this.fireEvent(this,'parseData',[this,d,i,this.columnKeys]));
 				$.Assert.equal(d.value.length,L,this.type+':data length and columnKeys not corresponding.');
 			},this);
@@ -3264,7 +3263,7 @@ $.Label = $.extend($.Component, {
 				 */
 				animation_timing_function : 'easeInOut',
 				/**
-				 * @cfg {Number} Specifies the duration between two frame in millisecond.(default to 1600)
+				 * @cfg {Number} Specifies the duration when animation complete in millisecond.(default to 1600)
 				 */
 				duration_animation_duration : 1600,
 				/**

@@ -741,7 +741,7 @@
 				 */
 				animation_timing_function : 'easeInOut',
 				/**
-				 * @cfg {Number} Specifies the duration between two frame in millisecond.(default to 1600)
+				 * @cfg {Number} Specifies the duration when animation complete in millisecond.(default to 1600)
 				 */
 				duration_animation_duration : 1600,
 				/**
