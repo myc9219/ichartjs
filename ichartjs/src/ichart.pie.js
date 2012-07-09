@@ -183,6 +183,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			], t));
 		
 		_.push('sector.id', i);
+		_.push('sector.value', d.value);
 		_.push('sector.name', d.name);
 		_.push('sector.listeners.changed', function(se, st, i) {
 			_.fireEvent(_, st ? 'bound' : 'rebound', [

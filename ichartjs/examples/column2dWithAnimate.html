@@ -40,16 +40,18 @@
 						var column2d = new iChart.Column2D({
 							render : 'myCanvas',
 							data: data,
-							animation:true,
+							//animation:true,
 							align:'center',
 							coordinate:{
 								width:600,
-								height:400,
-								end_scale:150,
-								scale:30
+								height:400
 							},
 							legend:{
-								enable:true
+								enable:true,
+								row:1,
+								column:'max',
+								sign_space:10,
+								legend_space:15
 							},
 							tip:{
 								enable:true,
