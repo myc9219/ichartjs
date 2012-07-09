@@ -59,7 +59,6 @@
 			this.data = this.data.concat(c);
 			
 			this.data.each(function(d,i){
-				iChart.Assert.equal(d.value.length,L,this.type+':data length and columnKeys not corresponding.');
 				iChart.merge(d,this.fireEvent(this,'parseData',[this,d,i,this.columnKeys]));
 				iChart.Assert.equal(d.value.length,L,this.type+':data length and columnKeys not corresponding.');
 			},this);
