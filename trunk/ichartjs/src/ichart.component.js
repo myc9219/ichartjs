@@ -59,12 +59,12 @@
 		/**
 		 * originx
 		 */
-		this.x = this.get('originx');
+		this.x = this.get('originx')+this.get('offsetx');
 		/**
 		 * 
 		 * originy
 		 */
-		this.y = this.get('originy');
+		this.y = this.get('originy')+this.get('offsety');
 		
 		/**
 		 * if have evaluate it

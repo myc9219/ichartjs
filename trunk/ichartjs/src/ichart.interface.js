@@ -141,8 +141,15 @@
 				/**
 				 * calculate  chart's measurement
 				 */
-				var w = this.pushIf('coordinate.width',this.get('client_width')*0.8),
-					h=this.pushIf('coordinate.height',this.get('client_height')*0.8);
+				var w = this.pushIf('coordinate.width',this.get('client_width')*0.9),
+					h=this.pushIf('coordinate.height',this.get('client_height')*0.9);
+				
+				if(this.get('coordinate.height')>this.get('client_height')){
+					h = this.push('coordinate.height',this.get('client_height')*0.9);
+				}
+				if(this.get('coordinate.width')>this.get('client_width')){
+					w = this.push('coordinate.width',this.get('client_width')*0.9);
+				}
 				
 				/**
 				 * calculate chart's alignment
