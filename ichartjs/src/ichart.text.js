@@ -40,7 +40,25 @@
 				 * @Option ideographic
 				 * @Option bottom
 				 */
-				textBaseline:'top'
+				textBaseline:'top',
+				/**
+				 * @cfg {Number} Specifies the maxwidth of text in pixels,if given 0 will not be limited.(default to 0)
+				 */
+				width:0,
+				/**
+				 * @cfg {Number} Specifies the maxheight of text in pixels,if given 0 will not be limited(default to 0)
+				 */
+				height:0,
+				/**
+				 * @cfg {String} Specifies the writing-mode of text.(default to 'lr') .
+				 * Available value are:
+				 * @Option 'lr'
+				 */
+				writingmode : 'lr',
+				/**
+				 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 16).
+				 */
+				line_height : 16
 			});
 			
 			this.registerEvent();

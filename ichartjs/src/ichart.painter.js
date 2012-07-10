@@ -38,7 +38,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			 */
 			padding : 10,
 			/**
-			 * @cfg {String} Specifies the color for this element.(defaults to 'black')
+			 * @cfg {String} Specifies the font's color for this element.(defaults to 'black')
 			 */
 			color : 'black',
 			/**
