@@ -1135,7 +1135,7 @@ $.Painter = $.extend($.Element, {
 			 */
 			padding : 10,
 			/**
-			 * @cfg {String} Specifies the color for this element.(defaults to 'black')
+			 * @cfg {String} Specifies the font's color for this element.(defaults to 'black')
 			 */
 			color : 'black',
 			/**
@@ -1518,12 +1518,12 @@ $.Html = $.extend($.Element,{
 		/**
 		 * originx
 		 */
-		this.x = this.get('originx');
+		this.x = this.get('originx')+this.get('offsetx');
 		/**
 		 * 
 		 * originy
 		 */
-		this.y = this.get('originy');
+		this.y = this.get('originy')+this.get('offsety');
 		
 		/**
 		 * if have evaluate it
@@ -1714,8 +1714,15 @@ $.Html = $.extend($.Element,{
 				/**
 				 * calculate  chart's measurement
 				 */
-				var w = this.pushIf('coordinate.width',this.get('client_width')*0.8),
-					h=this.pushIf('coordinate.height',this.get('client_height')*0.8);
+				var w = this.pushIf('coordinate.width',this.get('client_width')*0.9),
+					h=this.pushIf('coordinate.height',this.get('client_height')*0.9);
+				
+				if(this.get('coordinate.height')>this.get('client_height')){
+					h = this.push('coordinate.height',this.get('client_height')*0.9);
+				}
+				if(this.get('coordinate.width')>this.get('client_width')){
+					w = this.push('coordinate.width',this.get('client_width')*0.9);
+				}
 				
 				/**
 				 * calculate chart's alignment
@@ -1929,28 +1936,28 @@ $.Html = $.extend($.Element,{
 				 */
 				 top:0,
 				 /**
-					 * @inner {Number} Specifies the position left,normally this will given by chart.(default to 0)
-					 */
+				 * @inner {Number} Specifies the position left,normally this will given by chart.(default to 0)
+				 */
 				 left:0,
 				 /**
-					 * @inner {Boolean} private use
-					 */
+				 * @inner {Boolean} private use
+				 */
 				 hcross:true,
 				  /**
-					 * @inner {Boolean} private use
-					 */
+				 * @inner {Boolean} private use
+				 */
 				 vcross:true,
 				 /**
-					 * @inner {Function} private use
-					 */
+				 * @inner {Function} private use
+				 */
 				 invokeOffset:null,
 				 /**
-					 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
-					 */
+				 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
+				 */
 				 line_width:1,
 				 /**
-					 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
-					 */
+				 * @cfg {Number} Specifies the linewidth of the crosshair.(default to 1)
+				 */
 				 line_color:'#1A1A1A',
 				 delay:200
 			});
@@ -1979,51 +1986,51 @@ $.Html = $.extend($.Element,{
 		initialize:function(){
 			$.CrossHair.superclass.initialize.call(this);
 			
-			this.top = $.fixPixel(this.get('top'));
-			this.left = $.fixPixel(this.get('left'));
+			var _ = this;
 			
-			this.dom = document.createElement("div");
+			_.top = $.fixPixel(_.get('top'));
+			_.left = $.fixPixel(_.get('left'));
 			
-			this.dom.style.zIndex=this.get('index');
-			this.dom.style.position="absolute";
+			_.dom = document.createElement("div");
+			
+			_.dom.style.zIndex=_.get('index');
+			_.dom.style.position="absolute";
 			/**
 			 * set size zero make integration with vertical and horizontal
 			 */
-			this.dom.style.width= $.toPixel(0);
-			this.dom.style.height=$.toPixel(0);
-			this.dom.style.top=$.toPixel(this.get('top'));
-			this.dom.style.left=$.toPixel(this.get('left'));
-			this.css('visibility','hidden');
+			_.dom.style.width= $.toPixel(0);
+			_.dom.style.height=$.toPixel(0);
+			_.dom.style.top=$.toPixel(_.get('top'));
+			_.dom.style.left=$.toPixel(_.get('left'));
+			_.css('visibility','hidden');
 			
-			this.horizontal = document.createElement("div");
-			this.vertical = document.createElement("div");
+			_.horizontal = document.createElement("div");
+			_.vertical = document.createElement("div");
 			
-			this.horizontal.style.width= $.toPixel(this.get('width'));
-			this.horizontal.style.height= $.toPixel(this.get('line_width'));
-			this.horizontal.style.backgroundColor = this.get('line_color');
-			this.horizontal.style.position="absolute";
+			_.horizontal.style.width= $.toPixel(_.get('width'));
+			_.horizontal.style.height= $.toPixel(_.get('line_width'));
+			_.horizontal.style.backgroundColor = _.get('line_color');
+			_.horizontal.style.position="absolute";
 			
-			this.vertical.style.width= $.toPixel(this.get('line_width'));
-			this.vertical.style.height = $.toPixel(this.get('height'));
-			this.vertical.style.backgroundColor = this.get('line_color');
-			this.vertical.style.position="absolute";
-			this.dom.appendChild(this.horizontal);
-			this.dom.appendChild(this.vertical);
+			_.vertical.style.width= $.toPixel(_.get('line_width'));
+			_.vertical.style.height = $.toPixel(_.get('height'));
+			_.vertical.style.backgroundColor = _.get('line_color');
+			_.vertical.style.position="absolute";
+			_.dom.appendChild(_.horizontal);
+			_.dom.appendChild(_.vertical);
 			
-			if(this.get('shadow')){
-				this.dom.style.boxShadow = this.get('shadowStyle');
+			if(_.get('shadow')){
+				_.dom.style.boxShadow = _.get('shadowStyle');
 			}
 			
-			this.wrap.appendChild(this.dom);
+			_.wrap.appendChild(_.dom);
 			
-			var self = this;
-			
-			this.T.on('mouseover',function(e,m){
-				self.show(e,m);	
+			_.T.on('mouseover',function(e,m){
+				_.show(e,m);	
 			}).on('mouseout',function(e,m){
-				self.hidden(e,m);	
+				_.hidden(e,m);	
 			}).on('mousemove',function(e,m){
-				self.follow(e,m);
+				_.follow(e,m);
 			});
 			
 		}
@@ -2502,7 +2509,25 @@ $.Label = $.extend($.Component, {
 				 * @Option ideographic
 				 * @Option bottom
 				 */
-				textBaseline:'top'
+				textBaseline:'top',
+				/**
+				 * @cfg {Number} Specifies the maxwidth of text in pixels,if given 0 will not be limited.(default to 0)
+				 */
+				width:0,
+				/**
+				 * @cfg {Number} Specifies the maxheight of text in pixels,if given 0 will not be limited(default to 0)
+				 */
+				height:0,
+				/**
+				 * @cfg {String} Specifies the writing-mode of text.(default to 'lr') .
+				 * Available value are:
+				 * @Option 'lr'
+				 */
+				writingmode : 'lr',
+				/**
+				 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 16).
+				 */
+				line_height : 16
 			});
 			
 			this.registerEvent();
@@ -2784,11 +2809,15 @@ $.Label = $.extend($.Component, {
 			this.fillStyle(color);
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			T.each(function(t) {
+				try {
 				if (max)
 					this.c.fillText(t, x, y, max);
 				else
 					this.c.fillText(t, x, y);
 				y += lineheight;
+				} catch (e) {
+					console.log(e.message+'['+t+','+x+','+y+']');
+				}
 			}, this);
 			return this;
 		},
@@ -3190,7 +3219,7 @@ $.Label = $.extend($.Component, {
 				/**
 				 * @cfg {Boolean} If true mouse change to a pointer when a mouseover fired.(defaults to true)
 				 */
-				default_mouseover_css:true,
+				default_mouseover_css : true,
 				/**
 				 * @cfg {Boolean} Indicate if the chart clear segment of canvas(defaults to true)
 				 */
@@ -3204,9 +3233,53 @@ $.Label = $.extend($.Component, {
 				 */
 				decimalsnum : 1,
 				/**
-				 * @cfg {String} If the title is empty,then will not display (default to '')
+				 * @cfg {Object}Specifies the config of Title details see <link>$.Text</link> note:If the text is empty,then will not display
 				 */
-				title : '',
+				title : {
+					fontweight : 'bold',
+					/**
+					 * Specifies the font-size in pixels of title.(default to 20)
+					 */
+					fontsize : 20,
+					/**
+					 * Specifies the height of title will be take.(default to 30)
+					 */
+					height : 30
+				},
+				/**
+				 * @cfg {Object}Specifies the config of subtitle details see <link>$.Text</link> note:If the title or subtitle'text is empty,then will not display
+				 */
+				subtitle : {
+					fontweight : 'bold',
+					/**
+					 * Specifies the font-size in pixels of title.(default to 16)
+					 */
+					fontsize : 16,
+					/**
+					 * Specifies the height of title will be take.(default to 20)
+					 */
+					height : 20
+				},
+				/**
+				 * @cfg {Object}Specifies the config of footnote details see <link>$.Text</link> note:If the text is empty,then will not display
+				 */
+				footnote : {
+					/**
+					 * Specifies the font-color of footnote.(default to '##5d7f97')
+					 */
+					color : '##5d7f97',
+					/**
+					 * Specifies the height of title will be take.(default to 20)
+					 */
+					height : 20
+				},
+				/**
+				 * @cfg {String} Specifies how align footnote horizontally Available value are:
+				 * @Option 'left'
+				 * @Option 'center'
+				 * @Option 'right'
+				 */
+				footnote_align : 'right',
 				/**
 				 * @cfg {String} Specifies how align title horizontally Available value are:
 				 * @Option 'left'
@@ -3215,37 +3288,12 @@ $.Label = $.extend($.Component, {
 				 */
 				title_align : 'center',
 				/**
-				 * @cfg {String} Specifies how align title vertically Available value are:
+				 * @inner {String} Specifies how align title vertically Available value are:
 				 * @Option 'top'
 				 * @Option 'middle' Only applies when title_writingmode = 'tb'
 				 * @Option 'bottom'
 				 */
 				title_valign : 'top',
-				/**
-				 * @cfg {String} Specifies the writing-mode of title.(default to 'lr') Available value are:
-				 * @Option 'lr,'tb'
-				 */
-				title_writingmode : 'lr',
-				/**
-				 * @cfg {String} Specifies the font of title.(default to 'Verdana')
-				 */
-				title_font : 'Verdana',
-				/**
-				 * @cfg {String} Specifies the font-weight of title.(default to 'bold')
-				 */
-				title_fontweight : 'bold',
-				/**
-				 * @cfg {Number} Specifies the font-size in pixels of title.(default to 20)
-				 */
-				title_fontsize : 20,
-				/**
-				 * @cfg {String} Specifies the font-color of title.(default to 'black')
-				 */
-				title_color : 'black',
-				/**
-				 * @cfg {Number} Specifies the height of title will be take.(default to 25)
-				 */
-				title_height : 25,
 				/**
 				 * @cfg {Boolean} If true element will has a animation when show, false to skip the animation.(default to false)
 				 */
@@ -3267,15 +3315,13 @@ $.Label = $.extend($.Component, {
 				 */
 				duration_animation_duration : 1600,
 				/**
-				 * @cfg {Object}Specifies the config of Legend.For details see <link>$.Legend</link>
-				 * Note:this has a extra property named 'enable',indicate whether legend available(default to false)
+				 * @cfg {Object}Specifies the config of Legend.For details see <link>$.Legend</link> Note:this has a extra property named 'enable',indicate whether legend available(default to false)
 				 */
 				legend : {
 					enable : false
 				},
 				/**
-				 * @cfg {Object} Specifies the config of Tip.For details see <link>$.Tip</link>
-				 * Note:this has a extra property named 'enable',indicate whether tip available(default to false)
+				 * @cfg {Object} Specifies the config of Tip.For details see <link>$.Tip</link> Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 				 */
 				tip : {
 					enable : false
@@ -3404,7 +3450,16 @@ $.Label = $.extend($.Component, {
 			 */
 
 			if (!this.redraw) {
-				this.title();
+				if(this.title){
+					this.title.draw();
+				}
+				if(this.subtitle){
+					this.subtitle.draw();
+				}
+				if(this.footnote){
+					this.footnote.draw();
+				}
+				
 				if (this.get('border.enable')) {
 					this.T.drawBorder(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('background_color'), true);
 				} else {
@@ -3430,34 +3485,6 @@ $.Label = $.extend($.Component, {
 			 * console.timeEnd('Test for draw');
 			 */
 
-		},
-		/**
-		 * Draw the title when title not empty
-		 */
-		title : function() {
-			if (this.get('title') == '')
-				return;
-			if (this.get('title_writingmode') == 'tb') {
-
-			} else {
-				if (this.get('title_align') == 'left') {
-					this.push('title_originx', this.get('padding_left'));
-				} else if (this.get('title_align') == 'right') {
-					this.push('title_originx', this.width - this.get('padding_right'));
-				} else {
-					this.push('title_originx', this.get('client_width') / 2);
-				}
-				this.T.textAlign(this.get('title_align'));
-				if (this.get('title_valign') == 'bottom') {
-					this.push('title_originy', this.height - this.get('padding_bottom'));
-				} else {
-					this.push('title_originy', this.get('padding_top'));
-				}
-				this.T.textBaseline(this.get('title_valign'));
-
-			}
-			this.T.textFont($.getFont(this.get('title_fontweight'), this.get('title_fontsize'), this.get('title_font')));
-			this.T.fillText(this.get('title'), this.get('title_originx'), this.get('title_originy'), this.get('client_width'), this.get('title_color'));
 		},
 		create : function(shell) {
 			/**
@@ -3509,7 +3536,7 @@ $.Label = $.extend($.Component, {
 			/**
 			 * for compress
 			 */
-			var _ = this, E = _.variable.event,mCSS = _.get('default_mouseover_css'),O ,AO;
+			var _ = this, E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
 
 			$.Assert.isArray(_.data);
 			$.Interface._3D.call(_);
@@ -3517,7 +3544,7 @@ $.Label = $.extend($.Component, {
 			_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');
-			
+
 			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
 			_.variable.animation = {
 				type : 0,
@@ -3570,11 +3597,11 @@ $.Label = $.extend($.Component, {
 								E.mouseover = true;
 								_.fireEvent(_, 'mouseover', [e]);
 							}
-							
-							if(mCSS&&AO){
+
+							if (mCSS && AO) {
 								_.T.css("cursor", "pointer");
 							}
-							
+
 							if (!cE.mouseover) {
 								cE.mouseover = true;
 								cot.fireEvent(cot, 'mouseover', [e, M]);
@@ -3589,70 +3616,81 @@ $.Label = $.extend($.Component, {
 					}
 				});
 
-				if(mCSS&&!AO && E.mouseover){
+				if (mCSS && !AO && E.mouseover) {
 					_.T.css("cursor", "default");
 				}
-				
-				//console.log(O+":"+E.mouseover);
-				if (!O && E.mouseover) {
-					E.mouseover = false;
-					_.fireEvent(_, 'mouseout', [e]);
-				}
-			});
-			
+
+				// console.log(O+":"+E.mouseover);
+					if (!O && E.mouseover) {
+						E.mouseover = false;
+						_.fireEvent(_, 'mouseout', [e]);
+					}
+				});
+
 			_.push('l_originx', _.get('padding_left'));
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('t_originy', _.get('padding_top'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
+			_.push('client_width', (_.get('width') - _.get('hpadding')));
+			var H = 0;
 
-			var offx = 0, offy = 0;
+			if (_.get('title.text') != '') {
+				var st = _.get('subtitle.text') != '';
+				H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
 
-			if (_.get('title') != '') {
-				/**
-				 * 竖直排列
-				 */
-				if (_.get('title_writingmode') == 'tb') {
-					offx = _.get('title_height');
-					if (_.get('title_align') == 'left') {
-						_.push('l_originx', _.get('l_originx') + _.get('title_height'));
-					} else {
-						_.push('r_originx', _.width - _.get('l_originx') - _.get('title_height'));
-					}
+				if (_.get('title_align') == 'left') {
+					_.push('title.originx', _.get('padding_left'));
+				} else if (_.get('title_align') == 'right') {
+					_.push('title.originx', _.width - _.get('padding_right'));
 				} else {
-					/**
-					 * 横向排列
-					 */
-					offy = _.get('title_height');
-
-					if (_.get('title_align') == 'left') {
-						_.push('title_originx', _.get('padding_left'));
-					} else if (_.get('title_align') == 'right') {
-						_.push('title_originx', _.width - _.get('padding_right'));
-					} else {
-						_.push('title_originx', _.get('client_width') / 2);
-					}
-					if (_.get('title_valign') == 'bottom') {
-						_.push('title_originy', _.height - _.get('padding_bottom'));
-						_.push('b_originy', _.height - _.get('b_originy') - _.get('title_height'));
-					} else {
-						_.push('t_originy', _.get('t_originy') + _.get('title_height'));
-						_.push('title_originy', _.get('padding_top'));
-					}
+					_.push('title.originx', _.get('padding_left')+_.get('client_width') / 2);
+				}
+				
+				_.push('t_originy', _.get('t_originy') + H);
+				
+				this.push('title.textAlign', this.get('title_align'));
+				this.push('title.originy', this.get('padding_top'));
+				this.push('title.textBaseline', 'top');
+				this.title = new $.Text(this.get('title'), this);
+				if (st) {
+					_.push('subtitle.originx', _.get('title.originx'));
+					_.push('subtitle.originy', _.get('title.originy')+_.get('title.height'));
+					_.push('subtitle.textAlign', _.get('title_align'));
+					_.push('subtitle.textBaseline', 'top');
+					this.subtitle = new $.Text(this.get('subtitle'), this);
 				}
 			}
-
-			_.push('client_width', (_.get('width') - _.get('hpadding') - offx));
-			_.push('client_height', (_.get('height') - _.get('vpadding') - offy));
-
+			
+			if (_.get('footnote.text') != '') {
+				var fh = _.get('footnote.height');
+				H +=fh;
+				
+				_.push('b_originy', _.get('b_originy') - fh);
+				
+				if (_.get('footnote_align') == 'left') {
+					_.push('footnote.originx', _.get('padding_left'));
+				} else if (_.get('footnote_align') == 'right') {
+					_.push('footnote.originx', _.width - _.get('padding_right'));
+				} else {
+					_.push('footnote.originx', _.get('padding_left')+_.get('client_width') / 2);
+				}
+				
+				this.push('footnote.textAlign', this.get('footnote_align'));
+				this.push('footnote.originy', this.get('b_originy'));
+				this.push('footnote.textBaseline', 'top');
+				
+				this.footnote = new $.Text(this.get('footnote'), this);
+				
+			}
+			
+			_.push('client_height', (_.get('height') - _.get('vpadding') - H));
+			
 			_.push('minDistance', Math.min(_.get('client_width'), _.get('client_height')));
 			_.push('maxDistance', Math.max(_.get('client_width'), _.get('client_height')));
 			_.push('minstr', _.get('client_width') < _.get('client_height') ? 'width' : 'height');
 
 			_.push('centerx', _.get('l_originx') + _.get('client_width') / 2);
 			_.push('centery', _.get('t_originy') + _.get('client_height') / 2);
-			/*
-			 * if(_.get('border.enable')){ var round = $.parseBorder(_.get('border.radius')); _.push('radius_top',round[0]); _.push('radius_right',round[1]); _.push('radius_bottom',round[2]); _.push('radius_left',round[3]); }
-			 */
 
 			/**
 			 * legend
@@ -4887,6 +4925,14 @@ $.Sector = $.extend($.Component, {
 
 		this.set({
 			/**
+			 * @cfg {String} Specifies the value of this element,Normally,this will given by chart.(default to '')
+			 */
+			value:'',
+			/**
+			 * @cfg {String} Specifies the name of this element,Normally,this will given by chart.(default to '')
+			 */
+			name:'',
+			/**
 			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
 			 */
 			counterclockwise : false,
@@ -5462,6 +5508,7 @@ $.Pie = $.extend($.Chart, {
 			], t));
 		
 		_.push('sector.id', i);
+		_.push('sector.value', d.value);
 		_.push('sector.name', d.name);
 		_.push('sector.listeners.changed', function(se, st, i) {
 			_.fireEvent(_, st ? 'bound' : 'rebound', [
