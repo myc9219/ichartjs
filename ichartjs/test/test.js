@@ -16,13 +16,13 @@ function level(cost){
 		return "<td class='test_item_speed_low'></td>";
 	}
 }
-function result(success,type,costOrCause){
+function result(succ,type,costOrCause){
 	str = [resultList.innerHTML];
 	str.push("<table class='test_item'><tr><td class='test_item_name'>&nbsp;");
 	str.push(type);
 	str.push("</td>");
 	total++;
-	if(success){
+	if(succ){
 		str.push("<td class='test_item_success'></td>");
 		str.push(level(costOrCause));
 		str.push("<td class='test_item_cost'>");
@@ -74,9 +74,9 @@ function start(){
 			//console.profile(chart.get('title'));
 			chart.draw();
 			//console.profileEnd(chart.get('title'));
-			result(true,chart.get('title') || chart.type,chart.RUN_TIME_COST);
+			result(true,chart.get('title.text') || chart.type,chart.RUN_TIME_COST);
 		} catch (e) {
-			result(false,chart.get('title') || chart.type,e.name+":"+e.message);
+			result(false,chart.get('title.text') || chart.type,e.name+":"+e.message);
 		}
 		start();
 	},300)
@@ -89,7 +89,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.Pie2D({
 			render :canvas,
-			title : 'Test Pie2D',
+			title : {text:'Test Pie2D'},
 			shadow:true,
 			data:data,
 			radius:140,
@@ -100,7 +100,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.Pie2D({
 			render :canvas,
-			title : 'Test Pie2D No Shadow',
+			title : {text: 'Test Pie2D No Shadow'},
 			data:data,
 			radius:140,
 			offsetAngle:45
@@ -110,7 +110,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.Pie3D({
 			render :canvas,
-			title : 'Test Pie3D',
+			title : {text: 'Test Pie3D'},
 			data : data,
 			padding : '10',
 			shadow:true,
@@ -130,7 +130,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.Pie3D({
 			render :canvas,
-			title : 'Test Pie3D No Shadow',
+			title : {text: 'Test Pie3D No Shadow'},
 			data : data,
 			padding : '10',
 			radius:240,
@@ -149,7 +149,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.Column2D({
 			render :canvas,
-			title : 'Test Column2D',
+			title : {text: 'Test Column2D'},
 			data: data,
 			shadow:true,
 			align:'center',
@@ -171,7 +171,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.Column2D({
 			render :canvas,
-			title : 'Test Column2D No Shadow',
+			title : {text: 'Test Column2D No Shadow'},
 			data: data,
 			align:'center',
 			shadow:false,
@@ -193,7 +193,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.Column3D({
 			render :canvas,
-			title : 'Test Column3D',
+			title : {text: 'Test Column3D'},
 			data: data,
 			align:'center',
 			shadow:true,
@@ -217,7 +217,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.Column3D({
 			render :canvas,
-			title : 'Test Column3D No Shadow',
+			title : {text: 'Test Column3D No Shadow'},
 			data: data,
 			shadow:false,
 			align:'center',
@@ -241,7 +241,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.Bar2D({
 			render :canvas,
-			title : 'Test Bar2D',
+			title : {text: 'Test Bar2D'},
 			data: data,
 			align:'center',
 			shadow:true,
@@ -264,7 +264,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.ColumnMulti2D({
 			render :canvas,
-			title : 'Test ColumnMulti2D',
+			title : {text: 'Test ColumnMulti2D'},
 			data: data2,
 			shadow:true,
 			columnKeys:columnKeys,
@@ -293,7 +293,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.LineBasic2D({
 			render :canvas,
-			title : 'Test LineBasic2D',
+			title : {text: 'Test LineBasic2D'},
 			data: data4,
 			align:'center',
 			shadow:true,
@@ -309,7 +309,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.LineBasic2D({
 			render :canvas,
-			title : 'Test LineBasic2D More Point',
+			title : {text: 'Test LineBasic2D More Point'},
 			data: data6,
 			shadow:true,
 			align:'center',
@@ -368,7 +368,7 @@ function test(){
 		var myChart = iChart.noConflict();
 		return new myChart.Area2D({
 			render :canvas,
-			title : 'Test Area2D',
+			title : {text: 'Test Area2D'},
 			data: data7,
 			align:'center',
 			shadow:true,
@@ -385,7 +385,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.Area2D({
 			render :canvas,
-			title : 'Test Area2D No Shadow',
+			title : {text: 'Test Area2D No Shadow'},
 			data: data7,
 			shadow:false,
 			align:'center',
@@ -405,7 +405,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.Bar2D({
 				render :canvas,
-				title : 'Test Bar2d',
+				title : {text: 'Test Bar2d'},
 				data:data,
 				shadow:true,
 				coordinate:{
@@ -423,7 +423,7 @@ function test(){
 	unit.push(function(){
 		return new iChart.BarMulti2D({
 			render :canvas,
-			title : 'Test BarMulti2D',
+			title : {text: 'Test BarMulti2D'},
 			data: data9,
 			columnKeys:columnKeys1,
 			coordinate:{
