@@ -22,6 +22,11 @@
 		<script type="text/javascript" src="../src/ichart.tip.js"></script>
 		<script type="text/javascript" src="../src/ichart.pie.js"></script>
 		<script type="text/javascript" src="../src/ichart.pie2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.coordinate.js"></script>
+		<script type="text/javascript" src="../src/ichart.crosshair.js"></script>
+		<script type="text/javascript" src="../src/ichart.linesegment.js"></script>
+		<script type="text/javascript" src="../src/ichart.line.js"></script>
+		<script type="text/javascript" src="../src/ichart.linemonitor2d.js"></script>
 		<script type="text/javascript" src="data.js"></script>
 	<style type="text/css">
 		body{
@@ -34,24 +39,23 @@
 	</style>
 	<script type="text/javascript">
 			$(function(){
-				var pie2d = new iChart.Pie2D({
-					render : 'myCanvas',
-					data: data,
-					title : 'HTML 5 Sample Pie2D Mutex',
-					width : 700,
-					height : 500,
-					radius:140,
-					mutex:true,
-					label:{
-						enable:false
-					},
-					tip:{
-						enable:true,
-						shadow:true
-					}
-				});
-				pie2d.draw();
-				var style = $("myCanvas").style;			
+				var data = [
+				         	{
+				         		name : '北京',
+				         		value:[8,12,14,20,26,28,30,26,28,20,16,10],
+				         		color:'#1f7e92'
+				         	}
+			         ];	
+					var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+					new iChart.LineBasic2D({
+							render : 'canvasDiv',
+							data: data,
+							title : {text:'Average Temperature Of 2012'},
+							width : 800,
+							height : 400,
+							labels:labels
+						}).draw();
+				});		
 			});
 		</script>
 	</head>
