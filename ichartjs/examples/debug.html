@@ -19,15 +19,22 @@
 		<script type="text/javascript" src="../src/ichart.chart.js"></script>
 		<script type="text/javascript" src="../src/ichart.sector.js"></script>
 		<script type="text/javascript" src="../src/ichart.sector2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.rectangle.js"></script>
+		<script type="text/javascript" src="../src/ichart.rectangle2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.rectangle3d.js"></script>
+		<script type="text/javascript" src="../src/ichart.column.js"></script>
+		<script type="text/javascript" src="../src/ichart.column2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.column3d.js"></script>
 		<script type="text/javascript" src="../src/ichart.tip.js"></script>
+		<script type="text/javascript" src="../src/ichart.text.js"></script>
 		<script type="text/javascript" src="../src/ichart.pie.js"></script>
 		<script type="text/javascript" src="../src/ichart.pie2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.coordinate.js"></script>
 		<script type="text/javascript" src="../src/ichart.crosshair.js"></script>
 		<script type="text/javascript" src="../src/ichart.linesegment.js"></script>
 		<script type="text/javascript" src="../src/ichart.line.js"></script>
+		<script type="text/javascript" src="../src/ichart.linebasic2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.linemonitor2d.js"></script>
-		<script type="text/javascript" src="data.js"></script>
 	<style type="text/css">
 		body{
 			margin-top:10px;
@@ -40,27 +47,44 @@
 	<script type="text/javascript">
 			$(function(){
 				var data = [
-				         	{
-				         		name : '北京',
-				         		value:[8,12,14,20,26,28,30,26,28,20,16,10],
-				         		color:'#1f7e92'
-				         	}
-			         ];	
-					var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
-					new iChart.LineBasic2D({
-							render : 'canvasDiv',
-							data: data,
-							title : {text:'Average Temperature Of 2012'},
-							width : 800,
-							height : 400,
-							labels:labels
-						}).draw();
+				        	{name : 'H',value : 7,color:'#a5c2d5'},
+				        	{name : 'E',value : 5,color:'#cbab4f'},
+				        	{name : 'L',value : 12,color:'#76a871'},
+				        	{name : 'L',value : 12,color:'#76a871'},
+				        	{name : 'O',value : 15,color:'#a56f8f'},
+				        	{name : 'W',value : 13,color:'#c12c44'},
+				        	{name : 'O',value : 15,color:'#a56f8f'},
+				        	{name : 'R',value : 18,color:'#9f7961'},
+				        	{name : 'L',value : 12,color:'#76a871'},
+				        	{name : 'D',value : 4,color:'#6f83a5'}
+			        	];
+	        	
+				new iChart.Column2D({
+					render : 'canvasDiv',
+					data: data,
+					title : {text:'Hello World\'s Height In Alphabet'},
+					width : 800,
+					height : 400,
+					coordinate:{
+						scale:{
+							 position:'left',	
+							 start_scale:0,
+							 end_scale:26,
+							 scale_space:2,
+							 listeners:{
+								parseText:function(t,x,y){
+									return {text:t+" CM"}
+								}
+							}
+						}
+					}
+				}).draw();
 			});
 		</script>
 	</head>
 	<body>
 		<div><a href="../index.html">Home</a>&nbsp;Sample</div>
 		<br>
-		<div id='myCanvas'></div>
+		<div id='canvasDiv'></div>
 	</body>
 </html>
