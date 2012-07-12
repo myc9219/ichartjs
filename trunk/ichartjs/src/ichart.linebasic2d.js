@@ -44,10 +44,7 @@
 						 scale:1,
 						 end_scale:this.get('maxItemSize'),
 						 labels:this.get('labels')
-					}],
-				 	axis:{
-						width:[0,0,2,2]
-				 	}
+					}]
 				},this.get('coordinate')),this);
 			
 			

@@ -21,7 +21,11 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {Object} the option for coordinate
 			 */
-			coordinate : {},
+			coordinate : {
+				axis:{
+					width:[0,0,2,2]
+			 	}
+			},
 			/**
 			 * @cfg {String} the align of scale.(default to 'left') Available value are:
 			 * @Option 'left'

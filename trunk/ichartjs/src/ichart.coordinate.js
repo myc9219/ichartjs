@@ -18,6 +18,10 @@ iChart.Scale = iChart.extend(iChart.Component, {
 
 		this.set({
 			/**
+			 * @cfg {String} Specifies alignment of this scale.(default to 'left')
+			 */
+			position:'left',
+			/**
 			 * @cfg {String} the axis's type(default to 'h') Available value are:
 			 * @Option 'h' :horizontal
 			 * @Option 'v' :vertical
@@ -337,7 +341,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					sign_space : 5,
 					/**
-					 * @cfg {Array} the option for scale
+					 * @cfg {Array} the option for scale.For details see <link>iChart.Scale</link>
 					 */
 					scale : [],
 					/**
@@ -353,7 +357,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					grid_line_width : 1,
 					/**
-					 * @cfg {Number} Specifies the color of the grid.(default to '#dbe1e1')
+					 * @cfg {String} Specifies the color of the grid.(default to '#dbe1e1')
 					 */
 					grid_color : '#dbe1e1',
 					/**
@@ -365,9 +369,18 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					scale2grid : true,
 					/**
-					 * @cfg {Object} this is grid config for custom.the detailed like this: way:the manner calculate grid-line (default to 'share_alike') * Available property are:
-					 * @Option share_alike
-					 * @Option given_value value: way-share_alike:the number of way-share.given_value:the distance each grid line(unit:pixel) { horizontal: { way:'share_alike', value:10 } vertical: { way:'given_value', value:40 } }
+					 * @cfg {Object} this is grid config for custom.there has two valid property horizontal and vertical.the property's sub property is: 
+					 * way:the manner calculate grid-line (default to 'share_alike') 
+					 *    Available property are:
+					 *    @Option share_alike
+					 *    @Option given_value 
+					 * value: when property way apply to 'share_alike' this property mean to the number of grid's line.
+					 * when apply to 'given_value' this property mean to the distance each grid line(unit:pixel) .
+					 * code will like:
+					 * { 
+					 *   horizontal: { way:'share_alike', value:10 } 
+					 *   vertical: { way:'given_value', value:40 } 
+					 *  }
 					 */
 					grids : undefined,
 					/**
@@ -379,11 +392,11 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					ignoreEdge : false,
 					/**
-					 * @cfg {String} Specifies the label on x-axis
+					 * @inner {String} Specifies the label on x-axis
 					 */
 					xlabel : '',
 					/**
-					 * @cfg {String} Specifies the label on y-axis
+					 * @inner {String} Specifies the label on y-axis
 					 */
 					ylabel : '',
 					/**
@@ -391,7 +404,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					alternate_color : true,
 					/**
-					 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>iChart.iChart.CrossHair</link>
+					 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>iChart.CrossHair</link>
 					 * Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
 					 */
 					crosshair : {
@@ -623,7 +636,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 						d = gv['value'];
 						d = d > w ? w : d;
 					}
-
+						
 					for ( var i = 0; i <= n; i++) {
 						if (iol)
 							if (ignoreOverlap.call(this, 'h', this.x + i * d, this.y))
