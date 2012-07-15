@@ -1086,11 +1086,10 @@
 			_.push('b_originy', _.height - _.get('padding_bottom'));
 			_.push('client_width', (_.get('width') - _.get('hpadding')));
 			var H = 0;
-
+			
 			if (_.get('title.text') != '') {
-				var st = _.get('subtitle.text') != '';
+				var st = _.get('subtitle.text')&&_.get('subtitle.text') != '';
 				H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
-
 				if (_.get('title_align') == 'left') {
 					_.push('title.originx', _.get('padding_left'));
 				} else if (_.get('title_align') == 'right') {
