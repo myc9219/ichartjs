@@ -1,6 +1,6 @@
 /**
  * ichartjs  Library v1.0
- * http://ichartjs.sinaapp.com/
+ * http://www.ichartjs.cn/
  * Copyright 2012 wanghetommy@gmail.com
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.  
@@ -2809,15 +2809,15 @@ $.Label = $.extend($.Component, {
 			this.fillStyle(color);
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			T.each(function(t) {
-				try {
+				//try {
 				if (max)
 					this.c.fillText(t, x, y, max);
 				else
 					this.c.fillText(t, x, y);
 				y += lineheight;
-				} catch (e) {
-					console.log(e.message+'['+t+','+x+','+y+']');
-				}
+//				} catch (e) {
+//					console.log(e.message+'['+t+','+x+','+y+']');
+//				}
 			}, this);
 			return this;
 		},
@@ -3633,11 +3633,10 @@ $.Label = $.extend($.Component, {
 			_.push('b_originy', _.height - _.get('padding_bottom'));
 			_.push('client_width', (_.get('width') - _.get('hpadding')));
 			var H = 0;
-
+			
 			if (_.get('title.text') != '') {
-				var st = _.get('subtitle.text') != '';
+				var st = _.get('subtitle.text')&&_.get('subtitle.text') != '';
 				H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
-
 				if (_.get('title_align') == 'left') {
 					_.push('title.originx', _.get('padding_left'));
 				} else if (_.get('title_align') == 'right') {
@@ -3777,6 +3776,10 @@ $.Scale = $.extend($.Component, {
 		this.type = 'scale';
 
 		this.set({
+			/**
+			 * @cfg {String} Specifies alignment of this scale.(default to 'left')
+			 */
+			position:'left',
 			/**
 			 * @cfg {String} the axis's type(default to 'h') Available value are:
 			 * @Option 'h' :horizontal
@@ -4097,7 +4100,7 @@ $.Coordinate2D = $.extend($.Component,
 					 */
 					sign_space : 5,
 					/**
-					 * @cfg {Array} the option for scale
+					 * @cfg {Array} the option for scale.For details see <link>$.Scale</link>
 					 */
 					scale : [],
 					/**
@@ -4113,7 +4116,7 @@ $.Coordinate2D = $.extend($.Component,
 					 */
 					grid_line_width : 1,
 					/**
-					 * @cfg {Number} Specifies the color of the grid.(default to '#dbe1e1')
+					 * @cfg {String} Specifies the color of the grid.(default to '#dbe1e1')
 					 */
 					grid_color : '#dbe1e1',
 					/**
@@ -4125,9 +4128,18 @@ $.Coordinate2D = $.extend($.Component,
 					 */
 					scale2grid : true,
 					/**
-					 * @cfg {Object} this is grid config for custom.the detailed like this: way:the manner calculate grid-line (default to 'share_alike') * Available property are:
-					 * @Option share_alike
-					 * @Option given_value value: way-share_alike:the number of way-share.given_value:the distance each grid line(unit:pixel) { horizontal: { way:'share_alike', value:10 } vertical: { way:'given_value', value:40 } }
+					 * @cfg {Object} this is grid config for custom.there has two valid property horizontal and vertical.the property's sub property is: 
+					 * way:the manner calculate grid-line (default to 'share_alike') 
+					 *    Available property are:
+					 *    @Option share_alike
+					 *    @Option given_value 
+					 * value: when property way apply to 'share_alike' this property mean to the number of grid's line.
+					 * when apply to 'given_value' this property mean to the distance each grid line(unit:pixel) .
+					 * code will like:
+					 * { 
+					 *   horizontal: { way:'share_alike', value:10 } 
+					 *   vertical: { way:'given_value', value:40 } 
+					 *  }
 					 */
 					grids : undefined,
 					/**
@@ -4139,11 +4151,11 @@ $.Coordinate2D = $.extend($.Component,
 					 */
 					ignoreEdge : false,
 					/**
-					 * @cfg {String} Specifies the label on x-axis
+					 * @inner {String} Specifies the label on x-axis
 					 */
 					xlabel : '',
 					/**
-					 * @cfg {String} Specifies the label on y-axis
+					 * @inner {String} Specifies the label on y-axis
 					 */
 					ylabel : '',
 					/**
@@ -4151,7 +4163,7 @@ $.Coordinate2D = $.extend($.Component,
 					 */
 					alternate_color : true,
 					/**
-					 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>$.$.CrossHair</link>
+					 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>$.CrossHair</link>
 					 * Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
 					 */
 					crosshair : {
@@ -4383,7 +4395,7 @@ $.Coordinate2D = $.extend($.Component,
 						d = gv['value'];
 						d = d > w ? w : d;
 					}
-
+						
 					for ( var i = 0; i <= n; i++) {
 						if (iol)
 							if (ignoreOverlap.call(this, 'h', this.x + i * d, this.y))
@@ -6514,7 +6526,11 @@ $.Line = $.extend($.Chart, {
 			/**
 			 * @cfg {Object} the option for coordinate
 			 */
-			coordinate : {},
+			coordinate : {
+				axis:{
+					width:[0,0,2,2]
+			 	}
+			},
 			/**
 			 * @cfg {String} the align of scale.(default to 'left') Available value are:
 			 * @Option 'left'
@@ -6672,10 +6688,7 @@ $.Line = $.extend($.Chart, {
 						 scale:1,
 						 end_scale:this.get('maxItemSize'),
 						 labels:this.get('labels')
-					}],
-				 	axis:{
-						width:[0,0,2,2]
-				 	}
+					}]
 				},this.get('coordinate')),this);
 			
 			
