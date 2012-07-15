@@ -262,15 +262,15 @@
 			this.fillStyle(color);
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			T.each(function(t) {
-				try {
+				//try {
 				if (max)
 					this.c.fillText(t, x, y, max);
 				else
 					this.c.fillText(t, x, y);
 				y += lineheight;
-				} catch (e) {
-					console.log(e.message+'['+t+','+x+','+y+']');
-				}
+//				} catch (e) {
+//					console.log(e.message+'['+t+','+x+','+y+']');
+//				}
 			}, this);
 			return this;
 		},
