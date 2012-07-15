@@ -71,9 +71,11 @@ function start(){
 				chart.END_RUN_TIME = new Date().getTime();
 				chart.RUN_TIME_COST = chart.END_RUN_TIME - chart.START_RUN_TIME;
 			});
-			//console.profile(chart.get('title'));
+			
+			//console.profile(chart.get('title.text'));
 			chart.draw();
-			//console.profileEnd(chart.get('title'));
+			//console.profileEnd(chart.get('title.text'));
+			
 			result(true,chart.get('title.text') || chart.type,chart.RUN_TIME_COST);
 		} catch (e) {
 			result(false,chart.get('title.text') || chart.type,e.name+":"+e.message);
