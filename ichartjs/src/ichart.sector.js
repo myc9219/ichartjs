@@ -94,20 +94,14 @@ iChart.Sector = iChart.extend(iChart.Component, {
 	toggle : function() {
 		this.fireEvent(this, this.get('bound_event'), [this]);
 	},
-	drawLabel : function() {
-		if (this.get('label.enable')) {
+	doDraw : function(opts) {
+		this.drawSector();
+		if (this.label) {
 			/**
 			 * draw the labels
 			 */
-			this.label.draw({
-				highlight : this.highlighted,
-				invoke : this.labelInvoke(this.x, this.y)
-			});
+			this.label.draw();
 		}
-	},
-	doDraw : function(opts) {
-		this.drawSector();
-		this.drawLabel();
 	},
 	doConfig : function() {
 		iChart.Sector.superclass.doConfig.call(this);
@@ -116,11 +110,15 @@ iChart.Sector = iChart.extend(iChart.Component, {
 
 		_.push('totalAngle', _.get('endAngle') - _.get('startAngle'));
 
-		/**
-		 * make the label's color in accord with sector
-		 */
-		_.push('label.scolor', _.get('background_color'));
 
+		if(this.get('label.enable')){
+			_.pushIf('label.border.width',_.get('border.width'));
+			_.pushIf('label.border.color',_.get('border.color'));
+			/**
+			 * make the label's color in accord with sector
+			 */
+			_.push('label.scolor', _.get('background_color'));
+		}
 		_.variable.event.status = _.expanded = _.get('expand');
 
 		if (_.get('tip.enable')) {
@@ -148,6 +146,9 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			_.y = _.get('originy');
 			if (_.variable.event.status != _.expanded) {
 				_.fireEvent(_, 'changed', [_, _.expanded]);
+				if(!_.expanded){
+					_.labelInvoke(_.get('label.linelength'));
+				}
 			}
 			_.variable.event.status = _.expanded;
 			if (_.expanded) {
@@ -156,6 +157,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 				} else {
 					_.x += _.get('increment') * Math.cos(2 * Math.PI - _.get('middleAngle'));
 					_.y -= _.get('increment') * Math.sin(2 * Math.PI - _.get('middleAngle'));
+					_.labelInvoke(_.get('label.linelength')/2);
 				}
 			}
 			return true;

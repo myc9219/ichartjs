@@ -262,15 +262,15 @@
 			this.fillStyle(color);
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			T.each(function(t) {
-				//try {
+				try {
 				if (max)
 					this.c.fillText(t, x, y, max);
 				else
 					this.c.fillText(t, x, y);
 				y += lineheight;
-//				} catch (e) {
-//					console.log(e.message+'['+t+','+x+','+y+']');
-//				}
+				} catch (e) {
+					console.log(e.message+'['+t+','+x+','+y+']');
+				}
 			}, this);
 			return this;
 		},
@@ -689,6 +689,7 @@
 				 * @cfg {Object}Specifies the config of Title details see <link>iChart.Text</link> note:If the text is empty,then will not display
 				 */
 				title : {
+					text:'',
 					fontweight : 'bold',
 					/**
 					 * Specifies the font-size in pixels of title.(default to 20)
@@ -703,6 +704,7 @@
 				 * @cfg {Object}Specifies the config of subtitle details see <link>iChart.Text</link> note:If the title or subtitle'text is empty,then will not display
 				 */
 				subtitle : {
+					text:'',
 					fontweight : 'bold',
 					/**
 					 * Specifies the font-size in pixels of title.(default to 16)
@@ -717,6 +719,7 @@
 				 * @cfg {Object}Specifies the config of footnote details see <link>iChart.Text</link> note:If the text is empty,then will not display
 				 */
 				footnote : {
+					text:'',
 					/**
 					 * Specifies the font-color of footnote.(default to '##5d7f97')
 					 */
@@ -1088,7 +1091,7 @@
 			var H = 0;
 			
 			if (_.get('title.text') != '') {
-				var st = _.get('subtitle.text')&&_.get('subtitle.text') != '';
+				var st = _.get('subtitle.text') != '';
 				H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
 				if (_.get('title_align') == 'left') {
 					_.push('title.originx', _.get('padding_left'));
