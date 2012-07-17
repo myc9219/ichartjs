@@ -34,6 +34,10 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			counterclockwise : false,
 			/**
+			 * @inner {Boolean} 当与其他label有位置冲突时自动浮动其位置.(default to true).
+			 */
+			floatOverlap : true,
+			/**
 			 * @inner {Boolean} if it has animate when a piece popd (default to false)
 			 */
 			pop_animate : false,
@@ -134,7 +138,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @return void
 	 */
 	toggle:function(i){
-		this.data[i].reference.toggle();
+		this.data[i||0].reference.toggle();
 	},
 	/**
 	 * @method bound sector by a specific index.
@@ -142,7 +146,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @return void
 	 */
 	bound:function(i){
-		this.data[i].reference.bound();
+		this.data[i||0].reference.bound();
 	},
 	/**
 	 * @method rebound sector  by a specific index.
@@ -150,7 +154,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @return void
 	 */
 	rebound:function(i){
-		this.data[i].reference.rebound();
+		this.data[i||0].reference.rebound();
 	},
 	/**
 	 * @method Returns an array containing all sectors of this pie
@@ -216,17 +220,18 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		iChart.Pie.superclass.doConfig.call(this);
 		iChart.Assert.gtZero(this.total, 'this.total');
 		
-		this.offsetAngle = iChart.angle2Radian(this.get('offsetAngle')),r = this.get('radius');
+		this.offsetAngle = iChart.angle2Radian(this.get('offsetAngle'));
+		var r = this.get('radius'),f=this.get('minDistance')*(this.get('label.enable')?0.35:0.5);
 		
 		this.calculate();
 		
 		/**
 		 * calculate pie chart's radius
 		 */
-		if (r <= 0 || r > this.get('minDistance') / 2) {
-			r = this.push('radius', this.get('minDistance') / 2);
+		if (r <= 0 || r > f) {
+			r = this.push('radius', Math.floor(f));
 		}
-
+		
 		this.r = r;
 		/**
 		 * calculate pie chart's increment
