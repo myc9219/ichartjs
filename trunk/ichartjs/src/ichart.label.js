@@ -35,7 +35,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 			 */
 			sign_size : 12,
 			/**
-			 * @cfg {Number} Specifies the size of legend' sign in pixel.(default to 12)
+			 * @cfg {Number} Override the default as 5 in pixel.
 			 */
 			padding : 5,
 			/**
@@ -72,18 +72,22 @@ iChart.Label = iChart.extend(iChart.Component, {
 	},
 	isEventValid : function(e) {
 		return {
-			valid : iChart.inRange(this.labelx,this.labelx + this.width, e.offsetX) && iChart.inRange(this.labely, this.labely + this.height, e.offsetY)
+			valid : iChart.inRange(this.labelx,this.labelx + this.get('width'), e.offsetX) && iChart.inRange(this.labely, this.labely + this.get('height'), e.offsetY)
 		};
 	},
 	text : function(text) {
 		if (text)
 			this.push('text', text);
-		this.width = this.T.measureText(this.get('text')) + this.get('hpadding') + this.get('sign_size') + this.get('sign_space');
+		this.push('width',this.T.measureText(this.get('text')) + this.get('hpadding') + this.get('sign_size') + this.get('sign_space'));
+	},
+	localizer:function(){
+		var Q =  this.get('quadrantd');
+		this.labelx = (Q>=2&&Q<=3)?(this.get('labelx') - this.get('width')):this.get('labelx');
+        this.labely = Q>=3?(this.get('labely') - this.get('height')):this.get('labely');
 	},
 	doDraw : function() {
-		var Q =  this.get('quadrantd');
-		this.labelx = (Q>=2&&Q<=3)?(this.get('labelx') - this.width):this.get('labelx');
-        this.labely = Q>=3?(this.get('labely') - this.height):this.get('labely');
+		this.localizer();
+		
 		var p = this.get('line_potins'),ss = this.get('sign_size'),
 		x = this.labelx + this.get('padding_left'),
 		y = this.labely +this.get('padding_top');
@@ -92,7 +96,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 			this.T.line(p[i],p[i+1], p[i + 2],p[i + 3],this.get('border.width'), this.get('border.color'),false);
 		}
 		
-		this.T.drawBorder(this.labelx, this.labely, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('background_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
+		this.T.drawBorder(this.labelx, this.labely, this.get('width'), this.get('height'), this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('background_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
 		
 		this.T.textStyle('left', 'top', this.get('fontStyle'));
 		
@@ -111,11 +115,12 @@ iChart.Label = iChart.extend(iChart.Component, {
 		iChart.Label.superclass.doConfig.call(this);
 
 		this.T.textFont(iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
-		this.height = this.get('line_height') + this.get('vpadding');
+		
+		this.push('height',this.get('line_height') + this.get('vpadding'));
 
 		this.text();
 		
-		
+		this.localizer();
 		
 
 	}
