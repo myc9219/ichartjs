@@ -103,6 +103,18 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			this.label.draw();
 		}
 	},
+	labelInvoke:function(L){
+		var A = this.get('middleAngle'),x = Math.cos(A)*L,y = Math.sin(A)*L,l=this.label;
+		l.push('originx',l.get('originx')+x);
+		l.push('originy',l.get('originy')+y);
+		l.push('labelx',l.get('labelx')+x);
+		l.push('labely',l.get('labely')+y);
+		var p =[];
+		l.get('line_potins').each(function(v, i){
+			p.push(i%2==0?(v+x):(v+y));
+		},l);
+		l.push('line_potins',p);
+	},
 	doConfig : function() {
 		iChart.Sector.superclass.doConfig.call(this);
 
@@ -146,9 +158,8 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			_.y = _.get('originy');
 			if (_.variable.event.status != _.expanded) {
 				_.fireEvent(_, 'changed', [_, _.expanded]);
-				if(!_.expanded){
-					_.labelInvoke(_.get('label.linelength'));
-				}
+				if(this.get('label.enable'))
+				_.labelInvoke(_.get('label.linelength')*(_.expanded?2:-2)/3);
 			}
 			_.variable.event.status = _.expanded;
 			if (_.expanded) {
@@ -157,7 +168,6 @@ iChart.Sector = iChart.extend(iChart.Component, {
 				} else {
 					_.x += _.get('increment') * Math.cos(2 * Math.PI - _.get('middleAngle'));
 					_.y -= _.get('increment') * Math.sin(2 * Math.PI - _.get('middleAngle'));
-					_.labelInvoke(_.get('label.linelength')/2);
 				}
 			}
 			return true;

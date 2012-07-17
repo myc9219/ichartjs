@@ -5,6 +5,7 @@
 架构图缺少一个图，矩形
 Pie图label会有问题 
 考虑将this.的属性全部去掉，以免色织属性不能同步
+注意可能由于多次操作导致浮动小数引起精度问题。
 
 line shadow-copy coordinate
 draw a ipad,then draw charts on ipad

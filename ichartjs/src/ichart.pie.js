@@ -36,7 +36,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			/**
 			 * @inner {Boolean} 当与其他label有位置冲突时自动浮动其位置.(default to true).
 			 */
-			floatOverlap : true,
+			intellectLayout : true,
 			/**
 			 * @inner {Boolean} if it has animate when a piece popd (default to false)
 			 */
@@ -88,7 +88,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		this.sectors = [];
 	},
 	/**
-	 * @method this is a experimental method.Add item(s) into the Chart at the given index or not.This method accepts either a single object of data config or a array of items's config
+	 * @method this is a experimental method.it seems not work well,Add item(s) into the Chart at the given index or not.This method accepts either a single object of data config or a array of items's config
 	 * @paramter data#Object/Array the data's config
 	 * @paramter index#int The start index at which to add the item.(default to append)
 	 * @paramter animate#boolean if has a animation when drawing
@@ -104,6 +104,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			d.new_ = true;
 			this.doSector(d,i);
 		},this);
+		
 		/**
 		 * update index,percent of each sector and angle and so on
 		 */
@@ -177,10 +178,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	},
 	doParse : function(d, i) {
 		var _ = this, t = d.name + (_.get('showpercent') ? ' '+iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
-		if (_.get('label.enable'))
+		if (_.get('label.enable')){
 			_.push('sector.label.text', _.fireString(_, 'parseLabelText', [
 					d, i
 			], t));
+		}
 		if (_.get('tip.enable'))
 			_.push('sector.tip.text', _.fireString(_, 'parseTipText', [
 					d, i

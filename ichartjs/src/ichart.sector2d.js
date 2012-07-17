@@ -66,25 +66,6 @@
 				}
 			}
 		},
-		labelInvoke:function(L){
-			var A = this.get('middleAngle'),
-				Q  = iChart.quadrantd(A),
-				P2 = iChart.p2Point(this.x,this.y,A,this.r/2);
-			this.label.push('originx',P2.x);
-			this.label.push('originy',P2.y);
-			this.label.push('quadrantd',Q);
-			
-			if(this.get('label.intellect')){
-				
-				
-			}
-			
-			var P = iChart.p2Point(this.x,this.y,A,this.r + L);
-			
-			this.label.push('line_potins',[P2.x,P2.y,P.x,P.y]);
-			this.label.push('labelx',P.x);
-			this.label.push('labely',P.y);
-		},
 		doConfig:function(){
 			iChart.Sector2D.superclass.doConfig.call(this);
 			
@@ -100,8 +81,21 @@
 			
 			if(this.get('label.enable')){
 				this.pushIf('label.linelength',iChart.lowTo(10,this.r/8));
+				
+				var A = this.get('middleAngle'),
+				Q  = iChart.quadrantd(A),
+				P2 = iChart.p2Point(this.x,this.y,A,this.r/2);
+			
+				this.push('label.originx',P2.x);
+				this.push('label.originy',P2.y);
+				this.push('label.quadrantd',Q);
+				
+				var P = iChart.p2Point(this.x,this.y,A,this.r + this.get('label.linelength'));
+				this.push('label.line_potins',[P2.x,P2.y,P.x,P.y]);
+				this.push('label.labelx',P.x);
+				this.push('label.labely',P.y);
+				
 				this.label = new iChart.Label(this.get('label'),this);
-				this.labelInvoke(this.get('label.linelength'));
 			}
 		}
 });//@end
