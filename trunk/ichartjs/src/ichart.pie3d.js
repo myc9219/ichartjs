@@ -27,12 +27,9 @@
 				 yHeight:30
 			});
 			
-			//this.registerEvent();
 		},
-		doSector:function(d,i){
-			this.doParse(d,i);
-			d.reference = new iChart.Sector3D(this.get('sector'), this);
-			this.sectors.push(d.reference);
+		doSector:function(){
+			return new iChart.Sector3D(this.get('sector'), this);
 		},
 		doConfig:function(){
 			iChart.Pie3D.superclass.doConfig.call(this);
@@ -45,7 +42,7 @@
 			this.push('sector.semi_major_axis',this.r);
 			
 			this.data.each(function(d,i){
-				this.doSector(d,i);
+				this.doParse(d,i);
 			},this);
 			
 			this.pushComponent(this.sectors);

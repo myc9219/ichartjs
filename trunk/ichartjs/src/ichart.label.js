@@ -25,6 +25,10 @@ iChart.Label = iChart.extend(iChart.Component, {
 			 */
 			line_height : 16,
 			/**
+			 * @cfg {Number} Specifies the thickness of line in pixel.(default to 1).
+			 */
+			line_thickness:1,
+			/**
 			 * @cfg {String} Specifies the shape of legend' sign (default to 'square').Available value are：
 			 * @Option 'round'
 			 * @Option 'square'
@@ -92,9 +96,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 		x = this.labelx + this.get('padding_left'),
 		y = this.labely +this.get('padding_top');
 		
-		for ( var i = 0; i < p.length - 3; i+=2) {
-			this.T.line(p[i],p[i+1], p[i + 2],p[i + 3],this.get('border.width'), this.get('border.color'),false);
-		}
+		this.T.lines(p,this.get('line_thickness'), this.get('border.color'),this.get('line_globalComposite'));
 		
 		this.T.drawBorder(this.labelx, this.labely, this.get('width'), this.get('height'), this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('background_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
 		

@@ -84,29 +84,6 @@
 				}
 			}
 		},
-		labelInvoke:function(x,y){
-			var A = this.get('middleAngle'),
-				P = this.p2p(x,y,A,this.Z),
-				P2 = this.p2p(x,y,A,1),
-				Q  = iChart.quadrantd(A),
-				_ = this,
-				ccw = this.get('counterclockwise');
-				return {
-					origin:{
-						x:P2.x,
-						y:P2.y
-					},
-					lineFn:function(){
-						this.T.line(P2.x,P2.y+_.h/2,P.x,P.y+_.h/2,this.get('border.width')*4,this.get('border.color'),(ccw&&A<Math.PI)||(!ccw&&A>Math.PI));
-					},
-					labelXY:function(){
-						return {
-							labelx:(Q>=2&&Q<=3)?(P.x - this.width):P.x,
-							labely:Q>=3?(P.y - this.height+_.h/2):P.y+_.h/2
-						}
-					}
-				}
-		},
 		doConfig:function(){
 			iChart.Sector3D.superclass.doConfig.call(this);
 			
@@ -134,8 +111,22 @@
 			
 			if(this.get('label.enable')){
 				this.pushIf('label.linelength',iChart.lowTo(10,this.a/8));
-				
 				this.Z = this.get('label.linelength')/this.a+1;
+				var A = this.get('middleAngle'),
+				Q  = iChart.quadrantd(A),
+				
+				P = this.p2p(this.x,this.y,A,this.Z),
+				P2 = this.p2p(this.x,this.y,A,1),
+				ccw = this.get('counterclockwise');
+				
+				this.push('label.originx',P2.x);
+				this.push('label.originy',P2.y);
+				this.push('label.quadrantd',Q);
+				
+				this.push('label.line_potins',[P2.x,P2.y+this.h/2,P.x,P.y+this.h/2]);//(ccw&&A<Math.PI)||(!ccw&&A>Math.PI)
+				this.push('label.line_globalComposite',(ccw&&A<Math.PI)||(!ccw&&A>Math.PI));
+				this.push('label.labelx',P.x);
+				this.push('label.labely',P.y+this.h/2);
 				
 				this.label = new iChart.Label(this.get('label'),this);
 			}

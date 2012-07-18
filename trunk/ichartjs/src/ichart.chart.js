@@ -480,6 +480,17 @@
 			this.c.restore();
 			return this;
 		},
+		lines : function(p, w, c, last) {
+			if(p.length<4)return this;
+			this.save();
+			if (!!last)
+				this.c.globalCompositeOperation = "destination-over";
+			this.beginPath().strokeStyle(w, c).moveTo(fd(w,p[0]),fd(w,p[1]));
+			for ( var i = 2; i < p.length - 1; i+=2) {
+				this.lineTo(fd(w,p[i]),fd(w,p[i+1]));                
+			}
+			return this.stroke().restore();
+		},
 		line : function(x1, y1, x2, y2, w, c, last) {
 			if (!w || w == 0)
 				return this;

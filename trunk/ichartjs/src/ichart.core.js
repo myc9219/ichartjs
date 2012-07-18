@@ -684,18 +684,12 @@ var iChart_ = (function(window) {//spirit from jquery
 			},
 			/**
 			 * indicate angle in which quadrant,and it different from math's concept.this will return 0 if it in first quadrant(other eg.0,1,2,3)
-			 * @param {Number} ox
-			 * @param {Number} oy
-			 * @param {Number} x
-			 * @param {Number} y
-			 * @return {Number} 
 			 */
 			quadrant:function (ox,oy,x,y){
 				if(ox<x){if(oy<y){return 3;}else{return 0;}}else{if(oy<y){return 2;}else{return 1;}}
 			},
 			quadrantd:function(a){
-				a = 2*(a%(pi*2));
-				return ceil(a/pi);
+				return ceil(2*(a%(pi*2))/pi);
 			},
 			upTo:function (u,v){
 				return v>u?u:v;

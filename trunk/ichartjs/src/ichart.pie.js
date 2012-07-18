@@ -15,7 +15,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 
 		this.type = 'pie';
 		this.dataType = 'simple';
-		
+
 		this.set({
 			/**
 			 * @cfg {Float (0~)} Specifies the pie's radius.(default to calculate by the size of chart)
@@ -30,7 +30,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			bound_event : 'click',
 			/**
-			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
+			 * @inner {Boolean} True to make sector counterclockwise.(default to false)
 			 */
 			counterclockwise : false,
 			/**
@@ -46,12 +46,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			mutex : false,
 			/**
-			 * @cfg {Number} Specifies the length when sector bounded.(default to 1/8 radius,and minimum is 5), 
+			 * @cfg {Number} Specifies the length when sector bounded.(default to 1/8 radius,and minimum is 5),
 			 */
 			increment : undefined,
 			/**
-			 * @cfg {Object} Specifies the config of label.For details see <link>iChart.Label</link>
-			 * Note:this has a extra property named 'enable',indicate whether label available(default to true)
+			 * @cfg {Object} Specifies the config of label.For details see <link>iChart.Label</link> Note:this has a extra property named 'enable',indicate whether label available(default to true)
 			 */
 			label : {
 				enable : true
@@ -59,7 +58,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {Object} option of sector.Note,Pie2d depend on Sector2d and pie3d depend on Sector3d.For details see <link>iChart.Sector</link>
 			 */
-			sector:{}
+			sector : {}
 		});
 
 		this.registerEvent(
@@ -84,7 +83,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		 * @paramter int#i the index of data
 		 */
 		'parseLabelText');
-		
+
 		this.sectors = [];
 	},
 	/**
@@ -94,68 +93,71 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @paramter animate#boolean if has a animation when drawing
 	 * @return void
 	 */
-	add : function(data,index,animate){
-		data = iChart.Pie.superclass.add.call(this,data,index,animate);
-		if(!data)return; 
-			
+	add : function(data, index, animate) {
+		data = iChart.Pie.superclass.add.call(this, data, index, animate);
+		if (!data)
+			return;
+
 		this.calculate();
-		
-		data.each(function(d,i){
+
+		data.each(function(d, i) {
 			d.new_ = true;
-			this.doSector(d,i);
-		},this);
-		
+			this.doSector(d, i);
+		}, this);
+
 		/**
 		 * update index,percent of each sector and angle and so on
 		 */
-		this.data.each(function(d,i){
-			if(d.new_){delete d.new_;}else{
-			var t = d.name + (this.get('showpercent') ? iChart.toPercent(d.value / this.total, this.get('decimalsnum')) : '');
-			
-			if (this.get('label.enable'))
-				d.reference.label.text(this.fireString(this, 'parseLabelText', [d,t,i], t));
-			
-			if (this.get('tip.enable'))
-				d.reference.tip.text(this.fireString(this, 'parseTipText', [d,t,i], t));
-			
-			d.reference.id = i;
-			d.reference.push('startAngle', d.startAngle);
-			d.reference.push('middleAngle', d.middleAngle);
-			d.reference.push('endAngle', d.endAngle);
-			d.reference.push('totalAngle', d.endAngle-d.startAngle);
+		this.data.each(function(d, i) {
+			if (d.new_) {
+				delete d.new_;
+			} else {
+				var t = d.name + (this.get('showpercent') ? iChart.toPercent(d.value / this.total, this.get('decimalsnum')) : '');
+
+				if (this.get('label.enable'))
+					d.reference.label.text(this.fireString(this, 'parseLabelText', [d, t, i], t));
+
+				if (this.get('tip.enable'))
+					d.reference.tip.text(this.fireString(this, 'parseTipText', [d, t, i], t));
+
+				d.reference.id = i;
+				d.reference.push('startAngle', d.startAngle);
+				d.reference.push('middleAngle', d.middleAngle);
+				d.reference.push('endAngle', d.endAngle);
+				d.reference.push('totalAngle', d.endAngle - d.startAngle);
 			}
-		},this);
-		
-		if(animate){
+		}, this);
+
+		if (animate) {
 			this.animation(this);
 			return;
 		}
-		
+
 		this.draw();
 	},
 	/**
-	 * @method Toggle sector bound or rebound  by a specific index.
+	 * @method Toggle sector bound or rebound by a specific index.
 	 * @paramter int#i the index of sector
 	 * @return void
 	 */
-	toggle:function(i){
-		this.data[i||0].reference.toggle();
+	toggle : function(i) {
+		this.data[i || 0].reference.toggle();
 	},
 	/**
 	 * @method bound sector by a specific index.
 	 * @paramter int#i the index of sector
 	 * @return void
 	 */
-	bound:function(i){
-		this.data[i||0].reference.bound();
+	bound : function(i) {
+		this.data[i || 0].reference.bound();
 	},
 	/**
-	 * @method rebound sector  by a specific index.
+	 * @method rebound sector by a specific index.
 	 * @paramter int#i the index of sector
 	 * @return void
 	 */
-	rebound:function(i){
-		this.data[i||0].reference.rebound();
+	rebound : function(i) {
+		this.data[i || 0].reference.rebound();
 	},
 	/**
 	 * @method Returns an array containing all sectors of this pie
@@ -172,40 +174,68 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
 			cs += si;
-			// this.fireEvent(this, 'animating', [this, s, t, s.get('totalAngle'), d]);
-				s.drawSector();
-			}, this);
+			s.drawSector();
+		}, this);
+	},
+	localizer : function(la) {
+		/**
+		 * the code not optimization,need to enhance so that the label can fit the continar
+		 */
+		this.sectors.each(function(s, i) {
+			var l = s.label, x = l.labelx, y = l.labely;
+			if ((la.labely <= y && (y - la.labely) < la.get('height')) || (la.labely > y && (la.labely - y) < l.get('height'))) {
+				if ((la.labelx < x && (x - la.labelx) < la.get('width')) || (la.labelx > x && (la.labelx - x) < l.get('width'))) {
+					var q = la.get('quadrantd');
+					if ((q == 2 || q == 3) || la.labely < y) {
+						/**
+						 * console.log('upper..'+la.get('text')+'==='+l.get('text'));
+						 */
+						la.push('labely', la.get('labely') - la.get('height') + y - la.labely - 2);
+						la.push('line_potins', la.get('line_potins').concat(la.get('labelx'), la.get('labely')));
+					} else {
+						/**
+						 * console.log('lower..'+la.get('text')+'==='+l.get('text'));
+						 */
+						la.push('labely', la.get('labely') + l.get('height') - la.labely + y + 2);
+						la.push('line_potins', la.get('line_potins').concat(la.get('labelx'), la.get('labely')));
+					}
+					la.localizer();
+				}
+			}
+		}, this);
 	},
 	doParse : function(d, i) {
-		var _ = this, t = d.name + (_.get('showpercent') ? ' '+iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
-		if (_.get('label.enable')){
-			_.push('sector.label.text', _.fireString(_, 'parseLabelText', [
-					d, i
-			], t));
+		var _ = this, t = d.name + (_.get('showpercent') ? ' ' + iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
+		if (_.get('label.enable')) {
+			_.push('sector.label.text', _.fireString(_, 'parseLabelText', [d, i], t));
 		}
 		if (_.get('tip.enable'))
-			_.push('sector.tip.text', _.fireString(_, 'parseTipText', [
-					d, i
-			], t));
-		
+			_.push('sector.tip.text', _.fireString(_, 'parseTipText', [d, i], t));
+
 		_.push('sector.id', i);
 		_.push('sector.value', d.value);
 		_.push('sector.name', d.name);
 		_.push('sector.listeners.changed', function(se, st, i) {
-			_.fireEvent(_, st ? 'bound' : 'rebound', [
-					_, se.get('name')
-			]);
+			_.fireEvent(_, st ? 'bound' : 'rebound', [_, se.get('name')]);
 		});
 		_.push('sector.startAngle', d.startAngle);
 		_.push('sector.middleAngle', d.middleAngle);
 		_.push('sector.endAngle', d.endAngle);
 		_.push('sector.background_color', d.color);
+
+		d.reference = this.doSector();
+
+		this.sectors.push(d.reference);
+
+		if (this.get('label.enable') && this.get('intellectLayout')) {
+			this.localizer(d.reference.label);
+		}
 	},
 	/**
 	 * calculate pie chart's angle
 	 */
-	calculate:function(){
-		var eA  = this.offsetAngle,sA = eA,L = this.data.length;
+	calculate : function() {
+		var eA = this.offsetAngle, sA = eA, L = this.data.length;
 		this.data.each(function(d, i) {
 			eA += (2 * d.value / this.total) * Math.PI;
 			if (i == (L - 1)) {
@@ -221,19 +251,20 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	doConfig : function() {
 		iChart.Pie.superclass.doConfig.call(this);
 		iChart.Assert.gtZero(this.total, 'this.total');
-		
+
 		this.offsetAngle = iChart.angle2Radian(this.get('offsetAngle'));
-		var r = this.get('radius'),f=this.get('minDistance')*(this.get('label.enable')?0.35:0.5);
 		
+		var r = this.get('radius'), f = this.get('minDistance') * (this.get('label.enable')&&!this.is3D() ? 0.35 : 0.5);
+
 		this.calculate();
-		
+
 		/**
 		 * calculate pie chart's radius
 		 */
 		if (r <= 0 || r > f) {
 			r = this.push('radius', Math.floor(f));
 		}
-		
+
 		this.r = r;
 		/**
 		 * calculate pie chart's increment
@@ -252,8 +283,24 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		}
 		this.push('originy', this.get('centery') + this.get('offsety'));
 
-		iChart.apply(this.get('sector'),iChart.clone(['originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'pop_animate', 'mutex', 'shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'increment', 'gradient', 'color_factor', 'label', 'tip', 'border'],this.options));
-		
+		iChart.apply(this.get('sector'), iChart.clone([
+				'originx',
+				'originy',
+				'bound_event',
+				'customize_layout',
+				'counterclockwise',
+				'pop_animate',
+				'mutex',
+				'shadow',
+				'shadow_blur',
+				'shadow_offsetx',
+				'shadow_offsety',
+				'increment',
+				'gradient',
+				'color_factor',
+				'label',
+				'tip',
+				'border'], this.options));
 
 	}
-});//@end 
+});// @end
