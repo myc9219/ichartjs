@@ -30,10 +30,6 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			 */
 			strokeStyle : 'gray',
 			/**
-			 * @cfg {String} Specifies the default lineJoin of the canvas's context in this element.(defaults to 'round')
-			 */
-			lineJoin : 'round',
-			/**
 			 * @cfg {Number} Specifies the padding for this element in pixel,the same rule as css padding.(defaults to 10)
 			 */
 			padding : 10,
