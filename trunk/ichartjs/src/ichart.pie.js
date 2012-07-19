@@ -223,7 +223,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		_.push('sector.endAngle', d.endAngle);
 		_.push('sector.background_color', d.color);
 
-		d.reference = this.doSector();
+		d.reference = this.doSector(d);
 
 		this.sectors.push(d.reference);
 
