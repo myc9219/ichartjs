@@ -28,17 +28,19 @@
 			});
 			
 		},
-		doSector:function(){
+		doSector:function(d){
+			this.push('sector.cylinder_height',(d.height?d.height*Math.cos(iChart.angle2Radian(this.get('zRotate'))):this.get('cylinder_height')));
 			return new iChart.Sector3D(this.get('sector'), this);
 		},
 		doConfig:function(){
 			iChart.Pie3D.superclass.doConfig.call(this);
 			
 			this.push('zRotate',iChart.between(0,90,90-this.get('zRotate')));
-			
+			this.push('cylinder_height',this.get('yHeight')*Math.cos(iChart.angle2Radian(this.get('zRotate'))));
 			this.push('sector.semi_major_axis',this.r);
 			this.push('sector.semi_minor_axis',this.r*this.get('zRotate')/90);
-			this.push('sector.cylinder_height',this.get('yHeight')*Math.cos(iChart.angle2Radian(this.get('zRotate'))));
+			
+			
 			this.push('sector.semi_major_axis',this.r);
 			
 			this.data.each(function(d,i){
