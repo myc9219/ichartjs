@@ -105,7 +105,6 @@
 				}
 				return t;
 			}
-			
 			this.sA = toAngle.call(this,this.get('startAngle'));
 			this.eA = toAngle.call(this,this.get('endAngle'));
 			
@@ -123,7 +122,7 @@
 				this.push('label.originy',P2.y);
 				this.push('label.quadrantd',Q);
 				
-				this.push('label.line_potins',[P2.x,P2.y+this.h/2,P.x,P.y+this.h/2]);//(ccw&&A<Math.PI)||(!ccw&&A>Math.PI)
+				this.push('label.line_potins',[P2.x,P2.y+this.h/2,P.x,P.y+this.h/2]);
 				this.push('label.line_globalComposite',(ccw&&A<Math.PI)||(!ccw&&A>Math.PI));
 				this.push('label.labelx',P.x);
 				this.push('label.labely',P.y+this.h/2);

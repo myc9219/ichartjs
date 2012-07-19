@@ -2,9 +2,8 @@
 1.return the postion of component's important item
 2.gradient
 3.barmuti2d鼠标移动鼠标样式-cause by the sequence of event invoking
-架构图缺少一个图，矩形
-Pie图label会有问题 
-考虑将this.的属性全部去掉，以免色织属性不能同步
+Pie3D绘图层次有问题，需进一步分析。
+考虑将this.的属性全部去掉，以免设置属性不能同步
 注意可能由于多次操作导致浮动小数引起精度问题。
 
 line shadow-copy coordinate
