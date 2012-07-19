@@ -115,10 +115,10 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 				var t = d.name + (this.get('showpercent') ? iChart.toPercent(d.value / this.total, this.get('decimalsnum')) : '');
 
 				if (this.get('label.enable'))
-					d.reference.label.text(this.fireString(this, 'parseLabelText', [d, t, i], t));
+					d.reference.label.text(this.fireString(this, 'parseLabelText', [d, i], t));
 
 				if (this.get('tip.enable'))
-					d.reference.tip.text(this.fireString(this, 'parseTipText', [d, t, i], t));
+					d.reference.tip.text(this.fireString(this, 'parseTipText', [d, i], t));
 
 				d.reference.id = i;
 				d.reference.push('startAngle', d.startAngle);

@@ -10,20 +10,37 @@
 		<script type="text/javascript">
 			$(function(){
 				var data = [
-				        	{name : 'Other',value : 0.73,color:'#6f83a5'},
 				        	{name : 'IE',value : 35.75,color:'#9d4a4a'},
 				        	{name : 'Chrome',value : 29.84,color:'#5d7f97'},
 				        	{name : 'Firefox',value : 24.88,color:'#97b3bc'},
 				        	{name : 'Safari',value : 6.77,color:'#a5aaaa'},
-				        	{name : 'Opera',value : 2.02,color:'#778088'}
+				        	{name : 'Opera',value : 2.02,color:'#778088'},
+				        	{name : 'Other',value : 0.73,color:'#6f83a5'}
 			        	];
 	        	
+	        	var tData = {
+        			IE:'2012年2月份IE浏览器的市场份额由<br/>1月份的31.46%增长为2月底的35.75%，<br/>增长幅度达4.29%',
+        			Chrome:'Chrome的市场份额则由28.41%小幅增长1.43%，达<br/>到29.84%，占据浏览器市场第二位份额。',
+        			Firefox:'Firefox的市场份额涨幅0.11%，由24.77%增<br/>至24.88%',
+        			Safari:'Safari的市场份额为6.77%',
+        			Opera:'Opera的市场份额由1.95%增长至2.02%。',
+        			Other:'其他浏览器仍然占有很小一部分市场'
+	    	    }
+	    	    
 				new iChart.Pie2D({
 					render : 'canvasDiv',
 					data: data,
 					title : {text:'Top 5 Browsers from 1 to 29 Feb 2012'},
 					legend : {
 						enable : true
+					},
+					tip:{
+						enable : true
+					},
+					listeners:{
+						parseTipText:function(d, t, i){
+							return tData[d.name];
+						}
 					},
 					showpercent:true,
 					decimalsnum:2,
@@ -40,7 +57,8 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这是一个基本的饼状图例子，例子展示了2012年2月份市场浏览器占有的情况。此例子中，配置了默认的图例。并以百分比的形式展示数据值。<br/>
+					这是一个基本的饼状图例子，例子展示了2012年2月份市场浏览器占有的情况。此例子中，配置了默认的图例。并以百分比的形式展示数据值。
+					配置了个性化的提示框以供查看进一步的数据<br/>
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>
@@ -50,14 +68,21 @@
 <!-- the source code -->
 <div id='ichartjs_code'>
 <span class='ichartjs_keyword'>var</span> data = [
-	{name : '<span class='ichartjs_keyword'>IE</span>',value : 35.75,color:'<span class='ichartjs_keyword'>#a5c2d5</span>'},
-   	{name : '<span class='ichartjs_keyword'>Chrome</span>',value : 29.84,color:'<span class='ichartjs_keyword'>#cbab4f</span>'},
-   	{name : '<span class='ichartjs_keyword'>Firefox</span>',value : 24.88,color:'<span class='ichartjs_keyword'>#76a871</span>'},
-   	{name : '<span class='ichartjs_keyword'>Safari</span>',value : 6.77,color:'<span class='ichartjs_keyword'>#9f7961</span>'},
-   	{name : '<span class='ichartjs_keyword'>Opera</span>',value : 2.02,color:'<span class='ichartjs_keyword'>#a56f8f</span>'},
-   	{name : '<span class='ichartjs_keyword'>Other</span>',value : 0.73,color:'<span class='ichartjs_keyword'>#6f83a5</span>'}
+	{name : '<span class='ichartjs_string'>IE</span>',value : 35.75,color:'<span class='ichartjs_string'>#9d4a4a</span>'},
+   	{name : '<span class='ichartjs_string'>Chrome</span>',value : 29.84,color:'<span class='ichartjs_string'>#5d7f97</span>'},
+   	{name : '<span class='ichartjs_string'>Firefox</span>',value : 24.88,color:'<span class='ichartjs_string'>#97b3bc</span>'},
+   	{name : '<span class='ichartjs_string'>Safari</span>',value : 6.77,color:'<span class='ichartjs_string'>#9f7961</span>'},
+   	{name : '<span class='ichartjs_string'>Opera</span>',value : 2.02,color:'<span class='ichartjs_string'>#778088</span>'}
+   	{name : '<span class='ichartjs_string'>Other</span>',value : 0.73,color:'<span class='ichartjs_string'>#6f83a5</span>'},
  ];
-
+<span class='ichartjs_keyword'>var</span> tData = {
+  			IE:'<span class='ichartjs_string'>2012年2月份IE浏览器的市场份额由&lt;br/&gt;1月份的31.46%增长为2月底的35.75%，&lt;br/&gt;增长幅度达4.29%</span>',
+   			Chrome:'<span class='ichartjs_string'>Chrome的市场份额则由28.41%小幅增长1.43%，达&lt;br/&gt;到29.84%，占据浏览器市场第二位份额。</span>',
+   			Firefox:'<span class='ichartjs_string'>Firefox的市场份额涨幅0.11%，由24.77%增&lt;br/&gt;至24.88%</span>',
+   			Safari:'<span class='ichartjs_string'>Safari的市场份额为6.77%</span>',
+   			Opera:'<span class='ichartjs_string'>Opera的市场份额由1.95%增长至2.02%。</span>',
+   			Other:'<span class='ichartjs_string'>其他浏览器仍然占有很小一部分市场</span>'
+ 	}
 $(<span class='ichartjs_keyword'>function</span>(){	
 	<span class='ichartjs_keyword'>new</span> iChart.Pie2D({
 		render : '<span class='ichartjs_string'>canvasDiv</span>',
@@ -65,6 +90,14 @@ $(<span class='ichartjs_keyword'>function</span>(){
 		title : {text:'<span class='ichartjs_string'>Top 5 Browsers from 1 to 29 Feb 2012</span>'},
 		legend : {
 			enable : <span class='ichartjs_keyword'>true</span>
+		},
+		tip : {
+			enable : <span class='ichartjs_keyword'>true</span>
+		},
+		listeners:{
+			parseTipText:<span class='ichartjs_keyword'>function</span>(d,t,i){
+				<span class='ichartjs_keyword'>return</span> tData[d.name];
+			}
 		},
 		showpercent:<span class='ichartjs_keyword'>true</span>,
 		decimalsnum:2,

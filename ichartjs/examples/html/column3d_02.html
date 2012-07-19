@@ -9,10 +9,10 @@
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
 		var data = [
-		        	{name : '已服务客户数量',value : 3,color:'#bc6666'},
-		        	{name : '其中已服务VIP数量',value : 0,color:'#6f83a5'},
-		        	{name : '等待中数量',value : 2,color:'#76a871'},
-		        	{name : '处理中数量',value : 1,color:'#2ba5a4'}
+		        	{name : '已服务客户数量',value : 30,color:'#bc6666'},
+		        	{name : '其中已服务VIP数量',value : 4,color:'#6f83a5'},
+		        	{name : '等待中数量',value : 20,color:'#76a871'},
+		        	{name : '处理中数量',value : 10,color:'#2ba5a4'}
 	        	];
 			$(function(){	
 				new iChart.Column3D({
@@ -25,8 +25,8 @@
 						scale:[{
 							 position:'left',	
 							 start_scale:0,
-							 end_scale:4,
-							 scale_space:1
+							 end_scale:40,
+							 scale_space:4
 						}]
 					}
 				}).draw();
@@ -50,10 +50,10 @@
 <!-- the source code -->
 <div id='ichartjs_code'>
 <span class='ichartjs_keyword'>var</span> data = [
-	{name : '<span class='ichartjs_keyword'>已服务客户数量</span>',value : 3,color:'<span class='ichartjs_keyword'>#bc6666</span>'},
-   	{name : '<span class='ichartjs_keyword'>其中已服务VIP数量</span>',value : 0,color:'<span class='ichartjs_keyword'>#6f83a5</span>'},
-   	{name : '<span class='ichartjs_keyword'>等待中数量</span>',value : 2,color:'<span class='ichartjs_keyword'>#76a871</span>'},
-   	{name : '<span class='ichartjs_keyword'>处理中数量</span>',value : 1,color:'<span class='ichartjs_keyword'>#2ba5a4</span>'}
+	{name : '<span class='ichartjs_keyword'>已服务客户数量</span>',value : 30,color:'<span class='ichartjs_keyword'>#bc6666</span>'},
+   	{name : '<span class='ichartjs_keyword'>其中已服务VIP数量</span>',value : 4,color:'<span class='ichartjs_keyword'>#6f83a5</span>'},
+   	{name : '<span class='ichartjs_keyword'>等待中数量</span>',value : 20,color:'<span class='ichartjs_keyword'>#76a871</span>'},
+   	{name : '<span class='ichartjs_keyword'>处理中数量</span>',value : 10,color:'<span class='ichartjs_keyword'>#2ba5a4</span>'}
  ];
 
 $(<span class='ichartjs_keyword'>function</span>(){	
@@ -67,8 +67,8 @@ $(<span class='ichartjs_keyword'>function</span>(){
 			scale:[{
 				 position:'<span class='ichartjs_string'>left</span>',	
 				 start_scale:0,
-				 end_scale:4,
-				 scale_space:1
+				 end_scale:40,
+				 scale_space:4
 			}]
 		}
 	}).draw();
