@@ -19,6 +19,7 @@
 		<script type="text/javascript" src="../src/ichart.chart.js"></script>
 		<script type="text/javascript" src="../src/ichart.sector.js"></script>
 		<script type="text/javascript" src="../src/ichart.sector2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.sector3d.js"></script>
 		<script type="text/javascript" src="../src/ichart.rectangle.js"></script>
 		<script type="text/javascript" src="../src/ichart.rectangle2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.rectangle3d.js"></script>
@@ -29,6 +30,7 @@
 		<script type="text/javascript" src="../src/ichart.text.js"></script>
 		<script type="text/javascript" src="../src/ichart.pie.js"></script>
 		<script type="text/javascript" src="../src/ichart.pie2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.pie3d.js"></script>
 		<script type="text/javascript" src="../src/ichart.coordinate.js"></script>
 		<script type="text/javascript" src="../src/ichart.crosshair.js"></script>
 		<script type="text/javascript" src="../src/ichart.linesegment.js"></script>
@@ -45,28 +47,40 @@
 		}
 	</style>
 	<script type="text/javascript">
+		
 			$(function(){
 				var data = [
 				        	{name : 'Other',value : 0.73,color:'#6f83a5'},
+				        	{name : 'Opera',value : 2.02,color:'#778088'},
+				        	{name : 'Chrome',value : 2.84,color:'#5d7f97'},
+				        	{name : 'Firefox',value : 2.88,color:'#97b3bc'},
 				        	{name : 'IE',value : 35.75,color:'#9d4a4a'},
-				        	{name : 'Chrome',value : 29.84,color:'#5d7f97'},
-				        	{name : 'Firefox',value : 24.88,color:'#97b3bc'},
-				        	{name : 'Safari',value : 6.77,color:'#a5aaaa'},
-				        	{name : 'Opera',value : 2.02,color:'#778088'}
+				        	{name : 'Safari',value : 56.77,color:'#a5aaaa'}
 			        	];
-	        	
-				var chart = new iChart.Pie2D({
+				var data = [
+				           	{name : 'Safari',value : 6.77,color:'#9f7961'},
+				           	{name : 'Opera',value : 6.02,color:'#a56f8f'},
+				           	{name : 'Other',value : 5.73,color:'#6f83a5'},
+				        	{name : 'IE',value : 35.75,color:'#a5c2d5'},
+				           	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
+				           	{name : 'Firefox',value : 24.88,color:'#76a871'}
+				         ];
+				var chart = new iChart.Pie3D({
 					render : 'canvasDiv',
 					data: data,
 					title : {text:'Top 5 Browsers from 1 to 29 Feb 2012'},
 					legend : {
+						enable : false
+					},
+					label : {
 						enable : true
 					},
-					offsetAngle:30,
+					offsetAngle : 0,
 					showpercent:true,
 					decimalsnum:2,
 					width : 800,
-					height : 440
+					height : 440,
+					radius:180
 				});
 
 				chart.draw();
