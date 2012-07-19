@@ -158,7 +158,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			_.y = _.get('originy');
 			if (_.variable.event.status != _.expanded) {
 				_.fireEvent(_, 'changed', [_, _.expanded]);
-				if(this.get('label.enable'))
+				if(_.get('label.enable'))
 				_.labelInvoke(_.get('label.linelength')*(_.expanded?2:-2)/3);
 			}
 			_.variable.event.status = _.expanded;
@@ -166,7 +166,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 				if (_.get('mutex') && !_.variable.event.poped) {
 					_.expanded = false;
 				} else {
-					_.x += _.get('increment') * Math.cos(2 * Math.PI - _.get('middleAngle'));
+					_.x += _.get('increment') * Math.cos(2 * Math.PI -_.get('middleAngle'));
 					_.y -= _.get('increment') * Math.sin(2 * Math.PI - _.get('middleAngle'));
 				}
 			}

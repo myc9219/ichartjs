@@ -26,63 +26,49 @@
 			else
 				return this.canvas.style[a];
 		},
-		/*
-		 * it seem not improve the speed isPointInPathArc:function(x,y,radius,s,e,color,ccw,a2r,x0,y0){ var angle = s,x0,y0,ccw=!!ccw,a2r=!!a2r; if(!a2r) this.c.moveTo(x,y); this.c.beginPath(); if(a2r) this.c.moveTo(x,y); this.c.arc(x,y,radius,s,e,ccw); this.c.lineTo(x,y); return
-		 * this.c.isPointInPath(x0,y0); }, /* /** draw arc API @param {Number} x 圆心x @param {Number} y 圆心y @param {Number} r 半径 @param {Number} s 起始弧度 @param {Number} e 结束弧度 @param {String} c fill color @param {Boolean} b border enable @param {Number} bw border's width @param
-		 * {String} bc border's color @param {Boolean} sw shadow enable @param {String} swc shadow color @param {Number} swb shadow blur @param {Number} swx shadow's offsetx @param {Number} swy shadow's offsety @param {Boolean} ccw 方向 @param {Boolean} a2r 是否连接圆心 @param {Boolean}
-		 * last 是否置于最底层 @return this
-		 */
 		/**
 		 * arc
 		 */
 		arc : function(x, y, r, s, e, c, b, bw, bc, sw, swc, swb, swx, swy, ccw, a2r, last) {
 			var x0, y0, ccw = !!ccw, a2r = !!a2r;
-			this.c.save();
+			this.save();
 			if (!!last)
 				this.c.globalCompositeOperation = "destination-over";
 			if (b)
 				this.strokeStyle(bw, bc);
 			this.shadowOn(sw, swc, swb, swx, swy).fillStyle(c);
-			this.c.moveTo(x, y);
-			this.c.beginPath();
+			this.moveTo(x, y).beginPath();
 			this.c.arc(x, y, r, s, e, ccw);
 			if (a2r)
-				this.c.lineTo(x, y);
-			this.c.closePath();
-			this.c.fill();
+				this.lineTo(x, y);
+			this.closePath().fill();
 			if (b)
-				this.c.stroke();
-			this.c.restore();
-			return this;
+				this.stroke();
+			return this.restore();
 		},
 		/**
 		 * draw ellipse API
 		 */
 		ellipse : function(x, y, a, b, s, e, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, a2r, last) {
 			var angle = s, ccw = !!ccw, a2r = !!a2r;
-			this.c.save();
+			this.save();
 			if (!!last)
 				this.c.globalCompositeOperation = "destination-over";
 			if (b)
 				this.strokeStyle(bow, boc);
-			this.shadowOn(sw, swc, swb, swx, swy).fillStyle(c);
-
-			this.c.moveTo(x, y);
-			this.c.beginPath();
+			this.shadowOn(sw, swc, swb, swx, swy).fillStyle(c).moveTo(x, y).beginPath();
+			
 			if (a2r)
-				this.c.moveTo(x, y);
+				this.moveTo(x, y);
 
 			while (angle <= e) {
-				this.c.lineTo(x + a * cos(angle), y + (ccw ? (-b * sin(angle)) : (b * sin(angle))));
+				this.lineTo(x + a * cos(angle), y + (ccw ? (-b * sin(angle)) : (b * sin(angle))));
 				angle += inc;
 			}
-			this.c.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e))));
-			this.c.closePath();
+			this.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e)))).closePath();
 			if (b)
-				this.c.stroke();
-			this.c.fill();
-			this.c.restore();
-			return this;
+				this.stroke();
+			return this.fill().restore();
 		},
 		/**
 		 * draw sector
@@ -104,41 +90,29 @@
 				if ((ccw && e <= PI) || (!ccw && s >= PI))
 					return false;
 				var Lo = function(A, h) {
-					this.c.lineTo(x + a * cos(A), y + (h || 0) + (ccw ? (-b * sin(A)) : (b * sin(A))));
+					this.lineTo(x + a * cos(A), y + (h || 0) + (ccw ? (-b * sin(A)) : (b * sin(A))));
 				};
 				s = ccw && e > PI && s < PI ? PI : s;
 				e = !ccw && s < PI && e > PI ? PI : e;
 				var angle = s;
-				this.c.fillStyle = $.dark(color);
-				this.c.moveTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s))));
-				this.c.beginPath();
+				this.fillStyle($.dark(color)).moveTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).beginPath();
 				while (angle <= e) {
 					Lo.call(this, angle);
 					angle = angle + inc;
 				}
 				Lo.call(this, e);
-				this.c.lineTo(x + a * cos(e), (y + h) + (ccw ? (-b * sin(e)) : (b * sin(e))));
+				this.lineTo(x + a * cos(e), (y + h) + (ccw ? (-b * sin(e)) : (b * sin(e))));
 				angle = e;
 				while (angle >= s) {
 					Lo.call(this, angle, h);
 					angle = angle - inc;
 				}
 				Lo.call(this, s, h);
-				this.c.lineTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s))));
-				this.c.closePath();
-				this.c.fill();
+				this.lineTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).closePath().fill();
 			}, layerDraw = function(x, y, a, b, ccw, h, A, color) {
-				this.c.moveTo(x, y);
-				this.c.beginPath();
-				this.c.fillStyle = $.dark(color);
-				this.c.lineTo(x, y + h);
 				var x0 = x + a * cos(A);
 				var y0 = y + h + (ccw ? (-b * sin(A)) : (b * sin(A)));
-				this.c.lineTo(x0, y0);
-				this.c.lineTo(x0, y0 - h);
-				this.c.lineTo(x, y);
-				this.c.closePath();
-				this.c.fill();
+				this.moveTo(x, y).beginPath().fillStyle($.dark(color)).lineTo(x, y + h).lineTo(x0, y0).lineTo(x0, y0 - h).lineTo(x, y).closePath().fill();
 			}, layerPaint = function(x, y, a, b, s, e, ccw, h, color) {
 				var ds = ccw ? (s < PI / 2 || s > 1.5 * PI) : (s > PI / 2 && s < 1.5 * PI), de = ccw ? (e > PI / 2 && e < 1.5 * PI) : (e < PI / 2 || e > 1.5 * PI);
 				if (!ds && !de)
@@ -153,9 +127,8 @@
 				 * browser opera has bug when use destination-over and shadow
 				 */
 				sw = sw && !$.isOpera;
-				this.c.save();
+				this.save().fillStyle(c)
 				this.c.globalCompositeOperation = "destination-over";
-				this.c.fillStyle = c;
 				/**
 				 * paint inside layer
 				 */
@@ -175,10 +148,10 @@
 				 */
 				sPaint.call(this, x, y, a, b, s, e, ccw, h, c);
 
-				this.c.restore();
-				return this;
+				return this.restore();;
 			}
 		}(),
+		
 		textStyle : function(a, l, f) {
 			return this.textAlign(a).textBaseline(l).textFont(f);
 		},
@@ -314,7 +287,7 @@
 			return this;
 		},
 		text : function(text, x, y, max, color, align, line, font, mode, lineheight) {
-			this.c.save();
+			this.save();
 			this.textStyle(align, line, font);
 			this.fillText(text, x, y, max, color, mode, lineheight);
 			this.c.restore();
@@ -467,17 +440,19 @@
 		polygon : function(bg, b, bw, bc, sw, swc, swb, swx, swy, alpham, points) {
 			if (points.length < 2)
 				return;
-			this.c.save();
-			this.strokeStyle(bw, bc);
-			this.c.beginPath();
-			this.fillStyle(bg).globalAlpha(alpham).shadowOn(sw, swc, swb, swx, swy).moveTo(points[0], points[1]);
+			this.save()
+			.strokeStyle(bw, bc)
+			.beginPath()
+			.fillStyle(bg)
+			.globalAlpha(alpham)
+			.shadowOn(sw, swc, swb, swx, swy)
+			.moveTo(points[0], points[1]);
 			for ( var i = 2; i < points.length; i += 2)
 				this.lineTo(points[i], points[i + 1]);
-			this.c.closePath();
+			this.closePath();
 			if (b)
-				this.c.stroke();
-			this.c.fill();
-			this.c.restore();
+				this.stroke();
+			this.fill().restore();
 			return this;
 		},
 		lines : function(p, w, c, last) {
@@ -494,69 +469,46 @@
 		line : function(x1, y1, x2, y2, w, c, last) {
 			if (!w || w == 0)
 				return this;
-			this.c.save();
+			this.save();
 			if (!!last)
 				this.c.globalCompositeOperation = "destination-over";
-
-			x1 = fd(w, x1);
-			y1 = fd(w, y1);
-			x2 = fd(w, x2);
-			y2 = fd(w, y2);
-
-			this.c.beginPath();
-			this.strokeStyle(w, c).moveTo(x1, y1).lineTo(x2, y2).c.stroke();
-			this.c.closePath();
-			this.c.restore();
-			return this;
+			return this.beginPath().strokeStyle(w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke().closePath().restore();
 		},
 		round : function(x, y, r, c, bw, bc) {
-			this.c.beginPath();
-			this.c.fillStyle = c;
+			this.beginPath().fillStyle(c);
 			this.c.arc(x, y, r, 0, PI2, false);
-			this.c.closePath();
-			this.c.fill();
-			if (bw) {
-				this.c.lineWidth = bw;
-				this.c.strokeStyle = bc || '#010101';
-				this.c.stroke();
-			}
+			return this.closePath().fill().strokeStyle(bw,bc).stroke();
+		},
+		fillRect:function(x, y, w, h){
+			this.c.fillRect(x, y, w, h);
+			return this;
+		},
+		translate:function(x, y){
+			this.c.translate(x, y);
 			return this;
 		},
 		backgound : function(x, y, w, h, bgcolor) {
-			this.c.save();
+			this.save();
 			this.c.globalCompositeOperation = "destination-over";
-			this.c.translate(x, y);
-			this.c.beginPath();
-			this.c.fillStyle = bgcolor;
-			this.c.fillRect(0, 0, w, h);
-			this.c.restore();
-			return this;
+			return this.translate(x, y).beginPath().fillStyle(bgcolor).fillRect(0, 0, w, h).restore();
 		},
 		rectangle : function(x, y, w, h, bgcolor, border, linewidth, bcolor, sw, swc, swb, swx, swy) {
-			this.c.save();
-			x = fd(linewidth, x);
-			y = fd(linewidth, y);
-			this.c.translate(x, y);
-			this.c.beginPath();
-			this.c.fillStyle = bgcolor;
-			this.shadowOn(sw, swc, swb, swx, swy);
+			this.save().translate(fd(linewidth, x), fd(linewidth, y)).beginPath().fillStyle(bgcolor).shadowOn(sw, swc, swb, swx, swy);
 			if (border && $.isNumber(linewidth)) {
-				this.c.lineWidth = linewidth;
-				this.c.strokeStyle = bcolor;
+				this.strokeStyle(linewidth,bcolor);
 				this.c.strokeRect(0, 0, w, h);
 			}
 
 			this.c.fillRect(0, 0, w, h);
 
 			if (border && $.isArray(linewidth)) {
-				this.c.strokeStyle = bcolor;
-				this.line(0, 0, w, 0, linewidth[0], bcolor);
-				this.line(w, 0, w, h, linewidth[1], bcolor);
-				this.line(0, h, w, h, linewidth[2], bcolor);
-				this.line(0, 0, 0, h, linewidth[3], bcolor);
+				this.strokeStyle(null,bcolor)
+				.line(0, 0, w, 0, linewidth[0], bcolor)
+				.line(w, 0, w, h, linewidth[1], bcolor)
+				.line(0, h, w, h, linewidth[2], bcolor)
+				.line(0, 0, 0, h, linewidth[3], bcolor);
 			}
-			this.c.restore();
-			return this;
+			return this.restore();
 		},
 		clearRect : function(x, y, w, h) {
 			x = x || 0;
@@ -567,7 +519,7 @@
 			return this;
 		},
 		drawBorder : function(x, y, w, h, line, color, round, bgcolor, last, shadow, scolor, blur, offsetx, offsety) {
-			this.c.save();
+			this.save();
 			var x0 = fd(line, x);
 			var y0 = fd(line, y);
 			if (x0 != x) {
@@ -578,15 +530,12 @@
 				y = y0;
 				h -= 1;
 			}
-			this.c.translate(x, y);
-			this.c.lineWidth = line;
-			this.c.strokeStyle = color;
-
+			this.translate(x, y).strokeStyle(line,color);
 			if (!!last) {
 				this.c.globalCompositeOperation = "destination-over";
 			}
 			if (bgcolor) {
-				this.c.fillStyle = bgcolor;
+				this.fillStyle(bgcolor);
 			}
 
 			round = round == 0 ? 0 : $.parseBorder(round);
@@ -595,26 +544,25 @@
 			 * draw a round corners border
 			 */
 			if ($.isArray(round)) {
-				this.c.beginPath();
-				this.c.moveTo(round[0], 0);
-				this.c.lineTo(w - round[1], 0);
+				this.beginPath()
+				.moveTo(round[0], 0)
+				.lineTo(w - round[1], 0);
 				this.c.arcTo(w, 0, w, round[1], round[1]);
-				this.c.lineTo(w, h - round[2]);
+				this.lineTo(w, h - round[2]);
 				this.c.arcTo(w, h, w - round[2], h, round[2]);
-				this.c.lineTo(round[3], h);
+				this.lineTo(round[3], h);
 				this.c.arcTo(0, h, 0, h - round[3], round[3]);
-				this.c.lineTo(0, round[0]);
+				this.lineTo(0, round[0]);
 				this.c.arcTo(0, 0, round[0], 0, round[0]);
-				this.c.closePath();
-				this.shadowOn(shadow, scolor, blur, offsetx, offsety);
+				this.closePath().shadowOn(shadow, scolor, blur, offsetx, offsety);
 				if (bgcolor) {
-					this.c.fill();
+					this.fill();
 				}
 				if (shadow)
 					this.shadowOff();
 				this.c.globalCompositeOperation = "source-over";
 
-				this.c.stroke();
+				this.stroke();
 			} else {
 				/**
 				 * draw a rectangular border
@@ -627,8 +575,7 @@
 					this.shadowOff();
 				this.c.strokeRect(0, 0, w, h);
 			}
-			this.c.restore();
-			return this;
+			return this.restore();
 		},
 		toImageURL : function() {
 			return this.canvas.toDataURL("image/png");
@@ -673,6 +620,10 @@
 				 * @cfg {Number} Specifies the height of this canvas
 				 */
 				height : undefined,
+				/**
+				 * @cfg {String} Specifies the default lineJoin of the canvas's context in this element.(defaults to 'round')
+				 */
+				lineJoin : 'round',
 				/**
 				 * @cfg {String} this property specifies the horizontal alignment of chart in an module (defaults to 'center') Available value are:
 				 * @Option 'left'
