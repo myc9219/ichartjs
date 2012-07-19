@@ -760,7 +760,6 @@
 			/**
 			 * @event Fires when parse this tip's data.Return value will override existing. Only valid when tip is available
 			 * @paramter Object#data this tip's data item
-			 * @paramter string#text the current tip's text
 			 * @paramter int#i the index of data
 			 */
 			'parseTipText',
