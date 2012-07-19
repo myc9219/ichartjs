@@ -10,26 +10,30 @@
 		<script type="text/javascript">
 			$(function(){
 				var data = [
-				        	{name : 'IE6',value : 2.05,color:'#c7b9d6'},
-				        	{name : 'IE7',value : 2.25,color:'#ba6164'},
-				        	{name : 'IE8',value : 2.75,color:'#309595'},
-				        	{name : 'IE9',value : 2.95,color:'#80a610'},
-				        	{name : 'IE10',value : 41.55,color:'#9d6b9d'},
-				        	{name : 'Other',value : 48.45,color:'#db9034'}
+				        	{name : 'IE6',value : 12,color:'#a5c2d5'},
+				        	{name : 'IE7',value : 16,color:'#cbab4f'},
+				        	{name : 'IE8',value : 20,color:'#76a871'},
+				        	{name : 'IE9',value : 22,color:'#9f7961'},
+				        	{name : 'IE10',value : 14,color:'#a56f8f'},
+				        	{name : 'Other',value : 16,color:'#db9034'}
 			        	];
 	        	
-				new iChart.Pie2D({
+				new iChart.Pie3D({
 					render : 'canvasDiv',
 					data: data,
 					title : {text:'IE各个版本浏览器市场使用情况'},
 					legend : {
-						enable : true
+						enable : true,
+						align : 'center',
+						valign : 'bottom',
+						row:1,
+						column:'max'
 					},
 					showpercent:true,
-					decimalsnum:2,
+					decimalsnum:1,
 					width : 800,
-					height : 440,
-					radius:140
+					height : 500,
+					radius:180
 				}).draw();
 			});
 		</script>
@@ -40,7 +44,7 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这个例子主要表现了当数据项很小且比较近的情况下，数据标签会自动向下浮动。<br/>
+					这是一个基本的3D饼状图例子，例子展示了IE各个版本浏览器市场使用情况。此例子中，配置了图例。设置图例位置为底部居中，并以一行显示图例。数据项以百分比的形式展示数据值。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>
@@ -49,27 +53,32 @@
 			</div>
 <!-- the source code -->
 <div id='ichartjs_code'>
+
 <span class='ichartjs_keyword'>var</span> data = [
-	{name : '<span class='ichartjs_string'>IE6</span>',value : 2.05,color:'<span class='ichartjs_string'>#c7b9d6</span>'},
-   	{name : '<span class='ichartjs_string'>IE7</span>',value : 2.25,color:'<span class='ichartjs_string'>#ba6164</span>'},
-   	{name : '<span class='ichartjs_string'>IE8</span>',value : 2.75,color:'<span class='ichartjs_string'>#309595</span>'},
-   	{name : '<span class='ichartjs_string'>IE9</span>',value : 2.95,color:'<span class='ichartjs_string'>#80a610</span>'},
-   	{name : '<span class='ichartjs_string'>IE10</span>',value : 41.55,color:'<span class='ichartjs_string'>#9d6b9d</span>'}
-   	{name : '<span class='ichartjs_string'>Other</span>',value : 48.45,color:'<span class='ichartjs_string'>#db9034</span>'},
+	{name : '<span class='ichartjs_string'>IE6</span>',value : 35.75,color:'<span class='ichartjs_string'>#a5c2d5</span>'},
+   	{name : '<span class='ichartjs_string'>IE7</span>',value : 29.84,color:'<span class='ichartjs_string'>#cbab4f</span>'},
+   	{name : '<span class='ichartjs_string'>IE8</span>',value : 24.88,color:'<span class='ichartjs_string'>#76a871</span>'},
+   	{name : '<span class='ichartjs_string'>IE9</span>',value : 6.77,color:'<span class='ichartjs_string'>#9f7961</span>'},
+   	{name : '<span class='ichartjs_string'>IE10</span>',value : 2.02,color:'<span class='ichartjs_string'>#a56f8f</span>'},
+   	{name : '<span class='ichartjs_string'>Other</span>',value : 0.73,color:'<span class='ichartjs_string'>#db9034</span>'}
  ];
 $(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>new</span> iChart.Pie2D({
+	<span class='ichartjs_keyword'>new</span> iChart.Pie3D({
 		render : '<span class='ichartjs_string'>canvasDiv</span>',
 		data: data,
-		title : {text:'<span class='ichartjs_string'>IE各个版本浏览器市场使用情况</span>'},
+		title : {text:'<span class='ichartjs_string'>Top 5 Browsers from 1 to 29 Feb 2012</span>'},
 		legend : {
-			enable : <span class='ichartjs_keyword'>true</span>
+			enable : <span class='ichartjs_keyword'>true</span>,
+			align : '<span class='ichartjs_string'>center</span>',
+			valign : '<span class='ichartjs_string'>bottom</span>',
+			row:1,
+			column:'<span class='ichartjs_string'>max</span>'
 		},
 		showpercent:<span class='ichartjs_keyword'>true</span>,
-		decimalsnum:2,
+		decimalsnum:1,
 		width : 800,
 		height : 500,
-		radius:140
+		radius:180
 	}).draw();
 });
 </div>
