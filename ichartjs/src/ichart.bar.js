@@ -19,7 +19,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {Object} Specifies the option for coordinate.For details see <link>iChart.Coordinate2D</link>
 			 */
-			coordinate : {},
+			coordinate : {alternate_direction : 'h'},
 			/**
 			 * @cfg {Number} Specifies the width of each bar(default to calculate according to coordinate's height)
 			 */
