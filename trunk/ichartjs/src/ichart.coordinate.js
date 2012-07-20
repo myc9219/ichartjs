@@ -225,8 +225,6 @@ iChart.Scale = iChart.extend(iChart.Component, {
 				this.push('scale_share', (end_scale - start_scale) / scale_space);
 			}
 			
-			
-			
 			/**
 			 * value of each scale
 			 */
@@ -404,6 +402,12 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					alternate_color : true,
 					/**
+					 * @cfg {String} Specifies the direction apply alternate color.(default to 'v')Available value are:
+					 * @Option 'h' horizontal
+					 * @Option 'v' vertical
+					 */
+					alternate_direction : 'v',
+					/**
 					 * @cfg {float(0.01 - 0.5)} Specifies the factor make color dark alternate_color,relative to background-color,the bigger the value you set,the larger the color changed.(defaults to '0.01')
 					 */
 					alternate_color_factor:0.01,
@@ -463,7 +467,6 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				};
 			},
 			doDraw : function(opts) {
-
 				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), this.get('fill_color'), this.get('axis.enable'), this.get('axis.width'), this.get('axis.color'), this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this
 						.get('shadow_offsetx'), this.get('shadow_offsety'));
 				
@@ -473,20 +476,18 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 						axis = this.get('axis.width');
 					}
 				}
-				var gl = this.gridlines,glw=this.get('grid_line_width');
+				var gl = this.gridlines,glw=this.get('grid_line_width'),v=this.get('alternate_direction')=='v';
 				for ( var i = 0; i < gl.length; i++) {
 					gl[i].x1 = Math.round(gl[i].x1);
 					gl[i].y1 = Math.round(gl[i].y1);
 					gl[i].x2 = Math.round(gl[i].x2);
 					gl[i].y2 = Math.round(gl[i].y2);
 					if (this.get('alternate_color')) {
-						// vertical
-						if (f&&gl[i].x1 == gl[i].x2) {
-							this.T.rectangle(x +glw, gl[i].y2 + axis[0], gl[i].x1 - x, gl[i].y1 - gl[i].y2 - axis[0] - axis[2], c);
-						}
-						// horizontal
-						if (f&&gl[i].y1 == gl[i].y2) {
-							this.T.rectangle(gl[i].x1 + axis[3], gl[i].y1 + glw, gl[i].x2 - gl[i].x1 - axis[3] - axis[1], y - gl[i].y1 - glw, c);
+						if (f) {
+							if(v)
+								this.T.rectangle(gl[i].x1 + axis[3], gl[i].y1 + glw, gl[i].x2 - gl[i].x1 - axis[3] - axis[1], y - gl[i].y1 - glw, c);
+							else
+								this.T.rectangle(x +glw, gl[i].y2 + axis[0], gl[i].x1 - x, gl[i].y1 - gl[i].y2 - axis[0] - axis[2], c);
 						}
 						x = gl[i].x1;
 						y = gl[i].y1;
