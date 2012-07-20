@@ -404,6 +404,10 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					alternate_color : true,
 					/**
+					 * @cfg {float(0.01 - 0.5)} Specifies the factor make color dark alternate_color,relative to background-color,the bigger the value you set,the larger the color changed.(defaults to '0.01')
+					 */
+					alternate_color_factor:0.01,
+					/**
 					 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>iChart.CrossHair</link>
 					 * Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
 					 */
@@ -462,14 +466,14 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 
 				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), this.get('fill_color'), this.get('axis.enable'), this.get('axis.width'), this.get('axis.color'), this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this
 						.get('shadow_offsetx'), this.get('shadow_offsety'));
-
+				
 				if (this.get('alternate_color')) {
-					var x, y, f = false, axis = [0, 0, 0, 0], c = iChart.dark(this.get('background_color'), 0.04);
+					var x, y, f = false, axis = [0, 0, 0, 0], c = iChart.dark(this.get('fill_color'),this.get('alternate_color_factor'));
 					if (this.get('axis.enable')) {
 						axis = this.get('axis.width');
 					}
 				}
-				var gl = this.gridlines;
+				var gl = this.gridlines,glw=this.get('grid_line_width');
 				for ( var i = 0; i < gl.length; i++) {
 					gl[i].x1 = Math.round(gl[i].x1);
 					gl[i].y1 = Math.round(gl[i].y1);
@@ -477,20 +481,18 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					gl[i].y2 = Math.round(gl[i].y2);
 					if (this.get('alternate_color')) {
 						// vertical
-						if (gl[i].x1 == gl[i].x2) {
-							// next to do
+						if (f&&gl[i].x1 == gl[i].x2) {
+							this.T.rectangle(x +glw, gl[i].y2 + axis[0], gl[i].x1 - x, gl[i].y1 - gl[i].y2 - axis[0] - axis[2], c);
 						}
 						// horizontal
-						if (gl[i].y1 == gl[i].y2) {
-							if (f) {
-								this.T.rectangle(gl[i].x1 + axis[3], gl[i].y1 + this.get('grid_line_width'), gl[i].x2 - gl[i].x1 - axis[3] - axis[1], y - gl[i].y1 - this.get('grid_line_width'), c);
-							}
-							x = gl[i].x1;
-							y = gl[i].y1;
-							f = !f;
+						if (f&&gl[i].y1 == gl[i].y2) {
+							this.T.rectangle(gl[i].x1 + axis[3], gl[i].y1 + glw, gl[i].x2 - gl[i].x1 - axis[3] - axis[1], y - gl[i].y1 - glw, c);
 						}
+						x = gl[i].x1;
+						y = gl[i].y1;
+						f = !f;
 					}
-					this.T.line(gl[i].x1, gl[i].y1, gl[i].x2, gl[i].y2, this.get('grid_line_width'), this.get('grid_color'));
+					this.T.line(gl[i].x1, gl[i].y1, gl[i].x2, gl[i].y2, glw, this.get('grid_color'));
 				}
 				for ( var i = 0; i < this.scale.length; i++) {
 					this.scale[i].draw();

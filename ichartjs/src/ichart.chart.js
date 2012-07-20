@@ -472,7 +472,7 @@
 			this.save();
 			if (!!last)
 				this.c.globalCompositeOperation = "destination-over";
-			return this.beginPath().strokeStyle(w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke().closePath().restore();
+			return this.beginPath().strokeStyle(w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke().restore();
 		},
 		round : function(x, y, r, c, bw, bc) {
 			this.beginPath().fillStyle(c);
