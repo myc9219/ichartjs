@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>ichartjs 例子</title>
+		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
+		<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
+		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
+		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
+		<script type="text/javascript">
+				var data = [
+				         	{
+				         		name : 'DPS01A',
+				         		value:[45,52,54,74,90,84],
+				         		color:'#1f7e92',
+				         		linewidth:1
+				         	},
+				         	{
+				         		name : 'DPS01B',
+				         		value:[60,80,105,125,108,120],
+				         		color:'#2b7f39',
+				         		linewidth:1
+				         	}
+				         ];
+					$(function(){
+						new iChart.ColumnMulti2D({
+								render : 'canvasDiv',
+								data: data,
+								columnKeys:["一月","二月","三月","四月","五月","六月"],
+								title : {text:'DPS01A型号比DPS01B型号的产品更受用户喜欢'},
+								subtitle : {text:'2012上半年DPS01A型号与DPS01B型号的鼠标销售比较,单位:万台'},
+								footnote : {text:'数据来源：销售中心'},
+								footnote_align:'left',
+								width : 800,
+								height : 440,
+								background_color : '#eff8ff',
+								legend:{
+									enable:true,
+									background_color : '#eff8ff',
+									border : {
+										enable : false
+									}
+								},
+								coordinate:{
+									background_color : '#eff8ff',
+									width:600,
+									height:300
+								}
+						}).draw();
+					});
+			</script>
+		</head>
+		<body>
+			<div id='canvasDiv'></div>
+			<div class='ichartjs_info'>
+				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
+				<div class='ichartjs_sm'>说明</div>
+				<div class='ichartjs_details'>
+					这是一个蔟状柱形图的例子，该例子展示了2012年上半年DPS01A型号与DPS01B型号的鼠标销售比较情况。
+					该例子设置了整体颜色以满足个性化的需要。并且设置了副标题和脚注满足信息展示的需要。
+					<br>
+				</div>
+				<span class='ichartjs_sm'>备注：</span>
+				<span class='ichartjs_details'>
+					数据均为模拟，无实际参考价值。
+				</span>
+			</div>
+<!-- the source code -->
+<div id='ichartjs_code'>
+<span class='ichartjs_keyword'>var</span> data = [
+	{
+   		name : '<span class='ichartjs_string'>DPS01A</span>',
+   		value:[45,52,54,74,90,84],
+   		color:'<span class='ichartjs_string'>#1f7e92</span>',
+   		linewidth:1
+   	},
+   	{
+   		name : '<span class='ichartjs_string'>DPS01B</span>',
+   		value:[60,80,105,125,108,120],
+   		color:'<span class='ichartjs_string'>#2b7f39</span>',
+   		linewidth:1
+   	}
+ ];
+
+$(<span class='ichartjs_keyword'>function</span>(){	
+	<span class='ichartjs_keyword'>new</span> iChart.ColumnMulti2D({
+		render : '<span class='ichartjs_string'>canvasDiv</span>',
+		data: data,
+		columnKeys:["<span class='ichartjs_string'>一月</span>","<span class='ichartjs_string'>二月</span>","<span class='ichartjs_string'>三月</span>","<span class='ichartjs_string'>四月</span>","<span class='ichartjs_string'>五月</span>","<span class='ichartjs_string'>六月</span>"],
+		title : {text:'<span class='ichartjs_string'>DPS01A型号比DPS01B型号的产品更受用户喜欢</span>'},
+		subtitle : {text:'<span class='ichartjs_string'>2012上半年DPS01A型号与DPS01B型号的鼠标销售比较,单位:万台</span>'},
+		footnote : {text:'<span class='ichartjs_string'>数据来源：销售中心</span>'},
+		footnote_align:'<span class='ichartjs_string'>left</span>',
+		width : 800,
+		height : 440,
+		background_color : '<span class='ichartjs_string'>#eff8ff</span>',
+		legend:{
+			enable:true,
+			background_color : '<span class='ichartjs_string'>#eff8ff</span>',
+			border : {
+				enable : <span class='ichartjs_keyword'>false</span>
+			}
+		},
+		coordinate:{
+			background_color : '<span class='ichartjs_string'>#eff8ff</span>',
+			width:600,
+			height:300
+		}
+	}).draw();
+});
+</div>
+		</body>
+</html>
