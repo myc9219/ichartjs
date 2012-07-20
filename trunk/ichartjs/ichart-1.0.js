@@ -2995,7 +2995,7 @@ $.Label = $.extend($.Component, {
 			this.save();
 			if (!!last)
 				this.c.globalCompositeOperation = "destination-over";
-			return this.beginPath().strokeStyle(w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke().closePath().restore();
+			return this.beginPath().strokeStyle(w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke().restore();
 		},
 		round : function(x, y, r, c, bw, bc) {
 			this.beginPath().fillStyle(c);
@@ -3283,7 +3283,6 @@ $.Label = $.extend($.Component, {
 			/**
 			 * @event Fires when parse this tip's data.Return value will override existing. Only valid when tip is available
 			 * @paramter Object#data this tip's data item
-			 * @paramter string#text the current tip's text
 			 * @paramter int#i the index of data
 			 */
 			'parseTipText',
@@ -4104,6 +4103,10 @@ $.Coordinate2D = $.extend($.Component,
 					 */
 					alternate_color : true,
 					/**
+					 * @cfg {float(0.01 - 0.5)} Specifies the factor make color dark alternate_color,relative to background-color,the bigger the value you set,the larger the color changed.(defaults to '0.01')
+					 */
+					alternate_color_factor:0.01,
+					/**
 					 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>$.CrossHair</link>
 					 * Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
 					 */
@@ -4162,14 +4165,14 @@ $.Coordinate2D = $.extend($.Component,
 
 				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), this.get('fill_color'), this.get('axis.enable'), this.get('axis.width'), this.get('axis.color'), this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this
 						.get('shadow_offsetx'), this.get('shadow_offsety'));
-
+				
 				if (this.get('alternate_color')) {
-					var x, y, f = false, axis = [0, 0, 0, 0], c = $.dark(this.get('background_color'), 0.04);
+					var x, y, f = false, axis = [0, 0, 0, 0], c = $.dark(this.get('fill_color'),this.get('alternate_color_factor'));
 					if (this.get('axis.enable')) {
 						axis = this.get('axis.width');
 					}
 				}
-				var gl = this.gridlines;
+				var gl = this.gridlines,glw=this.get('grid_line_width');
 				for ( var i = 0; i < gl.length; i++) {
 					gl[i].x1 = Math.round(gl[i].x1);
 					gl[i].y1 = Math.round(gl[i].y1);
@@ -4177,20 +4180,18 @@ $.Coordinate2D = $.extend($.Component,
 					gl[i].y2 = Math.round(gl[i].y2);
 					if (this.get('alternate_color')) {
 						// vertical
-						if (gl[i].x1 == gl[i].x2) {
-							// next to do
+						if (f&&gl[i].x1 == gl[i].x2) {
+							this.T.rectangle(x +glw, gl[i].y2 + axis[0], gl[i].x1 - x, gl[i].y1 - gl[i].y2 - axis[0] - axis[2], c);
 						}
 						// horizontal
-						if (gl[i].y1 == gl[i].y2) {
-							if (f) {
-								this.T.rectangle(gl[i].x1 + axis[3], gl[i].y1 + this.get('grid_line_width'), gl[i].x2 - gl[i].x1 - axis[3] - axis[1], y - gl[i].y1 - this.get('grid_line_width'), c);
-							}
-							x = gl[i].x1;
-							y = gl[i].y1;
-							f = !f;
+						if (f&&gl[i].y1 == gl[i].y2) {
+							this.T.rectangle(gl[i].x1 + axis[3], gl[i].y1 + glw, gl[i].x2 - gl[i].x1 - axis[3] - axis[1], y - gl[i].y1 - glw, c);
 						}
+						x = gl[i].x1;
+						y = gl[i].y1;
+						f = !f;
 					}
-					this.T.line(gl[i].x1, gl[i].y1, gl[i].x2, gl[i].y2, this.get('grid_line_width'), this.get('grid_color'));
+					this.T.line(gl[i].x1, gl[i].y1, gl[i].x2, gl[i].y2, glw, this.get('grid_color'));
 				}
 				for ( var i = 0; i < this.scale.length; i++) {
 					this.scale[i].draw();
@@ -5388,10 +5389,10 @@ $.Pie = $.extend($.Chart, {
 				var t = d.name + (this.get('showpercent') ? $.toPercent(d.value / this.total, this.get('decimalsnum')) : '');
 
 				if (this.get('label.enable'))
-					d.reference.label.text(this.fireString(this, 'parseLabelText', [d, t, i], t));
+					d.reference.label.text(this.fireString(this, 'parseLabelText', [d, i], t));
 
 				if (this.get('tip.enable'))
-					d.reference.tip.text(this.fireString(this, 'parseTipText', [d, t, i], t));
+					d.reference.tip.text(this.fireString(this, 'parseTipText', [d, i], t));
 
 				d.reference.id = i;
 				d.reference.push('startAngle', d.startAngle);
@@ -5496,7 +5497,7 @@ $.Pie = $.extend($.Chart, {
 		_.push('sector.endAngle', d.endAngle);
 		_.push('sector.background_color', d.color);
 
-		d.reference = this.doSector();
+		d.reference = this.doSector(d);
 
 		this.sectors.push(d.reference);
 
@@ -5643,17 +5644,19 @@ $.Pie2D = $.extend($.Pie, {
 			});
 			
 		},
-		doSector:function(){
+		doSector:function(d){
+			this.push('sector.cylinder_height',(d.height?d.height*Math.cos($.angle2Radian(this.get('zRotate'))):this.get('cylinder_height')));
 			return new $.Sector3D(this.get('sector'), this);
 		},
 		doConfig:function(){
 			$.Pie3D.superclass.doConfig.call(this);
 			
 			this.push('zRotate',$.between(0,90,90-this.get('zRotate')));
-			
+			this.push('cylinder_height',this.get('yHeight')*Math.cos($.angle2Radian(this.get('zRotate'))));
 			this.push('sector.semi_major_axis',this.r);
 			this.push('sector.semi_minor_axis',this.r*this.get('zRotate')/90);
-			this.push('sector.cylinder_height',this.get('yHeight')*Math.cos($.angle2Radian(this.get('zRotate'))));
+			
+			
 			this.push('sector.semi_major_axis',this.r);
 			
 			this.data.each(function(d,i){
