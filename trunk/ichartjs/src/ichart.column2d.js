@@ -22,7 +22,7 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = this.coo.getScale(this.get('scaleAlign')), bs = this.coo.get('brushsize'), H = this.coo.get('height'), h2 = this.get('hiswidth') / 2, gw = this.get('hiswidth') + this.get('hispace'), h;
+		var S = this.coo.getScale(this.get('scaleAlign')), bs = this.coo.get('brushsize'), H = this.coo.get('height'), h2 = this.get('colwidth') / 2, gw = this.get('colwidth') + this.get('hispace'), h;
 
 		this.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;

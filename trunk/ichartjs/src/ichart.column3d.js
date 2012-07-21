@@ -47,8 +47,8 @@
 			//get the max/min scale of this coordinate for calculated the height
 			var S = this.coo.getScale(this.get('scaleAlign')),
 				zh = this.get('zHeight')*(this.get('bottom_scale')-1)/2*this.get('yAngle_'),
-				h2 = this.get('hiswidth')/2,
-				gw = this.get('hiswidth')+this.get('hispace'),
+				h2 = this.get('colwidth')/2,
+				gw = this.get('colwidth')+this.get('hispace'),
 				H = this.coo.get('height'),h;
 			
 			this.data.each(function(d, i) {
