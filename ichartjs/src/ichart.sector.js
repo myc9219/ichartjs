@@ -25,7 +25,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 */
 			name:'',
 			/**
-			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
+			 * @inner {Boolean} True to make sector counterclockwise.(default to false)
 			 */
 			counterclockwise : false,
 			/**

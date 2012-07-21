@@ -23,7 +23,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {Number} the width of each column(default to calculate according to coordinate's width)
 			 */
-			hiswidth : undefined,
+			colwidth : undefined,
 			/**
 			 * @cfg {Number} the distance of column's bottom and text(default to 6)
 			 */
@@ -91,10 +91,10 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		iChart.Interface.coordinate.call(this);
 
 		if (this.dataType == 'simple') {
-			var L = this.data.length, W = this.get('coordinate.width'), hw = this.pushIf('hiswidth', W / (L * 2 + 1));
+			var L = this.data.length, W = this.get('coordinate.width'), hw = this.pushIf('colwidth', W / (L * 2 + 1));
 
 			if (hw * L > W) {
-				hw = this.push('hiswidth', W / (L * 2 + 1));
+				hw = this.push('colwidth', W / (L * 2 + 1));
 			}
 
 			/**
@@ -105,7 +105,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		}
 
 		if (this.is3D()) {
-			this.push('zHeight', this.get('hiswidth') * this.get('zScale'));
+			this.push('zHeight', this.get('colwidth') * this.get('zScale'));
 		}
 
 		/**
@@ -120,7 +120,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		 */
 		iChart.apply(this.get('rectangle'), iChart.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options));
 
-		this.push('rectangle.width', this.get('hiswidth'));
+		this.push('rectangle.width', this.get('colwidth'));
 	}
 
 });// @end

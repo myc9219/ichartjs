@@ -34,10 +34,10 @@
 				W = this.get('coordinate.width'),
 				H = this.get('coordinate.height'),
 				total = KL*L,
-				bw = this.pushIf('hiswidth',W/(KL+1+total));
+				bw = this.pushIf('colwidth',W/(KL+1+total));
 			
 			if(bw*total>W){
-				bw = this.push('hiswidth',W/(KL+1+total));
+				bw = this.push('colwidth',W/(KL+1+total));
 			}
 			
 			this.push('hispace',(W - bw*total)/(KL+1));
