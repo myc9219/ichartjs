@@ -3165,9 +3165,9 @@ $.Label = $.extend($.Component, {
 				footnote : {
 					text:'',
 					/**
-					 * Specifies the font-color of footnote.(default to '##5d7f97')
+					 * Specifies the font-color of footnote.(default to '#5d7f97')
 					 */
-					color : '##5d7f97',
+					color : '#5d7f97',
 					/**
 					 * Specifies the height of title will be take.(default to 20)
 					 */
@@ -6182,10 +6182,9 @@ $.Bar = $.extend($.Chart, {
 					w;
 				
 				this.push('rectangle.height',bh);
-				
 				this.columns.each(function(column, i) {
 					column.item.each(function(d, j) {
-						w = (d.value - S.start) * H / S.distance;
+						w = (d.value - S.start) * W / S.distance;
 						this.doParse(d, j, i+'-'+j, this.x + this.get('hispace')+j*bh+i*gw,this.y + this.get('barspace')+j*bh+i*gw, w);
 						d.reference = new $.Rectangle2D(this.get('rectangle'), this);
 						this.rectangles.push(d.reference);
