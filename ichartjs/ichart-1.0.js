@@ -22,15 +22,12 @@ var ua = navigator.userAgent.toLowerCase(),
         isSafari3 = isSafari && mc(/version\/3/),
         isSafari4 = isSafari && mc(/version\/4/),
         isIE = !isOpera && mc(/msie/),
-        isIE8 = isIE && (mc(/msie 8/) && docMode != 7 && docMode != 9 || docMode == 8),
         isIE9 = isIE && (mc(/msie 9/) && docMode != 7 && docMode != 8 || docMode == 9),
         isIE10 = isIE && (mc(/msie 10/) && docMode != 7 && docMode != 8 && docMode != 9 || docMode == 10),
         supportCanvas = !!document.createElement('canvas').getContext,
         isGecko = !isWebKit && mc(/gecko/),
         isGecko3 = isGecko && mc(/rv:1\.9/),
         isGecko4 = isGecko && mc(/rv:2\.0/),
-        isFF3_5 = isGecko3 && mc(/rv:1\.9\.1/),
-        isFF3_6 = isGecko3 && mc(/rv:1\.9\.2/),
         isFF4 = isGecko4 && mc(/rv:2\.0\.\d/),
         isFF = isGecko&&mc(/firefox/),
         isWindows = mc(/windows|win32/),
@@ -258,22 +255,6 @@ var iChart_ = (function(window) {//spirit from jquery
 				}
 			}
 		};
-		/*
-		function extendtest(a,b) {
-		    for ( var i in b ) {
-		        var g = b.__lookupGetter__(i), s = b.__lookupSetter__(i);
-		       
-		        if ( g || s ) {
-		            if ( g )
-		                a.__defineGetter__(i, g);
-		            if ( s )
-		                a.__defineSetter__(i, s);
-		         } else
-		             a[i] = b[i];
-		    }
-		    return a;
-		}
-		*/
 		_.extend = function() { //spirit from ext2.0
 					var C = function(E) {
 						for (var D in E) {
@@ -347,26 +328,6 @@ var iChart_ = (function(window) {//spirit from jquery
 			}
 			return Math.ceil(v/f);
 		},
-		/*
-		factor1 = function(v){
-			if(v==0)return v;
-			var f = v/10,i=0;
-				while(f<1){
-					f *= 10;i++;
-				}
-				while(f/10>1){
-					f /= 10;i--;
-				}
-				f = floor(f);
-				while(i>0){
-					f /=10;i--;
-				}
-				while(i<0){
-					f *=10;i++;
-				}
-			return f;
-		},
-		*/
 		innerColor  = ["navy","olive","silver","gold","lime","fuchsia","aqua","green","red","blue","pink","purple","yellow","maroon","black","gray","white"],	
 		colors = {
 			navy:'rgb(0,0,128)',
@@ -603,8 +564,7 @@ var iChart_ = (function(window) {//spirit from jquery
 				return w+" "+s+"px "+f;
 			},
 			/**
-			 * obtain the dom document 
-			 * @return {Document} 
+			 * obtain the Dom Document 
 			 */
 			getDoc : function() {
 				var doc = window.contentWindow ? window.contentWindow.document : window.contentDocument ? window.contentDocument : window.document;
@@ -626,7 +586,9 @@ var iChart_ = (function(window) {//spirit from jquery
 				return arithmetic[_.DefaultAnimationArithmetic][tf];
 				return arithmetic.Linear;                                   
 			},
-			//simple noConflict implements
+			/**
+			 * simple noConflict implements
+			 */
 			noConflict: function( deep ) {
 				return iChart_;
 			},
@@ -795,14 +757,11 @@ var iChart_ = (function(window) {//spirit from jquery
 			isSafari3 : isSafari3,
 			isSafari4 : isSafari4,
 			isIE : isIE,
-			isIE8 : isIE8,
 			isIE9 : isIE9,
 			isGecko : isGecko,
 			isGecko3 : isGecko3,
 			isGecko4 : isGecko4,
 			isFF:isFF,
-			isFF3_5:isFF3_5,
-			isFF3_6:isFF3_6,
 			isFF4:isFF4,
 			isLinux : isLinux,
 			isWindows : isWindows,
@@ -6106,7 +6065,7 @@ $.Bar = $.extend($.Chart, {
 		/**
 		 * Quick config to all rectangle
 		 */
-		$.apply(this.get('rectangle'), $.clone(['label', 'tip', 'border'], this.options));
+		$.apply(this.get('rectangle'), $.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor'], this.options));
 
 		/**
 		 * quick config to all rectangle

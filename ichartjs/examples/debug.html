@@ -27,6 +27,7 @@
 		<script type="text/javascript" src="../src/ichart.column2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.bar.js"></script>
 		<script type="text/javascript" src="../src/ichart.bar2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.barmulti2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.column3d.js"></script>
 		<script type="text/javascript" src="../src/ichart.tip.js"></script>
 		<script type="text/javascript" src="../src/ichart.text.js"></script>
@@ -51,22 +52,43 @@
 	</style>
 	<script type="text/javascript">
 	var data = [
-	         	{
-	         		name : '北京',
-	         		value:[2,12,14,20,28,32,34,36,33,24,14,4],
-	         		color:'#1f7e92'
-	         	}
-         ];	
-		var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+	        	{
+	           		name : 'DPS01A',
+	           		value:[45,52,54,74,90,84],
+	           		color:'#1f7e92',
+	           		linewidth:1
+	           	},
+	           	{
+	           		name : 'DPS01B',
+	           		value:[60,80,105,125,108,120],
+	           		color:'#2b7f39',
+	           		linewidth:1
+	           	}
+	         ];
+    
+	 var columnKeys = ["一月","二月","三月","四月","五月","六月"];
 		$(function(){
-			new iChart.Area2D({
-					render : 'canvasDiv',
-					data: data,
-					title : {text:'Average Temperature Of 2012'},
-					width : 800,
-					height : 400,
-					labels:labels
-				}).draw();
+			var column2d = new iChart.BarMulti2D({
+				render : 'canvasDiv',
+				data: data,
+				columnKeys:columnKeys,
+				coordinate:{
+					width:600,
+					height:400,
+					scale:{
+						 position:'bottom',	
+						 start_scale:30,
+						 end_scale:150,
+						 scale_space:30
+					}
+				},
+				title : {text:'BarMulti2D Sample'},
+				width : 800,
+				height : 600
+			});
+			
+			//开始画图
+			column2d.draw();
 		});
 			
 		</script>

@@ -50,10 +50,9 @@
 					w;
 				
 				this.push('rectangle.height',bh);
-				
 				this.columns.each(function(column, i) {
 					column.item.each(function(d, j) {
-						w = (d.value - S.start) * H / S.distance;
+						w = (d.value - S.start) * W / S.distance;
 						this.doParse(d, j, i+'-'+j, this.x + this.get('hispace')+j*bh+i*gw,this.y + this.get('barspace')+j*bh+i*gw, w);
 						d.reference = new iChart.Rectangle2D(this.get('rectangle'), this);
 						this.rectangles.push(d.reference);
