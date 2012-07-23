@@ -4627,6 +4627,14 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			 */
 			this.atomic = true;
 			
+			this.registerEvent(
+					/**
+					 * @event Fires when draw this label.Return value will override existing value.
+					 * @paramter $.Rectangle#rect
+					 * @paramter string#text the current label's text
+					 */
+					'drawLabelText');
+			
 		},
 		doDraw:function(opts){
 			this.drawRectangle();
@@ -4693,12 +4701,10 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				shadow_offsety:-2
 			});
 			
-			this.registerEvent();
-			
 		},
 		drawValue:function(){
 			if(this.get('value')!=''){
-				this.T.text(this.get('value'),this.get('value_x'),this.get('value_y'),false,this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
+				this.T.text(this.fireString(this, 'drawLabelText', [this, this.get('value')], this.get('value')),this.get('value_x'),this.get('value_y'),false,this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
 			}
 		},
 		drawRectangle:function(){
@@ -4888,7 +4894,7 @@ $.Sector = $.extend($.Component, {
 			 */
 			name:'',
 			/**
-			 * @cfg {Boolean} True to make sector counterclockwise.(default to false)
+			 * @inner {Boolean} True to make sector counterclockwise.(default to false)
 			 */
 			counterclockwise : false,
 			/**
@@ -5693,7 +5699,7 @@ $.Column = $.extend($.Chart, {
 			/**
 			 * @cfg {Number} the width of each column(default to calculate according to coordinate's width)
 			 */
-			hiswidth : undefined,
+			colwidth : undefined,
 			/**
 			 * @cfg {Number} the distance of column's bottom and text(default to 6)
 			 */
@@ -5761,10 +5767,10 @@ $.Column = $.extend($.Chart, {
 		$.Interface.coordinate.call(this);
 
 		if (this.dataType == 'simple') {
-			var L = this.data.length, W = this.get('coordinate.width'), hw = this.pushIf('hiswidth', W / (L * 2 + 1));
+			var L = this.data.length, W = this.get('coordinate.width'), hw = this.pushIf('colwidth', W / (L * 2 + 1));
 
 			if (hw * L > W) {
-				hw = this.push('hiswidth', W / (L * 2 + 1));
+				hw = this.push('colwidth', W / (L * 2 + 1));
 			}
 
 			/**
@@ -5775,7 +5781,7 @@ $.Column = $.extend($.Chart, {
 		}
 
 		if (this.is3D()) {
-			this.push('zHeight', this.get('hiswidth') * this.get('zScale'));
+			this.push('zHeight', this.get('colwidth') * this.get('zScale'));
 		}
 
 		/**
@@ -5790,7 +5796,7 @@ $.Column = $.extend($.Chart, {
 		 */
 		$.apply(this.get('rectangle'), $.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options));
 
-		this.push('rectangle.width', this.get('hiswidth'));
+		this.push('rectangle.width', this.get('colwidth'));
 	}
 
 });// @end
@@ -5819,7 +5825,7 @@ $.Column2D = $.extend($.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = this.coo.getScale(this.get('scaleAlign')), bs = this.coo.get('brushsize'), H = this.coo.get('height'), h2 = this.get('hiswidth') / 2, gw = this.get('hiswidth') + this.get('hispace'), h;
+		var S = this.coo.getScale(this.get('scaleAlign')), bs = this.coo.get('brushsize'), H = this.coo.get('height'), h2 = this.get('colwidth') / 2, gw = this.get('colwidth') + this.get('hispace'), h;
 
 		this.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
@@ -5892,8 +5898,8 @@ $.Column2D = $.extend($.Column, {
 			//get the max/min scale of this coordinate for calculated the height
 			var S = this.coo.getScale(this.get('scaleAlign')),
 				zh = this.get('zHeight')*(this.get('bottom_scale')-1)/2*this.get('yAngle_'),
-				h2 = this.get('hiswidth')/2,
-				gw = this.get('hiswidth')+this.get('hispace'),
+				h2 = this.get('colwidth')/2,
+				gw = this.get('colwidth')+this.get('hispace'),
 				H = this.coo.get('height'),h;
 			
 			this.data.each(function(d, i) {
@@ -5953,10 +5959,10 @@ $.Column2D = $.extend($.Column, {
 				W = this.get('coordinate.width'),
 				H = this.get('coordinate.height'),
 				total = KL*L,
-				bw = this.pushIf('hiswidth',W/(KL+1+total));
+				bw = this.pushIf('colwidth',W/(KL+1+total));
 			
 			if(bw*total>W){
-				bw = this.push('hiswidth',W/(KL+1+total));
+				bw = this.push('colwidth',W/(KL+1+total));
 			}
 			
 			this.push('hispace',(W - bw*total)/(KL+1));

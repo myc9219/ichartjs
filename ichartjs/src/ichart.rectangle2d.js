@@ -22,12 +22,10 @@
 				shadow_offsety:-2
 			});
 			
-			this.registerEvent();
-			
 		},
 		drawValue:function(){
 			if(this.get('value')!=''){
-				this.T.text(this.get('value'),this.get('value_x'),this.get('value_y'),false,this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
+				this.T.text(this.fireString(this, 'drawLabelText', [this, this.get('value')], this.get('value')),this.get('value_x'),this.get('value_y'),false,this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
 			}
 		},
 		drawRectangle:function(){
