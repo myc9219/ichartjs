@@ -75,6 +75,14 @@
 			 */
 			this.atomic = true;
 			
+			this.registerEvent(
+					/**
+					 * @event Fires when draw this label.Return value will override existing value.
+					 * @paramter iChart.Rectangle#rect
+					 * @paramter string#text the current label's text
+					 */
+					'drawLabelText');
+			
 		},
 		doDraw:function(opts){
 			this.drawRectangle();
