@@ -683,9 +683,9 @@
 				footnote : {
 					text:'',
 					/**
-					 * Specifies the font-color of footnote.(default to '##5d7f97')
+					 * Specifies the font-color of footnote.(default to '#5d7f97')
 					 */
-					color : '##5d7f97',
+					color : '#5d7f97',
 					/**
 					 * Specifies the height of title will be take.(default to 20)
 					 */

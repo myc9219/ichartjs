@@ -103,7 +103,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		/**
 		 * Quick config to all rectangle
 		 */
-		iChart.apply(this.get('rectangle'), iChart.clone(['label', 'tip', 'border'], this.options));
+		iChart.apply(this.get('rectangle'), iChart.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor'], this.options));
 
 		/**
 		 * quick config to all rectangle
