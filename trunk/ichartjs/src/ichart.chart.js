@@ -713,7 +713,7 @@
 				 */
 				title_valign : 'top',
 				/**
-				 * @cfg {Boolean} If true element will has a animation when show, false to skip the animation.(default to false)
+				 * @cfg {Boolean} If true element will have a animation when show, false to skip the animation.(default to false)
 				 */
 				animation : false,
 				/**
