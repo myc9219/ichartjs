@@ -85,7 +85,6 @@ var ua = navigator.userAgent.toLowerCase(),
 				}
 			}
 		};
-		
 var iChart_ = (function(window) {//spirit from jquery
 	var isReady= false,
 		readyBound= false,
@@ -811,7 +810,19 @@ var iChart_ = (function(window) {//spirit from jquery
 					throw new Error(cause);
 			}
 		};
-		
+		/**
+		 * shim layer with setTimeout fallback
+		 */
+	    _.requestAnimFrame = (function(){
+	      return  window.requestAnimationFrame       || 
+	              window.webkitRequestAnimationFrame || 
+	              window.mozRequestAnimationFrame    || 
+	              window.oRequestAnimationFrame      || 
+	              window.msRequestAnimationFrame     || 
+	              function( callback ){
+	                window.setTimeout(callback, 1000 / 60);
+	              };
+	    })();
 		/**
 		 * defined Event
 		 */
