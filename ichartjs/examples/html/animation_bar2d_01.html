@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>ichartjs 例子</title>
+		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
+		<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
+		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
+		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
+		<script type="text/javascript">
+			$(function(){
+				var data = [
+				        	{name : '天语',value : 2.83,color:'#f9c500'},
+				        	{name : '苹果',value : 3.44,color:'#f49a3a'},
+				        	{name : 'HTC',value : 3.66,color:'#9abc5b'},
+				        	{name : '金立',value : 4.58,color:'#00b350'},
+				        	{name : '中兴',value : 6.56,color:'#923931'},
+				        	{name : '酷派',value : 6.85,color:'#3e314f'},
+				        	{name : '诺基亚',value : 9.42,color:'#7e807d'},
+				        	{name : '华为',value : 9.54,color:'#355e92'},
+				        	{name : '联想',value : 11.00,color:'#fd0100'},
+				        	{name : '三星',value : 15.73,color:'#e07108'}
+			        	];
+	        	
+				new iChart.Bar2D({
+					render : 'canvasDiv',
+					background_color : '#EEEEEE',
+					data: data,
+					title : {text:'2012年6月中国手机市场份额TOP10'},
+					subtitle : {text:'联想手机超越诺基亚，以11%市场份额，成为中国市场第二'},
+					footnote : {text:'数据来源：赛诺'},
+					width : 800,
+					height : 500,
+					coordinate:{
+						width:640,
+						height:360,
+						axis:{
+							width:[0,0,1,1]
+						},
+						scale:[{
+							 position:'bottom',	
+							 start_scale:0,
+							 end_scale:18,
+							 scale_space:2
+						}]
+					},
+					animation:true,
+					rectangle:{
+						listeners:{
+							drawLabelText:function(r,t){
+								return t+"%";
+							}
+						}
+					},
+					legend:{enable:false}
+				}).draw();
+			});
+		</script>
+	</head>
+	<body>
+		<div id='canvasDiv'></div>
+		<div class='ichartjs_info'>
+				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
+				<div class='ichartjs_sm'>说明</div>
+				<div class='ichartjs_details'>
+					这是一个实际中的例子，例子背景为联想中国区总裁陈旭东微博透露，赛诺最新数据统计，2012年6月，联想手机超越诺基亚，以11%市场份额，成为中国市场第二；
+				</div>
+				<span class='ichartjs_sm'>备注：</span>
+				<span class='ichartjs_details'>
+					数据来源互联网。
+				</span>
+			</div>
+<!-- the source code -->
+<div id='ichartjs_code'>
+ <span class='ichartjs_keyword'>var</span> data = [
+	{name : '<span class='ichartjs_string'>天语</span>',value : 2.83,color:'<span class='ichartjs_string'>#f9c500</span>'},
+       	{name : '<span class='ichartjs_string'>苹果</span>',value : 3.44,color:'<span class='ichartjs_string'>#f49a3a</span>'},
+       	{name : '<span class='ichartjs_string'>HTC</span>',value : 3.66,color:'<span class='ichartjs_string'>#9abc5b</span>'},
+       	{name : '<span class='ichartjs_string'>金立</span>',value : 4.58,color:'<span class='ichartjs_string'>#00b350</span>'},
+       	{name : '<span class='ichartjs_string'>中兴</span>',value : 6.56,color:'<span class='ichartjs_string'>#923931</span>'},
+       	{name : '<span class='ichartjs_string'>酷派</span>',value : 6.85,color:'<span class='ichartjs_string'>#3e314f</span>'},
+       	{name : '<span class='ichartjs_string'>诺基亚</span>',value : 9.42,color:'<span class='ichartjs_string'>#7e807d</span>'},
+       	{name : '<span class='ichartjs_string'>华为</span>',value : 9.54,color:'<span class='ichartjs_string'>#355e92</span>'},
+       	{name : '<span class='ichartjs_string'>联想</span>',value : 11.00,color:'<span class='ichartjs_string'>#fd0100</span>'},
+       	{name : '<span class='ichartjs_string'>三星</span>',value : 15.73,color:'<span class='ichartjs_string'>#e07108</span>'}
+ ];
+
+$(<span class='ichartjs_keyword'>function</span>(){	
+	<span class='ichartjs_keyword'>new</span> iChart.Bar2D({
+			render : '<span class='ichartjs_string'>canvasDiv</span>',
+			data: data,
+			title : {text:'<span class='ichartjs_string'>2012年6月中国手机市场份额TOP10</span>'},
+			subtitle : {text:'<span class='ichartjs_string'>联想手机超越诺基亚，以11%市场份额，成为中国市场第二</span>'},
+			footnote : {text:'<span class='ichartjs_string'>数据来源：赛诺</span>'},
+			width : 800,
+			height : 500,
+			coordinate:{
+				width:640,
+				height:360,
+				axis:{
+					width:[0,0,1,1]
+				},
+				scale:[{
+					 position:'<span class='ichartjs_string'>bottom</span>',	
+					 start_scale:0,
+					 end_scale:18,
+					 scale_space:2
+				}]
+			},
+			animation:<span class='ichartjs_keyword'>true</span>,
+			rectangle:{
+				listeners:{
+					drawLabelText:<span class='ichartjs_keyword'>function</span>(r,t){
+						<span class='ichartjs_keyword'>return</span> t+"<span class='ichartjs_string'>%</span>";
+					}
+				}
+			},
+			legend:{enable:<span class='ichartjs_keyword'>false</span>}
+		}).draw();
+});
+</div>
+	</body>
+</html>
