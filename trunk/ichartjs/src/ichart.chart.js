@@ -591,7 +591,7 @@
 	 * @component#iChart.Chart
 	 * @extend#iChart.Painter
 	 */
-	iChart.Chart = iChart.extend(iChart.Painter, {
+	$.Chart = $.extend($.Painter, {
 		/**
 		 * @cfg {TypeName}
 		 */
@@ -804,7 +804,9 @@
 			this.T.backgound(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'), this.get('background_color'));
 		},
 		animation : function() {
-			return function(_) {
+			var _;
+			return function() {
+				if(!_)_ = this;
 				/**
 				 * clear the part of canvas
 				 */
@@ -819,17 +821,15 @@
 				_.resetCanvas();
 				if (_.variable.animation.time < _.duration) {
 					_.variable.animation.time++;
-					setTimeout(function() {
-						_.animation(_)
-					}, $.INTERVAL)
+					requestAnimFrame(_.animation);
 				} else {
-					setTimeout(function() {
+					requestAnimFrame(function() {
 						_.variable.animation.time = 0;
 						_.animationed = true;
 						_.draw();
 						_.processAnimation = false;
-						_.fireEvent(this, 'afterAnimation', [this]);
-					}, $.INTERVAL);
+						_.fireEvent(_, 'afterAnimation', [_]);
+					});
 				}
 			}
 		}(),
@@ -847,8 +847,8 @@
 				});
 				return false;
 			}
-			iChart.isNumber(index)
-			index = iChart.between(0, this.data.length, index);
+			$.isNumber(index)
+			index = $.between(0, this.data.length, index);
 			data = $.Interface.parser.call(this, data, index);
 
 			if (this.get('legend.enable')) {
@@ -887,7 +887,7 @@
 
 			if (!this.animationed && this.get('animation')) {
 				this.fireEvent(this, 'beforeAnimation', [this]);
-				this.animation(this);
+				this.animation();
 				return;
 			}
 
