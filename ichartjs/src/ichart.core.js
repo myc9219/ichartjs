@@ -14,22 +14,14 @@ var ua = navigator.userAgent.toLowerCase(),
 	},ts = Object.prototype.toString,
         docMode = document.documentMode,
         isOpera = mc(/opera/),
-        isOpera10_5 = isOpera && mc(/version\/10\.5/),
         isChrome = mc(/\bchrome\b/),
         isWebKit = mc(/webkit/),
         isSafari = !isChrome && mc(/safari/),
-        isSafari2 = isSafari && mc(/applewebkit\/4/),
-        isSafari3 = isSafari && mc(/version\/3/),
-        isSafari4 = isSafari && mc(/version\/4/),
         isIE = !isOpera && mc(/msie/),
-        isIE9 = isIE && (mc(/msie 9/) && docMode != 7 && docMode != 8 || docMode == 9),
-        isIE10 = isIE && (mc(/msie 10/) && docMode != 7 && docMode != 8 && docMode != 9 || docMode == 10),
         supportCanvas = !!document.createElement('canvas').getContext,
         isGecko = !isWebKit && mc(/gecko/),
-        isGecko3 = isGecko && mc(/rv:1\.9/),
-        isGecko4 = isGecko && mc(/rv:2\.0/),
-        isFF4 = isGecko4 && mc(/rv:2\.0\.\d/),
         isFF = isGecko&&mc(/firefox/),
+        isMobile = mc(/ipod|ipad|iphone|android/gi),
         isWindows = mc(/windows|win32/),
         isMac = mc(/macintosh|mac os x/),
         isLinux = mc(/linux/),
@@ -752,24 +744,17 @@ var iChart_ = (function(window) {//spirit from jquery
 			isWebKit : isWebKit,
 			isChrome : isChrome,
 			isSafari : isSafari,
-			isSafari2 : isSafari2,
-			isSafari3 : isSafari3,
-			isSafari4 : isSafari4,
 			isIE : isIE,
-			isIE9 : isIE9,
 			isGecko : isGecko,
-			isGecko3 : isGecko3,
-			isGecko4 : isGecko4,
 			isFF:isFF,
-			isFF4:isFF4,
 			isLinux : isLinux,
+			isMobile : isMobile,
 			isWindows : isWindows,
 			isMac : isMac,
 			/**
 			 * static variable
 			 */
-			FRAME:24,
-			INTERVAL:30,
+			FRAME:isMobile?24:36,
 			DefaultAnimationArithmetic:'Cubic'
 		});
 		
@@ -813,7 +798,7 @@ var iChart_ = (function(window) {//spirit from jquery
 		/**
 		 * shim layer with setTimeout fallback
 		 */
-	    _.requestAnimFrame = (function(){
+	    window.requestAnimFrame = (function(){
 	      return  window.requestAnimationFrame       || 
 	              window.webkitRequestAnimationFrame || 
 	              window.mozRequestAnimationFrame    || 

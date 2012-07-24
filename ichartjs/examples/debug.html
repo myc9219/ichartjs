@@ -51,27 +51,26 @@
 		}
 	</style>
 	<script type="text/javascript">
-	var data = [
-	        	{
-	           		name : 'DPS01A',
-	           		value:[45,52,54,74,90,84],
-	           		color:'#1f7e92',
-	           		linewidth:1
-	           	},
-	           	{
-	           		name : 'DPS01B',
-	           		value:[60,80,105,125,108,120],
-	           		color:'#2b7f39',
-	           		linewidth:1
-	           	}
-	         ];
-    
-	 var columnKeys = ["一月","二月","三月","四月","五月","六月"];
+		var data = [
+		        	{
+		           		name : 'DPS01A',
+		           		value:[45,52,54,74,90,84],
+		           		color:'#1f7e92'
+		           	},
+		           	{
+		           		name : 'DPS01B',
+		           		value:[60,80,105,125,108,120],
+		           		color:'#2b7f39'
+		           	}
+		         ];
+		 var columnKeys = ["一月","二月","三月","四月","五月","六月"];
+	 
 		$(function(){
 			var column2d = new iChart.BarMulti2D({
 				render : 'canvasDiv',
 				data: data,
 				columnKeys:columnKeys,
+				animation:true,
 				coordinate:{
 					width:600,
 					height:400,
@@ -86,7 +85,17 @@
 				width : 800,
 				height : 600
 			});
+
+			column2d.on('beforeAnimation',function(e){
+				column2d.START_RUN_TIME = new Date().getTime();
+				return true;
+			});
 			
+			column2d.on('afterAnimation',function(e){
+				column2d.END_RUN_TIME = new Date().getTime();
+				column2d.RUN_TIME_COST = column2d.END_RUN_TIME - column2d.START_RUN_TIME;
+				console.log(column2d.RUN_TIME_COST);
+			});
 			//开始画图
 			column2d.draw();
 		});
