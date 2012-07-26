@@ -40,7 +40,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {Array} the array of labels close to the axis
 			 */
-			labels : [],
+			data_labels : [],
 			/**
 			 * @cfg {Number} the distance of column's bottom and text.(default to 6)
 			 */

@@ -41,8 +41,8 @@
 				M = this.get('maxValue')<M?this.get('maxValue'):M;
 			}
 			
-			if(iChart.isArray(this.get('labels'))){
-				ML = this.get('labels').length>ML?this.get('labels').length:ML;
+			if(iChart.isArray(this.get('data_labels'))){
+				ML = this.get('data_labels').length>ML?this.get('data_labels').length:ML;
 			}
 			
 			this.push('maxItemSize',ML);

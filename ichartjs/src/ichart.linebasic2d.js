@@ -43,7 +43,7 @@
 						 start_scale:1,
 						 scale:1,
 						 end_scale:this.get('maxItemSize'),
-						 labels:this.get('labels')
+						 labels:this.get('data_labels')
 					}]
 				},this.get('coordinate')),this);
 			
