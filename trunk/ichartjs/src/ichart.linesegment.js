@@ -36,7 +36,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			 */
 			point_hollow : true,
 			/**
-			 * @cfg {Number} Specifies the size of point.(default size 4).Only applies when intersection is true
+			 * @cfg {Number} Specifies the size of point.(default size 3).Only applies when intersection is true
 			 */
 			point_size : 3,
 			/**
@@ -78,15 +78,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			/**
 			 * @cfg {Number} Specifies the valid range of y-direction.(default to 0)
 			 */
-			event_range_y : 0,
-			/**
-			 * @cfg {Boolean} If true the linesegment will turn into a area.(default to false)
-			 */
-			area : false,
-			/**
-			 * @cfg {Float} Specifies the opacity of area.scope{0.1-1}(default to 0.4) Note:Only applies when area = true
-			 */
-			area_opacity : 0.4
+			event_range_y : 0
 		});
 
 		this.label = null;
