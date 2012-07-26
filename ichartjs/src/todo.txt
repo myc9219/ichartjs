@@ -2,16 +2,17 @@
 1.return the postion of component's important item
 2.gradient
 3.barmuti2d鼠标移动鼠标样式-cause by the sequence of event invoking
-Pie3D绘图层次有问题，需进一步分析。
-考虑将this.的属性全部去掉，以免设置属性不能同步
-注意可能由于多次操作导致浮动小数引起精度问题。
+4.Pie3D绘图层次有问题，需进一步分析。
+5.考虑分层
+6.考虑将this.的属性全部去掉，以免设置属性不能同步
+7.注意可能由于多次操作导致浮动小数引起精度问题?
+8.像数坐标由小数引起性能问题?
 
 line shadow-copy coordinate
 draw a ipad,then draw charts on ipad
 
-
 make a draggable bulider-must show a cool animation
-//简单、高效、美观//simple effective amazed
+//simple effective amazed
 
 Animation cost of firefox8.0(avg/estimated value):
 coloumn2d:30ms
