@@ -754,7 +754,7 @@ var iChart_ = (function(window) {//spirit from jquery
 			/**
 			 * static variable
 			 */
-			FRAME:isMobile?24:36,
+			FRAME:isMobile?24:54,
 			DefaultAnimationArithmetic:'Cubic'
 		});
 		
@@ -1559,8 +1559,8 @@ $.Html = $.extend($.Element,{
 				M = this.get('maxValue')<M?this.get('maxValue'):M;
 			}
 			
-			if($.isArray(this.get('labels'))){
-				ML = this.get('labels').length>ML?this.get('labels').length:ML;
+			if($.isArray(this.get('data_labels'))){
+				ML = this.get('data_labels').length>ML?this.get('data_labels').length:ML;
 			}
 			
 			this.push('maxItemSize',ML);
@@ -1608,7 +1608,7 @@ $.Html = $.extend($.Element,{
 			
 			
 			
-			this.push('minValue',MI);
+			this.push('minValue',MI); 
 			this.push('maxValue',M);
 			this.push('total',this.total);
 		};
@@ -3191,7 +3191,7 @@ $.Label = $.extend($.Component, {
 				 */
 				title_valign : 'top',
 				/**
-				 * @cfg {Boolean} If true element will has a animation when show, false to skip the animation.(default to false)
+				 * @cfg {Boolean} If true element will have a animation when show, false to skip the animation.(default to false)
 				 */
 				animation : false,
 				/**
@@ -3207,9 +3207,9 @@ $.Label = $.extend($.Component, {
 				 */
 				animation_timing_function : 'easeInOut',
 				/**
-				 * @cfg {Number} Specifies the duration when animation complete in millisecond.(default to 1600)
+				 * @cfg {Number} Specifies the duration when animation complete in millisecond.(default to 1000)
 				 */
-				duration_animation_duration : 1600,
+				duration_animation_duration : 1000,
 				/**
 				 * @cfg {Object}Specifies the config of Legend.For details see <link>$.Legend</link> Note:this has a extra property named 'enable',indicate whether legend available(default to false)
 				 */
@@ -3441,6 +3441,7 @@ $.Label = $.extend($.Component, {
 			_.processAnimation = _.get('animation');
 
 			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
+			
 			_.variable.animation = {
 				type : 0,
 				time : 0,
@@ -5983,7 +5984,7 @@ $.Bar = $.extend($.Chart, {
 			 */
 			barheight : undefined,
 			/**
-			 * @cfg {Number} Specifies the distance of column's bottom and text(default to 6)
+			 * @cfg {Number} Specifies the distance of bar's bottom and text(default to 6)
 			 */
 			text_space : 6,
 			/**
@@ -6492,7 +6493,7 @@ $.Line = $.extend($.Chart, {
 			/**
 			 * @cfg {Array} the array of labels close to the axis
 			 */
-			labels : [],
+			data_labels : [],
 			/**
 			 * @cfg {Number} the distance of column's bottom and text.(default to 6)
 			 */
@@ -6634,7 +6635,7 @@ $.Line = $.extend($.Chart, {
 						 start_scale:1,
 						 scale:1,
 						 end_scale:this.get('maxItemSize'),
-						 labels:this.get('labels')
+						 labels:this.get('data_labels')
 					}]
 				},this.get('coordinate')),this);
 			

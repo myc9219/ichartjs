@@ -299,7 +299,7 @@ function test(){
 			data: data4,
 			align:'center',
 			shadow:true,
-			labels:lineLabels1,
+			data_labels:lineLabels1,
 			listeners:{
 				parsePoint:function(v,x,y){
 					return {value:v+"℃"}
