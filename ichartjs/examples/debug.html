@@ -9,13 +9,11 @@
 		<script type="text/javascript" src="../src/ichart.core.js"></script>
 		<script type="text/javascript" src="../src/ichart.element.js"></script>
 		<script type="text/javascript" src="../src/ichart.html.js"></script>
-		<script type="text/javascript" src="../src/ichart.arithmetic.js"></script>
 		<script type="text/javascript" src="../src/ichart.painter.js"></script>
 		<script type="text/javascript" src="../src/ichart.component.js"></script>
 		<script type="text/javascript" src="../src/ichart.interface.js"></script>
 		<script type="text/javascript" src="../src/ichart.legend.js"></script>
 		<script type="text/javascript" src="../src/ichart.label.js"></script>
-		<script type="text/javascript" src="../src/ichart.style.js"></script>
 		<script type="text/javascript" src="../src/ichart.chart.js"></script>
 		<script type="text/javascript" src="../src/ichart.sector.js"></script>
 		<script type="text/javascript" src="../src/ichart.sector2d.js"></script>
@@ -94,8 +92,9 @@
 			column2d.on('afterAnimation',function(e){
 				column2d.END_RUN_TIME = new Date().getTime();
 				column2d.RUN_TIME_COST = column2d.END_RUN_TIME - column2d.START_RUN_TIME;
-				console.log(column2d.RUN_TIME_COST);
+				console.log("COST:"+column2d.RUN_TIME_COST+"ms,FPS:"+(column2d.duration*1000/column2d.RUN_TIME_COST));
 			});
+			
 			//开始画图
 			column2d.draw();
 		});
