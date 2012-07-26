@@ -61,13 +61,13 @@
 		           		color:'#2b7f39'
 		           	}
 		         ];
-		 var columnKeys = ["一月","二月","三月","四月","五月","六月"];
+		 var data_labels = ["一月","二月","三月","四月","五月","六月"];
 	 
 		$(function(){
 			var column2d = new iChart.BarMulti2D({
 				render : 'canvasDiv',
 				data: data,
-				columnKeys:columnKeys,
+				data_labels:data_labels,
 				animation:true,
 				coordinate:{
 					width:600,

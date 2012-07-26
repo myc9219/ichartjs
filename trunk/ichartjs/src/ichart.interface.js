@@ -53,14 +53,14 @@
 			return c;
 		},
 		complex = function(c,z){
-			this.columnKeys = this.get('columnKeys');
-			var M=0,MI=0,V,d,L=this.columnKeys.length;
+			this.data_labels = this.get('data_labels');
+			var M=0,MI=0,V,d,L=this.data_labels.length;
 			
 			this.data = this.data.concat(c);
 			
 			this.data.each(function(d,i){
-				iChart.merge(d,this.fireEvent(this,'parseData',[this,d,i,this.columnKeys]));
-				iChart.Assert.equal(d.value.length,L,this.type+':data length and columnKeys not corresponding.');
+				iChart.merge(d,this.fireEvent(this,'parseData',[this,d,i,this.data_labels]));
+				iChart.Assert.equal(d.value.length,L,this.type+':data length and data_labels not corresponding.');
 			},this);
 			
 			for(var i=0;i<L;i++){
@@ -83,14 +83,14 @@
 					});
 				}
 				this.columns.push({
-					name:this.columnKeys[i],
+					name:this.data_labels[i],
 					item:item
 				});
 			}
 			
 			
 			
-			this.push('minValue',MI);
+			this.push('minValue',MI); 
 			this.push('maxValue',M);
 			this.push('total',this.total);
 		};

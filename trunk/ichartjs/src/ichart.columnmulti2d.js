@@ -30,7 +30,7 @@
 			iChart.ColumnMulti2D.superclass.doConfig.call(this);
 			
 			var L = this.data.length,
-				KL= this.columnKeys.length,
+				KL= this.data_labels.length,
 				W = this.get('coordinate.width'),
 				H = this.get('coordinate.height'),
 				total = KL*L,

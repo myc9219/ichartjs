@@ -27,7 +27,7 @@ var data2 = [
 	}
 ];
 
-var columnKeys = ["北京","上海","广州","成都","深圳","哈尔滨"];
+var data_labels = ["北京","上海","广州","成都","深圳","哈尔滨"];
 var data3 = [
 	{
 		name : '北京',
@@ -144,7 +144,7 @@ var data9 = [
          	}
          ];
 
- var columnKeys1 = ["北京","上海","广州","成都","深圳"];
+ var data_labels1 = ["北京","上海","广州","成都","深圳"];
  var data10 = [
 				{name : '广州',value : 80,color:'#b36e0d'},
 				{name : '上海',value : 130,color:'#b32c0d'},
