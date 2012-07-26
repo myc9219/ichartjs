@@ -269,7 +269,7 @@ function test(){
 			title : {text: 'Test ColumnMulti2D'},
 			data: data2,
 			shadow:true,
-			columnKeys:columnKeys,
+			data_labels:data_labels,
 			align:'center',
 			coordinate:{
 				width:600,
@@ -427,7 +427,7 @@ function test(){
 			render :canvas,
 			title : {text: 'Test BarMulti2D'},
 			data: data9,
-			columnKeys:columnKeys1,
+			data_labels:data_labels1,
 			coordinate:{
 				scale:{
 					 position:'bottom',	

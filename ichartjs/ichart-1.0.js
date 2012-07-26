@@ -1571,14 +1571,14 @@ $.Html = $.extend($.Element,{
 			return c;
 		},
 		complex = function(c,z){
-			this.columnKeys = this.get('columnKeys');
-			var M=0,MI=0,V,d,L=this.columnKeys.length;
+			this.data_labels = this.get('data_labels');
+			var M=0,MI=0,V,d,L=this.data_labels.length;
 			
 			this.data = this.data.concat(c);
 			
 			this.data.each(function(d,i){
-				$.merge(d,this.fireEvent(this,'parseData',[this,d,i,this.columnKeys]));
-				$.Assert.equal(d.value.length,L,this.type+':data length and columnKeys not corresponding.');
+				$.merge(d,this.fireEvent(this,'parseData',[this,d,i,this.data_labels]));
+				$.Assert.equal(d.value.length,L,this.type+':data length and data_labels not corresponding.');
 			},this);
 			
 			for(var i=0;i<L;i++){
@@ -1601,7 +1601,7 @@ $.Html = $.extend($.Element,{
 					});
 				}
 				this.columns.push({
-					name:this.columnKeys[i],
+					name:this.data_labels[i],
 					item:item
 				});
 			}
@@ -5910,7 +5910,7 @@ $.Column2D = $.extend($.Column, {
 			$.ColumnMulti2D.superclass.doConfig.call(this);
 			
 			var L = this.data.length,
-				KL= this.columnKeys.length,
+				KL= this.data_labels.length,
 				W = this.get('coordinate.width'),
 				H = this.get('coordinate.height'),
 				total = KL*L,
@@ -6151,7 +6151,7 @@ $.Bar = $.extend($.Chart, {
 				$.BarMulti2D.superclass.doConfig.call(this);
 				
 				var L = this.data.length,
-					KL= this.columnKeys.length,
+					KL= this.data_labels.length,
 					W = this.coo.get('width'),
 					H = this.coo.get('height'),
 					total = KL*L,
