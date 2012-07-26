@@ -754,7 +754,7 @@ var iChart_ = (function(window) {//spirit from jquery
 			/**
 			 * static variable
 			 */
-			FRAME:isMobile?24:36,
+			FRAME:isMobile?24:54,
 			DefaultAnimationArithmetic:'Cubic'
 		});
 		

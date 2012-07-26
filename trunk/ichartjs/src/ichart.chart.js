@@ -729,9 +729,9 @@
 				 */
 				animation_timing_function : 'easeInOut',
 				/**
-				 * @cfg {Number} Specifies the duration when animation complete in millisecond.(default to 1600)
+				 * @cfg {Number} Specifies the duration when animation complete in millisecond.(default to 1000)
 				 */
-				duration_animation_duration : 1600,
+				duration_animation_duration : 1000,
 				/**
 				 * @cfg {Object}Specifies the config of Legend.For details see <link>iChart.Legend</link> Note:this has a extra property named 'enable',indicate whether legend available(default to false)
 				 */
@@ -963,6 +963,7 @@
 			_.processAnimation = _.get('animation');
 
 			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
+			
 			_.variable.animation = {
 				type : 0,
 				time : 0,
