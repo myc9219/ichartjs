@@ -71,9 +71,7 @@
 		 */
 		this.data = this.get('data');
 	
-		if (this.is3D()) {
-			iChart.Interface._3D.call(this);
-		}
+		iChart.Interface._3D.call(this);
 		
 		if (this.get('tip.enable')) {
 			/**

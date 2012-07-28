@@ -103,7 +103,7 @@
 				}
 			},
 			_3D:function(){
-				if(this.is3D()){
+				if(this.is3D()&&!this.get('xAngle_')){
 					var P = iChart.vectorP2P(this.get('xAngle'),this.get('yAngle'));
 					this.push('xAngle_',P.x);
 					this.push('yAngle_',P.y);

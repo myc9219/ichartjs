@@ -49,56 +49,58 @@
 		}
 	</style>
 	<script type="text/javascript">
-		var data = [
-		        	{
-		           		name : 'DPS01A',
-		           		value:[45,52,54,74,90,84],
-		           		color:'#1f7e92'
-		           	},
-		           	{
-		           		name : 'DPS01B',
-		           		value:[60,80,105,125,108,120],
-		           		color:'#2b7f39'
-		           	}
-		         ];
-		 var data_labels = ["一月","二月","三月","四月","五月","六月"];
-	 
 		$(function(){
-			var column2d = new iChart.BarMulti2D({
+			var data = [
+			        	{name : 'IE',value : 35.75,color:'#bc6666'},
+			        	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
+			        	{name : 'Firefox',value : 24.88,color:'#76a871'},
+			        	{name : 'Safari',value : 6.77,color:'#9f7961'},
+			        	{name : 'Opera',value : 2.02,color:'#2ba5a4'},
+			        	{name : 'Other',value : 0.73,color:'#6f83a5'}
+		        	];
+	    	
+			var chart = new iChart.Column3D({
 				render : 'canvasDiv',
 				data: data,
-				data_labels:data_labels,
-				animation:true,
+				title : {text:'Top 5 Browsers from 1 to 29 Feb 2012'},
+				showpercent:true,
+				decimalsnum:2,
+				xAngle:10,
+				width : 800,
+				height : 400,
+				legend : {
+					enable : true
+				},
 				coordinate:{
 					width:600,
-					height:400,
-					scale:{
-						 position:'bottom',	
-						 start_scale:30,
-						 end_scale:150,
-						 scale_space:30
-					}
-				},
-				title : {text:'BarMulti2D Sample'},
-				width : 800,
-				height : 600
+					scale:[{
+						 position:'left',	
+						 start_scale:0,
+						 end_scale:40,
+						 scale_space:8,
+						 listeners:{
+							parseText:function(t,x,y){
+								return {text:t+"%"}
+							}
+						}
+					}]
+				}
 			});
-
-			column2d.on('beforeAnimation',function(e){
-				column2d.START_RUN_TIME = new Date().getTime();
+	
+			chart.on('beforeAnimation',function(e){
+				chart.START_RUN_TIME = new Date().getTime();
 				return true;
 			});
 			
-			column2d.on('afterAnimation',function(e){
-				column2d.END_RUN_TIME = new Date().getTime();
-				column2d.RUN_TIME_COST = column2d.END_RUN_TIME - column2d.START_RUN_TIME;
-				console.log("COST:"+column2d.RUN_TIME_COST+"ms,FPS:"+(column2d.duration*1000/column2d.RUN_TIME_COST));
+			chart.on('afterAnimation',function(e){
+				chart.END_RUN_TIME = new Date().getTime();
+				chart.RUN_TIME_COST = chart.END_RUN_TIME - chart.START_RUN_TIME;
+				console.log("COST:"+chart.RUN_TIME_COST+"ms,FPS:"+(chart.duration*1000/chart.RUN_TIME_COST));
 			});
 			
 			//开始画图
-			column2d.draw();
+			chart.draw();
 		});
-			
 		</script>
 	</head>
 	<body>
