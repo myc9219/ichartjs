@@ -648,7 +648,7 @@
 				 */
 				decimalsnum : 1,
 				/**
-				 * @cfg {Object}Specifies the config of Title details see <link>iChart.Text</link> note:If the text is empty,then will not display
+				 * @cfg {Object/String} Specifies the config of Title details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
 				 */
 				title : {
 					text:'',
@@ -663,7 +663,7 @@
 					height : 30
 				},
 				/**
-				 * @cfg {Object}Specifies the config of subtitle details see <link>iChart.Text</link> note:If the title or subtitle'text is empty,then will not display
+				 * @cfg {Object/String}Specifies the config of subtitle details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the title or subtitle'text is empty,then will not display
 				 */
 				subtitle : {
 					text:'',
@@ -678,7 +678,7 @@
 					height : 20
 				},
 				/**
-				 * @cfg {Object}Specifies the config of footnote details see <link>iChart.Text</link> note:If the text is empty,then will not display
+				 * @cfg {Object/String}Specifies the config of footnote details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
 				 */
 				footnote : {
 					text:'',
@@ -1052,6 +1052,29 @@
 			_.push('b_originy', _.height - _.get('padding_bottom'));
 			_.push('client_width', (_.get('width') - _.get('hpadding')));
 			var H = 0;
+			if($.isString(_.get('title'))){
+				_.push('title',{
+					text:_.get('title'),
+					fontweight : 'bold',
+					fontsize : 20,
+					height : 30
+				});
+			}
+			if($.isString(_.get('subtitle'))){
+				_.push('subtitle',{
+					text:_.get('subtitle'),
+					fontweight : 'bold',
+					fontsize : 16,
+					height : 20
+				});
+			}
+			if($.isString(_.get('footnote'))){
+				_.push('footnote',{
+					text:_.get('footnote'),
+					color : '#5d7f97',
+					height : 20
+				});
+			}
 			
 			if (_.get('title.text') != '') {
 				var st = _.get('subtitle.text') != '';
