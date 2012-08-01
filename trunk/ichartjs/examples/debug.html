@@ -59,31 +59,17 @@
 			        	{name : 'Other',value : 0.73,color:'#6f83a5'}
 		        	];
 	    	
-			var chart = new iChart.Column3D({
+			var chart = new iChart.Bar2D({
 				render : 'canvasDiv',
 				data: data,
-				title : {text:'Top 5 Browsers from 1 to 29 Feb 2012'},
+				title : 'Top 5 Browsers from 1 to 29 Feb 2012',
 				showpercent:true,
 				decimalsnum:2,
-				xAngle:10,
 				width : 800,
 				height : 400,
+				scaleAlign:'top',
 				legend : {
 					enable : true
-				},
-				coordinate:{
-					width:600,
-					scale:[{
-						 position:'left',	
-						 start_scale:0,
-						 end_scale:40,
-						 scale_space:8,
-						 listeners:{
-							parseText:function(t,x,y){
-								return {text:t+"%"}
-							}
-						}
-					}]
 				}
 			});
 	

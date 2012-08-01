@@ -43,7 +43,6 @@
 			this.T.text(this.get('value'),this.centerX,this.topCenterY + this.get('value_space'),false,this.get('color'),'center','top',this.get('fontStyle'));
 		},
 		drawRectangle:function(){
-			console.log(this.get('xAngle_'));
 			this.T.cube(
 				this.get('originx'),
 				this.get('originy'),

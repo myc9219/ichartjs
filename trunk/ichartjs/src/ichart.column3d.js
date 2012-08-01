@@ -37,7 +37,6 @@
 		},
 		doConfig:function(){
 			iChart.Column3D.superclass.doConfig.call(this);
-			console.log(this.get('xAngle_'));
 			/**
 			 * quick config to all rectangle
 			 */
