@@ -42,7 +42,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			pop_animate : false,
 			/**
-			 * @cfg {Boolean} Specifies as true it means just one piece could pop (default to true)
+			 * @cfg {Boolean} Specifies as true it means just one piece could pop (default to false)
 			 */
 			mutex : false,
 			/**
