@@ -145,7 +145,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 	 * 按照从左自右,从上至下原则
 	 */
 	doDraw : function() {
-		var x = y = x0 = y0 = tx = ty = 0, w = this.get('scale_width'), w2 = w / 2, sa = this.get('scaleAlign'), ta = this.get('textAlign'), ts = this.get('text_space');
+		var x = 0,y = 0,x0 = 0,y0 = 0,tx = 0,ty = 0, w = this.get('scale_width'), w2 = w / 2, sa = this.get('scaleAlign'), ta = this.get('textAlign'), ts = this.get('text_space');
 		if (this.isH) {
 			if (sa == 'top') {
 				y = -w;
@@ -275,9 +275,12 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		/**
 		 * what does follow code doing?
 		 */
-		this.left = this.right = this.top = this.bottom = 0, ts = this.get('text_space');
-		ta = this.get('textAlign');
-		sa = this.get('scaleAlign'), w = this.get('scale_width'), w2 = w / 2;
+		this.left = this.right = this.top = this.bottom = 0;
+		var ts = this.get('text_space'),
+		ta = this.get('textAlign'),
+		sa = this.get('scaleAlign'), 
+		w = this.get('scale_width'),
+		w2 = w / 2;
 
 		if (this.isH) {
 			if (sa == 'top') {
@@ -541,7 +544,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 
 				var jp, cg = !!(this.get('gridlinesVisible') && this.get('grids')), // custom grid
 				hg = cg && !!this.get('grids.horizontal'), vg = cg && !!this.get('grids.vertical'), h = this.get('height'), w = this.get('width'), vw = this.get('valid_width'), vh = this.get('valid_height'), k2g = this.get('gridlinesVisible') && this.get('scale2grid')
-						&& !(hg && vg), sw = (w - vw) / 2;
+						&& !(hg && vg), sw = (w - vw) / 2,
 				sh = (h - vh) / 2, axis = this.get('axis.width');
 
 				if (!iChart.isArray(this.get('scale'))) {
