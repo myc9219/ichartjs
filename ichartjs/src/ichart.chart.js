@@ -498,7 +498,8 @@
 				this.strokeStyle(linewidth,bcolor);
 				this.c.strokeRect(0, 0, w, h);
 			}
-
+			
+			if(bgcolor)
 			this.c.fillRect(0, 0, w, h);
 
 			if (border && $.isArray(linewidth)) {

@@ -59,15 +59,19 @@
 			        	{name : 'Other',value : 0.73,color:'#6f83a5'}
 		        	];
 	    	
-			var chart = new iChart.Bar2D({
+			var chart = new iChart.Column3D({
 				render : 'canvasDiv',
 				data: data,
 				title : 'Top 5 Browsers from 1 to 29 Feb 2012',
 				showpercent:true,
+				offsetx:-30,
+				coordinate:{
+					width:600
+					//alternate_color:false
+				},
 				decimalsnum:2,
 				width : 800,
 				height : 400,
-				scaleAlign:'top',
 				legend : {
 					enable : true
 				}
@@ -87,6 +91,9 @@
 			//开始画图
 			chart.draw();
 		});
+		
+		
+		
 		</script>
 	</head>
 	<body>
