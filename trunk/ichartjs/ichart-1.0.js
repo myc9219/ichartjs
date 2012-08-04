@@ -1475,9 +1475,7 @@ $.Html = $.extend($.Element,{
 		 */
 		this.data = this.get('data');
 	
-		if (this.is3D()) {
-			$.Interface._3D.call(this);
-		}
+		$.Interface._3D.call(this);
 		
 		if (this.get('tip.enable')) {
 			/**
@@ -1621,7 +1619,7 @@ $.Html = $.extend($.Element,{
 				}
 			},
 			_3D:function(){
-				if(this.is3D()){
+				if(this.is3D()&&!this.get('xAngle_')){
 					var P = $.vectorP2P(this.get('xAngle'),this.get('yAngle'));
 					this.push('xAngle_',P.x);
 					this.push('yAngle_',P.y);
@@ -2976,7 +2974,8 @@ $.Label = $.extend($.Component, {
 				this.strokeStyle(linewidth,bcolor);
 				this.c.strokeRect(0, 0, w, h);
 			}
-
+			
+			if(bgcolor)
 			this.c.fillRect(0, 0, w, h);
 
 			if (border && $.isArray(linewidth)) {
@@ -3126,7 +3125,7 @@ $.Label = $.extend($.Component, {
 				 */
 				decimalsnum : 1,
 				/**
-				 * @cfg {Object}Specifies the config of Title details see <link>$.Text</link> note:If the text is empty,then will not display
+				 * @cfg {Object/String} Specifies the config of Title details see <link>$.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
 				 */
 				title : {
 					text:'',
@@ -3141,7 +3140,7 @@ $.Label = $.extend($.Component, {
 					height : 30
 				},
 				/**
-				 * @cfg {Object}Specifies the config of subtitle details see <link>$.Text</link> note:If the title or subtitle'text is empty,then will not display
+				 * @cfg {Object/String}Specifies the config of subtitle details see <link>$.Text</link>,If given a string,it will only apply the text.note:If the title or subtitle'text is empty,then will not display
 				 */
 				subtitle : {
 					text:'',
@@ -3156,7 +3155,7 @@ $.Label = $.extend($.Component, {
 					height : 20
 				},
 				/**
-				 * @cfg {Object}Specifies the config of footnote details see <link>$.Text</link> note:If the text is empty,then will not display
+				 * @cfg {Object/String}Specifies the config of footnote details see <link>$.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
 				 */
 				footnote : {
 					text:'',
@@ -3434,6 +3433,7 @@ $.Label = $.extend($.Component, {
 			var _ = this, E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
 
 			$.Assert.isArray(_.data);
+			
 			$.Interface._3D.call(_);
 
 			_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
@@ -3529,6 +3529,29 @@ $.Label = $.extend($.Component, {
 			_.push('b_originy', _.height - _.get('padding_bottom'));
 			_.push('client_width', (_.get('width') - _.get('hpadding')));
 			var H = 0;
+			if($.isString(_.get('title'))){
+				_.push('title',{
+					text:_.get('title'),
+					fontweight : 'bold',
+					fontsize : 20,
+					height : 30
+				});
+			}
+			if($.isString(_.get('subtitle'))){
+				_.push('subtitle',{
+					text:_.get('subtitle'),
+					fontweight : 'bold',
+					fontsize : 16,
+					height : 20
+				});
+			}
+			if($.isString(_.get('footnote'))){
+				_.push('footnote',{
+					text:_.get('footnote'),
+					color : '#5d7f97',
+					height : 20
+				});
+			}
 			
 			if (_.get('title.text') != '') {
 				var st = _.get('subtitle.text') != '';
@@ -3800,7 +3823,7 @@ $.Scale = $.extend($.Component, {
 	 * 按照从左自右,从上至下原则
 	 */
 	doDraw : function() {
-		var x = y = x0 = y0 = tx = ty = 0, w = this.get('scale_width'), w2 = w / 2, sa = this.get('scaleAlign'), ta = this.get('textAlign'), ts = this.get('text_space');
+		var x = 0,y = 0,x0 = 0,y0 = 0,tx = 0,ty = 0, w = this.get('scale_width'), w2 = w / 2, sa = this.get('scaleAlign'), ta = this.get('textAlign'), ts = this.get('text_space');
 		if (this.isH) {
 			if (sa == 'top') {
 				y = -w;
@@ -3930,9 +3953,12 @@ $.Scale = $.extend($.Component, {
 		/**
 		 * what does follow code doing?
 		 */
-		this.left = this.right = this.top = this.bottom = 0, ts = this.get('text_space');
-		ta = this.get('textAlign');
-		sa = this.get('scaleAlign'), w = this.get('scale_width'), w2 = w / 2;
+		this.left = this.right = this.top = this.bottom = 0;
+		var ts = this.get('text_space'),
+		ta = this.get('textAlign'),
+		sa = this.get('scaleAlign'), 
+		w = this.get('scale_width'),
+		w2 = w / 2;
 
 		if (this.isH) {
 			if (sa == 'top') {
@@ -4122,8 +4148,7 @@ $.Coordinate2D = $.extend($.Component,
 				};
 			},
 			doDraw : function(opts) {
-				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), this.get('fill_color'), this.get('axis.enable'), this.get('axis.width'), this.get('axis.color'), this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this
-						.get('shadow_offsetx'), this.get('shadow_offsety'));
+				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), this.get('fill_color'));
 				
 				if (this.get('alternate_color')) {
 					var x, y, f = false, axis = [0, 0, 0, 0], c = $.dark(this.get('fill_color'),this.get('alternate_color_factor'));
@@ -4150,6 +4175,11 @@ $.Coordinate2D = $.extend($.Component,
 					}
 					this.T.line(gl[i].x1, gl[i].y1, gl[i].x2, gl[i].y2, glw, this.get('grid_color'));
 				}
+				
+				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), false, this.get('axis.enable'), this.get('axis.width'), this.get('axis.color'), this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this
+						.get('shadow_offsetx'), this.get('shadow_offsety'));
+				
+				
 				for ( var i = 0; i < this.scale.length; i++) {
 					this.scale[i].draw();
 				}
@@ -4163,13 +4193,6 @@ $.Coordinate2D = $.extend($.Component,
 				 * this element not atomic because it is a container,so this is a particular case.
 				 */
 				this.atomic = false;
-
-				if (!this.get('valid_width') || this.get('valid_width') > this.get('width')) {
-					this.push('valid_width', this.get('width'));
-				}
-				if (!this.get('valid_height') || this.get('valid_height') > this.get('height')) {
-					this.push('valid_height', this.get('height'));
-				}
 
 				/**
 				 * apply the gradient color to fill_color
@@ -4196,7 +4219,7 @@ $.Coordinate2D = $.extend($.Component,
 
 				var jp, cg = !!(this.get('gridlinesVisible') && this.get('grids')), // custom grid
 				hg = cg && !!this.get('grids.horizontal'), vg = cg && !!this.get('grids.vertical'), h = this.get('height'), w = this.get('width'), vw = this.get('valid_width'), vh = this.get('valid_height'), k2g = this.get('gridlinesVisible') && this.get('scale2grid')
-						&& !(hg && vg), sw = (w - vw) / 2;
+						&& !(hg && vg), sw = (w - vw) / 2,
 				sh = (h - vh) / 2, axis = this.get('axis.width');
 
 				if (!$.isArray(this.get('scale'))) {
@@ -5279,7 +5302,7 @@ $.Pie = $.extend($.Chart, {
 			 */
 			pop_animate : false,
 			/**
-			 * @cfg {Boolean} Specifies as true it means just one piece could pop (default to true)
+			 * @cfg {Boolean} Specifies as true it means just one piece could pop (default to false)
 			 */
 			mutex : false,
 			/**
@@ -5844,7 +5867,6 @@ $.Column2D = $.extend($.Column, {
 		},
 		doConfig:function(){
 			$.Column3D.superclass.doConfig.call(this);
-			
 			/**
 			 * quick config to all rectangle
 			 */

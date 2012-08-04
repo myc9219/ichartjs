@@ -470,8 +470,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				};
 			},
 			doDraw : function(opts) {
-				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), this.get('fill_color'), this.get('axis.enable'), this.get('axis.width'), this.get('axis.color'), this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this
-						.get('shadow_offsetx'), this.get('shadow_offsety'));
+				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), this.get('fill_color'));
 				
 				if (this.get('alternate_color')) {
 					var x, y, f = false, axis = [0, 0, 0, 0], c = iChart.dark(this.get('fill_color'),this.get('alternate_color_factor'));
@@ -498,6 +497,11 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					}
 					this.T.line(gl[i].x1, gl[i].y1, gl[i].x2, gl[i].y2, glw, this.get('grid_color'));
 				}
+				
+				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), false, this.get('axis.enable'), this.get('axis.width'), this.get('axis.color'), this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this
+						.get('shadow_offsetx'), this.get('shadow_offsety'));
+				
+				
 				for ( var i = 0; i < this.scale.length; i++) {
 					this.scale[i].draw();
 				}
@@ -511,13 +515,6 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				 * this element not atomic because it is a container,so this is a particular case.
 				 */
 				this.atomic = false;
-
-				if (!this.get('valid_width') || this.get('valid_width') > this.get('width')) {
-					this.push('valid_width', this.get('width'));
-				}
-				if (!this.get('valid_height') || this.get('valid_height') > this.get('height')) {
-					this.push('valid_height', this.get('height'));
-				}
 
 				/**
 				 * apply the gradient color to fill_color
