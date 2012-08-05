@@ -51,49 +51,65 @@
 	<script type="text/javascript">
 		$(function(){
 			var data = [
-			        	{name : 'IE',value : 35.75,color:'#bc6666'},
-			        	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
-			        	{name : 'Firefox',value : 24.88,color:'#76a871'},
-			        	{name : 'Safari',value : 6.77,color:'#9f7961'},
-			        	{name : 'Opera',value : 2.02,color:'#2ba5a4'},
-			        	{name : 'Other',value : 0.73,color:'#6f83a5'}
-		        	];
-	    	
-			var chart = new iChart.Column3D({
+			         	{
+			         		name : '北京',
+			         		value:[8,12,14,20,26,28,30,31,32,34,36,40,40,38,37,34,38,30,34,29,33,26,28,31,32,34,36,40,40,38,37,34,38,30,34,29,33,26,28,30,26,28,32,26,30,28,22,24,20,28,22,30,28,22,24,20,28,22,24,20,26,28,30,26,28,20,16,15,14,20,26,28,30,26,28,20,16],
+			         		color:'#0d8ecf',
+			         		linewidth:2
+			         	}
+			         ];
+	         
+			var labels = ["2012-08-01","2012-08-02","2012-08-03","2012-08-04","2012-08-05"];
+			
+			var line = new iChart.LineBasic2D({
 				render : 'canvasDiv',
 				data: data,
-				title : 'Top 5 Browsers from 1 to 29 Feb 2012',
-				showpercent:true,
-				offsetx:-30,
-				coordinate:{
-					width:600
-					//alternate_color:false
-				},
-				decimalsnum:2,
+				align:'center',
+				title : '最近5天流量趋势',
 				width : 800,
 				height : 400,
-				legend : {
-					enable : true
+				tip:{
+					enable:true,
+					shadow:true
+				},
+				segment_style:{
+					brushsize:2
+				},
+				coordinate:{
+					width:640,
+					height:260,
+					axis:{
+						color:'#9f9f9f',
+						width:[0,0,2,2]
+					},
+					grids:{
+						vertical:{
+							way:'share_alike',
+					 		value:4
+						}
+					},
+					crosshair:{
+						enable:true
+					},
+					scale:[{
+						 position:'left',	
+						 start_scale:0,
+						 end_scale:100,
+						 scale_size:2,
+						 scale_color:'#9f9f9f',
+						 scale:4
+					},{
+						 position:'bottom',	
+						 start_scale:1,
+						 end_scale:5,
+						 labels:labels
+					}]
 				}
 			});
-	
-			chart.on('beforeAnimation',function(e){
-				chart.START_RUN_TIME = new Date().getTime();
-				return true;
-			});
-			
-			chart.on('afterAnimation',function(e){
-				chart.END_RUN_TIME = new Date().getTime();
-				chart.RUN_TIME_COST = chart.END_RUN_TIME - chart.START_RUN_TIME;
-				console.log("COST:"+chart.RUN_TIME_COST+"ms,FPS:"+(chart.duration*1000/chart.RUN_TIME_COST));
-			});
-			
-			//开始画图
-			chart.draw();
-		});
 		
-		
-		
+		//开始画图
+		line.draw();
+	});
 		</script>
 	</head>
 	<body>
