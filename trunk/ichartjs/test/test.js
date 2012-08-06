@@ -45,6 +45,15 @@ function result(succ,type,costOrCause){
 	canvas.innerHTML = "";
 }
 function start(){
+	
+	new iChart.Pie2D({
+		render :canvas,
+		title : 'Test Pie2D',
+		data:data,
+		radius:140,
+		offsetAngle:45
+	}).draw();
+	
 	setTimeout(function(){
 		try {
 			if(unit.length==0){
