@@ -475,9 +475,7 @@
 			return this.beginPath().strokeStyle(w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke().restore();
 		},
 		round : function(x, y, r, c, bw, bc) {
-			this.beginPath().fillStyle(c);
-			this.c.arc(x, y, r, 0, PI2, false);
-			return this.closePath().fill().strokeStyle(bw,bc).stroke();
+			return this.arc(x, y, r, 0, PI2, c, !!bc, bw, bc);
 		},
 		fillRect:function(x, y, w, h){
 			this.c.fillRect(x, y, w, h);
@@ -500,7 +498,7 @@
 			}
 			
 			if(bgcolor)
-			this.c.fillRect(0, 0, w, h);
+			this.fillRect(0, 0, w, h);
 
 			if (border && $.isArray(linewidth)) {
 				this.strokeStyle(null,bcolor)
@@ -570,7 +568,7 @@
 				 */
 				this.shadowOn(shadow, scolor, blur, offsetx, offsety);
 				if (bgcolor) {
-					this.c.fillRect(0, 0, w, h);
+					this.fillRect(0, 0, w, h);
 				}
 				if (shadow)
 					this.shadowOff();

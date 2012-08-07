@@ -2951,9 +2951,7 @@ $.Label = $.extend($.Component, {
 			return this.beginPath().strokeStyle(w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke().restore();
 		},
 		round : function(x, y, r, c, bw, bc) {
-			this.beginPath().fillStyle(c);
-			this.c.arc(x, y, r, 0, PI2, false);
-			return this.closePath().fill().strokeStyle(bw,bc).stroke();
+			return this.arc(x, y, r, 0, PI2, c, !!bc, bw, bc);
 		},
 		fillRect:function(x, y, w, h){
 			this.c.fillRect(x, y, w, h);
@@ -2976,7 +2974,7 @@ $.Label = $.extend($.Component, {
 			}
 			
 			if(bgcolor)
-			this.c.fillRect(0, 0, w, h);
+			this.fillRect(0, 0, w, h);
 
 			if (border && $.isArray(linewidth)) {
 				this.strokeStyle(null,bcolor)
@@ -3046,7 +3044,7 @@ $.Label = $.extend($.Component, {
 				 */
 				this.shadowOn(shadow, scolor, blur, offsetx, offsety);
 				if (bgcolor) {
-					this.c.fillRect(0, 0, w, h);
+					this.fillRect(0, 0, w, h);
 				}
 				if (shadow)
 					this.shadowOff();
@@ -6494,6 +6492,13 @@ $.Line = $.extend($.Chart, {
 			 	}
 			},
 			/**
+			 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>$.CrossHair</link>
+			 * Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
+			 */
+			crosshair : {
+				enable : false
+			},
+			/**
 			 * @cfg {String} the align of scale.(default to 'left') Available value are:
 			 * @Option 'left'
 			 * @Option 'right'
@@ -6562,32 +6567,34 @@ $.Line = $.extend($.Chart, {
 		 */
 		$.Interface.coordinate.call(this);
 
-		this.push('line_start', (this.get('coordinate.width') - this.get('coordinate.valid_width')) / 2);
-		this.push('line_end', this.get('coordinate.width') - this.get('line_start'));
+		var _ = this,s=_.data.length == 1;
+		
+		_.push('line_start', (_.get('coordinate.width') - _.get('coordinate.valid_width')) / 2);
+		_.push('line_end', _.get('coordinate.width') - _.get('line_start'));
 
-		if (this.get('proportional_spacing'))
-			this.push('label_spacing', this.get('coordinate.valid_width') / (this.get('maxItemSize') - 1));
+		if (_.get('proportional_spacing'))
+			_.push('label_spacing', _.get('coordinate.valid_width') / (_.get('maxItemSize') - 1));
 
-		this.push('segment_style.originx', this.get('originx') + this.get('line_start'));
+		_.push('segment_style.originx', _.get('originx') + _.get('line_start'));
 
 		/**
 		 * y also has line_start and line end
 		 */
-		this.push('segment_style.originy', this.get('originy') + this.get('coordinate.height'));
+		_.push('segment_style.originy', _.get('originy') + _.get('coordinate.height'));
 
-		this.push('segment_style.width', this.get('coordinate.valid_width'));
-		this.push('segment_style.height', this.get('coordinate.valid_height'));
+		_.push('segment_style.width', _.get('coordinate.valid_width'));
+		_.push('segment_style.height', _.get('coordinate.valid_height'));
 
-		this.push('segment_style.limit_y', this.data.length > 1);
+		_.push('segment_style.limit_y', !s);
 
-		this.push('segment_style.keep_with_coordinate', this.data.length == 1);
+		_.push('segment_style.keep_with_coordinate', s);
 
-		var single = this.data.length == 1, self = this;
-
-		if (this.get('coordinate.crosshair.enable')) {
-			this.push('coordinate.crosshair.hcross', single);
-			this.push('coordinate.crosshair.invokeOffset', function(e, m) {
-				var r = self.lines[0].isEventValid(e);
+		
+		if(_.get('crosshair.enable')){
+			_.push('coordinate.crosshair', _.get('crosshair'));
+			_.push('coordinate.crosshair.hcross',s);
+			_.push('coordinate.crosshair.invokeOffset', function(e, m) {
+				var r = _.lines[0].isEventValid(e);
 					/**
 					 * TODO how fire muti line?
 					 */
@@ -6598,7 +6605,7 @@ $.Line = $.extend($.Chart, {
 		/**
 		 * quick config to all linesegment
 		 */
-		$.apply(this.get('segment_style'), $.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor','tip'], this.options));
+		$.apply(_.get('segment_style'), $.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor','tip'], _.options));
 		
 	}
 
