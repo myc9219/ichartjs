@@ -16,13 +16,13 @@
 		         	}
 	         ];	
 	         
-			var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+			var data_labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 			
 			$(function(){
 				new iChart.Area2D({
 						render : 'canvasDiv',
 						data: data,
-						title : {text:'Average Temperature Of 2012'},
+						title : 'Average Temperature Of 2012',
 						width : 800,
 						height : 400,
 						legend : {
@@ -33,7 +33,7 @@
 						},
 						listeners:{
 							parseTipText:function(d,t,i){
-								return labels[i]+"平均温度:"+t+"℃";
+								return data_labels[i]+"平均温度:"+t+"℃";
 							}
 						},
 						coordinate:{
@@ -75,13 +75,13 @@
    		color:'<span class='ichartjs_string'>#c0abf1</span>'
    	}
   ];
-<span class='ichartjs_keyword'>var</span> labels = ["<span class='ichartjs_string'>一月</span>","<span class='ichartjs_string'>二月</span>","<span class='ichartjs_string'>三月</span>","<span class='ichartjs_string'>四月</span>","<span class='ichartjs_string'>五月</span>","<span class='ichartjs_string'>六月</span>",
+<span class='ichartjs_keyword'>var</span> data_labels = ["<span class='ichartjs_string'>一月</span>","<span class='ichartjs_string'>二月</span>","<span class='ichartjs_string'>三月</span>","<span class='ichartjs_string'>四月</span>","<span class='ichartjs_string'>五月</span>","<span class='ichartjs_string'>六月</span>",
 			"<span class='ichartjs_string'>七月</span>","<span class='ichartjs_string'>八月</span>","<span class='ichartjs_string'>九月</span>","<span class='ichartjs_string'>十月</span>","<span class='ichartjs_string'>十一月</span>","<span class='ichartjs_string'>十二月</span>"];
 $(<span class='ichartjs_keyword'>function</span>(){	
 	<span class='ichartjs_keyword'>new</span> iChart.Area2D({
 		render : '<span class='ichartjs_string'>canvasDiv</span>',
 		data: data,
-		title : {text:'<span class='ichartjs_string'>Average Temperature Of 2012</span>'},
+		title : '<span class='ichartjs_string'>Average Temperature Of 2012</span>',
 		width : 800,
 		height : 400,
 		legend : {
@@ -92,7 +92,7 @@ $(<span class='ichartjs_keyword'>function</span>(){
 		},
 		listeners:{
 			parseTipText:<span class='ichartjs_keyword'>function</span>(d,t,i){
-				<span class='ichartjs_keyword'>return</span> labels[i]+<span class='ichartjs_string'>份平均温度:</span>+t+"<span class='ichartjs_string'>℃</span>";
+				<span class='ichartjs_keyword'>return</span> data_labels[i]+<span class='ichartjs_string'>份平均温度:</span>+t+"<span class='ichartjs_string'>℃</span>";
 			}
 		},
 		coordinate:{

@@ -18,10 +18,10 @@
 				        	{name : 'Opera',value : 2.02,color:'#a56f8f'}
 			        	];
 	        	
-				var chart = new iChart.Pie2D({
+				new iChart.Pie2D({
 					render : 'canvasDiv',
 					data: data,
-					title : {text:'Top 5 Browsers from 1 to 29 Feb 2012'},
+					title : 'Top 5 Browsers from 1 to 29 Feb 2012',
 					legend : {
 						enable : true
 					},
@@ -31,9 +31,7 @@
 					width : 800,
 					height : 500,
 					radius:140
-				});
-				
-				chart.draw();
+				}).draw();
 			});
 		</script>
 	</head>
@@ -66,7 +64,7 @@ $(<span class='ichartjs_keyword'>function</span>(){
 	<span class='ichartjs_keyword'>new</span> iChart.Pie2D({
 		render : '<span class='ichartjs_string'>canvasDiv</span>',
 		data: data,
-		title : {text:'<span class='ichartjs_string'>Top 5 Browsers from 1 to 29 Feb 2012</span>'},
+		title : '<span class='ichartjs_string'>Top 5 Browsers from 1 to 29 Feb 2012</span>',
 		legend : {
 			enable : <span class='ichartjs_keyword'>true</span>
 		},
