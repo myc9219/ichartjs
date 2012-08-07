@@ -13,7 +13,7 @@
 						for(var i=0;i<61;i++){
 							t = Math.floor(Math.random()*(30+((i%12)*5)))+10;
 							pv.push(t);
-							t = Math.floor(t*0.8);
+							t = Math.floor(t*0.5);
 							t = t-Math.floor((Math.random()*t)/2);
 							ip.push(t);
 						}
@@ -39,7 +39,7 @@
 							data: data,
 							align:'center',
 							title : 'ichartjs官方网站最近5天流量趋势',
-							subtitle : '平均18:00-22:00访问量达到最大值(单位：万)',
+							subtitle : '平均每个人访问2-3个页面(访问量单位：万)',
 							footnote : '数据来源：模拟数据',
 							width : 800,
 							height : 400,
@@ -102,15 +102,25 @@
 <!-- the source code -->
 <div id='ichartjs_code'>
 $(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>var</span> flow=[];
+	<span class='ichartjs_keyword'>var</span> pv=[],ip=[],t;
 	for(<span class='ichartjs_keyword'>var</span> i=0;i<61;i++){
-		flow.push(Math.floor(Math.random()*(30+((i%12)*5)))+10);
+		t = Math.floor(Math.random()*(30+((i%12)*5)))+10;
+		pv.push(t);
+		t = Math.floor(t*0.5);
+		t = t-Math.floor((Math.random()*t)/2);
+		ip.push(t);
 	}
 	<span class='ichartjs_keyword'>var</span> data = [
 	         	{
 	         		name : '<span class='ichartjs_string'>PV</span>',
 	         		value:flow,
 	         		color:'<span class='ichartjs_string'>#0d8ecf</span>',
+	         		linewidth:2
+	         	},
+	         	{
+	         		name : '<span class='ichartjs_string'>IP</span>',
+	         		value:ip,
+	         		color:'<span class='ichartjs_string'>#ef7707</span>',
 	         		linewidth:2
 	         	}
 	         ];
@@ -119,17 +129,20 @@ $(<span class='ichartjs_keyword'>function</span>(){
 		render : 'canvasDiv',
 		data: data,
 		align:'center',
-		title : '<span class='ichartjs_string'>ichartjs官方网站最近5天PV流量趋势</span>',
-		subtitle : '<span class='ichartjs_string'>平均18:00-22:00访问量达到最大值(单位：万)</span>',
+		title : '<span class='ichartjs_string'>ichartjs官方网站最近5天流量趋势</span>',
+		subtitle : '<span class='ichartjs_string'>平均每个人访问2-3个页面(访问量单位：万)</span>',
 		footnote : '<span class='ichartjs_string'>数据来源：模拟数据</span>',
 		width : 800,
 		height : 400,
 		tip:{
-			enable:true,
-			shadow:true
+			enable:<span class='ichartjs_keyword'>true</span>,
+			shadow:<span class='ichartjs_keyword'>true</span>
 		},
 		legend : {
-			enable : true
+			enable : <span class='ichartjs_keyword'>true</span>
+		},
+		segment_style : {
+			point_hollow : <span class='ichartjs_keyword'>false</span>
 		},
 		coordinate:{
 			width:640,
@@ -145,7 +158,7 @@ $(<span class='ichartjs_keyword'>function</span>(){
 				}
 			},
 			crosshair:{
-				enable:true
+				enable:<span class='ichartjs_keyword'>true</span>
 			},
 			scale:[{
 				 position:'<span class='ichartjs_string'>left</span>',	
