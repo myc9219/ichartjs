@@ -27,6 +27,13 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 	}
 			},
 			/**
+			 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>iChart.CrossHair</link>
+			 * Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
+			 */
+			crosshair : {
+				enable : false
+			},
+			/**
 			 * @cfg {String} the align of scale.(default to 'left') Available value are:
 			 * @Option 'left'
 			 * @Option 'right'
@@ -95,32 +102,34 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		 */
 		iChart.Interface.coordinate.call(this);
 
-		this.push('line_start', (this.get('coordinate.width') - this.get('coordinate.valid_width')) / 2);
-		this.push('line_end', this.get('coordinate.width') - this.get('line_start'));
+		var _ = this,s=_.data.length == 1;
+		
+		_.push('line_start', (_.get('coordinate.width') - _.get('coordinate.valid_width')) / 2);
+		_.push('line_end', _.get('coordinate.width') - _.get('line_start'));
 
-		if (this.get('proportional_spacing'))
-			this.push('label_spacing', this.get('coordinate.valid_width') / (this.get('maxItemSize') - 1));
+		if (_.get('proportional_spacing'))
+			_.push('label_spacing', _.get('coordinate.valid_width') / (_.get('maxItemSize') - 1));
 
-		this.push('segment_style.originx', this.get('originx') + this.get('line_start'));
+		_.push('segment_style.originx', _.get('originx') + _.get('line_start'));
 
 		/**
 		 * y also has line_start and line end
 		 */
-		this.push('segment_style.originy', this.get('originy') + this.get('coordinate.height'));
+		_.push('segment_style.originy', _.get('originy') + _.get('coordinate.height'));
 
-		this.push('segment_style.width', this.get('coordinate.valid_width'));
-		this.push('segment_style.height', this.get('coordinate.valid_height'));
+		_.push('segment_style.width', _.get('coordinate.valid_width'));
+		_.push('segment_style.height', _.get('coordinate.valid_height'));
 
-		this.push('segment_style.limit_y', this.data.length > 1);
+		_.push('segment_style.limit_y', !s);
 
-		this.push('segment_style.keep_with_coordinate', this.data.length == 1);
+		_.push('segment_style.keep_with_coordinate', s);
 
-		var single = this.data.length == 1, self = this;
-
-		if (this.get('coordinate.crosshair.enable')) {
-			this.push('coordinate.crosshair.hcross', single);
-			this.push('coordinate.crosshair.invokeOffset', function(e, m) {
-				var r = self.lines[0].isEventValid(e);
+		
+		if(_.get('crosshair.enable')){
+			_.push('coordinate.crosshair', _.get('crosshair'));
+			_.push('coordinate.crosshair.hcross',s);
+			_.push('coordinate.crosshair.invokeOffset', function(e, m) {
+				var r = _.lines[0].isEventValid(e);
 					/**
 					 * TODO how fire muti line?
 					 */
@@ -131,7 +140,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		/**
 		 * quick config to all linesegment
 		 */
-		iChart.apply(this.get('segment_style'), iChart.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor','tip'], this.options));
+		iChart.apply(_.get('segment_style'), iChart.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor','tip'], _.options));
 		
 	}
 

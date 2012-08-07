@@ -2,32 +2,43 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>ichartjs例子-折线图-网站最近5天PV流量趋势</title>
+		<title>ichartjs例子-折线图-网站最近5天流量趋势 </title>
 		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
 		<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
 		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
 					$(function(){
-						var flow=[];
+						var pv=[],ip=[],t;
 						for(var i=0;i<61;i++){
-							flow.push(Math.floor(Math.random()*(30+((i%12)*5)))+10);
+							t = Math.floor(Math.random()*(30+((i%12)*5)))+10;
+							pv.push(t);
+							t = Math.floor(t*0.8);
+							t = t-Math.floor((Math.random()*t)/2);
+							ip.push(t);
 						}
 						
 						var data = [
 						         	{
 						         		name : 'PV',
-						         		value:flow,
+						         		value:pv,
 						         		color:'#0d8ecf',
+						         		linewidth:2
+						         	},
+						         	{
+						         		name : 'IP',
+						         		value:ip,
+						         		color:'#ef7707',
 						         		linewidth:2
 						         	}
 						         ];
+				         
 						var labels = ["2012-08-01","2012-08-02","2012-08-03","2012-08-04","2012-08-05","2012-08-06"];
 						var line = new iChart.LineBasic2D({
 							render : 'canvasDiv',
 							data: data,
 							align:'center',
-							title : 'ichartjs官方网站最近5天PV流量趋势',
+							title : 'ichartjs官方网站最近5天流量趋势',
 							subtitle : '平均18:00-22:00访问量达到最大值(单位：万)',
 							footnote : '数据来源：模拟数据',
 							width : 800,
@@ -39,9 +50,8 @@
 							legend : {
 								enable : true
 							},
-							crosshair:{
-								enable:true,
-								line_color:'#62bce9'
+							segment_style : {
+								point_hollow : false
 							},
 							coordinate:{
 								width:640,
@@ -115,15 +125,11 @@ $(<span class='ichartjs_keyword'>function</span>(){
 		width : 800,
 		height : 400,
 		tip:{
-			enable:<span class='ichartjs_keyword'>true</span>,
-			shadow:<span class='ichartjs_keyword'>true</span>
+			enable:true,
+			shadow:true
 		},
 		legend : {
-			enable : <span class='ichartjs_keyword'>true</span>
-		},
-		crosshair:{
-			enable:<span class='ichartjs_keyword'>true</span>,
-			line_color:'<span class='ichartjs_string'>#62bce9</span>'
+			enable : true
 		},
 		coordinate:{
 			width:640,
@@ -137,6 +143,9 @@ $(<span class='ichartjs_keyword'>function</span>(){
 					way:'<span class='ichartjs_string'>share_alike</span>',
 			 		value:5
 				}
+			},
+			crosshair:{
+				enable:true
 			},
 			scale:[{
 				 position:'<span class='ichartjs_string'>left</span>',	
