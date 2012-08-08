@@ -5511,8 +5511,8 @@ $.Pie = $.extend($.Chart, {
 		$.Assert.gtZero(this.total, 'this.total');
 
 		this.offsetAngle = $.angle2Radian(this.get('offsetAngle'));
-		
-		var r = this.get('radius'), f = this.get('minDistance') * (this.get('label.enable')&&!this.is3D() ? 0.35 : 0.5);
+
+		var r = this.get('radius'), f = this.get('minDistance') * (this.get('label.enable') && !this.is3D() ? 0.35 : 0.5);
 
 		this.calculate();
 
@@ -5550,6 +5550,7 @@ $.Pie = $.extend($.Chart, {
 				'pop_animate',
 				'mutex',
 				'shadow',
+				'shadow_color',
 				'shadow_blur',
 				'shadow_offsetx',
 				'shadow_offsety',
@@ -5771,7 +5772,7 @@ $.Column = $.extend($.Chart, {
 		/**
 		 * quick config to all rectangle
 		 */
-		$.apply(this.get('rectangle'), $.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options));
+		$.apply(this.get('rectangle'), $.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options));
 
 		this.push('rectangle.width', this.get('colwidth'));
 	}
@@ -5998,7 +5999,9 @@ $.Bar = $.extend($.Chart, {
 			/**
 			 * @cfg {Object} Specifies the option for coordinate.For details see <link>$.Coordinate2D</link>
 			 */
-			coordinate : {alternate_direction : 'h'},
+			coordinate : {
+				alternate_direction : 'h'
+			},
 			/**
 			 * @cfg {Number} Specifies the width of each bar(default to calculate according to coordinate's height)
 			 */
@@ -6026,7 +6029,7 @@ $.Bar = $.extend($.Chart, {
 	doParse : function(d, i, id, x, y, w) {
 		var t = (this.get('showpercent') ? $.toPercent(d.value / this.total, this.get('decimalsnum')) : d.value);
 		if (this.get('tip.enable'))
-			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i], d.name + ' ' + t));
+			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, d.value, i], d.name + ' ' + t));
 
 		this.push('rectangle.value', t);
 		this.push('rectangle.background_color', d.color);
@@ -6082,7 +6085,7 @@ $.Bar = $.extend($.Chart, {
 		/**
 		 * Quick config to all rectangle
 		 */
-		$.apply(this.get('rectangle'), $.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor'], this.options));
+		$.apply(this.get('rectangle'), $.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor'], this.options));
 
 		/**
 		 * quick config to all rectangle

@@ -253,8 +253,8 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		iChart.Assert.gtZero(this.total, 'this.total');
 
 		this.offsetAngle = iChart.angle2Radian(this.get('offsetAngle'));
-		
-		var r = this.get('radius'), f = this.get('minDistance') * (this.get('label.enable')&&!this.is3D() ? 0.35 : 0.5);
+
+		var r = this.get('radius'), f = this.get('minDistance') * (this.get('label.enable') && !this.is3D() ? 0.35 : 0.5);
 
 		this.calculate();
 
@@ -292,6 +292,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 				'pop_animate',
 				'mutex',
 				'shadow',
+				'shadow_color',
 				'shadow_blur',
 				'shadow_offsetx',
 				'shadow_offsety',
