@@ -54,7 +54,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			 */
 			color_factor : 0.15,
 			/**
-			 * @cfg {Boolean} True to apply the gradient.(default to false)
+			 * @inner {Boolean} True to apply the gradient.(default to false)
 			 */
 			gradient : false,
 			/**

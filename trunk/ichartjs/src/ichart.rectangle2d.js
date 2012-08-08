@@ -76,6 +76,7 @@
 				_.tipY = function(w,h){return _.y  - h -3;};
 			}
 			
+			
 			if(valueAlign=='left'){
 				_.push('textAlign','right');
 				_.push('value_x',_.x - _.get('value_space'));

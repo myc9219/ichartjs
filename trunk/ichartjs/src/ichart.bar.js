@@ -19,7 +19,9 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {Object} Specifies the option for coordinate.For details see <link>iChart.Coordinate2D</link>
 			 */
-			coordinate : {alternate_direction : 'h'},
+			coordinate : {
+				alternate_direction : 'h'
+			},
 			/**
 			 * @cfg {Number} Specifies the width of each bar(default to calculate according to coordinate's height)
 			 */
@@ -47,7 +49,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 	doParse : function(d, i, id, x, y, w) {
 		var t = (this.get('showpercent') ? iChart.toPercent(d.value / this.total, this.get('decimalsnum')) : d.value);
 		if (this.get('tip.enable'))
-			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i], d.name + ' ' + t));
+			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, d.value, i], d.name + ' ' + t));
 
 		this.push('rectangle.value', t);
 		this.push('rectangle.background_color', d.color);
@@ -103,7 +105,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		/**
 		 * Quick config to all rectangle
 		 */
-		iChart.apply(this.get('rectangle'), iChart.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor'], this.options));
+		iChart.apply(this.get('rectangle'), iChart.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor'], this.options));
 
 		/**
 		 * quick config to all rectangle
