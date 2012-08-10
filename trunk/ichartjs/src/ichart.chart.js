@@ -802,36 +802,34 @@
 		resetCanvas : function() {
 			this.T.backgound(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'), this.get('background_color'));
 		},
-		animation : function() {
-			var _;
-			return function() {
-				if(!_)_ = this;
-				/**
-				 * clear the part of canvas
-				 */
-				_.segmentRect();
-				/**
-				 * doAnimation of implement
-				 */
-				_.doAnimation(_.variable.animation.time, _.duration);
-				/**
-				 * fill the background
-				 */
-				_.resetCanvas();
-				if (_.variable.animation.time < _.duration) {
-					_.variable.animation.time++;
-					requestAnimFrame(_.animation);
-				} else {
-					requestAnimFrame(function() {
-						_.variable.animation.time = 0;
-						_.animationed = true;
-						_.draw();
-						_.processAnimation = false;
-						_.fireEvent(_, 'afterAnimation', [_]);
-					});
-				}
+		animation : function(_) {
+			/**
+			 * clear the part of canvas
+			 */
+			_.segmentRect();
+			/**
+			 * doAnimation of implement
+			 */
+			_.doAnimation(_.variable.animation.time, _.duration);
+			/**
+			 * fill the background
+			 */
+			_.resetCanvas();
+			if (_.variable.animation.time < _.duration) {
+				_.variable.animation.time++;
+				requestAnimFrame(function() {
+					_.animation(_);
+				});
+			} else {
+				requestAnimFrame(function() {
+					_.variable.animation.time = 0;
+					_.animationed = true;
+					_.draw();
+					_.processAnimation = false;
+					_.fireEvent(_, 'afterAnimation', [_]);
+				});
 			}
-		}(),
+		},
 		doAnimation : function(t, d) {
 			this.get('doAnimationFn').call(this, t, d);
 		},
@@ -886,7 +884,7 @@
 
 			if (!this.animationed && this.get('animation')) {
 				this.fireEvent(this, 'beforeAnimation', [this]);
-				this.animation();
+				this.animation(this);
 				return;
 			}
 
