@@ -896,8 +896,10 @@ Array.prototype.eachAll = function(f,s)
 {
 	this.each(function(d,i){if(iChart_.isArray(d)){d.eachAll(f, s);}else{s?f.call(s,d,i):f(d,i);}},s);
 };
-window.iChart = window.$ = iChart_;
-
+window.iChart = iChart_;
+if(!window.$){
+	window.$ = window.iChart;
+}
 })(window);
 
 ;(function($){
