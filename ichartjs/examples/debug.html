@@ -50,31 +50,77 @@
 	</style>
 	<script type="text/javascript">
 		$(function(){
+			var flow=[];
+			for(var i=0;i<21;i++){
+				flow.push(Math.floor(Math.random()*(30+((i%12)*5)))+10);
+			}
+			
 			var data = [
-			        	{name : 'IE',value : 35.75,color:'#9d4a4a'},
-			        	{name : 'Chrome',value : 29.84,color:'#5d7f97'},
-			        	{name : 'Firefox',value : 24.88,color:'#97b3bc'},
-			        	{name : 'Safari',value : 6.77,color:'#a5aaaa'},
-			        	{name : 'Opera',value : 5.02,color:'#778088'},
-			        	{name : 'Other',value : 4.73,color:'#6f83a5'}
-		        	];
-	    	
-			new iChart.Pie3D({
+			         	{
+			         		name : 'PV',
+			         		value:flow,
+			         		color:'#0d8ecf',
+			         		linewidth:2
+			         	}
+			         ];
+	         
+			var labels = ["2012\n08-01","2012\n08-02","2012\n08-03","2012\n08-04","2012\n08-05","2012\n08-06"];
+			var line = new iChart.LineBasic2D({
 				render : 'canvasDiv',
 				data: data,
-				title : 'Top 5 Browsers from 1 to 29 Feb 2012',
+				align:'center',
+				title : 'ichartjs官方网站最近5天PV流量趋势',
+				subtitle : '平均18:00-22:00访问量达到最大值(单位：万)',
+				footnote : '数据来源：模拟数据',
+				width : 800,
+				height : 400,
+				animation:true,
+				segment_style:{
+					smooth : true,
+					intersection : false
+				},
+				tip:{
+					enable:true,
+					shadow:true
+				},
 				legend : {
 					enable : true
 				},
-				gradient:true,
-				color_factor : 0.25,
-				showpercent:true,
-				decimalsnum:2,
-				width : 800,
-				height : 440,
-				radius:140
-			}).draw();
-		});
+				crosshair:{
+					enable:true,
+					line_color:'#62bce9'
+				},
+				offsety:-20,
+				coordinate:{
+					width:640,
+					height:260,
+					axis:{
+						color:'#9f9f9f',
+						width:[0,0,2,2]
+					},
+					grids:{
+						vertical:{
+							way:'share_alike',
+					 		value:5
+						}
+					},
+					scale:[{
+						 position:'left',	
+						 start_scale:0,
+						 end_scale:100,
+						 scale_space:10,
+						 scale_size:2,
+						 scale_color:'#9f9f9f'
+					},{
+						 position:'bottom',	
+						 labels:labels
+					}]
+				}
+			});
+		
+		//开始画图
+		line.draw();
+	});
 		</script>
 	</head>
 	<body>

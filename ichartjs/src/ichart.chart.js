@@ -3,7 +3,74 @@
 
 	var inc = Math.PI / 90, PI = Math.PI, PI2 = 2 * Math.PI, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
 		return w <= 1 ? (Math.floor(c) + 0.5) : Math.floor(c);
-	};
+	},
+	getCurvePoint = function (seg, point, i ,smoothing) {
+		var denom = smoothing + 1,
+			x = point.x,
+			y = point.y,
+			lastPoint = seg[i - 1],
+			nextPoint = seg[i + 1],
+			leftContX,
+			leftContY,
+			rightContX,
+			rightContY,
+			r;
+	
+		// find control points
+		if (i < seg.length - 1) {
+			var lastX = lastPoint.x,
+				lastY = lastPoint.y,
+				nextX = nextPoint.x,
+				nextY = nextPoint.y,
+				correction;
+	
+			leftContX = (smoothing * x + lastX) / denom;
+			leftContY = (smoothing * y + lastY) / denom;
+			rightContX = (smoothing * x + nextX) / denom;
+			rightContY = (smoothing * y + nextY) / denom;
+	
+			// have the two control points make a straight line through main point
+			correction = ((rightContY - leftContY) * (rightContX - x)) /
+				(rightContX - leftContX) + y - rightContY;
+	
+			leftContY += correction;
+			rightContY += correction;
+	
+			// to prevent false extremes, check that control points are between
+			// neighbouring points' y values
+			if (leftContY > lastY && leftContY > y) {
+				leftContY = Math.max(lastY, y);
+				rightContY = 2 * y - leftContY; // mirror of left control point
+			} else if (leftContY < lastY && leftContY < y) {
+				leftContY = Math.min(lastY, y);
+				rightContY = 2 * y - leftContY;
+			}
+			if (rightContY > nextY && rightContY > y) {
+				rightContY = Math.max(nextY, y);
+				leftContY = 2 * y - rightContY;
+			} else if (rightContY < nextY && rightContY < y) {
+				rightContY = Math.min(nextY, y);
+				leftContY = 2 * y - rightContY;
+			}
+	
+			// record for drawing in next point
+			point.rightContX = rightContX;
+			point.rightContY = rightContY;
+	
+		}
+	
+		// curve from last point to this
+			r =  [
+			lastPoint.rightContX || lastPoint.x,
+			lastPoint.rightContY || lastPoint.y,
+			leftContX || x,
+			leftContY || y,
+			x,
+			y
+		];
+		lastPoint.rightContX = lastPoint.rightContY = null; // reset for updating series later
+		return r;
+	}
 	/**
 	 * @private support an improved API for drawing in canvas
 	 */
@@ -227,11 +294,11 @@
 		createRadialGradient : function(xs, ys, rs, xe, ye, re) {
 			return this.c.createRadialGradient(xs, ys, rs, xe, ye, re);
 		},
-		fillText : function(t, x, y, max, color, mode, lineheight) {
+		fillText : function(t, x, y, max, color, mode, h) {
 			t = t + "";
 			max = max || false;
 			mode = mode || 'lr';
-			lineheight = lineheight || 16;
+			h = h || 16;
 			this.fillStyle(color);
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			T.each(function(t) {
@@ -240,7 +307,7 @@
 					this.c.fillText(t, x, y, max);
 				else
 					this.c.fillText(t, x, y);
-				y += lineheight;
+				y += h;
 				} catch (e) {
 					console.log(e.message+'['+t+','+x+','+y+']');
 				}
@@ -286,12 +353,8 @@
 			this.c.fill();
 			return this;
 		},
-		text : function(text, x, y, max, color, align, line, font, mode, lineheight) {
-			this.save();
-			this.textStyle(align, line, font);
-			this.fillText(text, x, y, max, color, mode, lineheight);
-			this.c.restore();
-			return this;
+		text : function(t, x, y, max, color, align, line, font, mode, h) {
+			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h).restore();
 		},
 		/**
 		 * can use cube3D instead of this?
@@ -419,24 +482,6 @@
 
 			return this;
 		},
-		/**
-		 * polygon
-		 * 
-		 * @param {Object}
-		 *            border
-		 * @param {Object}
-		 *            linewidth
-		 * @param {Object}
-		 *            bcolor
-		 * @param {Object}
-		 *            bgcolor
-		 * @param {Object}
-		 *            alpham
-		 * @param {Object}
-		 *            points
-		 * @memberOf {TypeName}
-		 * @return {TypeName}
-		 */
 		polygon : function(bg, b, bw, bc, sw, swc, swb, swx, swy, alpham, points) {
 			if (points.length < 2)
 				return;
@@ -447,8 +492,9 @@
 			.globalAlpha(alpham)
 			.shadowOn(sw, swc, swb, swx, swy)
 			.moveTo(points[0], points[1]);
-			for ( var i = 2; i < points.length; i += 2)
+			for ( var i = 2; i < points.length; i += 2){
 				this.lineTo(points[i], points[i + 1]);
+			}
 			this.closePath();
 			if (b)
 				this.stroke();
@@ -463,6 +509,22 @@
 			this.beginPath().strokeStyle(w, c).moveTo(fd(w,p[0]),fd(w,p[1]));
 			for ( var i = 2; i < p.length - 1; i+=2) {
 				this.lineTo(fd(w,p[i]),fd(w,p[i+1]));                
+			}
+			return this.stroke().restore();
+		},
+		bezierCurveTo : function(r){
+			this.c.bezierCurveTo(r[0],r[1],r[2],r[3],r[4],r[5]);
+			return this;
+		},
+		lineArray : function(p, w, c,smooth,smoothing){
+			if(p.length<2)return this;
+			this.save().beginPath().strokeStyle(w, c).moveTo(fd(w,p[0].x),fd(w,p[0].y));
+			if(smooth){
+				for ( var i = 1; i < p.length; i++) 
+					this.bezierCurveTo(getCurvePoint(p,p[i],i,smoothing));
+			}else{
+				for ( var i = 1; i < p.length; i++) 
+					this.lineTo(fd(w,p[i].x),fd(w,p[i].y));                
 			}
 			return this.stroke().restore();
 		},
