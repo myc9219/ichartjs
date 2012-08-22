@@ -53,10 +53,6 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 */
 			label_space : 6,
 			/**
-			 * @inner {Boolean} Can Line smooth?now has unavailable
-			 */
-			smooth : false,
-			/**
 			 * @cfg {Boolean} if the point are proportional space.(default to true)
 			 */
 			proportional_spacing : true,

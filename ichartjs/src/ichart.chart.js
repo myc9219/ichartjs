@@ -1,75 +1,57 @@
 ;
 (function($) {
 
-	var inc = Math.PI / 90, PI = Math.PI, PI2 = 2 * Math.PI, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
+	var inc = Math.PI / 90, PI = Math.PI, PI2 = 2 * Math.PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
 		return w <= 1 ? (Math.floor(c) + 0.5) : Math.floor(c);
 	},
-	getCurvePoint = function (seg, point, i ,smoothing) {
-		var denom = smoothing + 1,
-			x = point.x,
+	getCurvePoint = function (seg, point, i ,smo) {
+		var x = point.x,
 			y = point.y,
-			lastPoint = seg[i - 1],
-			nextPoint = seg[i + 1],
-			leftContX,
-			leftContY,
-			rightContX,
-			rightContY,
-			r;
-	
-		// find control points
+			lp = seg[i - 1],
+			np = seg[i + 1],
+			lcx,
+			lcy,
+			rcx,
+			rcy;
+		//find out control points
 		if (i < seg.length - 1) {
-			var lastX = lastPoint.x,
-				lastY = lastPoint.y,
-				nextX = nextPoint.x,
-				nextY = nextPoint.y,
+			var lastY = lp.y,
+				nextY = np.y,
 				correction;
+			lcx = (smo * x + lp.x) / (smo + 1);
+			lcy = (smo * y + lastY) / (smo + 1);
+			rcx = (smo * x + np.x) / (smo + 1);
+			rcy = (smo * y + nextY) / (smo + 1);
+			
+			correction = ((rcy - lcy) * (rcx - x)) /(rcx - lcx) + y - rcy;
+			lcy += correction;
+			rcy += correction;
 	
-			leftContX = (smoothing * x + lastX) / denom;
-			leftContY = (smoothing * y + lastY) / denom;
-			rightContX = (smoothing * x + nextX) / denom;
-			rightContY = (smoothing * y + nextY) / denom;
-	
-			// have the two control points make a straight line through main point
-			correction = ((rightContY - leftContY) * (rightContX - x)) /
-				(rightContX - leftContX) + y - rightContY;
-	
-			leftContY += correction;
-			rightContY += correction;
-	
-			// to prevent false extremes, check that control points are between
-			// neighbouring points' y values
-			if (leftContY > lastY && leftContY > y) {
-				leftContY = Math.max(lastY, y);
-				rightContY = 2 * y - leftContY; // mirror of left control point
-			} else if (leftContY < lastY && leftContY < y) {
-				leftContY = Math.min(lastY, y);
-				rightContY = 2 * y - leftContY;
+			if (lcy > lastY && lcy > y) {
+				lcy = max(lastY, y);
+				rcy = 2 * y - lcy; 
+			} else if (lcy < lastY && lcy < y) {
+				lcy = min(lastY, y);
+				rcy = 2 * y - lcy;
 			}
-			if (rightContY > nextY && rightContY > y) {
-				rightContY = Math.max(nextY, y);
-				leftContY = 2 * y - rightContY;
-			} else if (rightContY < nextY && rightContY < y) {
-				rightContY = Math.min(nextY, y);
-				leftContY = 2 * y - rightContY;
+			if (rcy > nextY && rcy > y) {
+				rcy = max(nextY, y);
+				lcy = 2 * y - rcy;
+			} else if (rcy < nextY && rcy < y) {
+				rcy = min(nextY, y);
+				lcy = 2 * y - rcy;
 			}
-	
-			// record for drawing in next point
-			point.rightContX = rightContX;
-			point.rightContY = rightContY;
-	
+			point.rcx = rcx;
+			point.rcy = rcy;
 		}
-	
-		// curve from last point to this
-			r =  [
-			lastPoint.rightContX || lastPoint.x,
-			lastPoint.rightContY || lastPoint.y,
-			leftContX || x,
-			leftContY || y,
+		return  [
+			lp.rcx || lp.x,
+			lp.rcy || lp.y,
+			lcx || x,
+			lcy || y,
 			x,
 			y
 		];
-		lastPoint.rightContX = lastPoint.rightContY = null; // reset for updating series later
-		return r;
 	}
 	/**
 	 * @private support an improved API for drawing in canvas
@@ -516,12 +498,12 @@
 			this.c.bezierCurveTo(r[0],r[1],r[2],r[3],r[4],r[5]);
 			return this;
 		},
-		lineArray : function(p, w, c,smooth,smoothing){
+		lineArray : function(p, w, c,smooth,smo){
 			if(p.length<2)return this;
 			this.save().beginPath().strokeStyle(w, c).moveTo(fd(w,p[0].x),fd(w,p[0].y));
 			if(smooth){
 				for ( var i = 1; i < p.length; i++) 
-					this.bezierCurveTo(getCurvePoint(p,p[i],i,smoothing));
+					this.bezierCurveTo(getCurvePoint(p,p[i],i,smo));
 			}else{
 				for ( var i = 1; i < p.length; i++) 
 					this.lineTo(fd(w,p[i].x),fd(w,p[i].y));                
@@ -1185,8 +1167,8 @@
 			
 			_.push('client_height', (_.get('height') - _.get('vpadding') - H));
 			
-			_.push('minDistance', Math.min(_.get('client_width'), _.get('client_height')));
-			_.push('maxDistance', Math.max(_.get('client_width'), _.get('client_height')));
+			_.push('minDistance', min(_.get('client_width'), _.get('client_height')));
+			_.push('maxDistance', max(_.get('client_width'), _.get('client_height')));
 			_.push('minstr', _.get('client_width') < _.get('client_height') ? 'width' : 'height');
 
 			_.push('centerx', _.get('l_originx') + _.get('client_width') / 2);
