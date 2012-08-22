@@ -35,9 +35,13 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			 * @cfg {Boolean} If true the centre of point will be hollow.(default to true)
 			 */
 			point_hollow : true,
+			/**
+			 * @cfg {Boolean} If true Line will smooth.(default to false)
+			 */
 			smooth : false,
 			/**
-			 * @cfg {Number} 1 means control points midway between points, 2 means 1/3 from the point, 3 is 1/4 etc
+			 * @cfg {Number} Specifies smoothness of line will be.(default to 1.5)
+			 * 1 means control points midway between points, 2 means 1/3 from the point,formula is 1/(smoothing + 1) from the point
 			 */
 			smoothing : 1.5,
 			/**
