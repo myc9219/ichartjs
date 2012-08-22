@@ -305,10 +305,10 @@ function test(){
 		return new iChart.LineBasic2D({
 			render :canvas,
 			title : {text: 'Test LineBasic2D'},
-			data: data4,
+			data: data3,
 			align:'center',
 			shadow:true,
-			data_labels:lineLabels1,
+			data_labels:lineLabels,
 			listeners:{
 				parsePoint:function(v,x,y){
 					return {value:v+"℃"}
@@ -320,8 +320,8 @@ function test(){
 	unit.push(function(){
 		return new iChart.LineBasic2D({
 			render :canvas,
-			title : {text: 'Test LineBasic2D More Point'},
-			data: data6,
+			title : 'Test LineBasic2D More Point',
+			data: data3,
 			shadow:true,
 			align:'center',
 			tip:{
@@ -363,7 +363,7 @@ function test(){
 					 parseText:function(t,x,y){
 						return {textY:y+10}
 					 },
-					 labels:lineLabels1
+					 labels:lineLabels
 				}]
 			},
 			listeners:{
@@ -379,13 +379,13 @@ function test(){
 		var myChart = iChart.noConflict();
 		return new myChart.Area2D({
 			render :canvas,
-			title : {text: 'Test Area2D'},
-			data: data7,
+			title : 'Test Area2D',
+			data: data3,
 			align:'center',
 			shadow:true,
 			width : 800,
 			height : 400,
-			labels:lineLabels1,
+			labels:lineLabels,
 			listeners:{
 				parsePoint:function(v,x,y){
 					return {value:v+"℃"}
@@ -397,12 +397,12 @@ function test(){
 		return new iChart.Area2D({
 			render :canvas,
 			title : {text: 'Test Area2D No Shadow'},
-			data: data7,
+			data: data3,
 			shadow:false,
 			align:'center',
 			width : 800,
 			height : 400,
-			labels:lineLabels1,
+			labels:lineLabels,
 			listeners:{
 				parsePoint:function(v,x,y){
 					return {value:v+"℃"}
@@ -435,8 +435,8 @@ function test(){
 		return new iChart.BarMulti2D({
 			render :canvas,
 			title : {text: 'Test BarMulti2D'},
-			data: data9,
-			data_labels:data_labels1,
+			data: data2,
+			data_labels:data_labels,
 			coordinate:{
 				scale:{
 					 position:'bottom',	

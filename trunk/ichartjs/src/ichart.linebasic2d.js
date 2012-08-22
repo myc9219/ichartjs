@@ -19,15 +19,15 @@
 			this.tipInvokeHeap = [];
 		},
 		doAnimation:function(t,d){
-			var l,p;
+			var l,ps,p;
 			this.coo.draw();
 			for(var i=0;i<this.lines.length;i++){
 				l = this.lines[i]; 
-				for(var j=0;j<l.points.length;j++){
-					p = l.points[j];
-					p.y = Math.ceil(this.animationArithmetic(t,0,p.height,d));
+				p = l.get('points');
+				for(var j=0;j<p.length;j++){
+					p[j].y = l.y - Math.ceil(this.animationArithmetic(t,0,l.y-p[j].y_,d));
 				}
-				l.drawLineSegment();
+				l.drawSegment();
 			}
 		},
 		doConfig:function(){
@@ -60,6 +60,8 @@
 				H=this.get('coordinate.valid_height'),
 				sp=this.get('label_spacing'),
 				points,x,y,
+				ox=this.get('segment_style.originx'),
+				oy=this.get('segment_style.originy'),
 				p;
 			
 			this.data.each(function(d,i){
@@ -67,7 +69,7 @@
 				d.value.each(function(v,j){
 					x = sp*j;
 					y = (v-S.start)*H/S.distance;
-					p = {x:x,y:y,value:v,text:v};
+					p = {x:ox+x,y:oy-y,value:v,text:v};
 					iChart.merge(p,this.fireEvent(this,'parsePoint',[d,x,y,j]))
 					if (this.get('tip.enable'))
 						p.text = this.fireString(this,'parseTipText',[d,v,j],v);

@@ -35,6 +35,11 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			 * @cfg {Boolean} If true the centre of point will be hollow.(default to true)
 			 */
 			point_hollow : true,
+			smooth : false,
+			/**
+			 * @cfg {Number} 1 means control points midway between points, 2 means 1/3 from the point, 3 is 1/4 etc
+			 */
+			smoothing : 1.5,
 			/**
 			 * @cfg {Number} Specifies the size of point.(default size 3).Only applies when intersection is true
 			 */
@@ -84,24 +89,14 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		this.label = null;
 		this.tip = null;
 	},
-	drawLabel : function() {
-		if (this.get('intersection') && this.get('label')) {
-			var p = this.get('points');
-			for ( var i = 0; i < p.length; i++) {
-				this.T.textStyle('center', 'bottom', iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
-				this.T.fillText(p[i].value, this.x + p[i].x, this.y - p[i].y - this.get('point_size') * 3 / 2, false, this.get('background_color'), 'lr', 16);
-			}
-		}
-	},
-	drawLineSegment : function() {
+	drawSegment : function() {
 		this.T.shadowOn(this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
 		var p = this.get('points');
-
 		if (this.get('area')) {
 			var polygons = [this.x, this.y];
 			for ( var i = 0; i < p.length; i++) {
-				polygons.push(this.x + p[i].x);
-				polygons.push(this.y - p[i].y);
+				polygons.push(p[i].x);
+				polygons.push(p[i].y);
 			}
 			polygons.push(this.x + this.get('width'));
 			polygons.push(this.y);
@@ -115,16 +110,14 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
 		}
 
-		for ( var i = 0; i < p.length - 1; i++) {
-			this.T.line(this.x + p[i].x, this.y - p[i].y, this.x + p[i + 1].x, this.y - p[i + 1].y, this.get('brushsize'), this.get('fill_color'), false);
-		}
-
+		this.T.lineArray(p, this.get('brushsize'), this.get('fill_color'), this.get('smooth'), this.get('smoothing'));
+		
 		if (this.get('intersection')) {
 			for ( var i = 0; i < p.length; i++) {
 				if (this.get('point_hollow')) {
-					this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('fill_color'));
+					this.T.round(p[i].x, p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('fill_color'));
 				} else {
-					this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), this.get('fill_color'));
+					this.T.round(p[i].x, p[i].y, this.get('point_size'), this.get('fill_color'));
 				}
 			}
 		}
@@ -134,8 +127,13 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		}
 	},
 	doDraw : function(opts) {
-		this.drawLineSegment();
-		this.drawLabel();
+		this.drawSegment();
+		if (this.get('intersection') && this.get('label')) {
+			var p = this.get('points');
+			for ( var i = 0; i < p.length; i++) {
+				this.T.text(p[i].value, p[i].x, p[i].y - this.get('point_size') * 3 / 2, false, this.get('fill_color'), 'center', 'bottom', this.get('fontStyle'));
+			}
+		}
 	},
 	isEventValid : function(e) {
 		return {
@@ -159,11 +157,10 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		iChart.Assert.gtZero(this.get('point_space'), 'point_space');
 
 		var _ = this, sp = this.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points');
-		_.points = p;
 
 		for ( var i = 0; i < p.length; i++) {
-			p[i].width = p[i].x;
-			p[i].height = p[i].y;
+			p[i].x_ = p[i].x;
+			p[i].y_ = p[i].y;
 		}
 
 		if (rx == 0) {
@@ -190,7 +187,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		}
 
 		var c = _.get('coordinate'), ly = _.get('limit_y'), k = _.get('keep_with_coordinate'), valid = function(i, x, y) {
-			if (Math.abs(x - (_.x + p[i].x)) < rx && (!ly || (ly && Math.abs(y - (_.y - p[i].y)) < ry))) {
+			if (Math.abs(x - (p[i].x)) < rx && (!ly || (ly && Math.abs(y - (p[i].y)) < ry))) {
 				return true;
 			}
 			return false;
@@ -198,8 +195,8 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			return {
 				valid : true,
 				text : p[i].text,
-				top : _.y - p[i].y,
-				left : _.x + p[i].x,
+				top : p[i].y,
+				left : p[i].x,
 				hit : true
 			};
 		};

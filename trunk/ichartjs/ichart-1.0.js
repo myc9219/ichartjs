@@ -1,6 +1,7 @@
 /**
  * ichartjs  Library v1.0
  * http://www.ichartjs.cn/
+ * author wanghe
  * Copyright 2012 wanghetommy@gmail.com
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.  
@@ -2481,7 +2482,74 @@ $.Label = $.extend($.Component, {
 
 	var inc = Math.PI / 90, PI = Math.PI, PI2 = 2 * Math.PI, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
 		return w <= 1 ? (Math.floor(c) + 0.5) : Math.floor(c);
-	};
+	},
+	getCurvePoint = function (seg, point, i ,smoothing) {
+		var denom = smoothing + 1,
+			x = point.x,
+			y = point.y,
+			lastPoint = seg[i - 1],
+			nextPoint = seg[i + 1],
+			leftContX,
+			leftContY,
+			rightContX,
+			rightContY,
+			r;
+	
+		// find control points
+		if (i < seg.length - 1) {
+			var lastX = lastPoint.x,
+				lastY = lastPoint.y,
+				nextX = nextPoint.x,
+				nextY = nextPoint.y,
+				correction;
+	
+			leftContX = (smoothing * x + lastX) / denom;
+			leftContY = (smoothing * y + lastY) / denom;
+			rightContX = (smoothing * x + nextX) / denom;
+			rightContY = (smoothing * y + nextY) / denom;
+	
+			// have the two control points make a straight line through main point
+			correction = ((rightContY - leftContY) * (rightContX - x)) /
+				(rightContX - leftContX) + y - rightContY;
+	
+			leftContY += correction;
+			rightContY += correction;
+	
+			// to prevent false extremes, check that control points are between
+			// neighbouring points' y values
+			if (leftContY > lastY && leftContY > y) {
+				leftContY = Math.max(lastY, y);
+				rightContY = 2 * y - leftContY; // mirror of left control point
+			} else if (leftContY < lastY && leftContY < y) {
+				leftContY = Math.min(lastY, y);
+				rightContY = 2 * y - leftContY;
+			}
+			if (rightContY > nextY && rightContY > y) {
+				rightContY = Math.max(nextY, y);
+				leftContY = 2 * y - rightContY;
+			} else if (rightContY < nextY && rightContY < y) {
+				rightContY = Math.min(nextY, y);
+				leftContY = 2 * y - rightContY;
+			}
+	
+			// record for drawing in next point
+			point.rightContX = rightContX;
+			point.rightContY = rightContY;
+	
+		}
+	
+		// curve from last point to this
+			r =  [
+			lastPoint.rightContX || lastPoint.x,
+			lastPoint.rightContY || lastPoint.y,
+			leftContX || x,
+			leftContY || y,
+			x,
+			y
+		];
+		lastPoint.rightContX = lastPoint.rightContY = null; // reset for updating series later
+		return r;
+	}
 	/**
 	 * @private support an improved API for drawing in canvas
 	 */
@@ -2705,11 +2773,11 @@ $.Label = $.extend($.Component, {
 		createRadialGradient : function(xs, ys, rs, xe, ye, re) {
 			return this.c.createRadialGradient(xs, ys, rs, xe, ye, re);
 		},
-		fillText : function(t, x, y, max, color, mode, lineheight) {
+		fillText : function(t, x, y, max, color, mode, h) {
 			t = t + "";
 			max = max || false;
 			mode = mode || 'lr';
-			lineheight = lineheight || 16;
+			h = h || 16;
 			this.fillStyle(color);
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			T.each(function(t) {
@@ -2718,7 +2786,7 @@ $.Label = $.extend($.Component, {
 					this.c.fillText(t, x, y, max);
 				else
 					this.c.fillText(t, x, y);
-				y += lineheight;
+				y += h;
 				} catch (e) {
 					console.log(e.message+'['+t+','+x+','+y+']');
 				}
@@ -2764,12 +2832,8 @@ $.Label = $.extend($.Component, {
 			this.c.fill();
 			return this;
 		},
-		text : function(text, x, y, max, color, align, line, font, mode, lineheight) {
-			this.save();
-			this.textStyle(align, line, font);
-			this.fillText(text, x, y, max, color, mode, lineheight);
-			this.c.restore();
-			return this;
+		text : function(t, x, y, max, color, align, line, font, mode, h) {
+			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h).restore();
 		},
 		/**
 		 * can use cube3D instead of this?
@@ -2897,24 +2961,6 @@ $.Label = $.extend($.Component, {
 
 			return this;
 		},
-		/**
-		 * polygon
-		 * 
-		 * @param {Object}
-		 *            border
-		 * @param {Object}
-		 *            linewidth
-		 * @param {Object}
-		 *            bcolor
-		 * @param {Object}
-		 *            bgcolor
-		 * @param {Object}
-		 *            alpham
-		 * @param {Object}
-		 *            points
-		 * @memberOf {TypeName}
-		 * @return {TypeName}
-		 */
 		polygon : function(bg, b, bw, bc, sw, swc, swb, swx, swy, alpham, points) {
 			if (points.length < 2)
 				return;
@@ -2925,8 +2971,9 @@ $.Label = $.extend($.Component, {
 			.globalAlpha(alpham)
 			.shadowOn(sw, swc, swb, swx, swy)
 			.moveTo(points[0], points[1]);
-			for ( var i = 2; i < points.length; i += 2)
+			for ( var i = 2; i < points.length; i += 2){
 				this.lineTo(points[i], points[i + 1]);
+			}
 			this.closePath();
 			if (b)
 				this.stroke();
@@ -2941,6 +2988,22 @@ $.Label = $.extend($.Component, {
 			this.beginPath().strokeStyle(w, c).moveTo(fd(w,p[0]),fd(w,p[1]));
 			for ( var i = 2; i < p.length - 1; i+=2) {
 				this.lineTo(fd(w,p[i]),fd(w,p[i+1]));                
+			}
+			return this.stroke().restore();
+		},
+		bezierCurveTo : function(r){
+			this.c.bezierCurveTo(r[0],r[1],r[2],r[3],r[4],r[5]);
+			return this;
+		},
+		lineArray : function(p, w, c,smooth,smoothing){
+			if(p.length<2)return this;
+			this.save().beginPath().strokeStyle(w, c).moveTo(fd(w,p[0].x),fd(w,p[0].y));
+			if(smooth){
+				for ( var i = 1; i < p.length; i++) 
+					this.bezierCurveTo(getCurvePoint(p,p[i],i,smoothing));
+			}else{
+				for ( var i = 1; i < p.length; i++) 
+					this.lineTo(fd(w,p[i].x),fd(w,p[i].y));                
 			}
 			return this.stroke().restore();
 		},
@@ -6264,6 +6327,11 @@ $.LineSegment = $.extend($.Component, {
 			 * @cfg {Boolean} If true the centre of point will be hollow.(default to true)
 			 */
 			point_hollow : true,
+			smooth : false,
+			/**
+			 * @cfg {Number} 1 means control points midway between points, 2 means 1/3 from the point, 3 is 1/4 etc
+			 */
+			smoothing : 1.5,
 			/**
 			 * @cfg {Number} Specifies the size of point.(default size 3).Only applies when intersection is true
 			 */
@@ -6313,24 +6381,14 @@ $.LineSegment = $.extend($.Component, {
 		this.label = null;
 		this.tip = null;
 	},
-	drawLabel : function() {
-		if (this.get('intersection') && this.get('label')) {
-			var p = this.get('points');
-			for ( var i = 0; i < p.length; i++) {
-				this.T.textStyle('center', 'bottom', $.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
-				this.T.fillText(p[i].value, this.x + p[i].x, this.y - p[i].y - this.get('point_size') * 3 / 2, false, this.get('background_color'), 'lr', 16);
-			}
-		}
-	},
-	drawLineSegment : function() {
+	drawSegment : function() {
 		this.T.shadowOn(this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
 		var p = this.get('points');
-
 		if (this.get('area')) {
 			var polygons = [this.x, this.y];
 			for ( var i = 0; i < p.length; i++) {
-				polygons.push(this.x + p[i].x);
-				polygons.push(this.y - p[i].y);
+				polygons.push(p[i].x);
+				polygons.push(p[i].y);
 			}
 			polygons.push(this.x + this.get('width'));
 			polygons.push(this.y);
@@ -6344,16 +6402,14 @@ $.LineSegment = $.extend($.Component, {
 			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
 		}
 
-		for ( var i = 0; i < p.length - 1; i++) {
-			this.T.line(this.x + p[i].x, this.y - p[i].y, this.x + p[i + 1].x, this.y - p[i + 1].y, this.get('brushsize'), this.get('fill_color'), false);
-		}
-
+		this.T.lineArray(p, this.get('brushsize'), this.get('fill_color'), this.get('smooth'), this.get('smoothing'));
+		
 		if (this.get('intersection')) {
 			for ( var i = 0; i < p.length; i++) {
 				if (this.get('point_hollow')) {
-					this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('fill_color'));
+					this.T.round(p[i].x, p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('fill_color'));
 				} else {
-					this.T.round(this.x + p[i].x, this.y - p[i].y, this.get('point_size'), this.get('fill_color'));
+					this.T.round(p[i].x, p[i].y, this.get('point_size'), this.get('fill_color'));
 				}
 			}
 		}
@@ -6363,8 +6419,13 @@ $.LineSegment = $.extend($.Component, {
 		}
 	},
 	doDraw : function(opts) {
-		this.drawLineSegment();
-		this.drawLabel();
+		this.drawSegment();
+		if (this.get('intersection') && this.get('label')) {
+			var p = this.get('points');
+			for ( var i = 0; i < p.length; i++) {
+				this.T.text(p[i].value, p[i].x, p[i].y - this.get('point_size') * 3 / 2, false, this.get('fill_color'), 'center', 'bottom', this.get('fontStyle'));
+			}
+		}
 	},
 	isEventValid : function(e) {
 		return {
@@ -6388,11 +6449,10 @@ $.LineSegment = $.extend($.Component, {
 		$.Assert.gtZero(this.get('point_space'), 'point_space');
 
 		var _ = this, sp = this.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points');
-		_.points = p;
 
 		for ( var i = 0; i < p.length; i++) {
-			p[i].width = p[i].x;
-			p[i].height = p[i].y;
+			p[i].x_ = p[i].x;
+			p[i].y_ = p[i].y;
 		}
 
 		if (rx == 0) {
@@ -6419,7 +6479,7 @@ $.LineSegment = $.extend($.Component, {
 		}
 
 		var c = _.get('coordinate'), ly = _.get('limit_y'), k = _.get('keep_with_coordinate'), valid = function(i, x, y) {
-			if (Math.abs(x - (_.x + p[i].x)) < rx && (!ly || (ly && Math.abs(y - (_.y - p[i].y)) < ry))) {
+			if (Math.abs(x - (p[i].x)) < rx && (!ly || (ly && Math.abs(y - (p[i].y)) < ry))) {
 				return true;
 			}
 			return false;
@@ -6427,8 +6487,8 @@ $.LineSegment = $.extend($.Component, {
 			return {
 				valid : true,
 				text : p[i].text,
-				top : _.y - p[i].y,
-				left : _.x + p[i].x,
+				top : p[i].y,
+				left : p[i].x,
 				hit : true
 			};
 		};
@@ -6636,15 +6696,15 @@ $.Line = $.extend($.Chart, {
 			this.tipInvokeHeap = [];
 		},
 		doAnimation:function(t,d){
-			var l,p;
+			var l,ps,p;
 			this.coo.draw();
 			for(var i=0;i<this.lines.length;i++){
 				l = this.lines[i]; 
-				for(var j=0;j<l.points.length;j++){
-					p = l.points[j];
-					p.y = Math.ceil(this.animationArithmetic(t,0,p.height,d));
+				p = l.get('points');
+				for(var j=0;j<p.length;j++){
+					p[j].y = l.y - Math.ceil(this.animationArithmetic(t,0,l.y-p[j].y_,d));
 				}
-				l.drawLineSegment();
+				l.drawSegment();
 			}
 		},
 		doConfig:function(){
@@ -6677,6 +6737,8 @@ $.Line = $.extend($.Chart, {
 				H=this.get('coordinate.valid_height'),
 				sp=this.get('label_spacing'),
 				points,x,y,
+				ox=this.get('segment_style.originx'),
+				oy=this.get('segment_style.originy'),
 				p;
 			
 			this.data.each(function(d,i){
@@ -6684,7 +6746,7 @@ $.Line = $.extend($.Chart, {
 				d.value.each(function(v,j){
 					x = sp*j;
 					y = (v-S.start)*H/S.distance;
-					p = {x:x,y:y,value:v,text:v};
+					p = {x:ox+x,y:oy-y,value:v,text:v};
 					$.merge(p,this.fireEvent(this,'parsePoint',[d,x,y,j]))
 					if (this.get('tip.enable'))
 						p.text = this.fireString(this,'parseTipText',[d,v,j],v);
@@ -6721,18 +6783,18 @@ $.Line = $.extend($.Chart, {
 				v.reverse();
 			}
 			
-			while(this.size<(this.line.points.length+v.length))
-				this.line.points.shift();
+			while(this.size<(this.line.get('points').length+v.length))
+				this.line.get('points').shift();
 			
 			//平移
-			for ( var j = 0; j < this.line.points.length; j++) {
-				this.line.points[j].x += (this.space*v.length)*(this.direction=='left'?-1:1);
+			for ( var j = 0; j < this.line.get('points').length; j++) {
+				this.line.get('points')[j].x += (this.space*v.length)*(this.direction=='left'?-1:1);
 			}
 			
 			for ( var j = 0; j < v.length; j++) {
 				x = this.direction=='left'?(this.end - this.space * j):(this.space * j);
 				y = ($.between(this.T.S.start,this.T.S.end,v[j]) - this.T.S.start)*this.T.S.uh;
-				this.line.points.push($.merge({x : x,y : y,value : v[j]},this.T.fireEvent(this.T, 'parsePoint', [v[j], x, y, j ])));
+				this.line.get('points').push($.merge({x : x,y : y,value : v[j]},this.T.fireEvent(this.T, 'parsePoint', [v[j], x, y, j ])));
 			}
 		}
 	}

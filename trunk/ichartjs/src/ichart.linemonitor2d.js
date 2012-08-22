@@ -17,18 +17,18 @@
 				v.reverse();
 			}
 			
-			while(this.size<(this.line.points.length+v.length))
-				this.line.points.shift();
+			while(this.size<(this.line.get('points').length+v.length))
+				this.line.get('points').shift();
 			
 			//平移
-			for ( var j = 0; j < this.line.points.length; j++) {
-				this.line.points[j].x += (this.space*v.length)*(this.direction=='left'?-1:1);
+			for ( var j = 0; j < this.line.get('points').length; j++) {
+				this.line.get('points')[j].x += (this.space*v.length)*(this.direction=='left'?-1:1);
 			}
 			
 			for ( var j = 0; j < v.length; j++) {
 				x = this.direction=='left'?(this.end - this.space * j):(this.space * j);
 				y = (iChart.between(this.T.S.start,this.T.S.end,v[j]) - this.T.S.start)*this.T.S.uh;
-				this.line.points.push(iChart.merge({x : x,y : y,value : v[j]},this.T.fireEvent(this.T, 'parsePoint', [v[j], x, y, j ])));
+				this.line.get('points').push(iChart.merge({x : x,y : y,value : v[j]},this.T.fireEvent(this.T, 'parsePoint', [v[j], x, y, j ])));
 			}
 		}
 	}
