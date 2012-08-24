@@ -114,14 +114,14 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
 		}
 
-		this.T.lineArray(p, this.get('brushsize'), this.get('fill_color'), this.get('smooth'), this.get('smoothing'));
+		this.T.lineArray(p, this.get('brushsize'), this.get('f_color'), this.get('smooth'), this.get('smoothing'));
 		
 		if (this.get('intersection')) {
 			for ( var i = 0; i < p.length; i++) {
 				if (this.get('point_hollow')) {
-					this.T.round(p[i].x, p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('fill_color'));
+					this.T.round(p[i].x, p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('f_color'));
 				} else {
-					this.T.round(p[i].x, p[i].y, this.get('point_size'), this.get('fill_color'));
+					this.T.round(p[i].x, p[i].y, this.get('point_size'), this.get('f_color'));
 				}
 			}
 		}
@@ -135,7 +135,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		if (this.get('intersection') && this.get('label')) {
 			var p = this.get('points');
 			for ( var i = 0; i < p.length; i++) {
-				this.T.text(p[i].value, p[i].x, p[i].y - this.get('point_size') * 3 / 2, false, this.get('fill_color'), 'center', 'bottom', this.get('fontStyle'));
+				this.T.text(p[i].value, p[i].x, p[i].y - this.get('point_size') * 3 / 2, false, this.get('f_color'), 'center', 'bottom', this.get('fontStyle'));
 			}
 		}
 	},

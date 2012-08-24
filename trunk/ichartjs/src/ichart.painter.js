@@ -223,7 +223,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		this.push('hpadding', padding[1] + padding[3]);
 		this.push('vpadding', padding[0] + padding[2]);
 		this.push('fontStyle', iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
-		this.push('fill_color', bg);
+		this.push('f_color', bg);
 		this.push("light_color", iChart.light(bg, f));
 		this.push("dark_color", iChart.dark(bg, f));
 		this.push("light_color2", iChart.light(bg, f * 2));

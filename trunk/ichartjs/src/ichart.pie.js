@@ -87,55 +87,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		this.sectors = [];
 	},
 	/**
-	 * @method this is a experimental method.it seems not work well,Add item(s) into the Chart at the given index or not.This method accepts either a single object of data config or a array of items's config
-	 * @paramter data#Object/Array the data's config
-	 * @paramter index#int The start index at which to add the item.(default to append)
-	 * @paramter animate#boolean if has a animation when drawing
-	 * @return void
-	 */
-	add : function(data, index, animate) {
-		data = iChart.Pie.superclass.add.call(this, data, index, animate);
-		if (!data)
-			return;
-
-		this.calculate();
-
-		data.each(function(d, i) {
-			d.new_ = true;
-			this.doSector(d, i);
-		}, this);
-
-		/**
-		 * update index,percent of each sector and angle and so on
-		 */
-		this.data.each(function(d, i) {
-			if (d.new_) {
-				delete d.new_;
-			} else {
-				var t = d.name + (this.get('showpercent') ? iChart.toPercent(d.value / this.total, this.get('decimalsnum')) : '');
-
-				if (this.get('label.enable'))
-					d.reference.label.text(this.fireString(this, 'parseLabelText', [d, i], t));
-
-				if (this.get('tip.enable'))
-					d.reference.tip.text(this.fireString(this, 'parseTipText', [d, i], t));
-
-				d.reference.id = i;
-				d.reference.push('startAngle', d.startAngle);
-				d.reference.push('middleAngle', d.middleAngle);
-				d.reference.push('endAngle', d.endAngle);
-				d.reference.push('totalAngle', d.endAngle - d.startAngle);
-			}
-		}, this);
-
-		if (animate) {
-			this.animation(this);
-			return;
-		}
-
-		this.draw();
-	},
-	/**
 	 * @method Toggle sector bound or rebound by a specific index.
 	 * @paramter int#i the index of sector
 	 * @return void
@@ -174,8 +125,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
 			cs += si;
-			s.drawSector();
+			if(!this.is3D())
+				s.drawSector();
 		}, this);
+		if(this.is3D())
+			this.proxy.drawSector();
 	},
 	localizer : function(la) {
 		/**

@@ -15,6 +15,7 @@
 		<script type="text/javascript" src="../src/ichart.legend.js"></script>
 		<script type="text/javascript" src="../src/ichart.label.js"></script>
 		<script type="text/javascript" src="../src/ichart.chart.js"></script>
+		<script type="text/javascript" src="../src/ichart.custom.js"></script>
 		<script type="text/javascript" src="../src/ichart.sector.js"></script>
 		<script type="text/javascript" src="../src/ichart.sector2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.sector3d.js"></script>
@@ -23,6 +24,7 @@
 		<script type="text/javascript" src="../src/ichart.rectangle3d.js"></script>
 		<script type="text/javascript" src="../src/ichart.column.js"></script>
 		<script type="text/javascript" src="../src/ichart.column2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.ellipse.js"></script>
 		<script type="text/javascript" src="../src/ichart.bar.js"></script>
 		<script type="text/javascript" src="../src/ichart.bar2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.barmulti2d.js"></script>
@@ -50,79 +52,38 @@
 	</style>
 	<script type="text/javascript">
 		$(function(){
-			var flow=[];
-			for(var i=0;i<21;i++){
-				flow.push(Math.floor(Math.random()*(30+((i%12)*5)))+10);
-			}
-			
 			var data = [
-			         	{
-			         		name : 'PV',
-			         		value:flow,
-			         		color:'#0d8ecf',
-			         		linewidth:2
-			         	}
-			         ];
-	         
-			var labels = ["2012\n08-01","2012\n08-02","2012\n08-03","2012\n08-04","2012\n08-05","2012\n08-06"];
-			var line = new iChart.LineBasic2D({
+			        	{name : 'IE6',value : 10,color:'#a5c2d5'},
+			        	{name : 'IE7',value : 2,color:'#cb164f',height:90},
+			        	{name : 'IE8',value : 16,color:'#76a871'},
+			        	{name : 'IE9',value : 28,color:'#9f7961'},
+			        	{name : 'IE10',value : 4,color:'#136f8f'},
+			        	{name : 'IE11',value : 8,color:'#a56f8f'},
+			        	{name : 'Other',value : 2,color:'#db9034'}
+		        	];
+			var data1 = [
+			        	{name : 'IE6',value : 18,color:'#a5c2d5'},
+			        	{name : 'Other',value : 2,color:'#db9034'}
+		        	];
+			new iChart.Pie3D({
 				render : 'canvasDiv',
 				data: data,
-				align:'center',
-				title : 'ichartjs官方网站最近5天PV流量趋势',
-				subtitle : '平均18:00-22:00访问量达到最大值(单位：万)',
-				footnote : '数据来源：模拟数据',
-				width : 800,
-				height : 400,
-				animation:true,
-				segment_style:{
-					smooth : true,
-					intersection : false
-				},
-				tip:{
-					enable:true,
-					shadow:true
-				},
+				title : 'Top 5 Browsers from 1 to 29 Feb 2012',
 				legend : {
-					enable : true
+					enable : true,
+					align : 'center',
+					valign : 'bottom',
+					row:1,
+					column:'max'
 				},
-				crosshair:{
-					enable:true,
-					line_color:'#62bce9'
-				},
-				offsety:-20,
-				coordinate:{
-					width:640,
-					height:260,
-					axis:{
-						color:'#9f9f9f',
-						width:[0,0,2,2]
-					},
-					grids:{
-						vertical:{
-							way:'share_alike',
-					 		value:5
-						}
-					},
-					scale:[{
-						 position:'left',	
-						 start_scale:0,
-						 end_scale:100,
-						 scale_space:10,
-						 scale_size:2,
-						 scale_color:'#9f9f9f'
-					},{
-						 position:'bottom',	
-						 labels:labels
-					}]
-				}
-			});
-		
-		//开始画图
-		line.draw();
-	});
-	
-	
+				showpercent:true,
+				animation:true,
+				decimalsnum:1,
+				width : 800,
+				height : 500,
+				radius:180
+			}).draw();
+		});
 		</script>
 	</head>
 	<body>

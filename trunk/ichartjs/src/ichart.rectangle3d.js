@@ -51,7 +51,7 @@
 				this.get('width'),
 				this.get('height'),
 				this.get('zHeight'),
-				this.get('fill_color'),
+				this.get('f_color'),
 				this.get('border.enable'),
 				this.get('border.width'),
 				this.get('light_color'),

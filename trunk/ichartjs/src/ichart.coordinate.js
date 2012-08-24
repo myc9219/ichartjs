@@ -470,10 +470,10 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				};
 			},
 			doDraw : function(opts) {
-				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), this.get('fill_color'));
+				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), this.get('f_color'));
 				
 				if (this.get('alternate_color')) {
-					var x, y, f = false, axis = [0, 0, 0, 0], c = iChart.dark(this.get('fill_color'),this.get('alternate_color_factor'));
+					var x, y, f = false, axis = [0, 0, 0, 0], c = iChart.dark(this.get('f_color'),this.get('alternate_color_factor'));
 					if (this.get('axis.enable')) {
 						axis = this.get('axis.width');
 					}
@@ -517,10 +517,10 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				this.atomic = false;
 
 				/**
-				 * apply the gradient color to fill_color
+				 * apply the gradient color to f_color
 				 */
 				if (this.get('gradient') && iChart.isString(this.get('background_color'))) {
-					this.push('fill_color', this.T.avgLinearGradient(this.x, this.y, this.x, this.y + this.get('height'), [this.get('dark_color'), this.get('light_color')]));
+					this.push('f_color', this.T.avgLinearGradient(this.x, this.y, this.x, this.y + this.get('height'), [this.get('dark_color'), this.get('light_color')]));
 				}
 
 				if (this.get('axis.enable')) {

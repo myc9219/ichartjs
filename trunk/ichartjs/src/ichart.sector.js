@@ -103,8 +103,11 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			this.label.draw();
 		}
 	},
-	labelInvoke:function(L){
-		var A = this.get('middleAngle'),x = Math.cos(A)*L,y = Math.sin(A)*L,l=this.label;
+	labelInvoke:function(f){
+		var A = this.get('middleAngle'),l=this.label;
+		x = this.get('inc_x')*f,
+		y = -this.get('inc_y')*f;
+		
 		l.push('originx',l.get('originx')+x);
 		l.push('originy',l.get('originy')+y);
 		l.push('labelx',l.get('labelx')+x);
@@ -159,15 +162,15 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			if (_.variable.event.status != _.expanded) {
 				_.fireEvent(_, 'changed', [_, _.expanded]);
 				if(_.get('label.enable'))
-				_.labelInvoke(_.get('label.linelength')*(_.expanded?2:-2)/3);
+				_.labelInvoke((_.expanded?1:-1));
 			}
 			_.variable.event.status = _.expanded;
 			if (_.expanded) {
 				if (_.get('mutex') && !_.variable.event.poped) {
 					_.expanded = false;
 				} else {
-					_.x += _.get('increment') * Math.cos(2 * Math.PI -_.get('middleAngle'));
-					_.y -= _.get('increment') * Math.sin(2 * Math.PI - _.get('middleAngle'));
+					_.x += _.get('inc_x');
+					_.y -= _.get('inc_y');
 				}
 			}
 			return true;
