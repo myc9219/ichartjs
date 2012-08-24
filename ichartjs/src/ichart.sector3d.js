@@ -42,7 +42,7 @@
 					this.get('startAngle'),
 					this.get('endAngle'),
 					this.h,
-					this.get('background_color'),
+					this.get('f_color'),
 					this.get('border.enable'),
 					this.get('border.width'),
 					this.get('border.color'),
@@ -73,9 +73,7 @@
 			};
 		},
 		tipInvoke:function(){
-			var A = this.get('middleAngle'),
-				Q  = iChart.quadrantd(A),
-				_ =  this;
+			var _ =  this,A =  _.get('middleAngle'),Q  = iChart.quadrantd(A);
 			return function(w,h){
 				var P = _.p2p(_.x,_.y,A,0.6);
 				return {
@@ -86,48 +84,50 @@
 		},
 		doConfig:function(){
 			iChart.Sector3D.superclass.doConfig.call(this);
+			var _ = this,ccw = _.get('counterclockwise'),mA = _.get('middleAngle');
 			
-			this.a = this.get('semi_major_axis');
-			this.b = this.get('semi_minor_axis');
-			this.h = this.get('cylinder_height');
+			_.a = _.get('semi_major_axis');
+			_.b = _.get('semi_minor_axis');
+			_.h = _.get('cylinder_height');
 			
-			iChart.Assert.gtZero(this.a);
-			iChart.Assert.gtZero(this.b);
+			iChart.Assert.gtZero(_.a);
+			iChart.Assert.gtZero(_.b);
 			
-			this.pushIf('increment',iChart.lowTo(5,this.a/8));
-			
-			this.inc = Math.PI/180,ccw = this.get('counterclockwise');
+			_.pushIf('increment',iChart.lowTo(5,_.a/8));
 			
 			var toAngle = function(A){
-				var t = iChart.atan2Radian(0,0,this.a*Math.cos(A),ccw?(-this.b*Math.sin(A)):(this.b*Math.sin(A)));
+				var t = iChart.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A)));
 				if(!ccw&&t!=0){
 					t = 2*Math.PI - t;
 				}
 				return t;
-			}
-			this.sA = toAngle.call(this,this.get('startAngle'));
-			this.eA = toAngle.call(this,this.get('endAngle'));
+			},
+			inc = this.get('increment');
 			
-			if(this.get('label.enable')){
-				this.pushIf('label.linelength',iChart.lowTo(10,this.a/8));
-				this.Z = this.get('label.linelength')/this.a+1;
-				var A = this.get('middleAngle'),
-				Q  = iChart.quadrantd(A),
+			_.sA = toAngle.call(_,_.get('startAngle'));
+			_.eA = toAngle.call(_,_.get('endAngle'));
+			_.mA = toAngle.call(_,mA);
+			
+			_.push('inc_x',inc * Math.cos(2 * Math.PI -_.mA));
+			_.push('inc_y',inc * Math.sin(2 * Math.PI - _.mA));
+			
+			if(_.get('label.enable')){
+				_.pushIf('label.linelength',iChart.lowTo(10,_.a/8));
+				_.Z = _.get('label.linelength')/_.a+1;
+				var Q  = iChart.quadrantd(mA),
+				P = _.p2p(_.x,_.y,mA,_.Z),
+				P2 = _.p2p(_.x,_.y,mA,1);
 				
-				P = this.p2p(this.x,this.y,A,this.Z),
-				P2 = this.p2p(this.x,this.y,A,1),
-				ccw = this.get('counterclockwise');
+				_.push('label.originx',P2.x);
+				_.push('label.originy',P2.y);
+				_.push('label.quadrantd',Q);
 				
-				this.push('label.originx',P2.x);
-				this.push('label.originy',P2.y);
-				this.push('label.quadrantd',Q);
+				_.push('label.line_potins',[P2.x,P2.y+_.h/2,P.x,P.y+_.h/2]);
+				_.push('label.line_globalComposite',(ccw&&mA<Math.PI)||(!ccw&&mA>Math.PI));
+				_.push('label.labelx',P.x);
+				_.push('label.labely',P.y+_.h/2);
 				
-				this.push('label.line_potins',[P2.x,P2.y+this.h/2,P.x,P.y+this.h/2]);
-				this.push('label.line_globalComposite',(ccw&&A<Math.PI)||(!ccw&&A>Math.PI));
-				this.push('label.labelx',P.x);
-				this.push('label.labely',P.y+this.h/2);
-				
-				this.label = new iChart.Label(this.get('label'),this);
+				_.label = new iChart.Label(_.get('label'),_);
 			}
 		}
 });//@end

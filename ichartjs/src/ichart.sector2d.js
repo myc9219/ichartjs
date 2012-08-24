@@ -30,7 +30,7 @@
 					this.r,
 					this.get('startAngle'),
 					this.get('endAngle'),
-					this.get('fill_color'),
+					this.get('f_color'),
 					this.get('border.enable'),
 					this.get('border.width'),
 					this.get('border.color'),
@@ -59,7 +59,7 @@
 		tipInvoke:function(){
 			var _ = this;
 			return function(w,h){
-				var P = iChart.p2Point(_.x,_.y,_.get('middleAngle'),_.r*0.8),Q  = iChart.quadrantd(_.get('middleAngle'));
+				var P = iChart.p2Point(this.x,this.y,this.get('middleAngle'),this.r*0.8),Q  = iChart.quadrantd(this.get('middleAngle'));
 				return {
 					left:(Q>=2&&Q<=3)?(P.x - w):P.x,
 					top:Q>=3?(P.y - h):P.y
@@ -74,15 +74,15 @@
 			
 			
 			if(this.get('gradient')){
-				this.push('fill_color',this.T.avgRadialGradient(this.x,this.y,0,this.x,this.y,this.r,[this.get('light_color'),this.get('dark_color')]));
+				this.push('f_color',this.T.avgRadialGradient(this.x,this.y,0,this.x,this.y,this.r,[this.get('light_color'),this.get('dark_color')]));
 			}
-			
 			this.pushIf('increment',iChart.lowTo(5,this.r/8));
+			var A = this.get('middleAngle'),inc = this.get('increment');
+			this.push('inc_x',inc * Math.cos(2 * Math.PI -A));
+			this.push('inc_y',inc * Math.sin(2 * Math.PI - A));
 			
 			if(this.get('label.enable')){
 				this.pushIf('label.linelength',iChart.lowTo(10,this.r/8));
-				
-				var A = this.get('middleAngle'),
 				Q  = iChart.quadrantd(A),
 				P2 = iChart.p2Point(this.x,this.y,A,this.r/2);
 			

@@ -1272,7 +1272,7 @@ $.Painter = $.extend($.Element, {
 		this.push('hpadding', padding[1] + padding[3]);
 		this.push('vpadding', padding[0] + padding[2]);
 		this.push('fontStyle', $.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
-		this.push('fill_color', bg);
+		this.push('f_color', bg);
 		this.push("light_color", $.light(bg, f));
 		this.push("dark_color", $.dark(bg, f));
 		this.push("light_color2", $.light(bg, f * 2));
@@ -2147,7 +2147,7 @@ $.Legend = $.extend($.Component, {
 	},
 	doDraw : function() {
 		if (this.get('border.enable'))
-			this.T.drawBorder(this.x, this.y, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('fill_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'),
+			this.T.drawBorder(this.x, this.y, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('f_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'),
 					this.get('shadow_offsety'));
 
 		this.T.textStyle('left', 'middle', $.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
@@ -4209,10 +4209,10 @@ $.Coordinate2D = $.extend($.Component,
 				};
 			},
 			doDraw : function(opts) {
-				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), this.get('fill_color'));
+				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), this.get('f_color'));
 				
 				if (this.get('alternate_color')) {
-					var x, y, f = false, axis = [0, 0, 0, 0], c = $.dark(this.get('fill_color'),this.get('alternate_color_factor'));
+					var x, y, f = false, axis = [0, 0, 0, 0], c = $.dark(this.get('f_color'),this.get('alternate_color_factor'));
 					if (this.get('axis.enable')) {
 						axis = this.get('axis.width');
 					}
@@ -4256,10 +4256,10 @@ $.Coordinate2D = $.extend($.Component,
 				this.atomic = false;
 
 				/**
-				 * apply the gradient color to fill_color
+				 * apply the gradient color to f_color
 				 */
 				if (this.get('gradient') && $.isString(this.get('background_color'))) {
-					this.push('fill_color', this.T.avgLinearGradient(this.x, this.y, this.x, this.y + this.get('height'), [this.get('dark_color'), this.get('light_color')]));
+					this.push('f_color', this.T.avgLinearGradient(this.x, this.y, this.x, this.y + this.get('height'), [this.get('dark_color'), this.get('light_color')]));
 				}
 
 				if (this.get('axis.enable')) {
@@ -4712,7 +4712,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			});
 			
 			this.on('beforedraw',function(){
-				this.push('fill_color',this.variable.event.highlight?this.get('light_color'):this.get('background_color'));
+				this.push('f_color',this.variable.event.highlight?this.get('light_color'):this.get('background_color'));
 				return true;
 			});
 		}
@@ -4753,7 +4753,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				this.get('originy'),
 				this.get('width'),
 				this.get('height'),
-				this.get('fill_color'),
+				this.get('f_color'),
 				this.get('border.enable'),
 				this.get('border.width'),
 				this.get('border.color'),
@@ -4872,7 +4872,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				this.get('width'),
 				this.get('height'),
 				this.get('zHeight'),
-				this.get('fill_color'),
+				this.get('f_color'),
 				this.get('border.enable'),
 				this.get('border.width'),
 				this.get('light_color'),
@@ -5118,7 +5118,7 @@ $.Sector = $.extend($.Component, {
 					this.r,
 					this.get('startAngle'),
 					this.get('endAngle'),
-					this.get('fill_color'),
+					this.get('f_color'),
 					this.get('border.enable'),
 					this.get('border.width'),
 					this.get('border.color'),
@@ -5162,7 +5162,7 @@ $.Sector = $.extend($.Component, {
 			
 			
 			if(this.get('gradient')){
-				this.push('fill_color',this.T.avgRadialGradient(this.x,this.y,0,this.x,this.y,this.r,[this.get('light_color'),this.get('dark_color')]));
+				this.push('f_color',this.T.avgRadialGradient(this.x,this.y,0,this.x,this.y,this.r,[this.get('light_color'),this.get('dark_color')]));
 			}
 			
 			this.pushIf('increment',$.lowTo(5,this.r/8));
@@ -6402,14 +6402,14 @@ $.LineSegment = $.extend($.Component, {
 			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
 		}
 
-		this.T.lineArray(p, this.get('brushsize'), this.get('fill_color'), this.get('smooth'), this.get('smoothing'));
+		this.T.lineArray(p, this.get('brushsize'), this.get('f_color'), this.get('smooth'), this.get('smoothing'));
 		
 		if (this.get('intersection')) {
 			for ( var i = 0; i < p.length; i++) {
 				if (this.get('point_hollow')) {
-					this.T.round(p[i].x, p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('fill_color'));
+					this.T.round(p[i].x, p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('f_color'));
 				} else {
-					this.T.round(p[i].x, p[i].y, this.get('point_size'), this.get('fill_color'));
+					this.T.round(p[i].x, p[i].y, this.get('point_size'), this.get('f_color'));
 				}
 			}
 		}
@@ -6423,7 +6423,7 @@ $.LineSegment = $.extend($.Component, {
 		if (this.get('intersection') && this.get('label')) {
 			var p = this.get('points');
 			for ( var i = 0; i < p.length; i++) {
-				this.T.text(p[i].value, p[i].x, p[i].y - this.get('point_size') * 3 / 2, false, this.get('fill_color'), 'center', 'bottom', this.get('fontStyle'));
+				this.T.text(p[i].value, p[i].x, p[i].y - this.get('point_size') * 3 / 2, false, this.get('f_color'), 'center', 'bottom', this.get('fontStyle'));
 			}
 		}
 	},

@@ -32,12 +32,15 @@
 			 * If this element can split or contain others.(default to false)
 			 */
 			this.atomic = false;
-			
+			/**
+			 * If method draw be proxy.(default to false)
+			 */
+			this.proxy = false;
 			this.inject(c);
 			
 			this.final_parameter = {};
 			
-	
+			
 	},
 	afterConfiguration:function(){
 		this.init();
@@ -95,11 +98,10 @@
 		this.container.draw();
 	},
 	commonDraw : function(opts) {
-		// 转换中心坐标至当前目标坐标中心?
-		// this.T.ctx.translate(this.x,this.y);
 		/**
 		 * execute the doDraw() that the subClass implement
 		 */
+		if(!this.proxy)
 		this.doDraw.call(this, opts);
 	
 	},

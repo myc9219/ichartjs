@@ -120,7 +120,7 @@
 			});
 			
 			this.on('beforedraw',function(){
-				this.push('fill_color',this.variable.event.highlight?this.get('light_color'):this.get('background_color'));
+				this.push('f_color',this.variable.event.highlight?this.get('light_color'):this.get('background_color'));
 				return true;
 			});
 		}

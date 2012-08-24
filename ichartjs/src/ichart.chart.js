@@ -2,34 +2,24 @@
 (function($) {
 
 	var inc = Math.PI / 90, PI = Math.PI, PI2 = 2 * Math.PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
-		return w <= 1 ? (Math.floor(c) + 0.5) : Math.floor(c);
-	},
-	getCurvePoint = function (seg, point, i ,smo) {
-		var x = point.x,
-			y = point.y,
-			lp = seg[i - 1],
-			np = seg[i + 1],
-			lcx,
-			lcy,
-			rcx,
-			rcy;
-		//find out control points
+		return w <= 1 ? (Math.floor(c) + 0.5) : Math.round(c);
+	}, getCurvePoint = function(seg, point, i, smo) {
+		var x = point.x, y = point.y, lp = seg[i - 1], np = seg[i + 1], lcx, lcy, rcx, rcy;
+		// find out control points
 		if (i < seg.length - 1) {
-			var lastY = lp.y,
-				nextY = np.y,
-				correction;
+			var lastY = lp.y, nextY = np.y, c;
 			lcx = (smo * x + lp.x) / (smo + 1);
 			lcy = (smo * y + lastY) / (smo + 1);
 			rcx = (smo * x + np.x) / (smo + 1);
 			rcy = (smo * y + nextY) / (smo + 1);
-			
-			correction = ((rcy - lcy) * (rcx - x)) /(rcx - lcx) + y - rcy;
-			lcy += correction;
-			rcy += correction;
-	
+
+			c = ((rcy - lcy) * (rcx - x)) / (rcx - lcx) + y - rcy;
+			lcy += c;
+			rcy += c;
+
 			if (lcy > lastY && lcy > y) {
 				lcy = max(lastY, y);
-				rcy = 2 * y - lcy; 
+				rcy = 2 * y - lcy;
 			} else if (lcy < lastY && lcy < y) {
 				lcy = min(lastY, y);
 				rcy = 2 * y - lcy;
@@ -44,14 +34,7 @@
 			point.rcx = rcx;
 			point.rcy = rcy;
 		}
-		return  [
-			lp.rcx || lp.x,
-			lp.rcy || lp.y,
-			lcx || x,
-			lcy || y,
-			x,
-			y
-		];
+		return [lp.rcx || lp.x, lp.rcy || lp.y, lcx || x, lcy || y, x, y];
 	}
 	/**
 	 * @private support an improved API for drawing in canvas
@@ -82,11 +65,10 @@
 			var x0, y0, ccw = !!ccw, a2r = !!a2r;
 			this.save();
 			if (!!last)
-				this.c.globalCompositeOperation = "destination-over";
+				this.gCO(last);
 			if (b)
 				this.strokeStyle(bw, bc);
-			this.shadowOn(sw, swc, swb, swx, swy).fillStyle(c);
-			this.moveTo(x, y).beginPath();
+			this.shadowOn(sw, swc, swb, swx, swy).fillStyle(c).moveTo(x, y).beginPath();
 			this.c.arc(x, y, r, s, e, ccw);
 			if (a2r)
 				this.lineTo(x, y);
@@ -102,11 +84,11 @@
 			var angle = s, ccw = !!ccw, a2r = !!a2r;
 			this.save();
 			if (!!last)
-				this.c.globalCompositeOperation = "destination-over";
+				this.gCO(last);
 			if (b)
 				this.strokeStyle(bow, boc);
 			this.shadowOn(sw, swc, swb, swx, swy).fillStyle(c).moveTo(x, y).beginPath();
-			
+
 			if (a2r)
 				this.moveTo(x, y);
 
@@ -117,7 +99,9 @@
 			this.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e)))).closePath();
 			if (b)
 				this.stroke();
-			return this.fill().restore();
+			if(c)
+				this.fill();
+			return this.restore();
 		},
 		/**
 		 * draw sector
@@ -135,7 +119,7 @@
 			return this;
 		},
 		sector3D : function() {
-			var x0, y0, sPaint = function(x, y, a, b, s, e, ccw, h, color) {
+			var x0, y0, sPaint = function(x, y, a, b, s, e, ccw, h, c) {
 				if ((ccw && e <= PI) || (!ccw && s >= PI))
 					return false;
 				var Lo = function(A, h) {
@@ -144,7 +128,7 @@
 				s = ccw && e > PI && s < PI ? PI : s;
 				e = !ccw && s < PI && e > PI ? PI : e;
 				var angle = s;
-				this.fillStyle($.dark(color)).moveTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).beginPath();
+				this.fillStyle($.dark(c)).moveTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).beginPath();
 				while (angle <= e) {
 					Lo.call(this, angle);
 					angle = angle + inc;
@@ -158,35 +142,29 @@
 				}
 				Lo.call(this, s, h);
 				this.lineTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).closePath().fill();
-			}, layerDraw = function(x, y, a, b, ccw, h, A, color) {
+			}, layerDraw = function(x, y, a, b, ccw, h, A, c) {
 				var x0 = x + a * cos(A);
 				var y0 = y + h + (ccw ? (-b * sin(A)) : (b * sin(A)));
-				this.moveTo(x, y).beginPath().fillStyle($.dark(color)).lineTo(x, y + h).lineTo(x0, y0).lineTo(x0, y0 - h).lineTo(x, y).closePath().fill();
-			}, layerPaint = function(x, y, a, b, s, e, ccw, h, color) {
+				this.moveTo(x, y).beginPath().fillStyle(c).lineTo(x, y + h).lineTo(x0, y0).lineTo(x0, y0 - h).lineTo(x, y).closePath().fill();
+			}, layerPaint = function(x, y, a, b, s, e, ccw, h, c) {
 				var ds = ccw ? (s < PI / 2 || s > 1.5 * PI) : (s > PI / 2 && s < 1.5 * PI), de = ccw ? (e > PI / 2 && e < 1.5 * PI) : (e < PI / 2 || e > 1.5 * PI);
 				if (!ds && !de)
 					return false;
+				c = $.dark(c);
 				if (ds)
-					layerDraw.call(this, x, y, a, b, ccw, h, s, color);
+					layerDraw.call(this, x, y, a, b, ccw, h, s, c);
 				if (de)
-					layerDraw.call(this, x, y, a, b, ccw, h, e, color);
+					layerDraw.call(this, x, y, a, b, ccw, h, e, c);
 			};
-			return function(x, y, a, b, s, e, h, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, isw) {
-				/**
-				 * browser opera has bug when use destination-over and shadow
-				 */
-				sw = sw && !$.isOpera;
-				this.save().fillStyle(c)
-				this.c.globalCompositeOperation = "destination-over";
-				/**
-				 * paint inside layer
-				 */
-				layerPaint.call(this, x, y, a, b, s, e, ccw, h, c);
+			var s3 =  function(x, y, a, b, s, e, h, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, isw) {
 				/**
 				 * paint bottom layer
 				 */
 				this.ellipse(x, y + h, a, b, s, e, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, true);
-				this.c.globalCompositeOperation = "source-over";
+				/**
+				 * paint inside layer
+				 */
+				layerPaint.call(this, x, y, a, b, s, e, ccw, h, c);
 
 				/**
 				 * paint top layer var g = this.avgRadialGradient(x,y,0,x,y,a,[$.light(c,0.1),$.dark(c,0.05)]);
@@ -196,11 +174,14 @@
 				 * paint outside layer
 				 */
 				sPaint.call(this, x, y, a, b, s, e, ccw, h, c);
-
-				return this.restore();;
+				return this;
 			}
+			s3.layerPaint = layerPaint;
+			s3.sPaint = sPaint;
+			s3.layerDraw = layerDraw;
+			return s3;
 		}(),
-		
+
 		textStyle : function(a, l, f) {
 			return this.textAlign(a).textBaseline(l).textFont(f);
 		},
@@ -285,13 +266,13 @@
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			T.each(function(t) {
 				try {
-				if (max)
-					this.c.fillText(t, x, y, max);
-				else
-					this.c.fillText(t, x, y);
-				y += h;
+					if (max)
+						this.c.fillText(t, x, y, max);
+					else
+						this.c.fillText(t, x, y);
+					y += h;
 				} catch (e) {
-					console.log(e.message+'['+t+','+x+','+y+']');
+					console.log(e.message + '[' + t + ',' + x + ',' + y + ']');
 				}
 			}, this);
 			return this;
@@ -467,14 +448,8 @@
 		polygon : function(bg, b, bw, bc, sw, swc, swb, swx, swy, alpham, points) {
 			if (points.length < 2)
 				return;
-			this.save()
-			.strokeStyle(bw, bc)
-			.beginPath()
-			.fillStyle(bg)
-			.globalAlpha(alpham)
-			.shadowOn(sw, swc, swb, swx, swy)
-			.moveTo(points[0], points[1]);
-			for ( var i = 2; i < points.length; i += 2){
+			this.save().strokeStyle(bw, bc).beginPath().fillStyle(bg).globalAlpha(alpham).shadowOn(sw, swc, swb, swx, swy).moveTo(points[0], points[1]);
+			for ( var i = 2; i < points.length; i += 2) {
 				this.lineTo(points[i], points[i + 1]);
 			}
 			this.closePath();
@@ -484,29 +459,31 @@
 			return this;
 		},
 		lines : function(p, w, c, last) {
-			if(p.length<4)return this;
+			if (p.length < 4)
+				return this;
 			this.save();
 			if (!!last)
-				this.c.globalCompositeOperation = "destination-over";
-			this.beginPath().strokeStyle(w, c).moveTo(fd(w,p[0]),fd(w,p[1]));
-			for ( var i = 2; i < p.length - 1; i+=2) {
-				this.lineTo(fd(w,p[i]),fd(w,p[i+1]));                
+				this.gCO(last);
+			this.beginPath().strokeStyle(w, c).moveTo(fd(w, p[0]), fd(w, p[1]));
+			for ( var i = 2; i < p.length - 1; i += 2) {
+				this.lineTo(fd(w, p[i]), fd(w, p[i + 1]));
 			}
 			return this.stroke().restore();
 		},
-		bezierCurveTo : function(r){
-			this.c.bezierCurveTo(r[0],r[1],r[2],r[3],r[4],r[5]);
+		bezierCurveTo : function(r) {
+			this.c.bezierCurveTo(r[0], r[1], r[2], r[3], r[4], r[5]);
 			return this;
 		},
-		lineArray : function(p, w, c,smooth,smo){
-			if(p.length<2)return this;
-			this.save().beginPath().strokeStyle(w, c).moveTo(fd(w,p[0].x),fd(w,p[0].y));
-			if(smooth){
-				for ( var i = 1; i < p.length; i++) 
-					this.bezierCurveTo(getCurvePoint(p,p[i],i,smo));
-			}else{
-				for ( var i = 1; i < p.length; i++) 
-					this.lineTo(fd(w,p[i].x),fd(w,p[i].y));                
+		lineArray : function(p, w, c, smooth, smo) {
+			if (p.length < 2)
+				return this;
+			this.save().beginPath().strokeStyle(w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
+			if (smooth) {
+				for ( var i = 1; i < p.length; i++)
+					this.bezierCurveTo(getCurvePoint(p, p[i], i, smo));
+			} else {
+				for ( var i = 1; i < p.length; i++)
+					this.lineTo(fd(w, p[i].x), fd(w, p[i].y));
 			}
 			return this.stroke().restore();
 		},
@@ -515,41 +492,35 @@
 				return this;
 			this.save();
 			if (!!last)
-				this.c.globalCompositeOperation = "destination-over";
+				this.gCO(last);
 			return this.beginPath().strokeStyle(w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke().restore();
 		},
 		round : function(x, y, r, c, bw, bc) {
 			return this.arc(x, y, r, 0, PI2, c, !!bc, bw, bc);
 		},
-		fillRect:function(x, y, w, h){
+		fillRect : function(x, y, w, h) {
 			this.c.fillRect(x, y, w, h);
 			return this;
 		},
-		translate:function(x, y){
+		translate : function(x, y) {
 			this.c.translate(x, y);
 			return this;
 		},
 		backgound : function(x, y, w, h, bgcolor) {
-			this.save();
-			this.c.globalCompositeOperation = "destination-over";
-			return this.translate(x, y).beginPath().fillStyle(bgcolor).fillRect(0, 0, w, h).restore();
+			return this.save().gCO(true).translate(x, y).beginPath().fillStyle(bgcolor).fillRect(0, 0, w, h).restore();
 		},
 		rectangle : function(x, y, w, h, bgcolor, border, linewidth, bcolor, sw, swc, swb, swx, swy) {
 			this.save().translate(fd(linewidth, x), fd(linewidth, y)).beginPath().fillStyle(bgcolor).shadowOn(sw, swc, swb, swx, swy);
 			if (border && $.isNumber(linewidth)) {
-				this.strokeStyle(linewidth,bcolor);
+				this.strokeStyle(linewidth, bcolor);
 				this.c.strokeRect(0, 0, w, h);
 			}
-			
-			if(bgcolor)
-			this.fillRect(0, 0, w, h);
+
+			if (bgcolor)
+				this.fillRect(0, 0, w, h);
 
 			if (border && $.isArray(linewidth)) {
-				this.strokeStyle(null,bcolor)
-				.line(0, 0, w, 0, linewidth[0], bcolor)
-				.line(w, 0, w, h, linewidth[1], bcolor)
-				.line(0, h, w, h, linewidth[2], bcolor)
-				.line(0, 0, 0, h, linewidth[3], bcolor);
+				this.strokeStyle(null, bcolor).line(0, 0, w, 0, linewidth[0], bcolor).line(w, 0, w, h, linewidth[1], bcolor).line(0, h, w, h, linewidth[2], bcolor).line(0, 0, 0, h, linewidth[3], bcolor);
 			}
 			return this.restore();
 		},
@@ -559,6 +530,10 @@
 			w = w || this.width;
 			h = h || this.height;
 			this.c.clearRect(x, y, w, h);
+			return this;
+		},
+		gCO : function(l) {
+			this.c.globalCompositeOperation = l ? "destination-over" : "source-over";
 			return this;
 		},
 		drawBorder : function(x, y, w, h, line, color, round, bgcolor, last, shadow, scolor, blur, offsetx, offsety) {
@@ -573,9 +548,9 @@
 				y = y0;
 				h -= 1;
 			}
-			this.translate(x, y).strokeStyle(line,color);
+			this.translate(x, y).strokeStyle(line, color);
 			if (!!last) {
-				this.c.globalCompositeOperation = "destination-over";
+				this.gCO(last);
 			}
 			if (bgcolor) {
 				this.fillStyle(bgcolor);
@@ -587,9 +562,7 @@
 			 * draw a round corners border
 			 */
 			if ($.isArray(round)) {
-				this.beginPath()
-				.moveTo(round[0], 0)
-				.lineTo(w - round[1], 0);
+				this.beginPath().moveTo(round[0], 0).lineTo(w - round[1], 0);
 				this.c.arcTo(w, 0, w, round[1], round[1]);
 				this.lineTo(w, h - round[2]);
 				this.c.arcTo(w, h, w - round[2], h, round[2]);
@@ -603,8 +576,6 @@
 				}
 				if (shadow)
 					this.shadowOff();
-				this.c.globalCompositeOperation = "source-over";
-
 				this.stroke();
 			} else {
 				/**
@@ -620,8 +591,8 @@
 			}
 			return this.restore();
 		},
-		toImageURL : function() {
-			return this.canvas.toDataURL("image/png");
+		toImageURL : function(g) {
+			return this.canvas.toDataURL(g||"image/png");
 		},
 		addEvent : function(type, fn, useCapture) {
 			$.Event.addEvent(this.canvas, type, fn, useCapture);
@@ -694,7 +665,7 @@
 				 * @cfg {Object/String} Specifies the config of Title details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
 				 */
 				title : {
-					text:'',
+					text : '',
 					fontweight : 'bold',
 					/**
 					 * Specifies the font-size in pixels of title.(default to 20)
@@ -709,7 +680,7 @@
 				 * @cfg {Object/String}Specifies the config of subtitle details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the title or subtitle'text is empty,then will not display
 				 */
 				subtitle : {
-					text:'',
+					text : '',
 					fontweight : 'bold',
 					/**
 					 * Specifies the font-size in pixels of title.(default to 16)
@@ -724,7 +695,7 @@
 				 * @cfg {Object/String}Specifies the config of footnote details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
 				 */
 				footnote : {
-					text:'',
+					text : '',
 					/**
 					 * Specifies the font-color of footnote.(default to '#5d7f97')
 					 */
@@ -877,27 +848,6 @@
 		doAnimation : function(t, d) {
 			this.get('doAnimationFn').call(this, t, d);
 		},
-		/**
-		 * the common config
-		 */
-		add : function(data, index, animate) {
-			if (this.processAnimation) {
-				this.variable.animation.queue.push({
-					handler : 'add',
-					arguments : [data, index, animate]
-				});
-				return false;
-			}
-			$.isNumber(index)
-			index = $.between(0, this.data.length, index);
-			data = $.Interface.parser.call(this, data, index);
-
-			if (this.get('legend.enable')) {
-				this.legend.calculate(this.data, data);
-			}
-
-			return data;
-		},
 		commonDraw : function() {
 			$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
 			$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
@@ -908,16 +858,16 @@
 			 */
 
 			if (!this.redraw) {
-				if(this.title){
+				if (this.title) {
 					this.title.draw();
 				}
-				if(this.subtitle){
+				if (this.subtitle) {
 					this.subtitle.draw();
 				}
-				if(this.footnote){
+				if (this.footnote) {
 					this.footnote.draw();
 				}
-				
+
 				if (this.get('border.enable')) {
 					this.T.drawBorder(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('background_color'), true);
 				} else {
@@ -991,13 +941,10 @@
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
 
-			/**
-			 * for compress
-			 */
 			var _ = this, E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
-
-			$.Assert.isArray(_.data);
 			
+			$.Assert.isArray(_.data);
+
 			$.Interface._3D.call(_);
 
 			_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
@@ -1005,7 +952,7 @@
 			_.processAnimation = _.get('animation');
 
 			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
-			
+
 			_.variable.animation = {
 				type : 0,
 				time : 0,
@@ -1093,30 +1040,30 @@
 			_.push('b_originy', _.height - _.get('padding_bottom'));
 			_.push('client_width', (_.get('width') - _.get('hpadding')));
 			var H = 0;
-			if($.isString(_.get('title'))){
-				_.push('title',{
-					text:_.get('title'),
+			if ($.isString(_.get('title'))) {
+				_.push('title', {
+					text : _.get('title'),
 					fontweight : 'bold',
 					fontsize : 20,
 					height : 30
 				});
 			}
-			if($.isString(_.get('subtitle'))){
-				_.push('subtitle',{
-					text:_.get('subtitle'),
+			if ($.isString(_.get('subtitle'))) {
+				_.push('subtitle', {
+					text : _.get('subtitle'),
 					fontweight : 'bold',
 					fontsize : 16,
 					height : 20
 				});
 			}
-			if($.isString(_.get('footnote'))){
-				_.push('footnote',{
-					text:_.get('footnote'),
+			if ($.isString(_.get('footnote'))) {
+				_.push('footnote', {
+					text : _.get('footnote'),
 					color : '#5d7f97',
 					height : 20
 				});
 			}
-			
+
 			if (_.get('title.text') != '') {
 				var st = _.get('subtitle.text') != '';
 				H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
@@ -1125,48 +1072,48 @@
 				} else if (_.get('title_align') == 'right') {
 					_.push('title.originx', _.width - _.get('padding_right'));
 				} else {
-					_.push('title.originx', _.get('padding_left')+_.get('client_width') / 2);
+					_.push('title.originx', _.get('padding_left') + _.get('client_width') / 2);
 				}
-				
+
 				_.push('t_originy', _.get('t_originy') + H);
-				
+
 				this.push('title.textAlign', this.get('title_align'));
 				this.push('title.originy', this.get('padding_top'));
 				this.push('title.textBaseline', 'top');
 				this.title = new $.Text(this.get('title'), this);
 				if (st) {
 					_.push('subtitle.originx', _.get('title.originx'));
-					_.push('subtitle.originy', _.get('title.originy')+_.get('title.height'));
+					_.push('subtitle.originy', _.get('title.originy') + _.get('title.height'));
 					_.push('subtitle.textAlign', _.get('title_align'));
 					_.push('subtitle.textBaseline', 'top');
 					this.subtitle = new $.Text(this.get('subtitle'), this);
 				}
 			}
-			
+
 			if (_.get('footnote.text') != '') {
 				var fh = _.get('footnote.height');
-				H +=fh;
-				
+				H += fh;
+
 				_.push('b_originy', _.get('b_originy') - fh);
-				
+
 				if (_.get('footnote_align') == 'left') {
 					_.push('footnote.originx', _.get('padding_left'));
 				} else if (_.get('footnote_align') == 'right') {
 					_.push('footnote.originx', _.width - _.get('padding_right'));
 				} else {
-					_.push('footnote.originx', _.get('padding_left')+_.get('client_width') / 2);
+					_.push('footnote.originx', _.get('padding_left') + _.get('client_width') / 2);
 				}
-				
+
 				this.push('footnote.textAlign', this.get('footnote_align'));
 				this.push('footnote.originy', this.get('b_originy'));
 				this.push('footnote.textBaseline', 'top');
-				
+
 				this.footnote = new $.Text(this.get('footnote'), this);
-				
+
 			}
-			
+
 			_.push('client_height', (_.get('height') - _.get('vpadding') - H));
-			
+
 			_.push('minDistance', min(_.get('client_width'), _.get('client_height')));
 			_.push('maxDistance', max(_.get('client_width'), _.get('client_height')));
 			_.push('minstr', _.get('client_width') < _.get('client_height') ? 'width' : 'height');

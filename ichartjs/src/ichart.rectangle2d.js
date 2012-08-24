@@ -34,7 +34,7 @@
 				this.get('originy'),
 				this.get('width'),
 				this.get('height'),
-				this.get('fill_color'),
+				this.get('f_color'),
 				this.get('border.enable'),
 				this.get('border.width'),
 				this.get('border.color'),
