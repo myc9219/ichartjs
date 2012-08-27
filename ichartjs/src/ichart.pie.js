@@ -141,7 +141,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			if ((la.labely <= y && (y - la.labely) < la.get('height')) || (la.labely > y && (la.labely - y) < l.get('height'))) {
 				if ((la.labelx < x && (x - la.labelx) < la.get('width')) || (la.labelx > x && (la.labelx - x) < l.get('width'))) {
 					var q = la.get('quadrantd');
-					if ((q == 2 || q == 3) || la.labely < y) {
+					if ((q == 2 || q == 3)) {
 						/**
 						 * console.log('upper..'+la.get('text')+'==='+l.get('text'));
 						 */

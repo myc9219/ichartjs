@@ -84,6 +84,7 @@
 			if(this.get('label.enable')){
 				this.pushIf('label.linelength',iChart.lowTo(10,this.r/8));
 				Q  = iChart.quadrantd(A),
+				
 				P2 = iChart.p2Point(this.x,this.y,A,this.r/2);
 			
 				this.push('label.originx',P2.x);
