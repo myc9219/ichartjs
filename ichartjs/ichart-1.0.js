@@ -5383,8 +5383,9 @@ $.Pie = $.extend($.Chart, {
 			if(!this.is3D())
 				s.drawSector();
 		}, this);
-		if(this.is3D())
+		if(this.is3D()){
 			this.proxy.drawSector();
+		}
 	},
 	localizer : function(la) {
 		/**
@@ -5656,15 +5657,19 @@ $.Pie3D = $.extend($.Pie, {
 		}, _);
 		
 		/**
+		 * paint outside layer
+		 */
+		_.sectors.eachAll(function(s, i) {
+			this.T.sector3D.sPaint.call(this.T, s.x, s.y, s.a, s.b, s.get('startAngle'), s.get('endAngle'), false, s.h, s.get('f_color'));
+		}, _);
+		
+		/**
 		 * paint top layer
 		 */
 		_.sectors.eachAll(function(s, i) {
 			this.T.ellipse(s.x, s.y, s.a, s.b, s.get('startAngle'), s.get('endAngle'), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, 0, 0, 0, 0, false, true);
-			/**
-			 * paint outside layer
-			 */
-			this.T.sector3D.sPaint.call(this.T, s.x, s.y, s.a, s.b, s.get('startAngle'), s.get('endAngle'), false, s.h, s.get('f_color'));
 		}, _);
+		
 	}
 	_.pushComponent(this.proxy);
 }
@@ -6053,11 +6058,10 @@ $.Bar = $.extend($.Chart, {
 		this.push('rectangle.background_color', d.color);
 
 		this.push('rectangle.id', id);
-		// this.push('rectangle.originx', x);
-	this.push('rectangle.originy', y);
-	this.push('rectangle.width', w);
+		this.push('rectangle.originy', y);
+		this.push('rectangle.width', w);
 
-},
+	},
 	doAnimation : function(t, d) {
 		this.coo.draw();
 		this.labels.each(function(l, i) {
