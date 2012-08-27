@@ -2294,9 +2294,9 @@ $.Label = $.extend($.Component, {
 			 */
 			text : '',
 			/**
-			 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 16).
+			 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 12).
 			 */
-			line_height : 16,
+			line_height : 12,
 			/**
 			 * @cfg {Number} Specifies the thickness of line in pixel.(default to 1).
 			 */
@@ -2312,9 +2312,9 @@ $.Label = $.extend($.Component, {
 			 */
 			sign_size : 12,
 			/**
-			 * @cfg {Number} Override the default as 5 in pixel.
+			 * @cfg {Number} Override the default as 2 in pixel.
 			 */
-			padding : 5,
+			padding : '2 5',
 			/**
 			 * @cfg {Number} Override the default as 2 in pixel.
 			 */
@@ -2392,8 +2392,12 @@ $.Label = $.extend($.Component, {
 
 		this.T.textFont($.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
 		
-		this.push('height',this.get('line_height') + this.get('vpadding'));
-
+		if(this.get('fontsize')>this.get('line_height')){
+			this.push('line_height',this.get('fontsize'));
+		}
+		
+		this.push('height',this.get('line_height') + this.get('vpadding')+(this.get('border.enable')?this.get('border.width')*2:0));
+		
 		this.text();
 		
 		this.localizer();
@@ -5106,6 +5110,7 @@ $.Sector = $.extend($.Component, {
 			if(this.get('label.enable')){
 				this.pushIf('label.linelength',$.lowTo(10,this.r/8));
 				Q  = $.quadrantd(A),
+				
 				P2 = $.p2Point(this.x,this.y,A,this.r/2);
 			
 				this.push('label.originx',P2.x);
@@ -5397,7 +5402,7 @@ $.Pie = $.extend($.Chart, {
 			if ((la.labely <= y && (y - la.labely) < la.get('height')) || (la.labely > y && (la.labely - y) < l.get('height'))) {
 				if ((la.labelx < x && (x - la.labelx) < la.get('width')) || (la.labelx > x && (la.labelx - x) < l.get('width'))) {
 					var q = la.get('quadrantd');
-					if ((q == 2 || q == 3) || la.labely < y) {
+					if ((q == 2 || q == 3)) {
 						/**
 						 * console.log('upper..'+la.get('text')+'==='+l.get('text'));
 						 */
