@@ -127,7 +127,6 @@ iChart.Sector = iChart.extend(iChart.Component, {
 
 
 		if(this.get('label.enable')){
-			_.pushIf('label.line_thickness',_.is3D()?4:1);
 			_.pushIf('label.border.color',_.get('border.color'));
 			/**
 			 * make the label's color in accord with sector

@@ -128,8 +128,9 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			if(!this.is3D())
 				s.drawSector();
 		}, this);
-		if(this.is3D())
+		if(this.is3D()){
 			this.proxy.drawSector();
+		}
 	},
 	localizer : function(la) {
 		/**
