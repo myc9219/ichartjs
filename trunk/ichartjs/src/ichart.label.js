@@ -21,9 +21,9 @@ iChart.Label = iChart.extend(iChart.Component, {
 			 */
 			text : '',
 			/**
-			 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 16).
+			 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 12).
 			 */
-			line_height : 16,
+			line_height : 12,
 			/**
 			 * @cfg {Number} Specifies the thickness of line in pixel.(default to 1).
 			 */
@@ -39,9 +39,9 @@ iChart.Label = iChart.extend(iChart.Component, {
 			 */
 			sign_size : 12,
 			/**
-			 * @cfg {Number} Override the default as 5 in pixel.
+			 * @cfg {Number} Override the default as 2 in pixel.
 			 */
-			padding : 5,
+			padding : '2 5',
 			/**
 			 * @cfg {Number} Override the default as 2 in pixel.
 			 */
@@ -119,8 +119,12 @@ iChart.Label = iChart.extend(iChart.Component, {
 
 		this.T.textFont(iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
 		
-		this.push('height',this.get('line_height') + this.get('vpadding'));
-
+		if(this.get('fontsize')>this.get('line_height')){
+			this.push('line_height',this.get('fontsize'));
+		}
+		
+		this.push('height',this.get('line_height') + this.get('vpadding')+(this.get('border.enable')?this.get('border.width')*2:0));
+		
 		this.text();
 		
 		this.localizer();
