@@ -104,15 +104,19 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		}, _);
 		
 		/**
+		 * paint outside layer
+		 */
+		_.sectors.eachAll(function(s, i) {
+			this.T.sector3D.sPaint.call(this.T, s.x, s.y, s.a, s.b, s.get('startAngle'), s.get('endAngle'), false, s.h, s.get('f_color'));
+		}, _);
+		
+		/**
 		 * paint top layer
 		 */
 		_.sectors.eachAll(function(s, i) {
 			this.T.ellipse(s.x, s.y, s.a, s.b, s.get('startAngle'), s.get('endAngle'), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, 0, 0, 0, 0, false, true);
-			/**
-			 * paint outside layer
-			 */
-			this.T.sector3D.sPaint.call(this.T, s.x, s.y, s.a, s.b, s.get('startAngle'), s.get('endAngle'), false, s.h, s.get('f_color'));
 		}, _);
+		
 	}
 	_.pushComponent(this.proxy);
 }

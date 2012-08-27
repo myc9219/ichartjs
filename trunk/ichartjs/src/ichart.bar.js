@@ -55,11 +55,10 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		this.push('rectangle.background_color', d.color);
 
 		this.push('rectangle.id', id);
-		// this.push('rectangle.originx', x);
-	this.push('rectangle.originy', y);
-	this.push('rectangle.width', w);
+		this.push('rectangle.originy', y);
+		this.push('rectangle.width', w);
 
-},
+	},
 	doAnimation : function(t, d) {
 		this.coo.draw();
 		this.labels.each(function(l, i) {
