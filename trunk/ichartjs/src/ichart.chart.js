@@ -1,8 +1,8 @@
 ;
 (function($) {
 
-	var inc = Math.PI / 90, PI = Math.PI, PI2 = 2 * Math.PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
-		return w <= 1 ? (Math.floor(c) + 0.5) : Math.round(c);
+	var inc = Math.PI / 90, PI = Math.PI, floor = Math.floor,PI2 = 2 * Math.PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
+		return w <= 1 ? (floor(c) + 0.5) : Math.round(c);
 	}, getCurvePoint = function(seg, point, i, smo) {
 		var x = point.x, y = point.y, lp = seg[i - 1], np = seg[i + 1], lcx, lcy, rcx, rcy;
 		// find out control points
@@ -536,19 +536,15 @@
 			this.c.globalCompositeOperation = l ? "destination-over" : "source-over";
 			return this;
 		},
-		drawBorder : function(x, y, w, h, line, color, round, bgcolor, last, shadow, scolor, blur, offsetx, offsety) {
+		drawBorder : function(x, y, w, h, j, color, round, bgcolor, last, shadow, scolor, blur, offsetx, offsety) {
 			this.save();
-			var x0 = fd(line, x);
-			var y0 = fd(line, y);
-			if (x0 != x) {
-				x = x0;
-				w -= 1;
-			}
-			if (y0 != y) {
-				y = y0;
-				h -= 1;
-			}
-			this.translate(x, y).strokeStyle(line, color);
+			w -=(j*2);
+			h -=(j*2);
+			x +=(j/2);
+			y +=(j/2);
+			x = fd(j, x);
+			y = fd(j, y);
+			this.translate(x, y).strokeStyle(j, color);
 			if (!!last) {
 				this.gCO(last);
 			}
@@ -578,6 +574,7 @@
 					this.shadowOff();
 				this.stroke();
 			} else {
+				this.c.strokeRect(0, 0, w, h);
 				/**
 				 * draw a rectangular border
 				 */
@@ -587,7 +584,6 @@
 				}
 				if (shadow)
 					this.shadowOff();
-				this.c.strokeRect(0, 0, w, h);
 			}
 			return this.restore();
 		},
@@ -815,7 +811,7 @@
 			this.T.clearRect(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'));
 		},
 		resetCanvas : function() {
-			this.T.backgound(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'), this.get('background_color'));
+			this.T.backgound(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'), this.get('f_color'));
 		},
 		animation : function(_) {
 			/**
@@ -867,11 +863,10 @@
 				if (this.footnote) {
 					this.footnote.draw();
 				}
-
 				if (this.get('border.enable')) {
-					this.T.drawBorder(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('background_color'), true);
+					this.T.drawBorder(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('f_color'), true);
 				} else {
-					this.T.backgound(0, 0, this.width, this.height, this.get('background_color'));
+					this.T.backgound(0, 0, this.width, this.height, this.get('f_color'));
 				}
 			}
 			this.redraw = true;
@@ -881,7 +876,6 @@
 				this.animation(this);
 				return;
 			}
-
 			this.segmentRect();
 
 			this.components.eachAll(function(c, i) {

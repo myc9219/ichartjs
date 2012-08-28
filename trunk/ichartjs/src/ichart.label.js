@@ -59,10 +59,10 @@ iChart.Label = iChart.extend(iChart.Component, {
 			 */
 			text_with_sign_color : false,
 			/**
-			 * @cfg {Object} Override the default as border.radius = 2
+			 * @cfg {Object} Override the default as border.radius = 0
 			 */
 			border : {
-				radius : 2
+				radius : 0
 			}
 		});
 
@@ -123,7 +123,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 			this.push('line_height',this.get('fontsize'));
 		}
 		
-		this.push('height',this.get('line_height') + this.get('vpadding')+(this.get('border.enable')?this.get('border.width')*2:0));
+		this.push('height',this.get('line_height') + this.get('vpadding'));
 		
 		this.text();
 		

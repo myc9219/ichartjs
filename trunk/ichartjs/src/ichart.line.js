@@ -136,7 +136,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		/**
 		 * quick config to all linesegment
 		 */
-		iChart.apply(_.get('segment_style'), iChart.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor','tip'], _.options));
+		iChart.applyIf(_.get('segment_style'), iChart.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor','tip'], _.options));
 		
 	}
 

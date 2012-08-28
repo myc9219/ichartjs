@@ -233,7 +233,6 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			}
 			
 			this.number = this.get('scale_share');
-			
 			if(scale_space<1&&this.get('decimalsnum')==0){
 				var dec = scale_space;
 				while(dec<1){
@@ -248,7 +247,6 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		 * the real distance of each scale
 		 */
 		this.push('distanceOne', this.get('valid_distance') / this.number);
-		
 		
 		var text, maxwidth = 0, x, y;
 

@@ -41,6 +41,8 @@
 		<script type="text/javascript" src="../src/ichart.linebasic2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.area2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.linemonitor2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.points.js"></script>
+		<script type="text/javascript" src="../src/ichart.scatter2d.js"></script>
 	<style type="text/css">
 		body{
 			margin-top:10px;
@@ -51,36 +53,50 @@
 		}
 	</style>
 	<script type="text/javascript">
-		$(function(){
-			var data = [
-			        	{name : 'Chrome',value : 8.26,color:'#76a871'},
-			        	{name : 'Firefox',value : 4.06,color:'#9f7961'},
-			        	{name : 'Maxthon',value : 2.78,color:'#a56f8f'},
-			        	{name : 'Other',value : 3.79,color:'#bd355e'},
-			        	{name : 'Safari',value : 2.35,color:'#db9034'},
-						{name : '360 Browser',value : 26.55,color:'#cbab4f'},
-			        	{name : 'IE',value : 52.20,color:'#a5c2d5'}
-			        	
-		        	];
-        	
-			new iChart.Pie3D({
+	$(function(){
+		var data = [
+	         	{
+	         		name : '北京',
+	         		value:[{x:10,y:80},{x:20,y:60},{x:70,y:20},{x:90,y:40},{x:30,y:70},{x:50,y:30},{x:50,y:60}],
+	         		color:'#1f7e92'
+	         	}
+         ];	
+		
+		new iChart.Scatter2D({
 				render : 'canvasDiv',
 				data: data,
-				title : 'Top 5 Browsers from 1 to 29 Feb 2012',
-				label : {
-					enable : true,
-					border : {
-						enable : true
-					}
-				},
-				showpercent:true,
-				//animation:true,
-				decimalsnum:1,
+				title : 'Average Temperature Of 2012',
 				width : 800,
 				height : 400,
-				radius:180
+				shadow:false,
+				segment_style:{
+					shadow_blur:2,
+					point_size:4,
+					point_hollow:true
+				},
+				coordinate:{
+					width:640,
+					height:280,
+					axis:{
+						color:'#9f9f9f',
+						width:[0,0,2,2]
+					},
+					scale:[{
+						 position:'left',	
+						 start_scale:0,
+						 end_scale:100,
+						 scale_space:10,
+						 scale_color:'#9f9f9f'
+					},{
+						 position:'bottom',	
+						 start_scale:0,
+						 end_scale:100,
+						 scale_space:10,
+						 scale_color:'#9f9f9f'
+					}]
+				}
 			}).draw();
-		});
+	});
 		</script>
 	</head>
 	<body>
