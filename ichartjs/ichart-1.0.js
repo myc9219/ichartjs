@@ -3902,7 +3902,6 @@ $.Scale = $.extend($.Component, {
 			}
 			
 			this.number = this.get('scale_share');
-			
 			if(scale_space<1&&this.get('decimalsnum')==0){
 				var dec = scale_space;
 				while(dec<1){
@@ -3917,7 +3916,6 @@ $.Scale = $.extend($.Component, {
 		 * the real distance of each scale
 		 */
 		this.push('distanceOne', this.get('valid_distance') / this.number);
-		
 		
 		var text, maxwidth = 0, x, y;
 
@@ -6273,10 +6271,6 @@ $.LineSegment = $.extend($.Component, {
 			 */
 			intersection : true,
 			/**
-			 * @inner {Boolean} If true there only show a point when Line-line intersection,and not line.(default to false)
-			 */
-			ignore_line : false,
-			/**
 			 * @cfg {Boolean} if the label displayed (default to false)
 			 */
 			label : false,
@@ -6367,7 +6361,7 @@ $.LineSegment = $.extend($.Component, {
 			 */
 			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
 		}
-		if(!this.get('ignore_line'))
+
 		this.T.lineArray(p, this.get('brushsize'), this.get('f_color'), this.get('smooth'), this.get('smoothing'));
 		
 		if (this.get('intersection')) {
@@ -6631,7 +6625,7 @@ $.Line = $.extend($.Chart, {
 		/**
 		 * quick config to all linesegment
 		 */
-		$.apply(_.get('segment_style'), $.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor','tip'], _.options));
+		$.applyIf(_.get('segment_style'), $.clone(['shadow', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor','tip'], _.options));
 		
 	}
 
@@ -6689,11 +6683,6 @@ $.Line = $.extend($.Chart, {
 			
 			this.pushComponent(this.coo,true);
 			
-			this.push('segment_style.tip.showType','follow');
-			this.push('segment_style.coordinate',this.coo);
-			this.push('segment_style.tipInvokeHeap',this.tipInvokeHeap);
-			
-			
 			//get the max/min scale of this coordinate for calculated the height
 			var S = this.coo.getScale(this.get('scaleAlign')),
 				H=this.get('coordinate.valid_height'),
@@ -6702,6 +6691,11 @@ $.Line = $.extend($.Chart, {
 				ox=this.get('segment_style.originx'),
 				oy=this.get('segment_style.originy'),
 				p;
+			
+			this.push('segment_style.tip.showType','follow');
+			this.push('segment_style.coordinate',this.coo);
+			this.push('segment_style.tipInvokeHeap',this.tipInvokeHeap);
+			this.push('segment_style.point_space',sp);
 			
 			this.data.each(function(d,i){
 				points = [];
@@ -6714,7 +6708,6 @@ $.Line = $.extend($.Chart, {
 						p.text = this.fireString(this,'parseTipText',[d,v,j],v);
 					points.push(p);
 				},this);	
-				this.push('segment_style.point_space',sp);
 				this.push('segment_style.points',points);
 				this.push('segment_style.brushsize',d.linewidth||1);
 				this.push('segment_style.background_color',d.color);
