@@ -215,7 +215,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		return this;
 	},
 	doConfig : function() {
-		var padding = iChart.parsePadding(this.get('padding')), bg = this.get('background_color'), f = this.get('color_factor');
+		var padding = iChart.parsePadding(this.get('padding')),b=this.get('border.enable'),border = iChart.parsePadding(this.get('border.width')), bg = this.get('background_color'), f = this.get('color_factor');
 		this.push('padding_top', padding[0]);
 		this.push('padding_right', padding[1]);
 		this.push('padding_bottom', padding[2]);

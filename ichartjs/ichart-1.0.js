@@ -1264,7 +1264,7 @@ $.Painter = $.extend($.Element, {
 		return this;
 	},
 	doConfig : function() {
-		var padding = $.parsePadding(this.get('padding')), bg = this.get('background_color'), f = this.get('color_factor');
+		var padding = $.parsePadding(this.get('padding')),b=this.get('border.enable'),border = $.parsePadding(this.get('border.width')), bg = this.get('background_color'), f = this.get('color_factor');
 		this.push('padding_top', padding[0]);
 		this.push('padding_right', padding[1]);
 		this.push('padding_bottom', padding[2]);
@@ -2332,10 +2332,10 @@ $.Label = $.extend($.Component, {
 			 */
 			text_with_sign_color : false,
 			/**
-			 * @cfg {Object} Override the default as border.radius = 2
+			 * @cfg {Object} Override the default as border.radius = 0
 			 */
 			border : {
-				radius : 2
+				radius : 0
 			}
 		});
 
@@ -2396,7 +2396,7 @@ $.Label = $.extend($.Component, {
 			this.push('line_height',this.get('fontsize'));
 		}
 		
-		this.push('height',this.get('line_height') + this.get('vpadding')+(this.get('border.enable')?this.get('border.width')*2:0));
+		this.push('height',this.get('line_height') + this.get('vpadding'));
 		
 		this.text();
 		
@@ -2487,8 +2487,8 @@ $.Label = $.extend($.Component, {
 ;
 (function($) {
 
-	var inc = Math.PI / 90, PI = Math.PI, PI2 = 2 * Math.PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
-		return w <= 1 ? (Math.floor(c) + 0.5) : Math.round(c);
+	var inc = Math.PI / 90, PI = Math.PI, floor = Math.floor,PI2 = 2 * Math.PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
+		return w <= 1 ? (floor(c) + 0.5) : Math.round(c);
 	}, getCurvePoint = function(seg, point, i, smo) {
 		var x = point.x, y = point.y, lp = seg[i - 1], np = seg[i + 1], lcx, lcy, rcx, rcy;
 		// find out control points
@@ -3022,19 +3022,15 @@ $.Label = $.extend($.Component, {
 			this.c.globalCompositeOperation = l ? "destination-over" : "source-over";
 			return this;
 		},
-		drawBorder : function(x, y, w, h, line, color, round, bgcolor, last, shadow, scolor, blur, offsetx, offsety) {
+		drawBorder : function(x, y, w, h, j, color, round, bgcolor, last, shadow, scolor, blur, offsetx, offsety) {
 			this.save();
-			var x0 = fd(line, x);
-			var y0 = fd(line, y);
-			if (x0 != x) {
-				x = x0;
-				w -= 1;
-			}
-			if (y0 != y) {
-				y = y0;
-				h -= 1;
-			}
-			this.translate(x, y).strokeStyle(line, color);
+			w -=(j*2);
+			h -=(j*2);
+			x +=(j/2);
+			y +=(j/2);
+			x = fd(j, x);
+			y = fd(j, y);
+			this.translate(x, y).strokeStyle(j, color);
 			if (!!last) {
 				this.gCO(last);
 			}
@@ -3064,6 +3060,7 @@ $.Label = $.extend($.Component, {
 					this.shadowOff();
 				this.stroke();
 			} else {
+				this.c.strokeRect(0, 0, w, h);
 				/**
 				 * draw a rectangular border
 				 */
@@ -3073,7 +3070,6 @@ $.Label = $.extend($.Component, {
 				}
 				if (shadow)
 					this.shadowOff();
-				this.c.strokeRect(0, 0, w, h);
 			}
 			return this.restore();
 		},
@@ -3301,7 +3297,7 @@ $.Label = $.extend($.Component, {
 			this.T.clearRect(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'));
 		},
 		resetCanvas : function() {
-			this.T.backgound(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'), this.get('background_color'));
+			this.T.backgound(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'), this.get('f_color'));
 		},
 		animation : function(_) {
 			/**
@@ -3353,11 +3349,10 @@ $.Label = $.extend($.Component, {
 				if (this.footnote) {
 					this.footnote.draw();
 				}
-
 				if (this.get('border.enable')) {
-					this.T.drawBorder(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('background_color'), true);
+					this.T.drawBorder(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('f_color'), true);
 				} else {
-					this.T.backgound(0, 0, this.width, this.height, this.get('background_color'));
+					this.T.backgound(0, 0, this.width, this.height, this.get('f_color'));
 				}
 			}
 			this.redraw = true;
@@ -3367,7 +3362,6 @@ $.Label = $.extend($.Component, {
 				this.animation(this);
 				return;
 			}
-
 			this.segmentRect();
 
 			this.components.eachAll(function(c, i) {
@@ -6279,6 +6273,10 @@ $.LineSegment = $.extend($.Component, {
 			 */
 			intersection : true,
 			/**
+			 * @inner {Boolean} If true there only show a point when Line-line intersection,and not line.(default to false)
+			 */
+			ignore_line : false,
+			/**
 			 * @cfg {Boolean} if the label displayed (default to false)
 			 */
 			label : false,
@@ -6369,7 +6367,7 @@ $.LineSegment = $.extend($.Component, {
 			 */
 			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
 		}
-
+		if(!this.get('ignore_line'))
 		this.T.lineArray(p, this.get('brushsize'), this.get('f_color'), this.get('smooth'), this.get('smoothing'));
 		
 		if (this.get('intersection')) {
