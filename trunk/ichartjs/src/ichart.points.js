@@ -31,7 +31,7 @@ iChart.Points = iChart.extend(iChart.Component, {
 			 * @cfg {Boolean} If true the centre of point will be hollow.(default to true)
 			 */
 			point_hollow : true,
-			point_opacity:0.5,
+			point_opacity:0.6,
 			/**
 			 * @cfg {Number} Specifies the size of point.(default size 3).Only applies when intersection is true
 			 */
@@ -64,7 +64,7 @@ iChart.Points = iChart.extend(iChart.Component, {
 	drawSegment : function() {
 		this.T.shadowOn(this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
 		var p = this.get('points');
-		
+		this.T.globalAlpha(this.get('point_opacity'));
 		for ( var i = 0; i < p.length; i++) {
 			if (this.get('point_hollow')) {
 				this.T.round(p[i].x, p[i].y, this.get('point_size'), '#FEFEFE', Math.round(this.get('point_size')/2), this.get('f_color'));
@@ -72,7 +72,7 @@ iChart.Points = iChart.extend(iChart.Component, {
 				this.T.round(p[i].x, p[i].y, this.get('point_size'), this.get('f_color'));
 			}
 		}
-		
+		this.T.globalAlpha(1);
 		if (this.get('shadow')) {
 			this.T.shadowOff();
 		}
