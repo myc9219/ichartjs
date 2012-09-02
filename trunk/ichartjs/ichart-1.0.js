@@ -5223,10 +5223,10 @@ $.Sector = $.extend($.Component, {
 				_.push('label.originy',P2.y);
 				_.push('label.quadrantd',Q);
 				
-				_.push('label.line_potins',[P2.x,P2.y+_.h/2,P.x,P.y+_.h/2]);
+				_.push('label.line_potins',[P2.x,P2.y,P.x,P.y]);
 				_.push('label.line_globalComposite',(ccw&&mA<Math.PI)||(!ccw&&mA>Math.PI));
 				_.push('label.labelx',P.x);
-				_.push('label.labely',P.y+_.h/2);
+				_.push('label.labely',P.y);
 				
 				_.label = new $.Label(_.get('label'),_);
 			}
