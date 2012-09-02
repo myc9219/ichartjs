@@ -32,19 +32,7 @@
 		doConfig:function(){
 			iChart.Scatter2D.superclass.doConfig.call(this);
 			
-			this.coo = new iChart.Coordinate2D(iChart.merge({
-					scale:[{
-						 position:this.get('scaleAlign'),	
-						 max_scale:this.get('maxValue')
-					},{
-						 position:this.get('labelAlign'),	
-						 scaleEnable:false,
-						 start_scale:1,
-						 scale:1,
-						 end_scale:this.get('maxItemSize'),
-						 labels:this.get('data_labels')
-					}]
-				},this.get('coordinate')),this);
+			this.coo = new iChart.Coordinate2D(this.get('coordinate'),this);
 			
 			
 			this.pushComponent(this.coo,true);
@@ -70,7 +58,6 @@
 					iChart.merge(p,this.fireEvent(this,'parsePoint',[d,x,y,j]))
 					points.push(p);
 				},this);	
-				
 				this.push('segment_style.points',points);
 				this.push('segment_style.brushsize',d.linewidth||1);
 				this.push('segment_style.background_color',d.color);

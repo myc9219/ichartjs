@@ -118,7 +118,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		/**
 		 * quick config to all rectangle
 		 */
-		iChart.apply(this.get('rectangle'), iChart.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip', 'border'], this.options));
+		iChart.apply(this.get('rectangle'), iChart.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip'], this.options));
 
 		this.push('rectangle.width', this.get('colwidth'));
 	}

@@ -1,22 +1,18 @@
 	iChart.Interface = function(){
-		var simple = function(c,z) {
+		var parse = function(n){
+			return iChart.isNumber(n)?n:iChart.parseFloat(n,n);
+		},
+		simple = function(c,z) {
 			var M=0,V=0,MI,ML=0;
 			c.each(function(d,i){
 				iChart.merge(d,this.fireEvent(this,'parseData',[this,d,i]));
 				d.color = d.color || iChart.get(i);
 				V  = d.value;
-				if(iChart.isNumber(V)){
-					V = iChart.parseFloat(V,this.type+':data['+i+']');
-					d.value = V;
-					this.total+=V;
-					M = V>M?V:M;
-					if(!MI)
-						MI = V;
-					MI = V<MI?V:MI;
-				}else if(iChart.isArray(V)){
+				if(iChart.isArray(V)){
 					var T = 0;
 					ML = V.length>ML?V.length:ML;
 					for(var j=0;j<V.length;j++){
+						V[j] = parse(V[j]);
 						T+=V[j];
 						if(!MI)
 						MI = V;
@@ -24,6 +20,14 @@
 						MI = V[j]<MI?V[j]:MI;
 					}
 					d.total = T;
+				}else{
+					V = parse(V);
+					d.value = V;
+					this.total+=V;
+					M = V>M?V:M;
+					if(!MI)
+						MI = V;
+					MI = V<MI?V:MI;
 				}
 			},this);
 			
@@ -68,7 +72,8 @@
 				for(var j=0;j<this.data.length;j++){
 					d = this.data[j];
 					V = d.value[i];
-					d.value[i] = iChart.parseFloat(V,this.type+':data['+j+','+i+']');
+					V =  parse(V,V);
+					d.value[i] = V;
 					if(!d.color)
 					d.color = iChart.get(j);
 					//NEXT 此总数需考虑?

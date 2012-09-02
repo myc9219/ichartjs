@@ -215,13 +215,14 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		return this;
 	},
 	doConfig : function() {
-		var padding = iChart.parsePadding(this.get('padding')),b=this.get('border.enable'),border = iChart.parsePadding(this.get('border.width')), bg = this.get('background_color'), f = this.get('color_factor');
-		this.push('padding_top', padding[0]);
-		this.push('padding_right', padding[1]);
-		this.push('padding_bottom', padding[2]);
-		this.push('padding_left', padding[3]);
-		this.push('hpadding', padding[1] + padding[3]);
-		this.push('vpadding', padding[0] + padding[2]);
+		var p = iChart.parsePadding(this.get('padding')),b=this.get('border.enable'),b = b?iChart.parsePadding(this.get('border.width')):[0,0,0,0], bg = this.get('background_color'), f = this.get('color_factor');
+		this.push('padding_top', p[0]+b[0]);
+		this.push('padding_right', p[1]+b[1]);
+		this.push('padding_bottom', p[2]+b[2]);
+		this.push('padding_left', p[3]+b[3]);
+		this.push('hpadding', p[1] + p[3]+b[1]+b[3]);
+		this.push('vpadding', p[0] + p[2]+b[0]+b[2]);
+		
 		this.push('fontStyle', iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
 		this.push('f_color', bg);
 		this.push("light_color", iChart.light(bg, f));
