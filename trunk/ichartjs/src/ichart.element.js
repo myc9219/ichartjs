@@ -44,15 +44,15 @@ iChart.Element = function(config) {
 		 * @Option enable {boolean} If enable the border
 		 * @Option color {String} the border's color.(default to '#BCBCBC')
 		 * @Option style {String} the border's style.(default to 'solid')
-		 * @Option width {Number/Array} the border's width.(default to 1)
-		 * @Option radius {Number} the border's radius.(default to 5)
+		 * @Option width {Number/String} the border's width.If given array,the option radius will be 0.(default to 1)
+		 * @Option radius {Number/String} the border's radius.(default to 0)
 		 */
 		border : {
 			enable : false,
 			color : '#BCBCBC',
 			style : 'solid',
 			width : 1,
-			radius : 5
+			radius : 0
 		},
 		/**
 		 * @cfg {Boolean} Specifies whether the element should be show a shadow.In general there will be get a high render speed when apply false.(default to false)

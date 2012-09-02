@@ -53,50 +53,41 @@
 		}
 	</style>
 	<script type="text/javascript">
-	$(function(){
-		var data = [
-	         	{
-	         		name : '北京',
-	         		value:[{x:10,y:80},{x:20,y:60},{x:70,y:20},{x:70,y:22},{x:90,y:40},{x:30,y:70},{x:50,y:30},{x:50,y:60}],
-	         		color:'#1f7e92'
-	         	}
-         ];	
-		
-		new iChart.Scatter2D({
+		$(function(){
+			var data = [
+			        	{name : 'IE5',value : 10,color:'#76a871'},
+			        	{name : 'IE6',value : 22,color:'#a2d1d5'},
+			        	{name : 'IE7',value : 4,color:'#cbab4f'},
+			        	{name : 'IE8',value : 8,color:'#76a871'},
+			        	{name : 'IE9',value : 22,color:'#9f7961'},
+			        	{name : 'IE10',value : 14,color:'#a56f8f'},
+			        	{name : 'Other',value : 16,color:'#db9034'}
+		        	];
+	    	
+			new iChart.Column2D({
 				render : 'canvasDiv',
 				data: data,
-				title : 'Average Temperature Of 2012',
-				width : 800,
-				height : 400,
-				shadow:false,
-				segment_style:{
-					shadow_blur:2,
-					point_size:4,
-					point_hollow:false
+				title : {
+					text:'Top 5 Browsers from 1 to 29 Feb 2012',
+					background_color:'#1f7088'
 				},
-				coordinate:{
-					width:640,
-					height:280,
-					axis:{
-						color:'#9f9f9f',
-						width:[0,0,2,2]
-					},
-					scale:[{
-						 position:'left',	
-						 start_scale:0,
-						 end_scale:100,
-						 scale_space:10,
-						 scale_color:'#9f9f9f'
-					},{
-						 position:'bottom',	
-						 start_scale:0,
-						 end_scale:100,
-						 scale_space:10,
-						 scale_color:'#9f9f9f'
-					}]
-				}
+				legend : {
+					enable : true
+				},
+				border : {
+					width : "20 0",
+					color:'#1f7088',//['#1f7088','#6bb6cd','#658a95','#6bb6cd'],
+					radius:0//"20 20 1 1"
+				},
+				yHeight:80,
+				//animation:true,
+				showpercent:true,
+				decimalsnum:1,
+				width : 800,
+				height : 500,
+				radius:180
 			}).draw();
-	});
+		});
 		</script>
 	</head>
 	<body>

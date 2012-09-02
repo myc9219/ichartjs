@@ -1,8 +1,8 @@
 ;
 (function($) {
 
-	var inc = Math.PI / 90, PI = Math.PI, floor = Math.floor,PI2 = 2 * Math.PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
-		return w <= 1 ? (floor(c) + 0.5) : Math.round(c);
+	var inc = Math.PI / 90, PI = Math.PI, ceil=Math.ceil,floor = Math.floor,PI2 = 2 * Math.PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
+		return w == 1 ? (floor(c) + 0.5) : Math.round(c);
 	}, getCurvePoint = function(seg, point, i, smo) {
 		var x = point.x, y = point.y, lp = seg[i - 1], np = seg[i + 1], lcx, lcy, rcx, rcy;
 		// find out control points
@@ -64,7 +64,7 @@
 		arc : function(x, y, r, s, e, c, b, bw, bc, sw, swc, swb, swx, swy, ccw, a2r, last) {
 			var x0, y0, ccw = !!ccw, a2r = !!a2r;
 			this.save();
-			if (!!last)
+			if (last)
 				this.gCO(last);
 			if (b)
 				this.strokeStyle(bw, bc);
@@ -83,7 +83,7 @@
 		ellipse : function(x, y, a, b, s, e, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, a2r, last) {
 			var angle = s, ccw = !!ccw, a2r = !!a2r;
 			this.save();
-			if (!!last)
+			if (last)
 				this.gCO(last);
 			if (b)
 				this.strokeStyle(bow, boc);
@@ -181,7 +181,6 @@
 			s3.layerDraw = layerDraw;
 			return s3;
 		}(),
-
 		textStyle : function(a, l, f) {
 			return this.textAlign(a).textBaseline(l).textFont(f);
 		},
@@ -204,6 +203,10 @@
 				this.c.fillStyle = c;
 			return this;
 		},
+		arc2:function(x1, y1, x2, y2, radius){
+			this.c.arcTo(x1, y1, x2, y2, radius);
+			return this;
+		},
 		textAlign : function(a) {
 			if (a)
 				this.c.textAlign = a;
@@ -220,13 +223,6 @@
 			return this;
 		},
 		shadowOn : function(s, c, b, x, y) {
-			if ($.isString(s)) {
-				y = x;
-				x = b;
-				b = c;
-				c = s;
-				c = true;
-			}
 			if (s) {
 				this.c.shadowColor = c;
 				this.c.shadowBlur = b;
@@ -238,6 +234,7 @@
 		shadowOff : function() {
 			this.c.shadowColor = 'white';
 			this.c.shadowBlur = this.c.shadowOffsetX = this.c.shadowOffsetY = 0;
+			return this;
 		},
 		avgLinearGradient : function(xs, ys, xe, ye, c) {
 			var g = this.createLinearGradient(xs, ys, xe, ye);
@@ -462,7 +459,7 @@
 			if (p.length < 4)
 				return this;
 			this.save();
-			if (!!last)
+			if (last)
 				this.gCO(last);
 			this.beginPath().strokeStyle(w, c).moveTo(fd(w, p[0]), fd(w, p[1]));
 			for ( var i = 2; i < p.length - 1; i += 2) {
@@ -491,7 +488,7 @@
 			if (!w || w == 0)
 				return this;
 			this.save();
-			if (!!last)
+			if (last)
 				this.gCO(last);
 			return this.beginPath().strokeStyle(w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke().restore();
 		},
@@ -509,20 +506,8 @@
 		backgound : function(x, y, w, h, bgcolor) {
 			return this.save().gCO(true).translate(x, y).beginPath().fillStyle(bgcolor).fillRect(0, 0, w, h).restore();
 		},
-		rectangle : function(x, y, w, h, bgcolor, border, linewidth, bcolor, sw, swc, swb, swx, swy) {
-			this.save().translate(fd(linewidth, x), fd(linewidth, y)).beginPath().fillStyle(bgcolor).shadowOn(sw, swc, swb, swx, swy);
-			if (border && $.isNumber(linewidth)) {
-				this.strokeStyle(linewidth, bcolor);
-				this.c.strokeRect(0, 0, w, h);
-			}
-
-			if (bgcolor)
-				this.fillRect(0, 0, w, h);
-
-			if (border && $.isArray(linewidth)) {
-				this.strokeStyle(null, bcolor).line(0, 0, w, 0, linewidth[0], bcolor).line(w, 0, w, h, linewidth[1], bcolor).line(0, h, w, h, linewidth[2], bcolor).line(0, 0, 0, h, linewidth[3], bcolor);
-			}
-			return this.restore();
+		rectangle : function(x, y, w, h, bg, b, j, c, sw, swc, swb, swx, swy) {
+			return this.drawBox(x, y, w, h, b?j:0, c, 0, bg, false, sw, swc, swb, swx, swy);
 		},
 		clearRect : function(x, y, w, h) {
 			x = x || 0;
@@ -536,54 +521,64 @@
 			this.c.globalCompositeOperation = l ? "destination-over" : "source-over";
 			return this;
 		},
-		drawBorder : function(x, y, w, h, j, color, round, bgcolor, last, shadow, scolor, blur, offsetx, offsety) {
-			this.save();
-			w -=(j*2);
-			h -=(j*2);
-			x +=(j/2);
-			y +=(j/2);
-			x = fd(j, x);
-			y = fd(j, y);
-			this.translate(x, y).strokeStyle(j, color);
-			if (!!last) {
+		drawBox : function(x, y, w, h, j, c, r, bg, last, shadow, scolor, blur, offsetx, offsety) {
+			var f = $.isNumber(j);
+			j  = $.parsePadding(j);
+			w -=(j[1]+j[3])/2;
+			h -=(j[0]+j[2])/2;
+			x +=(j[3]/2);
+			y +=(j[0]/2);
+			x = fd(j[3], x);
+			y = fd(j[0], y);
+			j = f?j[0]:j;
+			this.save().translate(x, y).shadowOn(shadow, scolor, blur, offsetx, offsety);
+			if (last) 
 				this.gCO(last);
-			}
-			if (bgcolor) {
-				this.fillStyle(bgcolor);
-			}
-
-			round = round == 0 ? 0 : $.parseBorder(round);
-
+			if (bg) 
+				this.fillStyle(bg);
+			if(f)
+				this.strokeStyle(j,c);
+			r = (!f || r == 0||r == '0') ? 0 : $.parsePadding(r);
 			/**
 			 * draw a round corners border
 			 */
-			if ($.isArray(round)) {
-				this.beginPath().moveTo(round[0], 0).lineTo(w - round[1], 0);
-				this.c.arcTo(w, 0, w, round[1], round[1]);
-				this.lineTo(w, h - round[2]);
-				this.c.arcTo(w, h, w - round[2], h, round[2]);
-				this.lineTo(round[3], h);
-				this.c.arcTo(0, h, 0, h - round[3], round[3]);
-				this.lineTo(0, round[0]);
-				this.c.arcTo(0, 0, round[0], 0, round[0]);
-				this.closePath().shadowOn(shadow, scolor, blur, offsetx, offsety);
-				if (bgcolor) {
+			if (r) {
+				this.beginPath()
+				.moveTo(r[0],fd(j,0))
+				.lineTo(w - r[1],fd(j,0))
+				.arc2(w,fd(j,0), w, r[1], r[1])
+				.lineTo(fd(j,w), h - r[2])
+				.arc2(fd(j,w), h, w - r[2], h, r[2])
+				.lineTo(r[3], fd(j,h))
+				.arc2(0, fd(j,h), 0, h - r[3], r[3])
+				.lineTo(fd(j,0), r[0])
+				.arc2(fd(j,0), 0, r[0], 0, r[0])
+				.closePath();
+				if (bg) 
 					this.fill();
-				}
-				if (shadow)
-					this.shadowOff();
-				this.stroke();
+				if(j)
+					this.stroke();
 			} else {
-				this.c.strokeRect(0, 0, w, h);
-				/**
-				 * draw a rectangular border
-				 */
-				this.shadowOn(shadow, scolor, blur, offsetx, offsety);
-				if (bgcolor) {
-					this.fillRect(0, 0, w, h);
+				if(f){
+					this.c.strokeRect(0, 0, w, h);
+					if (bg)
+						this.fillRect(0, 0, w, h);
+				}else{
+					if (bg){
+						this.beginPath()
+						.moveTo(floor(j[3]/2),floor(j[0]/2))
+						.lineTo(ceil(w - j[1]/2),j[0]/2)
+						.lineTo(ceil(w - j[1]/2),ceil(h-j[2]/2))
+						.lineTo(floor(j[3]/2),ceil(h-j[2]/2))
+						.lineTo(floor(j[3]/2),floor(j[0]/2)).closePath().fill();
+					}
+					c = $.isArray(c)?c:[c,c,c,c];
+					this.line(w,j[0]/2, w, h-j[0]/2, j[1],c[1],0)
+					.line(0, j[0]/2, 0, h-j[0]/2, j[3],c[3],0)
+					.line(floor(-j[3]/2), 0, w+j[1]/2, 0, j[0],c[0],0)
+					.line(floor(-j[3]/2), h, w+j[1]/2, h, j[2],c[2],0);
 				}
-				if (shadow)
-					this.shadowOff();
+				
 			}
 			return this.restore();
 		},
@@ -593,7 +588,6 @@
 		addEvent : function(type, fn, useCapture) {
 			$.Event.addEvent(this.canvas, type, fn, useCapture);
 		}
-
 	}
 
 	/**
@@ -645,10 +639,6 @@
 				 * @cfg {Boolean} If true mouse change to a pointer when a mouseover fired.(defaults to true)
 				 */
 				default_mouseover_css : true,
-				/**
-				 * @cfg {Boolean} Indicate if the chart clear segment of canvas(defaults to true)
-				 */
-				segmentRect : true,
 				/**
 				 * @cfg {Boolean} Specifies as true to display with percent.(default to false)
 				 */
@@ -864,7 +854,7 @@
 					this.footnote.draw();
 				}
 				if (this.get('border.enable')) {
-					this.T.drawBorder(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('f_color'), true);
+					this.T.drawBox(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('f_color'), true);
 				} else {
 					this.T.backgound(0, 0, this.width, this.height, this.get('f_color'));
 				}
@@ -877,7 +867,7 @@
 				return;
 			}
 			this.segmentRect();
-
+			
 			this.components.eachAll(function(c, i) {
 				c.draw();
 			}, this);
@@ -945,7 +935,7 @@
 
 			_.processAnimation = _.get('animation');
 
-			_.duration = Math.ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
+			_.duration = ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
 
 			_.variable.animation = {
 				type : 0,
@@ -1027,12 +1017,14 @@
 						_.fireEvent(_, 'mouseout', [e]);
 					}
 				});
-
+			
+			
 			_.push('l_originx', _.get('padding_left'));
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('t_originy', _.get('padding_top'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
 			_.push('client_width', (_.get('width') - _.get('hpadding')));
+			
 			var H = 0;
 			if ($.isString(_.get('title'))) {
 				_.push('title', {
@@ -1068,7 +1060,7 @@
 				} else {
 					_.push('title.originx', _.get('padding_left') + _.get('client_width') / 2);
 				}
-
+				
 				_.push('t_originy', _.get('t_originy') + H);
 
 				this.push('title.textAlign', this.get('title_align'));

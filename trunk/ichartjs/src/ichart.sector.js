@@ -53,10 +53,6 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 */
 			expand : false,
 			/**
-			 * @inner {Boolean} True to has animation when bound.(default to false)
-			 */
-			pop_animate : false,
-			/**
 			 * @cfg {Boolean} If true means just one piece could bound at same time.(default to false)
 			 */
 			mutex : false,

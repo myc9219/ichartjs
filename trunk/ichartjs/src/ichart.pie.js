@@ -118,7 +118,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		return this.sectors;
 	},
 	doAnimation : function(t, d) {
-		var s, si = 0, cs = this.offsetAngle;
+		var s, si = 0, cs = this.oA;
 		this.data.each(function(D, i) {
 			s = D.reference;
 			si = this.animationArithmetic(t, 0, s.get('totalAngle'), d);
@@ -190,11 +190,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * calculate pie chart's angle
 	 */
 	calculate : function() {
-		var eA = this.offsetAngle, sA = eA, L = this.data.length;
+		var eA = this.oA, sA = eA, L = this.data.length;
 		this.data.each(function(d, i) {
 			eA += (2 * d.value / this.total) * Math.PI;
 			if (i == (L - 1)) {
-				eA = 2 * Math.PI + this.offsetAngle;
+				eA = 2 * Math.PI + this.oA;
 			}
 			d.startAngle = sA;
 			d.endAngle = eA;
@@ -207,12 +207,12 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		iChart.Pie.superclass.doConfig.call(this);
 		iChart.Assert.gtZero(this.total, 'this.total');
 
-		this.offsetAngle = iChart.angle2Radian(this.get('offsetAngle'));
-
+		this.oA = iChart.angle2Radian(this.get('offsetAngle'));
+		
 		var r = this.get('radius'), f = this.get('minDistance') * (this.get('label.enable') && !this.is3D() ? 0.35 : 0.5);
 
 		this.calculate();
-
+		
 		/**
 		 * calculate pie chart's radius
 		 */
@@ -244,7 +244,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 				'bound_event',
 				'customize_layout',
 				'counterclockwise',
-				'pop_animate',
 				'mutex',
 				'shadow',
 				'shadow_color',
@@ -255,8 +254,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 				'gradient',
 				'color_factor',
 				'label',
-				'tip',
-				'border'], this.options));
+				'tip'], this.options));
 
 	}
 });// @end

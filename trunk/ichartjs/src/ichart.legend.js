@@ -163,7 +163,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 	},
 	doDraw : function() {
 		if (this.get('border.enable'))
-			this.T.drawBorder(this.x, this.y, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('f_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'),
+			this.T.drawBox(this.x, this.y, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('f_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'),
 					this.get('shadow_offsety'));
 
 		this.T.textStyle('left', 'middle', iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));

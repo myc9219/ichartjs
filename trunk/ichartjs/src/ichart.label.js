@@ -57,13 +57,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 			/**
 			 * @cfg {Boolean} If true the text's color will accord with sign's.(default to false)
 			 */
-			text_with_sign_color : false,
-			/**
-			 * @cfg {Object} Override the default as border.radius = 0
-			 */
-			border : {
-				radius : 0
-			}
+			text_with_sign_color : false
 		});
 
 		/**
@@ -99,7 +93,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 		this.T.lines(p,this.get('line_thickness'), this.get('border.color'),this.get('line_globalComposite'));
 		
 		if(this.get('border.enable'))
-		this.T.drawBorder(this.labelx, this.labely, this.get('width'), this.get('height'), this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('f_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
+		this.T.drawBox(this.labelx, this.labely, this.get('width'), this.get('height'), this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('f_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
 		
 		this.T.textStyle('left', 'top', this.get('fontStyle'));
 		
@@ -108,9 +102,9 @@ iChart.Label = iChart.extend(iChart.Component, {
 			textcolor = this.get('scolor');
 		}
 		if (this.get('sign') == 'square') {
-			this.T.rectangle(x, y, ss, ss, this.get('scolor'), 1);
+			this.T.rectangle(x, y, ss, ss, this.get('scolor'));
 		} else {
-			this.T.round(x + ss / 2, y + ss / 2, ss / 2, this.get('scolor'), 1);
+			this.T.round(x + ss / 2, y + ss / 2, ss / 2, this.get('scolor'));
 		}
 		this.T.fillText(this.get('text'), x + ss + this.get('sign_space'), y, this.get('textwidth'), textcolor);
 	},

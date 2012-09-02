@@ -109,7 +109,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 				bg = this.T.avgLinearGradient(this.x, this.y - this.get('height'), this.x, this.y, [this.get('light_color2'), bg]);
 			}
 			/**
-			 * NEXT Config the area polygon
+			 * NEXT Config the area polygon 应用CurvePoint,polygons传入集合点
 			 */
 			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
 		}
@@ -199,8 +199,10 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			return {
 				valid : true,
 				text : p[i].text,
+				value : p[i].value,
 				top : p[i].y,
 				left : p[i].x,
+				i:i,
 				hit : true
 			};
 		};
