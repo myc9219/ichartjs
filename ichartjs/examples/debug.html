@@ -64,28 +64,21 @@
 			        	{name : 'Other',value : 16,color:'#db9034'}
 		        	];
 	    	
-			new iChart.Pie3D({
+			new iChart.LineBasic2D({
 				render : 'canvasDiv',
-				data: data,
-				title : {
-					text:'Top 5 Browsers from 1 to 29 Feb 2012',
-					background_color:'#1f7088'
+				data_labels : ['a','b','c','d','e','f'],
+				data:[{
+					name : '北京',
+					value : [27,26,15,18,24,13],
+					color : '#1f7e92',
+					linewidth : 2
+				}],
+				coordinate : {
+					width : 600,
+					height : 280
 				},
-				legend : {
-					enable : true
-				},
-				border : {
-					width : 20,
-					color:'#1f7088',//['#1f7088','#6bb6cd','#658a95','#6bb6cd'],
-					radius:0//"20 20 1 1"
-				},
-				yHeight:80,
-				//animation:true,
-				showpercent:true,
-				decimalsnum:1,
 				width : 800,
-				height : 500,
-				radius:180
+				height : 400
 			}).draw();
 		});
 		</script>

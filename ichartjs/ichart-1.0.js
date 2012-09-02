@@ -2480,7 +2480,7 @@ $.Label = $.extend($.Component, {
 ;
 (function($) {
 
-	var inc = Math.PI / 90, PI = Math.PI, ceil=Math.ceil,floor = Math.floor,PI2 = 2 * Math.PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
+	var inc = Math.PI / 90, PI = Math.PI, ceil = Math.ceil, floor = Math.floor, PI2 = 2 * Math.PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
 		return w == 1 ? (floor(c) + 0.5) : Math.round(c);
 	}, getCurvePoint = function(seg, point, i, smo) {
 		var x = point.x, y = point.y, lp = seg[i - 1], np = seg[i + 1], lcx, lcy, rcx, rcy;
@@ -2578,7 +2578,7 @@ $.Label = $.extend($.Component, {
 			this.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e)))).closePath();
 			if (b)
 				this.stroke();
-			if(c)
+			if (c)
 				this.fill();
 			return this.restore();
 		},
@@ -2635,7 +2635,7 @@ $.Label = $.extend($.Component, {
 				if (de)
 					layerDraw.call(this, x, y, a, b, ccw, h, e, c);
 			};
-			var s3 =  function(x, y, a, b, s, e, h, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, isw) {
+			var s3 = function(x, y, a, b, s, e, h, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, isw) {
 				/**
 				 * paint bottom layer
 				 */
@@ -2682,7 +2682,7 @@ $.Label = $.extend($.Component, {
 				this.c.fillStyle = c;
 			return this;
 		},
-		arc2:function(x1, y1, x2, y2, radius){
+		arc2 : function(x1, y1, x2, y2, radius) {
 			this.c.arcTo(x1, y1, x2, y2, radius);
 			return this;
 		},
@@ -2986,7 +2986,16 @@ $.Label = $.extend($.Component, {
 			return this.save().gCO(true).translate(x, y).beginPath().fillStyle(bgcolor).fillRect(0, 0, w, h).restore();
 		},
 		rectangle : function(x, y, w, h, bg, b, j, c, sw, swc, swb, swx, swy) {
-			return this.drawBox(x, y, w, h, b?j:0, c, 0, bg, false, sw, swc, swb, swx, swy);
+			this.save().translate(fd(j, x), fd(j, y)).beginPath().fillStyle(bg).shadowOn(sw, swc, swb, swx, swy);
+			if (bg)
+				this.fillRect(0, 0, w, h);
+			if (b)
+				if ($.isNumber(j)) {
+					this.strokeStyle(j, c);
+					this.c.strokeRect(0, 0, w, h);
+				} else if ($.isArray(j))
+					this.strokeStyle(0, c).line(0, 0, w, 0, j[0], c).line(w, 0, w, h, j[1], c).line(0, h, w, h, j[2], c).line(0, 0, 0, h, j[3], c);
+			return this.restore();
 		},
 		clearRect : function(x, y, w, h) {
 			x = x || 0;
@@ -3002,67 +3011,50 @@ $.Label = $.extend($.Component, {
 		},
 		drawBox : function(x, y, w, h, j, c, r, bg, last, shadow, scolor, blur, offsetx, offsety) {
 			var f = $.isNumber(j);
-			j  = $.parsePadding(j);
-			w -=(j[1]+j[3])/2;
-			h -=(j[0]+j[2])/2;
-			x +=(j[3]/2);
-			y +=(j[0]/2);
+			j = $.parsePadding(j);
+			w -= (j[1] + j[3]) / 2;
+			h -= (j[0] + j[2]) / 2;
+			x += (j[3] / 2);
+			y += (j[0] / 2);
 			x = fd(j[3], x);
 			y = fd(j[0], y);
-			j = f?j[0]:j;
+			j = f ? j[0] : j;
 			this.save().translate(x, y).shadowOn(shadow, scolor, blur, offsetx, offsety);
-			if (last) 
+			if (last)
 				this.gCO(last);
-			if (bg) 
+			if (bg)
 				this.fillStyle(bg);
-			if(f)
-				this.strokeStyle(j,c);
-			r = (!f || r == 0||r == '0') ? 0 : $.parsePadding(r);
+			if (f)
+				this.strokeStyle(j, c);
+			r = (!f || r == 0 || r == '0') ? 0 : $.parsePadding(r);
 			/**
 			 * draw a round corners border
 			 */
 			if (r) {
-				this.beginPath()
-				.moveTo(r[0],fd(j,0))
-				.lineTo(w - r[1],fd(j,0))
-				.arc2(w,fd(j,0), w, r[1], r[1])
-				.lineTo(fd(j,w), h - r[2])
-				.arc2(fd(j,w), h, w - r[2], h, r[2])
-				.lineTo(r[3], fd(j,h))
-				.arc2(0, fd(j,h), 0, h - r[3], r[3])
-				.lineTo(fd(j,0), r[0])
-				.arc2(fd(j,0), 0, r[0], 0, r[0])
-				.closePath();
-				if (bg) 
+				this.beginPath().moveTo(r[0], fd(j, 0)).lineTo(w - r[1], fd(j, 0)).arc2(w, fd(j, 0), w, r[1], r[1]).lineTo(fd(j, w), h - r[2]).arc2(fd(j, w), h, w - r[2], h, r[2]).lineTo(r[3], fd(j, h)).arc2(0, fd(j, h), 0, h - r[3], r[3]).lineTo(fd(j, 0), r[0]).arc2(fd(j, 0),
+						0, r[0], 0, r[0]).closePath();
+				if (bg)
 					this.fill();
-				if(j)
+				if (j)
 					this.stroke();
 			} else {
-				if(f){
+				if (f) {
 					this.c.strokeRect(0, 0, w, h);
 					if (bg)
 						this.fillRect(0, 0, w, h);
-				}else{
-					if (bg){
-						this.beginPath()
-						.moveTo(floor(j[3]/2),floor(j[0]/2))
-						.lineTo(ceil(w - j[1]/2),j[0]/2)
-						.lineTo(ceil(w - j[1]/2),ceil(h-j[2]/2))
-						.lineTo(floor(j[3]/2),ceil(h-j[2]/2))
-						.lineTo(floor(j[3]/2),floor(j[0]/2)).closePath().fill();
+				} else {
+					if (bg) {
+						this.beginPath().moveTo(floor(j[3] / 2), floor(j[0] / 2)).lineTo(ceil(w - j[1] / 2), j[0] / 2).lineTo(ceil(w - j[1] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), floor(j[0] / 2)).closePath().fill();
 					}
-					c = $.isArray(c)?c:[c,c,c,c];
-					this.line(w,j[0]/2, w, h-j[0]/2, j[1],c[1],0)
-					.line(0, j[0]/2, 0, h-j[0]/2, j[3],c[3],0)
-					.line(floor(-j[3]/2), 0, w+j[1]/2, 0, j[0],c[0],0)
-					.line(floor(-j[3]/2), h, w+j[1]/2, h, j[2],c[2],0);
+					c = $.isArray(c) ? c : [c, c, c, c];
+					this.line(w, j[0] / 2, w, h - j[0] / 2, j[1], c[1], 0).line(0, j[0] / 2, 0, h - j[0] / 2, j[3], c[3], 0).line(floor(-j[3] / 2), 0, w + j[1] / 2, 0, j[0], c[0], 0).line(floor(-j[3] / 2), h, w + j[1] / 2, h, j[2], c[2], 0);
 				}
-				
+
 			}
 			return this.restore();
 		},
 		toImageURL : function(g) {
-			return this.canvas.toDataURL(g||"image/png");
+			return this.canvas.toDataURL(g || "image/png");
 		},
 		addEvent : function(type, fn, useCapture) {
 			$.Event.addEvent(this.canvas, type, fn, useCapture);
@@ -3346,7 +3338,7 @@ $.Label = $.extend($.Component, {
 				return;
 			}
 			this.segmentRect();
-			
+
 			this.components.eachAll(function(c, i) {
 				c.draw();
 			}, this);
@@ -3405,7 +3397,7 @@ $.Label = $.extend($.Component, {
 			$.Chart.superclass.doConfig.call(this);
 
 			var _ = this, E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
-			
+
 			$.Assert.isArray(_.data);
 
 			$.Interface._3D.call(_);
@@ -3496,14 +3488,13 @@ $.Label = $.extend($.Component, {
 						_.fireEvent(_, 'mouseout', [e]);
 					}
 				});
-			
-			
+
 			_.push('l_originx', _.get('padding_left'));
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('t_originy', _.get('padding_top'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
 			_.push('client_width', (_.get('width') - _.get('hpadding')));
-			
+
 			var H = 0;
 			if ($.isString(_.get('title'))) {
 				_.push('title', {
@@ -3539,7 +3530,7 @@ $.Label = $.extend($.Component, {
 				} else {
 					_.push('title.originx', _.get('padding_left') + _.get('client_width') / 2);
 				}
-				
+
 				_.push('t_originy', _.get('t_originy') + H);
 
 				this.push('title.textAlign', this.get('title_align'));
