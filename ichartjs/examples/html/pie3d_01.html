@@ -10,31 +10,36 @@
 		<script type="text/javascript">
 			$(function(){
 				var data = [
-				        	{name : 'IE6',value : 12,color:'#a5c2d5'},
-				        	{name : 'IE7',value : 16,color:'#cbab4f'},
-				        	{name : 'IE8',value : 20,color:'#76a871'},
-				        	{name : 'IE9',value : 22,color:'#9f7961'},
-				        	{name : 'IE10',value : 14,color:'#a56f8f'},
-				        	{name : 'Other',value : 16,color:'#db9034'}
+							{name : '360 Browser',value : 26.55,color:'#cbab4f'},
+							{name : 'IE',value : 52.20,color:'#a5c2d5'},
+				        	{name : 'Chrome',value : 8.26,color:'#76a871'},
+				        	{name : 'Firefox',value : 4.06,color:'#9f7961'},
+				        	{name : 'Maxthon',value : 2.78,color:'#a56f8f'},
+				        	{name : 'Other',value : 3.79,color:'#bd355e'},
+				        	{name : 'Safari',value : 2.35,color:'#db9034'}
 			        	];
 	        	
 				new iChart.Pie3D({
 					render : 'canvasDiv',
 					data: data,
-					title : 'Top 5 Browsers from 1 to 29 Feb 2012',
+					title : '2012年7月份中国浏览器市场占有率Top6',
+					footnote : 'Data from StatCounter',
 					legend : {
 						enable : true,
 						align : 'center',
 						valign : 'bottom',
 						row:1,
-						column:'max'
+						column:'max',
+						border:{
+							enable : false
+						}
 					},
-					yHeight:40,
 					showpercent:true,
-					decimalsnum:1,
+					yHeight:60,
+					decimalsnum:2,
+					radius:180,
 					width : 800,
-					height : 500,
-					radius:180
+					height : 500
 				}).draw();
 			});
 		</script>
@@ -45,29 +50,31 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这是一个基本的3D饼状图例子，例子展示了2012年2月份市场浏览器占有的情况。此例子中，配置了图例。设置图例位置为底部居中，并以一行显示图例。数据项以百分比的形式展示数据值。
+					这是一个基本的3D饼状图例子，例子展示了2012年7月份中国浏览器市场占有率Top6。此例子中，配置了图例。设置图例位置为底部居中，并以一行显示图例。数据项以百分比的形式展示数据值。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>
-					数据均为模拟，无实际参考价值。
+					数据来源于StatCounter。
 				</span>
 			</div>
 <!-- the source code -->
 <div id='ichartjs_code'>
 <span class='ichartjs_keyword'>var</span> data = [
-	{name : '<span class='ichartjs_keyword'>IE</span>',value : 35.75,color:'<span class='ichartjs_keyword'>#a5c2d5</span>'},
-   	{name : '<span class='ichartjs_keyword'>Chrome</span>',value : 29.84,color:'<span class='ichartjs_keyword'>#cbab4f</span>'},
-   	{name : '<span class='ichartjs_keyword'>Firefox</span>',value : 24.88,color:'<span class='ichartjs_keyword'>#76a871</span>'},
-   	{name : '<span class='ichartjs_keyword'>Safari</span>',value : 6.77,color:'<span class='ichartjs_keyword'>#9f7961</span>'},
-   	{name : '<span class='ichartjs_keyword'>Opera</span>',value : 2.02,color:'<span class='ichartjs_keyword'>#a56f8f</span>'},
-   	{name : '<span class='ichartjs_keyword'>Other</span>',value : 0.73,color:'<span class='ichartjs_keyword'>#6f83a5</span>'}
+   	{name : '<span class='ichartjs_keyword'>Other</span>',value : 3.79,color:'<span class='ichartjs_keyword'>#bd355e</span>'},
+   	{name : '<span class='ichartjs_keyword'>IE</span>',value : 52.20,color:'<span class='ichartjs_keyword'>#a5c2d5</span>'},
+   	{name : '<span class='ichartjs_keyword'>360 Browser</span>',value : 26.55,color:'<span class='ichartjs_keyword'>#cbab4f</span>'},
+   	{name : '<span class='ichartjs_keyword'>Chrome</span>',value : 8.26,color:'<span class='ichartjs_keyword'>#76a871</span>'},
+   	{name : '<span class='ichartjs_keyword'>Firefox</span>',value : 4.06,color:'<span class='ichartjs_keyword'>#9f7961</span>'},
+   	{name : '<span class='ichartjs_keyword'>Maxthon</span>',value : 2.78,color:'<span class='ichartjs_keyword'>#a56f8f</span>'},
+	{name : '<span class='ichartjs_keyword'>Safari</span>',value : 2.35,color:'<span class='ichartjs_keyword'>#db9034</span>'}
  ];
 
 $(<span class='ichartjs_keyword'>function</span>(){	
 	<span class='ichartjs_keyword'>new</span> iChart.Pie3D({
 		render : '<span class='ichartjs_string'>canvasDiv</span>',
 		data: data,
-		title : '<span class='ichartjs_string'>Top 5 Browsers from 1 to 29 Feb 2012</span>',
+		title : '<span class='ichartjs_string'>2012年7月份中国浏览器市场占有率Top6</span>',
+		footnote : '<span class='ichartjs_string'>Data from StatCounter</span>',
 		legend : {
 			enable : <span class='ichartjs_keyword'>true</span>,
 			align : '<span class='ichartjs_string'>center</span>',
@@ -75,12 +82,12 @@ $(<span class='ichartjs_keyword'>function</span>(){
 			row:1,
 			column:'<span class='ichartjs_string'>max</span>'
 		},
-		yHeight:40,
 		showpercent:<span class='ichartjs_keyword'>true</span>,
-		decimalsnum:1,
+		decimalsnum:2,
+		yHeight:80,
+		radius:180,
 		width : 800,
-		height : 500,
-		radius:180
+		height : 500
 	}).draw();
 });
 </div>

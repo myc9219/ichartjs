@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>移动客户端预览-产品对比</title>
+		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
+		<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
+		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
+		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
+		<style type="text/css">
+			body {
+				margin-top:0px;
+			}
+		</style>
+		<script type="text/javascript">
+				var data = [
+				         	{
+				         		name : 'DPS01A',
+				         		value:[45,52,54,74,90,84],
+				         		color:'#1f7e92',
+				         		linewidth:1
+				         	},
+				         	{
+				         		name : 'DPS01B',
+				         		value:[60,80,105,125,108,120],
+				         		color:'#2b7f39',
+				         		linewidth:1
+				         	}
+				         ];
+					$(function(){
+					   // var isMobile = !!navigator.userAgent.toLowerCase().match( /ipod|ipad|iphone|android/gi );
+						//var w = isMobile?window.innerWidth:800;
+					    //var h = isMobile?window.innerHeight:440;
+
+					    var w = window.innerWidth-2;
+					    var h = window.innerHeight-2;
+					    if(h>w){
+							h = Math.floor(w*0.6);
+						}
+						new iChart.ColumnMulti2D({
+								render : 'canvasDiv',
+								data: data,
+								data_labels:["一月","二月","三月","四月","五月","六月"],
+								title : 'DPS01A型号比DPS01B型号的产品更受用户喜欢',
+								subtitle : '2012上半年DPS01A型号与DPS01B型号的鼠标销售比较,单位:万台',
+								footnote : '数据来源：销售中心',
+								footnote_align:'left',
+								width : w,
+								height : h,
+								background_color : '#eff8ff',
+								legend:{
+									enable:true,
+									background_color : '#eff8ff',
+									border : {
+										enable : false
+									}
+								},
+								coordinate:{
+									background_color : '#eff8ff',
+									width:Math.floor(w*0.75),
+									height:Math.floor(h*0.7)
+								}
+						}).draw();
+					});
+			</script>
+		</head>
+		<body>
+			<div id='canvasDiv'></div>
+		</body>
+</html>

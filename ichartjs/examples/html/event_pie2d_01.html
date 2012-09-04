@@ -78,9 +78,9 @@ $(<span class='ichartjs_keyword'>function</span>(){
 		width : 800,
 		height : 500,
 		radius:140,
-		rectangle:{
-			sector:{
-				click:function(c,e,m){
+		sector:{
+			listeners:{
+				click:<span class='ichartjs_keyword'>function</span>(c,e,m){
 					alert(c.get('<span class='ichartjs_string'>name</span>'));
 				}
 			}
