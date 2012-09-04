@@ -8,20 +8,44 @@
 		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
-				var data = [
-			        	{name : '广州',value : 4000,color:'#a56f8f'},
-			        	{name : '上海',value : 4200,color:'#0d6868'},
-			        	{name : '南昌',value : 3500,color:'#744774'},
-			        	{name : '哈尔滨',value : 3600,color:'#267daa'},
-			        	{name : '北京',value : 4150,color:'#67840e'}
+			var data = [
+			        	{name : 'Google',value : 91.17,color:'#a5c2d5'},
+			        	{name : 'bing',value : 3.22,color:'#cbab4f'},
+			        	{name : 'Yahoo!',value : 2.95,color:'#76a871'},
+			        	{name : 'Babylon',value : 0.54,color:'#9f7961'},
+			        	{name : 'Baidu',value : 0.45,color:'#a56f8f'},
+			        	{name : 'Other',value : 1.67,color:'#db9034'}
 		        	];
 					$(function(){
 						new iChart.Bar2D({
 								render : 'canvasDiv',
 								data: data,
-								title : 'Average Wage Of 2012',
+								title : '2012年7月份全球搜索引擎Top5',
+								footnote : 'Data from StatCounter',
 								width : 800,
-								height : 440
+								height : 440,
+								coordinate:{
+									width:640,
+									height:320,
+									scale:[{
+										 position:'bottom',	
+										 start_scale:0,
+										 end_scale:100,
+										 scale_space:10,
+										 listeners:{
+											parseText:function(t,x,y){
+												return {text:t+"%"}
+											}
+										 }
+									}]
+								},
+								rectangle:{
+									listeners:{
+										drawLabelText:function(r,t){
+											return t+"%";
+										}
+									}
+								}
 						}).draw();
 					});
 			</script>
@@ -32,30 +56,54 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这是一个条形图例子，该例子展示了2012年5个城市平均工资的情况。配置上除了像标题、长宽的基本属性外基本上都是默认的。
+					这是一个条形图例子，该例子展示了2012年7月份全球范围内搜索引擎使用的情况。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>
-					数据均为模拟，无实际参考价值。
+					数据来源于StatCounter。
 				</span>
 			</div>
 <!-- the source code -->
 <div id='ichartjs_code'>
 <span class='ichartjs_keyword'>var</span> data = [
-	{name : '<span class='ichartjs_keyword'>广州</span>',value : 4000,color:'<span class='ichartjs_keyword'>#a5c2d5</span>'},
-   	{name : '<span class='ichartjs_keyword'>上海</span>',value : 4200,color:'<span class='ichartjs_keyword'>#cbab4f</span>'},
-   	{name : '<span class='ichartjs_keyword'>南昌</span>',value : 3500,color:'<span class='ichartjs_keyword'>#76a871</span>'},
-   	{name : '<span class='ichartjs_keyword'>哈尔滨</span>',value : 3600,color:'<span class='ichartjs_keyword'>#9f7961</span>'},
-   	{name : '<span class='ichartjs_keyword'>北京</span>',value : 4150,color:'<span class='ichartjs_keyword'>#a56f8f</span>'}
+	{name : '<span class='ichartjs_keyword'>Google</span>',value : 91.17,color:'<span class='ichartjs_keyword'>#a5c2d5</span>'},
+   	{name : '<span class='ichartjs_keyword'>bing</span>',value : 3.22,color:'<span class='ichartjs_keyword'>#cbab4f</span>'},
+   	{name : '<span class='ichartjs_keyword'>Yahoo!</span>',value : 2.95,color:'<span class='ichartjs_keyword'>#76a871</span>'},
+   	{name : '<span class='ichartjs_keyword'>Babylon</span>',value : 0.54,color:'<span class='ichartjs_keyword'>#9f7961</span>'},
+   	{name : '<span class='ichartjs_keyword'>Baidu</span>',value : 0.45,color:'<span class='ichartjs_keyword'>#a56f8f</span>'},
+   	{name : '<span class='ichartjs_keyword'>Other</span>',value : 1.67,color:'<span class='ichartjs_keyword'>#6f83a5</span>'}
  ];
 
 $(<span class='ichartjs_keyword'>function</span>(){	
 	<span class='ichartjs_keyword'>new</span> iChart.Bar2D({
 		render : '<span class='ichartjs_string'>canvasDiv</span>',
 		data: data,
-		title : '<span class='ichartjs_string'>Average Wage Of 2012</span>',
+		title : '<span class='ichartjs_string'>2012年7月份全球搜索引擎Top5</span>',
+		footnote : '<span class='ichartjs_string'>Data from StatCounter</span>',
 		width : 800,
-		height : 400
+		height : 440,
+		coordinate:{
+			width:640,
+			height:320,
+			scale:[{
+				 position:'<span class='ichartjs_string'>bottom</span>',	
+				 start_scale:0,
+				 end_scale:100,
+				 scale_space:10,
+				 listeners:{
+					parseText:<span class='ichartjs_keyword'>function</span>(t,x,y){
+						<span class='ichartjs_keyword'>return</span> {text:t+"<span class='ichartjs_string'>%</span>"}
+					}
+				 }
+			}]
+		},
+		rectangle:{
+			listeners:{
+				drawLabelText:<span class='ichartjs_keyword'>function</span>(r,t){
+					<span class='ichartjs_keyword'>return</span> t+"<span class='ichartjs_string'>%</span>";
+				}
+			}
+		}
 	}).draw();
 });
 </div>
