@@ -21,10 +21,14 @@
 				 */
 				text:'',
 				/**
-				 * @cfg {String} Specifies the textAlign of html5.(default to 'center')
-				 * Available value are:
+				 * @cfg {String} there has two layers of meaning,when width is 0,Specifies the textAlign of html5.else this is the alignment of box.(default to 'center')
+				 * when width is 0,Available value are:
 				 * @Option start
 				 * @Option end
+				 * @Option left
+				 * @Option right
+				 * @Option center
+				 * when width is not 0,Available value are:
 				 * @Option left
 				 * @Option right
 				 * @Option center
@@ -41,6 +45,12 @@
 				 * @Option bottom
 				 */
 				textBaseline:'top',
+				/**
+				 * @cfg {Object} Here,specify as false by default
+				 */
+				border : {
+					enable : false
+				},
 				/**
 				 * @cfg {Number} Specifies the maxwidth of text in pixels,if given 0 will not be limited.(default to 0)
 				 */
@@ -70,9 +80,22 @@
 		},
 		doDraw:function(opts){
 			if(this.get('text')!='')
-			this.T.text(this.get('text'),this.x,this.y,false,this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
+			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
 		},
 		doConfig:function(){
 			iChart.Text.superclass.doConfig.call(this);
+			this.push('textx',this.x);
+			this.push('texty',this.y);
+			if(this.get('width')){
+				if(this.get('textAlign')=='left'){
+					
+				}else if(this.get('textAlign')=='right'){
+					
+				}else{
+					
+				}
+			}
+			
+			
 		}
 });//@end
