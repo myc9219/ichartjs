@@ -8,13 +8,17 @@ var resultList,
 	fail=0,
 	Html;
 function level(cost){
-	if(cost<25){
+	if(cost<=20){//50FPS
 		return "<td class='test_item_speed_high'></td>";
-	}else if(cost<40){
+	}else if(cost<=30){//33FPS
 		return "<td class='test_item_speed_middle'></td>";
-	}else{
+	}else if(cost<=40){//24FPS
 		return "<td class='test_item_speed_low'></td>";
+	}else{
+		return "<td class='test_item_speed_poor'></td>";
 	}
+	
+	
 }
 function result(succ,type,costOrCause){
 	str = [resultList.innerHTML];
@@ -64,7 +68,9 @@ function start(){
 				str.push(success);
 				str.push("&nbsp;,Fail:");
 				str.push(fail);
-				str.push("&nbsp;<button onclick='test();'>Test Again</button>");
+				str.push("&nbsp;<button onclick='test();'>Test Again</button>&nbsp;&nbsp;");
+				str.push("<a href='../examples/index.html'>Example</a>&nbsp;&nbsp;");
+				str.push("<a href='http://www.ichartjs.cn'>Site Home</a>");
 				str.push("</div>");
 				resultList.innerHTML = str.join("");
 				return;
