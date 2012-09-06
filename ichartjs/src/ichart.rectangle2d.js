@@ -29,20 +29,14 @@
 			}
 		},
 		drawRectangle:function(){
-			this.T.rectangle(
+			this.T.drawBox(
 				this.get('originx'),
 				this.get('originy'),
 				this.get('width'),
 				this.get('height'),
+				this.get('border'),
 				this.get('f_color'),
-				this.get('border.enable'),
-				this.get('border.width'),
-				this.get('border.color'),
-				this.get('shadow'),
-				this.get('shadow_color'),
-				this.get('shadow_blur'),
-				this.get('shadow_offsetx'),
-				this.get('shadow_offsety'));
+				this.get('shadow'));
 		},
 		isEventValid:function(e){
 			return {valid:e.offsetX>this.x&&e.offsetX<(this.x+this.width)&&e.offsetY<(this.y+this.height)&&e.offsetY>(this.y)};

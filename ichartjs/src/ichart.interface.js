@@ -117,15 +117,7 @@
 			_2D:function(){
 			},
 			coordinate_:function(){
-				if(this.dimension == iChart._2D){
-					return new iChart.Coordinate2D(iChart.apply({
-						scale:{
-							 position:this.get('scaleAlign'),	
-							 max_scale:this.get('maxValue'),
-							 min_scale:this.get('minValue')
-						}
-					},this.get('coordinate')),this);
-				}else{
+				if(this.is3D()){
 					this.push('coordinate.xAngle_',this.get('xAngle_'));
 					this.push('coordinate.yAngle_',this.get('yAngle_'));
 					
@@ -140,21 +132,35 @@
 							 min_scale:this.get('minValue')
 						}
 					},this.get('coordinate')),this);
+				}else{
+					return new iChart.Coordinate2D(iChart.apply({
+						scale:{
+							 position:this.get('scaleAlign'),	
+							 max_scale:this.get('maxValue'),
+							 min_scale:this.get('minValue')
+						}
+					},this.get('coordinate')),this);
 				}
 			},
 			coordinate:function(){
 				/**
 				 * calculate  chart's measurement
 				 */
-				var w = this.pushIf('coordinate.width',this.get('client_width')*0.9),
-					h=this.pushIf('coordinate.height',this.get('client_height')*0.9);
+				var f =0.9,
+					_w = this.get('client_width'),
+					_h = this.get('client_height'),
+					w = this.pushIf('coordinate.width',Math.floor(_w*f)),
+					h=this.pushIf('coordinate.height',Math.floor(_h*f));
 				
-				if(this.get('coordinate.height')>this.get('client_height')){
-					h = this.push('coordinate.height',this.get('client_height')*0.9);
+				if(h>_h){
+					h = this.push('coordinate.height',_h*f);
 				}
-				if(this.get('coordinate.width')>this.get('client_width')){
-					w = this.push('coordinate.width',this.get('client_width')*0.9);
+				if(w>_w){
+					w = this.push('coordinate.width',_w*f);
 				}
+				if(this.is3D()){
+					h = this.push('coordinate.height',h - (this.get('coordinate.pedestal_height')||22) - (this.get('coordinate.board_deep')||20));
+				}	
 				
 				/**
 				 * calculate chart's alignment

@@ -96,7 +96,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			if (hw * L > W) {
 				hw = this.push('colwidth', W / (L * 2 + 1));
 			}
-
+			
 			/**
 			 * the space of two column
 			 */

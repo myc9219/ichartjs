@@ -65,7 +65,7 @@
 		        	];
 
 			
-			new iChart.Pie2D({
+			new iChart.Column2D({
 				render : 'canvasDiv',
 				title:'中国2012年编程语言排行榜',
 				subtitle:{
@@ -75,10 +75,11 @@
 					color:'#FEFEFE'
 				},
 				footnote:{text:'中国2012年编程语言排行榜',textAlign:'left'},
-				align:'left',
-				offsetx:120,
+				//align:'left',
+				//offsetx:120,
 				data:data,
-				label:false,
+				//label:false,
+				//shadow:true,
 				legend:{
 					enable:true,
 					padding:40,
@@ -87,8 +88,8 @@
 					}
 				},
 				coordinate : {
-					width : 600,
-					height : 280
+					width : 440,
+					height : 260
 				},
 				width : 660,
 				height : 400

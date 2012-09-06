@@ -113,13 +113,13 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		if (n == 'round') {
 			this.T.round(x + s / 2, y + s / 2, s / 2, color);
 		} else if (n == 'round-bar') {
-			this.T.rectangle(x, y + s * 5 / 12, s, s / 6, color);
+			this.T.drawBox(x, y + s * 5 / 12, s, s / 6,0, color);
 			this.T.round(x + s / 2, y + s / 2, s / 4, color);
 		} else if (n == 'square-bar') {
-			this.T.rectangle(x, y + s * 5 / 12, s, s / 6, color);
-			this.T.rectangle(x + s / 4, y + s / 4, s / 2, s / 2, color);
+			this.T.drawBox(x, y + s * 5 / 12, s, s / 6, 0,color);
+			this.T.drawBox(x + s / 4, y + s / 4, s / 2, s / 2, 0,color);
 		} else {
-			this.T.rectangle(x, y, s, s, color);
+			this.T.drawBox(x, y, s, s, 0,color);
 		}
 		var textcolor = this.get('color');
 

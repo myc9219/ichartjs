@@ -101,7 +101,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 			textcolor = this.get('scolor');
 		}
 		if (this.get('sign') == 'square') {
-			this.T.rectangle(x, y, ss, ss, this.get('scolor'));
+			this.T.drawBox(x, y, ss, ss,0,this.get('scolor'));
 		} else {
 			this.T.round(x + ss / 2, y + ss / 2, ss / 2, this.get('scolor'));
 		}

@@ -74,8 +74,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		 * paint bottom layer
 		 */
 		_.sectors.eachAll(function(s, i) {
-			_.T.ellipse(s.x, s.y + s.h, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), s.get('shadow'), s.get('shadow_color'), s.get('shadow_blur'), s.get('shadow_offsetx'), s
-					.get('shadow_offsety'), c, true);
+			_.T.ellipse(s.x, s.y + s.h, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), s.get('shadow'), c, true);
 		}, _);
 		
 		layer = [];
@@ -118,7 +117,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		 * paint top layer
 		 */
 		_.sectors.eachAll(function(s, i) {
-			_.T.ellipse(s.x, s.y, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, 0, 0, 0, 0, false, true);
+			_.T.ellipse(s.x, s.y, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, false, true);
 		}, _);
 	}
 	_.pushComponent(_.proxy);

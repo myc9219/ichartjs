@@ -80,7 +80,7 @@
 			/**
 			 * make tip's border in accord with sector
 			 */
-			this.pushIf('tip.border.color', this.get('background_color'));
+			this.pushIf('tip.border.color', this.get('f_color'));
 	
 			if (!iChart.isFunction(this.get('tip.invokeOffset')))
 				/**

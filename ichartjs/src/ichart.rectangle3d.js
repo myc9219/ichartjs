@@ -55,11 +55,7 @@
 				this.get('border.enable'),
 				this.get('border.width'),
 				this.get('light_color'),
-				this.get('shadow'),
-				this.get('shadow_color'),
-				this.get('shadow_blur'),
-				this.get('shadow_offsetx'),
-				this.get('shadow_offsety')
+				this.get('shadow')
 			);
 		},
 		isEventValid:function(e){
