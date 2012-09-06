@@ -230,6 +230,15 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		this.push('hpadding', p[1] + p[3]+b[1]+b[3]);
 		this.push('vpadding', p[0] + p[2]+b[0]+b[2]);
 		
+		if(this.get('shadow')){
+			this.push('shadow',{
+				color : this.get('shadow_color'),
+				blur : this.get('shadow_blur'),
+				offsetx : this.get('shadow_offsetx'),
+				offsety : this.get('shadow_offsety')
+			});
+		}
+		
 		this.push('fontStyle', iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
 		this.push('f_color', bg);
 		this.push("light_color", iChart.light(bg, f));

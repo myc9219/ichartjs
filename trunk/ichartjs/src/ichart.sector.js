@@ -127,7 +127,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			/**
 			 * make the label's color in accord with sector
 			 */
-			_.push('label.scolor', _.get('background_color'));
+			_.push('label.scolor', _.get('f_color'));
 		}
 		_.variable.event.status = _.expanded = _.get('expand');
 

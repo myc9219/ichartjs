@@ -61,14 +61,14 @@
 		/**
 		 * arc
 		 */
-		arc : function(x, y, r, s, e, c, b, bw, bc, sw, swc, swb, swx, swy, ccw, a2r, last) {
+		arc : function(x, y, r, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
 			var x0, y0, ccw = !!ccw, a2r = !!a2r;
 			this.save();
 			if (last)
 				this.gCO(last);
 			if (b)
 				this.strokeStyle(bw, bc);
-			this.shadowOn(sw, swc, swb, swx, swy).fillStyle(c).moveTo(x, y).beginPath();
+			this.shadowOn(sw).fillStyle(c).moveTo(x, y).beginPath();
 			this.c.arc(x, y, r, s, e, ccw);
 			if (a2r)
 				this.lineTo(x, y);
@@ -80,14 +80,14 @@
 		/**
 		 * draw ellipse API
 		 */
-		ellipse : function(x, y, a, b, s, e, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, a2r, last) {
+		ellipse : function(x, y, a, b, s, e, c, bo, bow, boc, sw, ccw, a2r, last) {
 			var angle = s, ccw = !!ccw, a2r = !!a2r;
 			this.save();
 			if (last)
 				this.gCO(last);
 			if (b)
 				this.strokeStyle(bow, boc);
-			this.shadowOn(sw, swc, swb, swx, swy).fillStyle(c).moveTo(x, y).beginPath();
+			this.shadowOn(sw).fillStyle(c).moveTo(x, y).beginPath();
 
 			if (a2r)
 				this.moveTo(x, y);
@@ -106,15 +106,15 @@
 		/**
 		 * draw sector
 		 */
-		sector : function(x, y, r, s, e, c, b, bw, bc, sw, swc, swb, swx, swy, ccw) {
+		sector : function(x, y, r, s, e, c, b, bw, bc, sw, ccw) {
 			if (sw) {
 				/**
 				 * fixed Chrome and Opera bug
 				 */
-				this.arc(x, y, r, s, e, c, b, bw, bc, sw, swc, swb, swx, swy, ccw, true);
-				this.arc(x, y, r, s, e, c, b, bw, bc, false, swc, swb, swx, swy, ccw, true);
+				this.arc(x, y, r, s, e, c, b, bw, bc, sw,ccw, true);
+				this.arc(x, y, r, s, e, c, b, bw, bc, false,ccw, true);
 			} else {
-				this.arc(x, y, r, s, e, c, b, bw, bc, false, 0, 0, 0, 0, ccw, true);
+				this.arc(x, y, r, s, e, c, b, bw, bc, false, ccw, true);
 			}
 			return this;
 		},
@@ -156,11 +156,11 @@
 				if (de)
 					layerDraw.call(this, x, y, a, b, ccw, h, e, c);
 			};
-			var s3 = function(x, y, a, b, s, e, h, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, isw) {
+			var s3 = function(x, y, a, b, s, e, h, c, bo, bow, boc, sw, ccw, isw) {
 				/**
 				 * paint bottom layer
 				 */
-				this.ellipse(x, y + h, a, b, s, e, c, bo, bow, boc, sw, swc, swb, swx, swy, ccw, true);
+				this.ellipse(x, y + h, a, b, s, e, c, bo, bow, boc, sw, ccw, true);
 				/**
 				 * paint inside layer
 				 */
@@ -169,7 +169,7 @@
 				/**
 				 * paint top layer var g = this.avgRadialGradient(x,y,0,x,y,a,[$.light(c,0.1),$.dark(c,0.05)]);
 				 */
-				this.ellipse(x, y, a, b, s, e, c, bo, bow, boc, false, swc, swb, swx, swy, ccw, true);
+				this.ellipse(x, y, a, b, s, e, c, bo, bow, boc, false, ccw, true);
 				/**
 				 * paint outside layer
 				 */
@@ -222,12 +222,12 @@
 				this.c.font = font;
 			return this;
 		},
-		shadowOn : function(s, c, b, x, y) {
+		shadowOn : function(s) {
 			if (s) {
-				this.c.shadowColor = c;
-				this.c.shadowBlur = b;
-				this.c.shadowOffsetX = x;
-				this.c.shadowOffsetY = y;
+				this.c.shadowColor = s.color;
+				this.c.shadowBlur = s.blur;
+				this.c.shadowOffsetX = s.offsetx;
+				this.c.shadowOffsetY = s.offsety;
 			}
 			return this;
 		},
@@ -319,7 +319,7 @@
 		/**
 		 * can use cube3D instead of this?
 		 */
-		cube : function(x, y, xv, yv, width, height, zdeep, bg, b, bw, bc, sw, swc, swb, swx, swy) {
+		cube : function(x, y, xv, yv, width, height, zdeep, bg, b, bw, bc, sw) {
 			x = fd(bw, x);
 			y = fd(bw, y);
 			zdeep = (zdeep && zdeep > 0) ? zdeep : width;
@@ -330,16 +330,16 @@
 			 * styles -> top-front-right
 			 */
 			if (sw) {
-				this.polygon(bg, b, bw, bc, sw, swc, swb, swx, swy, false, [x, y, x1, y1, x1 + width, y1, x + width, y]);
-				this.polygon(bg, b, bw, bc, sw, swc, swb, swx, swy, false, [x, y, x, y + height, x + width, y + height, x + width, y]);
-				this.polygon(bg, b, bw, bc, sw, swc, swb, swx, swy, false, [x + width, y, x1 + width, y1, x1 + width, y1 + height, x + width, y + height]);
+				this.polygon(bg, b, bw, bc, sw, false, [x, y, x1, y1, x1 + width, y1, x + width, y]);
+				this.polygon(bg, b, bw, bc, sw, false, [x, y, x, y + height, x + width, y + height, x + width, y]);
+				this.polygon(bg, b, bw, bc, sw, false, [x + width, y, x1 + width, y1, x1 + width, y1 + height, x + width, y + height]);
 			}
 			/**
 			 * clear the shadow on the body
 			 */
-			this.polygon($.dark(bg), b, bw, bc, false, swc, swb, swx, swy, false, [x, y, x1, y1, x1 + width, y1, x + width, y]);
-			this.polygon(bg, b, bw, bc, false, swc, swb, swx, swy, false, [x, y, x, y + height, x + width, y + height, x + width, y]);
-			this.polygon($.dark(bg), b, bw, bc, false, swc, swb, swx, swy, false, [x + width, y, x1 + width, y1, x1 + width, y1 + height, x + width, y + height]);
+			this.polygon($.dark(bg), b, bw, bc, false, false, [x, y, x1, y1, x1 + width, y1, x + width, y]);
+			this.polygon(bg, b, bw, bc, false, false, [x, y, x, y + height, x + width, y + height, x + width, y]);
+			this.polygon($.dark(bg), b, bw, bc, false, false, [x + width, y, x1 + width, y1, x1 + width, y1 + height, x + width, y + height]);
 			return this;
 		},
 		/**
@@ -435,17 +435,17 @@
 				side.push($.applyIf({
 					points : [x, y, x, y - h, x + w, y - h, x + w, y]
 				}, styles[5]));
-
+			
 			side.each(function(s) {
-				this.polygon(s.color, b, bw, bc, s.shadow, s.shadowColor, s.blur, s.sx, s.sy, s.alpha, s.points);
+				this.polygon(s.color, b, bw, bc, s.shadow, s.alpha, s.points);
 			}, this);
-
+			
 			return this;
 		},
-		polygon : function(bg, b, bw, bc, sw, swc, swb, swx, swy, alpham, points) {
+		polygon : function(bg, b, bw, bc, sw, alpham, points) {
 			if (points.length < 2)
 				return;
-			this.save().strokeStyle(bw, bc).beginPath().fillStyle(bg).globalAlpha(alpham).shadowOn(sw, swc, swb, swx, swy).moveTo(points[0], points[1]);
+			this.save().strokeStyle(bw, bc).beginPath().fillStyle(bg).globalAlpha(alpham).shadowOn(sw).moveTo(points[0], points[1]);
 			for ( var i = 2; i < points.length; i += 2) {
 				this.lineTo(points[i], points[i + 1]);
 			}
@@ -503,21 +503,6 @@
 			this.c.translate(x, y);
 			return this;
 		},
-		backgound : function(x, y, w, h, bgcolor) {
-			return this.save().gCO(true).translate(x, y).beginPath().fillStyle(bgcolor).fillRect(0, 0, w, h).restore();
-		},
-		rectangle : function(x, y, w, h, bg, b, j, c, sw, swc, swb, swx, swy) {
-			this.save().translate(fd(j, x), fd(j, y)).beginPath().fillStyle(bg).shadowOn(sw, swc, swb, swx, swy);
-			if (bg)
-				this.fillRect(0, 0, w, h);
-			if (b)
-				if ($.isNumber(j)) {
-					this.strokeStyle(j, c);
-					this.c.strokeRect(0, 0, w, h);
-				} else if ($.isArray(j))
-					this.strokeStyle(0, c).line(0, 0, w, 0, j[0], c).line(w, 0, w, h, j[1], c).line(0, h, w, h, j[2], c).line(0, 0, 0, h, j[3], c);
-			return this.restore();
-		},
 		clearRect : function(x, y, w, h) {
 			x = x || 0;
 			y = y || 0;
@@ -530,10 +515,12 @@
 			this.c.globalCompositeOperation = l ? "destination-over" : "source-over";
 			return this;
 		},
-		drawBox : function(x, y, w, h, b, bg, last, shadow, scolor, blur, offsetx, offsety) {
-			b = b || {enable:0}
-			if(b.enable){
-				var j = b.width, c = b.color, r = b.radius,f = $.isNumber(j);
+		drawBox : function(x, y, w, h, b, bg, last, shadow) {
+			b = b || {
+				enable : 0
+			}
+			if (b.enable) {
+				var j = b.width, c = b.color, r = b.radius, f = $.isNumber(j);
 				j = $.parsePadding(j);
 				w -= (j[1] + j[3]) / 2;
 				h -= (j[0] + j[2]) / 2;
@@ -544,14 +531,14 @@
 				j = f ? j[0] : j;
 				r = (!f || r == 0 || r == '0') ? 0 : $.parsePadding(r);
 			}
-			this.save().translate(x, y).shadowOn(shadow, scolor, blur, offsetx, offsety);
+			this.save().translate(x, y).shadowOn(shadow);
 			if (last)
 				this.gCO(last);
 			if (bg)
 				this.fillStyle(bg);
 			if (f)
 				this.strokeStyle(j, c);
-			
+
 			/**
 			 * draw a round corners border
 			 */
@@ -563,16 +550,16 @@
 				if (j)
 					this.stroke();
 			} else {
-				if (!b.enable||f) {
-					if(b.enable)
-						this.c.strokeRect(0, 0, fd(j,w), fd(j,h));
+				if (!b.enable || f) {
+					if (b.enable)
+						this.c.strokeRect(0, 0, fd(j, w), fd(j, h));
 					if (bg)
 						this.fillRect(0, 0, w, h);
 				} else {
 					if (bg) {
 						this.beginPath().moveTo(floor(j[3] / 2), floor(j[0] / 2)).lineTo(ceil(w - j[1] / 2), j[0] / 2).lineTo(ceil(w - j[1] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), floor(j[0] / 2)).closePath().fill();
 					}
-					if(j){
+					if (j) {
 						c = $.isArray(c) ? c : [c, c, c, c];
 						this.line(w, j[0] / 2, w, h - j[0] / 2, j[1], c[1], 0).line(0, j[0] / 2, 0, h - j[0] / 2, j[3], c[3], 0).line(floor(-j[3] / 2), 0, w + j[1] / 2, 0, j[0], c[0], 0).line(floor(-j[3] / 2), h, w + j[1] / 2, h, j[2], c[2], 0);
 					}
@@ -801,7 +788,7 @@
 			this.T.clearRect(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'));
 		},
 		resetCanvas : function() {
-			this.T.backgound(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'), this.get('f_color'));
+			this.T.drawBox(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'),0,this.get('f_color'),true);
 		},
 		animation : function(_) {
 			/**
@@ -1016,29 +1003,32 @@
 
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
-			
-			var H = 0,
-				l = _.push('l_originx', _.get('padding_left')),
-				t = _.push('t_originy', _.get('padding_top')),
-				w = _.push('client_width', (_.get('width') - _.get('hpadding'))),h;
-			
+
+			var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.get('width') - _.get('hpadding'))), h;
+
 			if ($.isString(_.get('title'))) {
-				_.push('title', $.applyIf({text : _.get('title')},_.default_.title));
+				_.push('title', $.applyIf({
+					text : _.get('title')
+				}, _.default_.title));
 			}
 			if ($.isString(_.get('subtitle'))) {
-				_.push('subtitle',$.applyIf({text : _.get('subtitle')},_.default_.subtitle));
+				_.push('subtitle', $.applyIf({
+					text : _.get('subtitle')
+				}, _.default_.subtitle));
 			}
 			if ($.isString(_.get('footnote'))) {
-				_.push('footnote',$.applyIf({text : _.get('footnote')},_.default_.footnote));
+				_.push('footnote', $.applyIf({
+					text : _.get('footnote')
+				}, _.default_.footnote));
 			}
-			
+
 			if (_.get('title.text') != '') {
 				var st = _.get('subtitle.text') != '';
 				H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
 				t = _.push('t_originy', t + H);
 				_.push('title.originx', l);
 				_.push('title.originy', _.get('padding_top'));
-				_.push('title.width',w);
+				_.push('title.width', w);
 				_.title = new $.Text(_.get('title'), _);
 				if (st) {
 					_.push('subtitle.originx', l);

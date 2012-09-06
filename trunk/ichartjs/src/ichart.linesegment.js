@@ -94,7 +94,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		this.tip = null;
 	},
 	drawSegment : function() {
-		this.T.shadowOn(this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
+		this.T.shadowOn(this.get('shadow'));
 		var p = this.get('points');
 		if (this.get('area')) {
 			var polygons = [this.x, this.y];

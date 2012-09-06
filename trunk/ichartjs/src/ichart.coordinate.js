@@ -20,7 +20,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			/**
 			 * @cfg {String} Specifies alignment of this scale.(default to 'left')
 			 */
-			position:'left',
+			position : 'left',
 			/**
 			 * @cfg {String} the axis's type(default to 'h') Available value are:
 			 * @Option 'h' :horizontal
@@ -145,7 +145,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 	 * 按照从左自右,从上至下原则
 	 */
 	doDraw : function() {
-		var x = 0,y = 0,x0 = 0,y0 = 0,tx = 0,ty = 0, w = this.get('scale_width'), w2 = w / 2, sa = this.get('scaleAlign'), ta = this.get('textAlign'), ts = this.get('text_space');
+		var x = 0, y = 0, x0 = 0, y0 = 0, tx = 0, ty = 0, w = this.get('scale_width'), w2 = w / 2, sa = this.get('scaleAlign'), ta = this.get('textAlign'), ts = this.get('text_space');
 		if (this.isH) {
 			if (sa == 'top') {
 				y = -w;
@@ -206,14 +206,14 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			this.number = customLabel - 1;
 		} else {
 			iChart.Assert.isTrue(iChart.isNumber(max_scale) || iChart.isNumber(end_scale), 'max_scale&end_scale');
-			
+
 			/**
 			 * end_scale must greater than maxScale
 			 */
 			if (!end_scale || end_scale < max_scale) {
 				end_scale = this.push('end_scale', iChart.ceil(max_scale));
 			}
-			
+
 			/**
 			 * startScale must less than minScale
 			 */
@@ -224,30 +224,30 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			if (scale_space && scale_space < end_scale - start_scale) {
 				this.push('scale_share', (end_scale - start_scale) / scale_space);
 			}
-			
+
 			/**
 			 * value of each scale
 			 */
 			if (!scale_space || scale_space > end_scale - start_scale) {
 				scale_space = this.push('scale', (end_scale - start_scale) / this.get('scale_share'));
 			}
-			
+
 			this.number = this.get('scale_share');
-			if(scale_space<1&&this.get('decimalsnum')==0){
+			if (scale_space < 1 && this.get('decimalsnum') == 0) {
 				var dec = scale_space;
-				while(dec<1){
-					dec *=10;
-					this.push('decimalsnum',this.get('decimalsnum')+1);
+				while (dec < 1) {
+					dec *= 10;
+					this.push('decimalsnum', this.get('decimalsnum') + 1);
 				}
 			}
-			
+
 		}
 
 		/**
 		 * the real distance of each scale
 		 */
 		this.push('distanceOne', this.get('valid_distance') / this.number);
-		
+
 		var text, maxwidth = 0, x, y;
 
 		this.T.textFont(this.get('fontStyle'));
@@ -274,11 +274,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		 * what does follow code doing?
 		 */
 		this.left = this.right = this.top = this.bottom = 0;
-		var ts = this.get('text_space'),
-		ta = this.get('textAlign'),
-		sa = this.get('scaleAlign'), 
-		w = this.get('scale_width'),
-		w2 = w / 2;
+		var ts = this.get('text_space'), ta = this.get('textAlign'), sa = this.get('scaleAlign'), w = this.get('scale_width'), w2 = w / 2;
 
 		if (this.isH) {
 			if (sa == 'top') {
@@ -310,8 +306,10 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			}
 		}
 	}
-});// @end
-
+});
+/**
+ * @end
+ */
 /**
  * @overview this component use for abc
  * @component#iChart.Coordinate2D
@@ -368,18 +366,10 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 */
 					scale2grid : true,
 					/**
-					 * @cfg {Object} this is grid config for custom.there has two valid property horizontal and vertical.the property's sub property is: 
-					 * way:the manner calculate grid-line (default to 'share_alike') 
-					 *    Available property are:
-					 *    @Option share_alike
-					 *    @Option given_value 
-					 * value: when property way apply to 'share_alike' this property mean to the number of grid's line.
-					 * when apply to 'given_value' this property mean to the distance each grid line(unit:pixel) .
-					 * code will like:
-					 * { 
-					 *   horizontal: { way:'share_alike', value:10 } 
-					 *   vertical: { way:'given_value', value:40 } 
-					 *  }
+					 * @cfg {Object} this is grid config for custom.there has two valid property horizontal and vertical.the property's sub property is: way:the manner calculate grid-line (default to 'share_alike') Available property are:
+					 * @Option share_alike
+					 * @Option given_value value: when property way apply to 'share_alike' this property mean to the number of grid's line. when apply to 'given_value' this property mean to the distance each grid line(unit:pixel) . code will like: { horizontal: {
+					 *         way:'share_alike', value:10 } vertical: { way:'given_value', value:40 } }
 					 */
 					grids : undefined,
 					/**
@@ -411,10 +401,9 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					/**
 					 * @cfg {float(0.01 - 0.5)} Specifies the factor make color dark alternate_color,relative to background-color,the bigger the value you set,the larger the color changed.(defaults to '0.01')
 					 */
-					alternate_color_factor:0.01,
+					alternate_color_factor : 0.01,
 					/**
-					 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>iChart.CrossHair</link>
-					 * Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
+					 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>iChart.CrossHair</link> Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
 					 */
 					crosshair : {
 						enable : false
@@ -468,15 +457,14 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				};
 			},
 			doDraw : function(opts) {
-				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), this.get('f_color'));
-				
+				this.T.drawBox(this.x, this.y, this.get('width'), this.get('height'),0,this.get('f_color'));
 				if (this.get('alternate_color')) {
-					var x, y, f = false, axis = [0, 0, 0, 0], c = iChart.dark(this.get('f_color'),this.get('alternate_color_factor'));
+					var x, y, f = false, axis = [0, 0, 0, 0], c = iChart.dark(this.get('f_color'), this.get('alternate_color_factor'));
 					if (this.get('axis.enable')) {
 						axis = this.get('axis.width');
 					}
 				}
-				var gl = this.gridlines,glw=this.get('grid_line_width'),v=this.get('alternate_direction')=='v';
+				var gl = this.gridlines, glw = this.get('grid_line_width'), v = this.get('alternate_direction') == 'v';
 				for ( var i = 0; i < gl.length; i++) {
 					gl[i].x1 = Math.round(gl[i].x1);
 					gl[i].y1 = Math.round(gl[i].y1);
@@ -484,10 +472,10 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					gl[i].y2 = Math.round(gl[i].y2);
 					if (this.get('alternate_color')) {
 						if (f) {
-							if(v)
-								this.T.rectangle(gl[i].x1 + axis[3], gl[i].y1 + glw, gl[i].x2 - gl[i].x1 - axis[3] - axis[1], y - gl[i].y1 - glw, c);
+							if (v)
+								this.T.drawBox(gl[i].x1 + axis[3], gl[i].y1 + glw, gl[i].x2 - gl[i].x1 - axis[3] - axis[1], y - gl[i].y1 - glw,0,c);
 							else
-								this.T.rectangle(x +glw, gl[i].y2 + axis[0], gl[i].x1 - x, gl[i].y1 - gl[i].y2 - axis[0] - axis[2], c);
+								this.T.drawBox(x + glw, gl[i].y2 + axis[0], gl[i].x1 - x, gl[i].y1 - gl[i].y2 - axis[0] - axis[2],0,c);
 						}
 						x = gl[i].x1;
 						y = gl[i].y1;
@@ -495,11 +483,9 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					}
 					this.T.line(gl[i].x1, gl[i].y1, gl[i].x2, gl[i].y2, glw, this.get('grid_color'));
 				}
-				
-				this.T.rectangle(this.x, this.y, this.get('width'), this.get('height'), false, this.get('axis.enable'), this.get('axis.width'), this.get('axis.color'), this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this
-						.get('shadow_offsetx'), this.get('shadow_offsety'));
-				
-				
+
+				this.T.drawBox(this.x, this.y, this.get('width'), this.get('height'),  this.get('axis'), false,this.get('shadow'));
+
 				for ( var i = 0; i < this.scale.length; i++) {
 					this.scale[i].draw();
 				}
@@ -508,7 +494,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				iChart.Coordinate2D.superclass.doConfig.call(this);
 				iChart.Assert.isNumber(this.get('width'), 'width');
 				iChart.Assert.isNumber(this.get('height'), 'height');
-				
+
 				/**
 				 * this element not atomic because it is a container,so this is a particular case.
 				 */
@@ -517,16 +503,16 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				/**
 				 * apply the gradient color to f_color
 				 */
-				if (this.get('gradient') && iChart.isString(this.get('background_color'))) {
+				if (this.get('gradient') && iChart.isString(this.get('f_color'))) {
 					this.push('f_color', this.T.avgLinearGradient(this.x, this.y, this.x, this.y + this.get('height'), [this.get('dark_color'), this.get('light_color')]));
 				}
-
+				
 				if (this.get('axis.enable')) {
 					var aw = this.get('axis.width');
 					if (!iChart.isArray(aw))
 						this.push('axis.width', [aw, aw, aw, aw]);
 				}
-
+				
 				if (this.get('crosshair.enable')) {
 					this.push('crosshair.wrap', this.container.shell);
 					this.push('crosshair.height', this.get('height'));
@@ -539,8 +525,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 
 				var jp, cg = !!(this.get('gridlinesVisible') && this.get('grids')), // custom grid
 				hg = cg && !!this.get('grids.horizontal'), vg = cg && !!this.get('grids.vertical'), h = this.get('height'), w = this.get('width'), vw = this.get('valid_width'), vh = this.get('valid_height'), k2g = this.get('gridlinesVisible') && this.get('scale2grid')
-						&& !(hg && vg), sw = (w - vw) / 2,
-				sh = (h - vh) / 2, axis = this.get('axis.width');
+						&& !(hg && vg), sw = (w - vw) / 2, sh = (h - vh) / 2, axis = this.get('axis.width');
 
 				if (!iChart.isArray(this.get('scale'))) {
 					if (iChart.isObject(this.get('scale')))
@@ -548,7 +533,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					else
 						this.push('scale', []);
 				}
-				this.get('scale').each(function(kd,i){
+				this.get('scale').each(function(kd, i) {
 					jp = kd['position'];
 					jp = jp || 'left';
 					jp = jp.toLowerCase();
@@ -558,30 +543,29 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					kd['valid_y'] = this.y + sh;
 					kd['position'] = jp;
 					// calculate coordinate,direction,distance
-					if (jp == 'top') {
-						kd['which'] = 'h';
-						kd['distance'] = w;
-						kd['valid_distance'] = vw;
-					} else if (jp == 'right') {
-						kd['which'] = 'v';
-						kd['distance'] = h;
-						kd['valid_distance'] = vh;
-						kd['originx'] += w;
-						kd['valid_x'] += vw;
-					} else if (jp == 'bottom') {
-						kd['which'] = 'h';
-						kd['distance'] = w;
-						kd['valid_distance'] = vw;
-						kd['originy'] += h;
-						kd['valid_y'] += vh;
-					} else {
-						kd['which'] = 'v';
-						kd['distance'] = h;
-						kd['valid_distance'] = vh;
-					}
-					this.scale.push(new iChart.Scale(kd, this.container));
-				},this);
-				
+						if (jp == 'top') {
+							kd['which'] = 'h';
+							kd['distance'] = w;
+							kd['valid_distance'] = vw;
+						} else if (jp == 'right') {
+							kd['which'] = 'v';
+							kd['distance'] = h;
+							kd['valid_distance'] = vh;
+							kd['originx'] += w;
+							kd['valid_x'] += vw;
+						} else if (jp == 'bottom') {
+							kd['which'] = 'h';
+							kd['distance'] = w;
+							kd['valid_distance'] = vw;
+							kd['originy'] += h;
+							kd['valid_y'] += vh;
+						} else {
+							kd['which'] = 'v';
+							kd['distance'] = h;
+							kd['valid_distance'] = vh;
+						}
+						this.scale.push(new iChart.Scale(kd, this.container));
+					}, this);
 
 				var iol = this.push('ignoreOverlap', this.get('ignoreOverlap') && this.get('axis.enable') || this.get('ignoreEdge'));
 
@@ -598,19 +582,20 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				}
 
 				if (k2g) {
-					var scale, x, y;
+					var scale, x, y,p;
 					for ( var i = 0; i < this.scale.length; i++) {
 						scale = this.scale[i];
+						p = scale.get('position');
 						// disable,given specfiy grid will ignore scale2grid
 						if (iChart.isFalse(scale.get('scale2grid')) || hg && scale.get('which') == 'v' || vg && scale.get('which') == 'h') {
 							continue;
 						}
 						x = y = 0;
-						if (scale.get('position') == 'top') {
+						if (p == 'top') {
 							y = h;
-						} else if (scale.get('position') == 'right') {
+						} else if (p == 'right') {
 							x = -w;
-						} else if (scale.get('position') == 'bottom') {
+						} else if (p == 'bottom') {
 							y = -h;
 						} else {
 							x = w;
@@ -637,7 +622,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 						d = gv['value'];
 						d = d > w ? w : d;
 					}
-						
+
 					for ( var i = 0; i <= n; i++) {
 						if (iol)
 							if (ignoreOverlap.call(this, 'h', this.x + i * d, this.y))
@@ -674,7 +659,10 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				}
 
 			}
-		});// @end
+		});
+/**
+ * @end
+ */
 /**
  * @overview this component use for abc
  * @component#iChart.Coordinate3D
@@ -787,16 +775,16 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 	},
 	doConfig : function() {
 		iChart.Coordinate3D.superclass.doConfig.call(this);
-
-		var bg = this.get('background_color'), dark_color = iChart.dark(bg, 0.1), h = this.get('height'), w = this.get('width');
+		
+		var bg = this.get('background_color'), c = iChart.dark(bg, 0.1), c1 = this.get('dark_color'), h = this.get('height') , w = this.get('width');
 
 		if (this.get('wall_style').length < 3) {
 			this.push('wall_style', [{
-				color : dark_color
+				color : c
 			}, {
 				color : bg
 			}, {
-				color : dark_color
+				color : c
 			}]);
 		}
 
@@ -806,12 +794,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 		 * 右-前
 		 */
 		this.push('bottom_style', [{
-			color : bg,
-			shadow : this.get('shadow'),
-			shadowColor : this.get('shadow_color'),
-			blur : this.get('shadow_blur'),
-			sx : this.get('shadow_offsetx'),
-			sy : this.get('shadow_offsety')
+			shadow : this.get('shadow')
 		}, false, false, {
 			color : dark
 		}, {
@@ -835,15 +818,15 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 			var offx = this.get('xAngle_') * this.get('zHeight'), offy = this.get('yAngle_') * this.get('zHeight'), ws = this.get('wall_style'), bs = this.get('bottom_style');
 
 			if (iChart.isString(ws[0].color)) {
-				ws[0].color = this.T.avgLinearGradient(this.x, this.y + h, this.x + w, this.y + h, [dark, this.get('dark_color')]);
+				ws[0].color = this.T.avgLinearGradient(this.x, this.y + h, this.x + w, this.y + h, [dark, c1]);
 			}
 			if (iChart.isString(ws[1].color)) {
-				ws[1].color = this.T.avgLinearGradient(this.x + offx, this.y - offy, this.x + offx, this.y + h - offy, [this.get('dark_color'), this.get('light_color')]);
+				ws[1].color = this.T.avgLinearGradient(this.x + offx, this.y - offy, this.x + offx, this.y + h - offy, [c1, this.get('light_color')]);
 			}
 			if (iChart.isString(ws[2].color)) {
-				ws[2].color = this.T.avgLinearGradient(this.x, this.y, this.x, this.y + h, [bg, this.get('dark_color')]);
+				ws[2].color = this.T.avgLinearGradient(this.x, this.y, this.x, this.y + h, [bg, c1]);
 			}
-			bs[5].color = this.T.avgLinearGradient(this.x, this.y + h, this.x, this.y + h + this.get('pedestal_height'), [bg, dark_color]);
+			bs[5].color = this.T.avgLinearGradient(this.x, this.y + h, this.x, this.y + h + this.get('pedestal_height'), [bg, c]);
 		}
 
 	}

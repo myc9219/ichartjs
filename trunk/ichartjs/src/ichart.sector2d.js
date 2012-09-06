@@ -35,10 +35,6 @@
 					this.get('border.width'),
 					this.get('border.color'),
 					this.get('shadow'),
-					this.get('shadow_color'),
-					this.get('shadow_blur'),
-					this.get('shadow_offsetx'),
-					this.get('shadow_offsety'),
 					this.get('counterclockwise'));
 		},
 		isEventValid:function(e){
