@@ -530,16 +530,20 @@
 			this.c.globalCompositeOperation = l ? "destination-over" : "source-over";
 			return this;
 		},
-		drawBox : function(x, y, w, h, j, c, r, bg, last, shadow, scolor, blur, offsetx, offsety) {
-			var f = $.isNumber(j);
-			j = $.parsePadding(j);
-			w -= (j[1] + j[3]) / 2;
-			h -= (j[0] + j[2]) / 2;
-			x += (j[3] / 2);
-			y += (j[0] / 2);
-			x = fd(j[3], x);
-			y = fd(j[0], y);
-			j = f ? j[0] : j;
+		drawBox : function(x, y, w, h, b, bg, last, shadow, scolor, blur, offsetx, offsety) {
+			b = b || {enable:0}
+			if(b.enable){
+				var j = b.width, c = b.color, r = b.radius,f = $.isNumber(j);
+				j = $.parsePadding(j);
+				w -= (j[1] + j[3]) / 2;
+				h -= (j[0] + j[2]) / 2;
+				x += (j[3] / 2);
+				y += (j[0] / 2);
+				x = floor(x);
+				y = floor(y);
+				j = f ? j[0] : j;
+				r = (!f || r == 0 || r == '0') ? 0 : $.parsePadding(r);
+			}
 			this.save().translate(x, y).shadowOn(shadow, scolor, blur, offsetx, offsety);
 			if (last)
 				this.gCO(last);
@@ -547,7 +551,7 @@
 				this.fillStyle(bg);
 			if (f)
 				this.strokeStyle(j, c);
-			r = (!f || r == 0 || r == '0') ? 0 : $.parsePadding(r);
+			
 			/**
 			 * draw a round corners border
 			 */
@@ -559,16 +563,19 @@
 				if (j)
 					this.stroke();
 			} else {
-				if (f) {
-					this.c.strokeRect(0, 0, w, h);
+				if (!b.enable||f) {
+					if(b.enable)
+						this.c.strokeRect(0, 0, fd(j,w), fd(j,h));
 					if (bg)
 						this.fillRect(0, 0, w, h);
 				} else {
 					if (bg) {
 						this.beginPath().moveTo(floor(j[3] / 2), floor(j[0] / 2)).lineTo(ceil(w - j[1] / 2), j[0] / 2).lineTo(ceil(w - j[1] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), floor(j[0] / 2)).closePath().fill();
 					}
-					c = $.isArray(c) ? c : [c, c, c, c];
-					this.line(w, j[0] / 2, w, h - j[0] / 2, j[1], c[1], 0).line(0, j[0] / 2, 0, h - j[0] / 2, j[3], c[3], 0).line(floor(-j[3] / 2), 0, w + j[1] / 2, 0, j[0], c[0], 0).line(floor(-j[3] / 2), h, w + j[1] / 2, h, j[2], c[2], 0);
+					if(j){
+						c = $.isArray(c) ? c : [c, c, c, c];
+						this.line(w, j[0] / 2, w, h - j[0] / 2, j[1], c[1], 0).line(0, j[0] / 2, 0, h - j[0] / 2, j[3], c[3], 0).line(floor(-j[3] / 2), 0, w + j[1] / 2, 0, j[0], c[0], 0).line(floor(-j[3] / 2), h, w + j[1] / 2, h, j[2], c[2], 0);
+					}
 				}
 
 			}
@@ -678,6 +685,7 @@
 					 * Specifies the font-color of footnote.(default to '#5d7f97')
 					 */
 					color : '#5d7f97',
+					textAlign : 'right',
 					/**
 					 * Specifies the height of title will be take.(default to 20)
 					 */
@@ -845,11 +853,7 @@
 				if (this.footnote) {
 					this.footnote.draw();
 				}
-				if (this.get('border.enable')) {
-					this.T.drawBox(0, 0, this.width, this.height, this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('f_color'), true);
-				} else {
-					this.T.backgound(0, 0, this.width, this.height, this.get('f_color'));
-				}
+				this.T.drawBox(0, 0, this.width, this.height, this.get('border'), this.get('f_color'), true);
 			}
 			this.redraw = true;
 
@@ -1010,100 +1014,65 @@
 					}
 				});
 
-			_.push('l_originx', _.get('padding_left'));
 			_.push('r_originx', _.width - _.get('padding_right'));
-			_.push('t_originy', _.get('padding_top'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
-			_.push('client_width', (_.get('width') - _.get('hpadding')));
-
-			var H = 0;
+			
+			var H = 0,
+				l = _.push('l_originx', _.get('padding_left')),
+				t = _.push('t_originy', _.get('padding_top')),
+				w = _.push('client_width', (_.get('width') - _.get('hpadding'))),h;
+			
 			if ($.isString(_.get('title'))) {
-				_.push('title', {
-					text : _.get('title'),
-					fontweight : 'bold',
-					fontsize : 20,
-					height : 30
-				});
+				_.push('title', $.applyIf({text : _.get('title')},_.default_.title));
 			}
 			if ($.isString(_.get('subtitle'))) {
-				_.push('subtitle', {
-					text : _.get('subtitle'),
-					fontweight : 'bold',
-					fontsize : 16,
-					height : 20
-				});
+				_.push('subtitle',$.applyIf({text : _.get('subtitle')},_.default_.subtitle));
 			}
 			if ($.isString(_.get('footnote'))) {
-				_.push('footnote', {
-					text : _.get('footnote'),
-					color : '#5d7f97',
-					height : 20
-				});
+				_.push('footnote',$.applyIf({text : _.get('footnote')},_.default_.footnote));
 			}
-
+			
 			if (_.get('title.text') != '') {
 				var st = _.get('subtitle.text') != '';
 				H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
-				if (_.get('title_align') == 'left') {
-					_.push('title.originx', _.get('padding_left'));
-				} else if (_.get('title_align') == 'right') {
-					_.push('title.originx', _.width - _.get('padding_right'));
-				} else {
-					_.push('title.originx', _.get('padding_left') + _.get('client_width') / 2);
-				}
-
-				_.push('t_originy', _.get('t_originy') + H);
-
-				this.push('title.textAlign', this.get('title_align'));
-				this.push('title.originy', this.get('padding_top'));
-				this.push('title.textBaseline', 'top');
-				this.title = new $.Text(this.get('title'), this);
+				t = _.push('t_originy', t + H);
+				_.push('title.originx', l);
+				_.push('title.originy', _.get('padding_top'));
+				_.push('title.width',w);
+				_.title = new $.Text(_.get('title'), _);
 				if (st) {
-					_.push('subtitle.originx', _.get('title.originx'));
+					_.push('subtitle.originx', l);
 					_.push('subtitle.originy', _.get('title.originy') + _.get('title.height'));
-					_.push('subtitle.textAlign', _.get('title_align'));
-					_.push('subtitle.textBaseline', 'top');
-					this.subtitle = new $.Text(this.get('subtitle'), this);
+					_.push('subtitle.width', w);
+					_.subtitle = new $.Text(_.get('subtitle'), _);
 				}
 			}
 
 			if (_.get('footnote.text') != '') {
-				var fh = _.get('footnote.height');
-				H += fh;
-
-				_.push('b_originy', _.get('b_originy') - fh);
-
-				if (_.get('footnote_align') == 'left') {
-					_.push('footnote.originx', _.get('padding_left'));
-				} else if (_.get('footnote_align') == 'right') {
-					_.push('footnote.originx', _.width - _.get('padding_right'));
-				} else {
-					_.push('footnote.originx', _.get('padding_left') + _.get('client_width') / 2);
-				}
-
-				this.push('footnote.textAlign', this.get('footnote_align'));
-				this.push('footnote.originy', this.get('b_originy'));
-				this.push('footnote.textBaseline', 'top');
-
-				this.footnote = new $.Text(this.get('footnote'), this);
-
+				var g = _.get('footnote.height');
+				H += g;
+				_.push('b_originy', _.get('b_originy') - g);
+				_.push('footnote.originx', l);
+				_.push('footnote.originy', _.get('b_originy'));
+				_.push('footnote.width', w);
+				_.footnote = new $.Text(_.get('footnote'), _);
 			}
 
-			_.push('client_height', (_.get('height') - _.get('vpadding') - H));
+			h = _.push('client_height', (_.get('height') - _.get('vpadding') - H));
 
-			_.push('minDistance', min(_.get('client_width'), _.get('client_height')));
-			_.push('maxDistance', max(_.get('client_width'), _.get('client_height')));
-			_.push('minstr', _.get('client_width') < _.get('client_height') ? 'width' : 'height');
+			_.push('minDistance', min(w, h));
+			_.push('maxDistance', max(w, h));
+			_.push('minstr', w < h ? 'width' : 'height');
 
-			_.push('centerx', _.get('l_originx') + _.get('client_width') / 2);
-			_.push('centery', _.get('t_originy') + _.get('client_height') / 2);
+			_.push('centerx', l + w / 2);
+			_.push('centery', t + h / 2);
 
 			/**
 			 * legend
 			 */
 			if (_.get('legend.enable')) {
 				_.legend = new $.Legend($.apply({
-					maxwidth : _.get('client_width'),
+					maxwidth : w,
 					data : _.data
 				}, _.get('legend')), _);
 

@@ -209,7 +209,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 
 		this.oA = iChart.angle2Radian(this.get('offsetAngle'));
 		
-		var r = this.get('radius'), f = this.get('minDistance') * (this.get('label.enable') && !this.is3D() ? 0.35 : 0.5);
+		var r = this.get('radius'), f = this.get('minDistance') * (this.get('label.enable') && !this.is3D() ? 0.35 : 0.45);
 
 		this.calculate();
 		
@@ -221,11 +221,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		}
 
 		this.r = r;
-		/**
-		 * calculate pie chart's increment
-		 */
-		this.pushIf('increment', iChart.lowTo(5, r / 8));
-
+		
 		/**
 		 * calculate pie chart's alignment
 		 */

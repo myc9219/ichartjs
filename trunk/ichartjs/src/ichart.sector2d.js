@@ -76,7 +76,8 @@
 			if(this.get('gradient')){
 				this.push('f_color',this.T.avgRadialGradient(this.x,this.y,0,this.x,this.y,this.r,[this.get('light_color'),this.get('dark_color')]));
 			}
-			this.pushIf('increment',iChart.lowTo(5,this.r/8));
+			this.pushIf('increment',iChart.lowTo(5,this.r/10));
+			
 			var A = this.get('middleAngle'),inc = this.get('increment');
 			this.push('inc_x',inc * Math.cos(2 * Math.PI -A));
 			this.push('inc_y',inc * Math.sin(2 * Math.PI - A));

@@ -1,253 +1,144 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"> 
-  <head>
-    <title>ichartjs-基于html5的图表组件</title>
-    <meta http-equiv="keywords" content="ichartjs,Html5,chart,ichart,报表,HTML5报表,report,canvas"></meta>
-    <meta http-equiv="description" content="The ichartjs's home,the html5 app,canvas app,图表"></meta>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
-    <link rel="stylesheet" type="text/css" href="css/ichart.css"></link>
-	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
-	<script type="text/javascript" src="js/ichart.js"></script>
-  </head>
-  
-  <body>
-  	<div id="ichart-main">
-	    <div id="ichart-header">
-	    	<div id="ichart-header-top">
-	    		<div id="ichart-header-logo"></div>
-	    		<div id="ichart-header-description">
-	    			分享你的知识
-	    		</div>
-	    		<div id="ichart-header-language">
-	    			<a href='index_en.html'>English</a>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>ichartjs Gallery Center</title>
+		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
+   	 	<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="jq-ui/jquery-ui-1.8.21.custom.min.js"></script>
+		<link rel="stylesheet" href="jq-ui/themes/base/jquery.ui.all.css">
+		<link rel="stylesheet" href="css/style.css" type="text/css"/>
+		<script type="text/javascript">
+			var hash = location.hash,$pre,$win,index=0;
+			$(function() {
+				var icons = {
+					header: "ui-icon-circle-arrow-e",
+					headerSelected: "ui-icon-circle-arrow-s"
+				};
+				$( "#ichartjs_accordion" ).accordion({
+					icons: icons,
+					active:false,
+					collapsible: true,
+					autoHeight: false
+				}); 
+				if(hash.indexOf("#")!=-1){
+					hash = hash.substring(1,hash.length);
+					hash = hash.split('&');
+					document.getElementById("viewport").src="html/"+hash[0]+".html";
+					index = parseInt(hash[1]) || 0;
+				}else{
+					document.getElementById("viewport").src="html/area2d_01.html";
+				}
+				$( "#ichartjs_accordion" ).accordion( "activate" ,index);
+				
+				$pre = $("#ichartjs_pre");
+				$win = $("#ichartjs_codeview");
+				$win.dialog({
+					width:'auto',
+					height:600,
+					maxWidth:800,
+					modal: true,
+					autoHeight: true,
+					autoOpen:false
+				});
+			});
+			function viewCode(html){
+				$pre.html($.trim(html));
+				$( "#ichartjs_codeview" ).dialog( "open" ) 
+			}
+		</script>
+	</head>
+	<body>
+		<div id="ichartjs_wrapper">
+		
+	     <div id="ichartjs_header">
+	     	<a href="http://www.ichartjs.cn" title="site home" target="_self">
+	    	<div id="ichart_header_top">
+	    		<div id="ichart_header_logo"></div>
+	    		<div id="ichart_header_description">
+	    			Gallery Center
 	    		</div>
 	    	</div>
-	    	<div id="ichart-header-line"></div>
-    		<div id="ichart-header-menu">
-    			<div class="ichart-header-menu-item">
-    				<div class="ichart-header-menu-icon ichart-menu-home"></div>
-    				<a href='index.html'>
-    				<div class="ichart-menu-title">
-    					<div class="ichart-menu-title-sub ichart-menu-now">主页</div>
-    					<div class="ichart-menu-title-desc">Our front page</div>
-    				</div>
-    				</a>
-    			</div>
-    			<div class="ichart-header-menu-item-separator"></div>
-    			<div class="ichart-header-menu-item">
-    				<div class="ichart-header-menu-icon ichart-menu-doc"></div>
-    				<a href='docs/zh/index.html' target="_blank">
-    				<div class="ichart-menu-title">
-    					<div class="ichart-menu-title-sub">参考文档</div>
-    					<div class="ichart-menu-title-desc">ichartjs API reference</div>
-    				</div>
-    				</a>
-    			</div>
-    			<div class="ichart-header-menu-item-separator"></div>
-    			<div class="ichart-header-menu-item">
-    				<div class="ichart-header-menu-icon ichart-menu-tutorial"></div>
-    				<a href='started.html'>
-    				<div class="ichart-menu-title">
-    					<div class="ichart-menu-title-sub">入门教程</div>
-    					<div class="ichart-menu-title-desc">Getting started</div>
-    				</div>
-    				</a>
-    			</div>
-    			<div class="ichart-header-menu-item-separator"></div>
-    			<div class="ichart-header-menu-item">
-    				<div class="ichart-header-menu-icon ichart-menu-joinus"></div>
-    				<a href='joinus.html'>
-    				<div class="ichart-menu-title">
-    					<div class="ichart-menu-title-sub">加入我们</div>
-    					<div class="ichart-menu-title-desc">Let's get together</div>
-    				</div>
-    				</a>
-    			</div>
-    			<div class="ichart-header-menu-item-separator"></div>
-    			<div class="ichart-header-menu-item">
-    				<div class="ichart-header-menu-icon ichart-menu-about"></div>
-    				<a href='aboutus.html'>
-    				<div class="ichart-menu-title">
-    					<div class="ichart-menu-title-sub">关于我们</div>
-    					<div class="ichart-menu-title-desc">Who we are</div>
-    				</div>
-    				</a>
-    			</div>
-    		</div>
-    	</div>
+	     	</a>
+	    	<div id="ichart_header_line"></div>
+	    </div>
 	    
-    	<div id="ichart-content">
-	    	<div id="ichart-content-one">
-	    		<div id="ichart-info">
-	    			<div id="ichart-info-what">
-	    				<span>What is the ichartjs?</span><span id="ichart-version">v1.0beta</span>
-	    			</div>
-	    			<div class="ichart-content-desc">
-	    				ichartjs 是一款基于HTML5的图形库。使用纯javascript语言,
-	    				利用HTML5的canvas标签绘制各式图形。
-	    				ichartjs致力于为WEB应用提供简单、直观、可交互的体验级图表组件。是WEB图表展示方面的解决方案 。如果你正在开发HTML5的应用，ichartjs正好适合你。
-	    				ichartjs目前支持饼图、折线图、面积图、柱形图、条形图。ichartjs是基于Apache License 2.0协议的开源项目。
-	    			</div>
-	    			<div id="ichart-info-btns">
-	    				<div id="ichart-info-download" class="ichart-info-btn"><a href='http://code.google.com/p/ichartjs/downloads/list' target='_blank'>下 载</a></div>
-	    				
-	    				<div id="ichart-info-learn" class="ichart-info-btn"><a href='examples/index.html' target='_blank'>示例中心</a></div>
-	    				
-	    				<div id="ichart-info-source" class="ichart-info-btn"><a href='http://code.google.com/p/ichartjs/source/checkout' target='_blank'>源代码</a></div>
-	    				
-	    			</div>
-	    		</div>
-	    		
-	    		<div id="ichart-info-browser" title="support browser">
-	    			<div id='ichart-info-browser-title'>SUPPORTING</div>
-	    		</div>
-	    	</div>
-	    	
-	    	<!--separator line-->
-	    	<div class="ichart-separator-line"></div>
-	    	
-	    	<div id="ichart-content-two">
-	    		<div class="ichart-feature">
-	    			<div class="ichart-feature-title">
-		    			<div id="ichart-feature-keyword-fast" class="ichart-feature-keyword-icon"></div>
-		    			<div class="ichart-feature-keyword">快速构建</div>
-	    			</div>
-	    			<div class="ichart-feature-desc">
-    					ichartjs是利用HTML5 canvas完成图形绘制工作的，所以它的主要工作从服务器移到用户的浏览器中。
-    					在减少了服务器的资源的同时，在浏览器中也有较高的执行效率。
-    					你只需要在你的页面引入ichartjs的js文件就完成了搭建环境。
+		<div id="ichartjs_body">
+			<div id="ichartjs_menu">
+				<div id="ichartjs_accordion">
+					<h3><a href="#">面积图</a></h3>
+					<div>
+						<a target="viewport" class='ichartjs_item' href='html/area2d_01.html'>基本面积图</a>
+						<a target="viewport" class='ichartjs_item' href='html/area2d_02.html'>带有提示框与图例的面积图</a>
+						<a target="viewport" class='ichartjs_item' href='html/area2d_03.html'>多数据源的面积图</a>
+						<a target="viewport" class='ichartjs_item' href='html/area2d_04.html'>多点重合提示的面积图</a>
 					</div>
-	    		</div>
-	    		<div class="ichart-feature">
-	    			<div class="ichart-feature-title">
-		    			<div id="ichart-feature-keyword-light" class="ichart-feature-keyword-icon"></div>
-		    			<div class="ichart-feature-keyword">轻量级</div>
-	    			</div>
-	    			<div class="ichart-feature-desc">
-    					整个ichartjs压缩文件只有90k。如果你只需要单一的图形功能，你也可以只加载你所需要的js文件。
-    					那样代码量会更少。ichartjs不依赖任何其他库。只和浏览器相关。这样给你带来的是一个完全独立的轻量级js组件。
+					<h3><a href="#">2D条形图</a></h3>
+					<div>
+						<a target="viewport" class='ichartjs_item' href='html/bar2d_01.html'>全球搜索引擎Top5</a>
+						<a target="viewport" class='ichartjs_item' href='html/bar2d_02.html'>2012品类销售分析</a>
+						<a target="viewport" class='ichartjs_item' href='html/bar2d_03.html'>6月份中国手机市场份额TOP10</a>
 					</div>
-	    		</div>
-	    		<div class="ichart-feature">
-	    			<div class="ichart-feature-title">
-		    			<div id="ichart-feature-keyword-browser" class="ichart-feature-keyword-icon"></div>
-		    			<div class="ichart-feature-keyword">跨平台</div>
-	    			</div>
-	    			<div class="ichart-feature-desc">
-		    			ichartjs利用HTML5 canvas完成图形绘制工作，这样它有能力在现代的主流浏览器中运用自如。
-		    			无论你是windows派、Mac粉、还是pad族，ichartjs都能在不改动任何代码的前提下提供统一的视图。
-					 </div>
-	    		</div>
-	    	</div>
-	    	
-	    	<div class="ichart-separator-line"></div>
-	    	<!--separator line
-	    	<div id="ichart-html5-ad">
-	    		<a href='http://h5gallery.sinaapp.com/' target='_blank'>
-	    			<img src="images/h5gallery.png" alt="Html5 Designer" style="border:0px;"/>
-	    		</a>
-	    	</div>
-	    	-->
-	    	
-	    	<div id="ichart-content-three">
-	    		<div class="ichart-preview" href='examples/index.html#column2d_03&2'>
-		    		<img class="ichart-preview-image" src="images/preview/ichart_preview_01.png" title="pie2d preview"/>
-		    		<div class="ichart-preview-content">
-		    			<div class="ichart-preview-title">Hello World</div>
-		    			<div class="ichart-preview-desc">
-		    				用我们的方式展示了我们熟悉的Hello World。
-		    			</div>
-		    		</div>
-		    	</div>
-		    	<div class="ichart-preview" href='examples/index.html#bar2d_03&1'>
-			    		<img class="ichart-preview-image" src="images/preview/ichart_preview_02.png" title="pie2d preview"/>
-			    		<div class="ichart-preview-content">
-			    			<div class="ichart-preview-title">2D条形图</div>
-			    			<div class="ichart-preview-desc">
-			    				该例子展示了6月份中国手机市场份额TOP10。
-			    			</div>
-			    		</div>
-		    	</div>
-		    	<div class="ichart-preview" href='examples/index.html#column3d_01&3'>
-		    		<img class="ichart-preview-image" src="images/preview/ichart_preview_03.png" title="pie2d preview"/>
-		    		<div class="ichart-preview-content">
-		    			<div class="ichart-preview-title">3D柱形图</div>
-		    			<div class="ichart-preview-desc">
-		    				该例子以柱形图3D模式展示了2012年2月份市场浏览器占有的情况。
-		    			</div>
-		    		</div>
-		    	</div>
-		    	<div class="ichart-preview" href='examples/index.html#pie2d_01&5'>
-		    		<img class="ichart-preview-image" src="images/preview/ichart_preview_04.png" title="pie2d preview"/>
-		    		<div class="ichart-preview-content">
-		    			<div class="ichart-preview-title">2D饼状图</div>
-		    			<div class="ichart-preview-desc">
-		    				该例子以饼状图2D模式展示了2012年2月份市场浏览器占有的情况。
-		    			</div>
-		    		</div>
-		    	</div>
-		    	<div class="ichart-preview" href='examples/index.html#pie3d_01&6'>
-		    		<img class="ichart-preview-image" src="images/preview/ichart_preview_05.png" title="pie2d preview"/>
-		    		<div class="ichart-preview-content">
-		    			<div class="ichart-preview-title">3D饼状图</div>
-		    			<div class="ichart-preview-desc">
-		    				该例子以饼状图2D模式展示了2012年7月份中国浏览器市场占有率Top6。
-		    			</div>
-		    		</div>
-		    	</div>
-		    	<div class="ichart-preview" href='examples/index.html#animation_pie2d_01&7'>
-		    		<img class="ichart-preview-image" src="images/preview/ichart_preview_06.png" title="pie2d preview"/>
-		    		<div class="ichart-preview-content">
-		    			<div class="ichart-preview-title">渲染动画</div>
-		    			<div class="ichart-preview-desc">
-		    				该例子实现了一个简单的动画效果。
-		    			</div>
-		    		</div>
-		    	</div>
-		    	
-	    	
-		    	<div class="ichart-preview" href='examples/index.html#line2d_04&4'>
-			    		<img class="ichart-preview-image" src="images/preview/ichart_preview_07.png" title="pie2d preview"/>
-			    		<div class="ichart-preview-content">
-			    			<div class="ichart-preview-title">2D折线图</div>
-			    			<div class="ichart-preview-desc">
-			    				该例子展示了网站近5天的PV流量情况。
-			    			</div>
-			    		</div>
-		    	</div>
-		    	<div class="ichart-preview" href='examples/index.html#area2d_01&0'>
-		    		<img class="ichart-preview-image" src="images/preview/ichart_preview_08.png" title="pie2d preview"/>
-		    		<div class="ichart-preview-content">
-		    			<div class="ichart-preview-title">2D面积图</div>
-		    			<div class="ichart-preview-desc">
-		    				该例子展示了2012一年中每个月份平均温度的情况。
-		    			</div>
-		    		</div>
-		    	</div>
-		    	<div class="ichart-preview" href='examples/index.html#custom_column2d_02&6'>
-		    		<img class="ichart-preview-image" src="images/preview/ichart_preview_09.png" title="pie2d preview"/>
-		    		<div class="ichart-preview-content">
-		    			<div class="ichart-preview-title">个性化图表</div>
-		    			<div class="ichart-preview-desc">
-		    				该例子展示了在图表上增加个性化的平均温度以下的区域的遮罩。
-		    			</div>
-		    		</div>
-		    	</div>
-		    	
-	    	</div>
-	    </div>
-    	<div id="ichart-footer">
-    		<div class='ichart-footer-one'>
-	    	<span>©2012 ichartjs covered by apache license 2.0</span>
-	    	&nbsp;
-	    	<span id='ichart-weibo'>
-		    	<iframe width="63" height="24" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0" scrolling="no" border="0" src="http://widget.weibo.com/relationship/followbutton.php?language=zh_cn&width=63&height=24&uid=2731910893&style=1&btn=red&dpc=1"></iframe>
-	    	</span>
-	    	<span id='ichart-sae'>
-	    		<a href="http://sae.sina.com.cn" target="_blank"><img src="http://static.sae.sina.com.cn/image/poweredby/120X33_transparent.gif" title="Powered by Sina App Engine"></a>
-	    	</span>
-    		</div>
-	    </div>
-    </div>
-  </body>
+					<h3><a href="#">2D柱形图</a></h3>
+					<div>
+						<a target="viewport" class='ichartjs_item' href='html/column2d_01.html'>基本柱形图</a>
+						<a target="viewport" class='ichartjs_item' href='html/column2d_02.html'>带有提示框与图例的柱形图</a>
+						<a target="viewport" class='ichartjs_item' href='html/column2d_03.html'>字母表中的Hello World</a>
+						<a target="viewport" class='ichartjs_item' href='html/columnmulti2d_01.html'>上半年产品销售对比</a>
+					</div>
+					<h3><a href="#">3D柱形图</a></h3>
+					<div>
+						<a target="viewport" class='ichartjs_item' href='html/column3d_01.html'>基本柱形图</a>
+						<a target="viewport" class='ichartjs_item' href='html/column3d_02.html'>自定义刻度的柱形图</a>
+					</div>
+					<h3><a href="#">折线图</a></h3>
+					<div>
+						<a target="viewport" class='ichartjs_item' href='html/line2d_01.html'>基本折线图</a>
+						<a target="viewport" class='ichartjs_item' href='html/line2d_02.html'>网站最近5天PV流量趋势 </a>
+						<a target="viewport" class='ichartjs_item' href='html/line2d_03.html'>网站最近5天流量趋势 </a>
+						<a target="viewport" class='ichartjs_item' href='html/line2d_04.html'>平滑曲线之5天流量趋势 </a>
+					</div>
+					<h3><a href="#">2D饼图</a></h3>
+					<div>
+						<a target="viewport" class='ichartjs_item' href='html/pie2d_01.html'>基本饼图</a>
+						<a target="viewport" class='ichartjs_item' href='html/pie2d_02.html'>带提示框的饼图</a>
+						<a target="viewport" class='ichartjs_item' href='html/pie2d_03.html'>饼图中多标签重合的处理</a>
+					</div>
+					<h3><a href="#">3D饼图</a></h3>
+					<div>
+						<a target="viewport" class='ichartjs_item' href='html/pie3d_01.html'>中国浏览器市场占有率Top6</a>
+					</div>
+					<h3><a href="#">动画</a></h3>
+					<div>
+						<a target="viewport" class='ichartjs_item' href='html/animation_pie2d_01.html'>带有动画的饼图</a>
+						<a target="viewport" class='ichartjs_item' href='html/animation_bar2d_01.html'>带有动画的条形图</a>
+					</div>
+					<h3><a href="#">事件</a></h3>
+					<div>
+						<a target="viewport" class='ichartjs_item' href='html/event_pie2d_01.html'>简单的点击事件</a>
+						<a target="viewport" class='ichartjs_item' href='html/event_column2d_01.html'>点击事件的应用</a>
+					</div>
+					<h3><a href="#">自定义组件</a></h3>
+					<div>
+						<a target="viewport" class='ichartjs_item' href='html/custom_column2d_01.html'>自定义平均薪水线</a>
+						<a target="viewport" class='ichartjs_item' href='html/custom_column2d_02.html'>突出平均薪水线一下区域</a>
+					</div>
+					<h3><a href="#">移动客户端预览</a></h3>
+					<div>
+						<a target="_blank" class='ichartjs_item' href='html/mobile_01.html'>上半年产品销售对比</a>
+					</div>
+				</div>
+			</div>
+			<div id="ichartjs_view">
+				<iframe width="100%" height="700" frameborder="0" src="" name="viewport" id="viewport" style="border:none;"> </iframe>
+			</div>
+		</div>
+		</div>
+		<div id="ichartjs_codeview" title="View JSCode">
+			<pre id="ichartjs_pre">
+			
+			</pre>
+		</div>
+	</body>
 </html>

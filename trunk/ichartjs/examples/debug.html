@@ -63,24 +63,39 @@
 			        	{name : 'IE10',value : 14,color:'#a56f8f'},
 			        	{name : 'Other',value : 16,color:'#db9034'}
 		        	];
-	    	
-			new iChart.LineBasic2D({
+
+			
+			new iChart.Pie2D({
 				render : 'canvasDiv',
-				data_labels : ['a','b','c','d','e','f'],
-				data:[{
-					name : '北京',
-					value : [27,26,15,18,24,13],
-					color : '#1f7e92',
-					linewidth : 2
-				}],
+				title:'中国2012年编程语言排行榜',
+				subtitle:{
+					text:'中国2012年编程语言排行榜',
+					height:30,
+					background_color : '#1f7e92',
+					color:'#FEFEFE'
+				},
+				footnote:{text:'中国2012年编程语言排行榜',textAlign:'left'},
+				align:'left',
+				offsetx:120,
+				data:data,
+				label:false,
+				legend:{
+					enable:true,
+					padding:40,
+					border:{
+						width:[0,0,0,2]
+					}
+				},
 				coordinate : {
 					width : 600,
 					height : 280
 				},
-				width : 800,
+				width : 660,
 				height : 400
 			}).draw();
 		});
+		
+		
 		</script>
 	</head>
 	<body>

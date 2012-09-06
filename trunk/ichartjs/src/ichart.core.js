@@ -466,6 +466,7 @@
 		 *            is 纯度(0-1)
 		 */
 		anole = function(d, rgb, iv, is) {
+			if(!rgb)return rgb;
 			rgb = c2a(toRgb(rgb));
 			var hsv = toHsv(rgb);
 			hsv[1] -= is || s_inc;

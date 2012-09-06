@@ -92,8 +92,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 		
 		this.T.lines(p,this.get('line_thickness'), this.get('border.color'),this.get('line_globalComposite'));
 		
-		if(this.get('border.enable'))
-		this.T.drawBox(this.labelx, this.labely, this.get('width'), this.get('height'), this.get('border.width'), this.get('border.color'), this.get('border.radius'), this.get('f_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
+		this.T.drawBox(this.labelx, this.labely, this.get('width'), this.get('height'), this.get('border'), this.get('f_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
 		
 		this.T.textStyle('left', 'top', this.get('fontStyle'));
 		
