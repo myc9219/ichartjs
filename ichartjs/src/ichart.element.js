@@ -88,13 +88,16 @@ iChart.Element = function(config) {
 	this.preventEvent = false;
 	this.initialization = false;
 	
-	
-	//this.registerEvent();
 	/**
 	 * inititalize configure
 	 */
 	this.configure.apply(this, Array.prototype.slice.call(arguments, 1));
-
+	
+	/**
+	 * clone the original config
+	 */
+	this.default_ = iChart.clone(this.options,true);
+	
 	/**
 	 * megre customize config
 	 */

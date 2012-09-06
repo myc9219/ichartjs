@@ -34,6 +34,7 @@
 				 * @Option center
 				 */
 				textAlign:'center',
+				background_color : 0,
 				/**
 				 * @cfg {String} Specifies the textBaseline of html5.(default to 'top')
 				 * Available value are:
@@ -79,22 +80,23 @@
 			this.preventEvent = true;
 		},
 		doDraw:function(opts){
+			if(this.get('box_feature'))
+			this.T.drawBox(this.x,this.y,this.get('width'),this.get('height'),this.get('border'),this.get('f_color'));
+			
 			if(this.get('text')!='')
 			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
 		},
 		doConfig:function(){
 			iChart.Text.superclass.doConfig.call(this);
-			this.push('textx',this.x);
-			this.push('texty',this.y);
-			if(this.get('width')){
-				if(this.get('textAlign')=='left'){
-					
-				}else if(this.get('textAlign')=='right'){
-					
-				}else{
-					
-				}
+			var x = this.x,y=this.y,w=this.get('width'),h=this.get('height'),a=this.get('textAlign');
+			x+=(a=='center'?w/2:(a=='right'?w:0));
+			if(h){
+				y+=h/2;
+				this.push('textBaseline','middle');
 			}
+			this.push('textx',x);
+			this.push('texty',y);
+			this.push('box_feature',w&&h);
 			
 			
 		}
