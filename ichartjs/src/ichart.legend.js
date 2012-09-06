@@ -113,13 +113,13 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		if (n == 'round') {
 			this.T.round(x + s / 2, y + s / 2, s / 2, color);
 		} else if (n == 'round-bar') {
-			this.T.drawBox(x, y + s * 5 / 12, s, s / 6,0, color);
+			this.T.box(x, y + s * 5 / 12, s, s / 6,0, color);
 			this.T.round(x + s / 2, y + s / 2, s / 4, color);
 		} else if (n == 'square-bar') {
-			this.T.drawBox(x, y + s * 5 / 12, s, s / 6, 0,color);
-			this.T.drawBox(x + s / 4, y + s / 4, s / 2, s / 2, 0,color);
+			this.T.box(x, y + s * 5 / 12, s, s / 6, 0,color);
+			this.T.box(x + s / 4, y + s / 4, s / 2, s / 2, 0,color);
 		} else {
-			this.T.drawBox(x, y, s, s, 0,color);
+			this.T.box(x, y, s, s, 0,color);
 		}
 		var textcolor = this.get('color');
 
@@ -162,7 +162,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		return r;
 	},
 	doDraw : function() {
-		this.T.drawBox(this.x, this.y, this.width, this.height, this.get('border'), this.get('f_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
+		this.T.box(this.x, this.y, this.width, this.height, this.get('border'), this.get('f_color'), false, this.get('shadow'));
 		
 		this.T.textStyle('left', 'middle', iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
 

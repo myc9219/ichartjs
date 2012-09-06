@@ -457,7 +457,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 				};
 			},
 			doDraw : function(opts) {
-				this.T.drawBox(this.x, this.y, this.get('width'), this.get('height'),0,this.get('f_color'));
+				this.T.box(this.x, this.y, this.get('width'), this.get('height'),0,this.get('f_color'));
 				if (this.get('alternate_color')) {
 					var x, y, f = false, axis = [0, 0, 0, 0], c = iChart.dark(this.get('f_color'), this.get('alternate_color_factor'));
 					if (this.get('axis.enable')) {
@@ -473,9 +473,9 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					if (this.get('alternate_color')) {
 						if (f) {
 							if (v)
-								this.T.drawBox(gl[i].x1 + axis[3], gl[i].y1 + glw, gl[i].x2 - gl[i].x1 - axis[3] - axis[1], y - gl[i].y1 - glw,0,c);
+								this.T.box(gl[i].x1 + axis[3], gl[i].y1 + glw, gl[i].x2 - gl[i].x1 - axis[3] - axis[1], y - gl[i].y1 - glw,0,c);
 							else
-								this.T.drawBox(x + glw, gl[i].y2 + axis[0], gl[i].x1 - x, gl[i].y1 - gl[i].y2 - axis[0] - axis[2],0,c);
+								this.T.box(x + glw, gl[i].y2 + axis[0], gl[i].x1 - x, gl[i].y1 - gl[i].y2 - axis[0] - axis[2],0,c);
 						}
 						x = gl[i].x1;
 						y = gl[i].y1;
@@ -484,7 +484,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					this.T.line(gl[i].x1, gl[i].y1, gl[i].x2, gl[i].y2, glw, this.get('grid_color'));
 				}
 
-				this.T.drawBox(this.x, this.y, this.get('width'), this.get('height'),  this.get('axis'), false,this.get('shadow'));
+				this.T.box(this.x, this.y, this.get('width'), this.get('height'),  this.get('axis'), false,this.get('shadow'));
 
 				for ( var i = 0; i < this.scale.length; i++) {
 					this.scale[i].draw();

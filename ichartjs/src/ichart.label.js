@@ -92,7 +92,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 		
 		this.T.lines(p,this.get('line_thickness'), this.get('border.color'),this.get('line_globalComposite'));
 		
-		this.T.drawBox(this.labelx, this.labely, this.get('width'), this.get('height'), this.get('border'), this.get('f_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
+		this.T.box(this.labelx, this.labely, this.get('width'), this.get('height'), this.get('border'), this.get('f_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
 		
 		this.T.textStyle('left', 'top', this.get('fontStyle'));
 		
@@ -101,7 +101,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 			textcolor = this.get('scolor');
 		}
 		if (this.get('sign') == 'square') {
-			this.T.drawBox(x, y, ss, ss,0,this.get('scolor'));
+			this.T.box(x, y, ss, ss,0,this.get('scolor'));
 		} else {
 			this.T.round(x + ss / 2, y + ss / 2, ss / 2, this.get('scolor'));
 		}

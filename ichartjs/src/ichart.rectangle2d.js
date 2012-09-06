@@ -29,7 +29,7 @@
 			}
 		},
 		drawRectangle:function(){
-			this.T.drawBox(
+			this.T.box(
 				this.get('originx'),
 				this.get('originy'),
 				this.get('width'),
