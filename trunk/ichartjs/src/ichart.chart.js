@@ -515,7 +515,7 @@
 			this.c.globalCompositeOperation = l ? "destination-over" : "source-over";
 			return this;
 		},
-		drawBox : function(x, y, w, h, b, bg, last, shadow) {
+		box : function(x, y, w, h, b, bg, shadow, last) {
 			b = b || {
 				enable : 0
 			}
@@ -788,7 +788,7 @@
 			this.T.clearRect(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'));
 		},
 		resetCanvas : function() {
-			this.T.drawBox(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'),0,this.get('f_color'),true);
+			this.T.box(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'),0,this.get('f_color'),0,true);
 		},
 		animation : function(_) {
 			/**
@@ -840,7 +840,7 @@
 				if (this.footnote) {
 					this.footnote.draw();
 				}
-				this.T.drawBox(0, 0, this.width, this.height, this.get('border'), this.get('f_color'), true);
+				this.T.box(0, 0, this.width, this.height, this.get('border'), this.get('f_color'),0,true);
 			}
 			this.redraw = true;
 

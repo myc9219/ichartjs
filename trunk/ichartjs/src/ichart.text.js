@@ -81,7 +81,7 @@
 		},
 		doDraw:function(opts){
 			if(this.get('box_feature'))
-			this.T.drawBox(this.x,this.y,this.get('width'),this.get('height'),this.get('border'),this.get('f_color'));
+			this.T.box(this.x,this.y,this.get('width'),this.get('height'),this.get('border'),this.get('f_color'));
 			
 			if(this.get('text')!='')
 			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
