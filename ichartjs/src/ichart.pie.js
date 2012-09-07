@@ -100,7 +100,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @return void
 	 */
 	bound : function(i) {
-		this.data[i || 0].reference.bound();
+		this.data[i||0].reference.bound();
 	},
 	/**
 	 * @method rebound sector by a specific index.

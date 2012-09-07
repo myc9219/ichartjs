@@ -6,7 +6,10 @@ var resultList,
 	total=0,
 	success=0,
 	fail=0,
-	Html;
+	Html,
+	panel,
+	result_score,
+	costtime=0;
 function level(cost){
 	if(cost<=20){//50FPS
 		return "<td class='test_item_speed_high'></td>";
@@ -17,8 +20,6 @@ function level(cost){
 	}else{
 		return "<td class='test_item_speed_poor'></td>";
 	}
-	
-	
 }
 function result(succ,type,costOrCause){
 	str = [resultList.innerHTML];
@@ -27,6 +28,7 @@ function result(succ,type,costOrCause){
 	str.push("</td>");
 	total++;
 	if(succ){
+		costtime+=costOrCause;
 		str.push("<td class='test_item_success'></td>");
 		str.push(level(costOrCause));
 		str.push("<td class='test_item_cost'>");
@@ -34,6 +36,7 @@ function result(succ,type,costOrCause){
 		str.push("ms");
 		str.push("</td>");
 		success++;
+		result_score.innerHTML = Math.ceil(costtime/success);
 	}else{
 		str.push("<td class='test_item_fail'></td>");
 		str.push("<td>--</td>");
@@ -43,25 +46,16 @@ function result(succ,type,costOrCause){
 		fail++;
 	}
 	
-	
 	str.push("</tr></table>");
 	resultList.innerHTML = str.join("");
 	canvas.innerHTML = "";
 }
+//You Browser Scores  out of a total of 100
 function start(){
-	
-	new iChart.Pie2D({
-		render :canvas,
-		title : 'Test Pie2D',
-		data:data,
-		radius:140,
-		offsetAngle:45
-	}).draw();
-	
 	setTimeout(function(){
 		try {
 			if(unit.length==0){
-				str = [resultList.innerHTML];
+				str = [];
 				str.push("<div class='test_result'>Test completed.Total:");
 				str.push(total);
 				str.push("&nbsp;,Success:");
@@ -70,11 +64,12 @@ function start(){
 				str.push(fail);
 				str.push("&nbsp;<button onclick='test();'>Test Again</button>&nbsp;&nbsp;");
 				str.push("<a href='../examples/index.html'>Example</a>&nbsp;&nbsp;");
-				str.push("<a href='http://www.ichartjs.cn'>Site Home</a>");
+				str.push("<a href='http://www.ichartjs.cn'>Home</a>");
 				str.push("</div>");
-				resultList.innerHTML = str.join("");
+				panel.innerHTML = str.join("");
 				return;
 			}
+			
 			chart = unit.shift()();
 			
 			chart.on('beforedraw',function(e){
@@ -90,8 +85,9 @@ function start(){
 			//console.profile(chart.get('title.text'));
 			chart.draw();
 			//console.profileEnd(chart.get('title.text'));
-			
+			if(chart.get('title.text')!='Test')
 			result(true,chart.get('title.text') || chart.type,chart.RUN_TIME_COST);
+			
 		} catch (e) {
 			result(false,chart.get('title.text') || chart.type,e.name+":"+e.message);
 		}
@@ -101,8 +97,22 @@ function start(){
 /////////////////////上面的写成一个测试的js//////////////////////
 function test(){
 	resultList.innerHTML = Html;
-	total=success=fail=0;
+	panel.innerHTML = "";
+	result_score.innerHTML = "0";
+	costtime = total=success=fail=0;
 	unit = [];
+	
+	unit.push(function(){
+		return new iChart.Pie2D({
+			render :canvas,
+			title : 'Test',
+			shadow:true,
+			data:data,
+			radius:140,
+			offsetAngle:45
+		});
+	});
+	
 	unit.push(function(){
 		return new iChart.Pie2D({
 			render :canvas,
@@ -460,6 +470,8 @@ function test(){
 
 $(function(){
 	resultList = $('result_list'),
+	panel = $('tool_panel'),
+	result_score = $('result_score'),
 	canvas = $("myCanvas");
 	Html = resultList.innerHTML;
 	setTimeout(test,1000);
