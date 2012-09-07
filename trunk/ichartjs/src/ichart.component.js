@@ -95,6 +95,7 @@
 	},
 	//render ? named
 	redraw : function() {
+		
 		this.container.draw();
 	},
 	commonDraw : function(opts) {

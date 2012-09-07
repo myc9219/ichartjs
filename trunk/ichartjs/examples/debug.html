@@ -57,45 +57,66 @@
 			    
 			$(function(){   
 			var data = [
-			        	{name : 'IE5',value : 10,color:'#76a871'},
-			        	{name : 'IE6',value : 22,color:'#a2d1d5'},
-			        	{name : 'IE7',value : 4,color:'#cbab4f'},
-			        	{name : 'IE8',value : 8,color:'#76a871'},
-			        	{name : 'IE9',value : 22,color:'#9f7961'},
-			        	{name : 'IE10',value : 14,color:'#a56f8f'},
-			        	{name : 'Other',value : 16,color:'#db9034'}
+			        	{name : 'WinXP',value : 68.34,color:'#3979AA'},
+			        	{name : 'Win7',value : 26.83,color:'#3F5C71'},
+			        	{name : 'Other',value : 4.83,color:'#a6bfd2'}
 		        	];
 
 			
-			new iChart.Bar2D({
+			var chart = new iChart.Pie2D({
 				render : 'canvasDiv',
-				title:'中国2012年编程语言排行榜',
-				subtitle:{
-					text:'中国2012年编程语言排行榜',
-					height:30,
-					background_color : '#1f7e92',
-					color:'#FEFEFE'
-				},
-				footnote:{text:'中国2012年编程语言排行榜',textAlign:'left'},
-				//align:'left',
-				//offsetx:120,
-				data:data,
-				//label:false,
-				//shadow:true,
-				legend:{
-					//enable:true,
-					padding:40,
+				title:{
+					text:'中国地区2012年08月份操作系统分布情况',
+					color:'#e0e5e8',
+					height:40,
 					border:{
-						width:[0,0,0,2]
+						enable:true,
+						width:[0,0,2,0],
+						color:'#343b3e'
 					}
 				},
-				coordinate : {
-					width : 440,
-					height : 260
+				padding:'2 10',
+				footnote:{
+					text:'StatCounter Global Stats',
+					color:'#e0e5e8',
+					height:30,
+					border:{
+						enable:true,
+						width:[2,0,0,0],
+						color:'#343b3e'
+					}
 				},
-				width : 660,
+				offsetx:-90,
+				data:data,
+				shadow:true,
+				shadow_color:'#15353a',
+				shadow_blur:8,
+				background_color : '#3b4346',
+				legend:{
+					enable:true,
+					padding:30,
+					color:'#e0e5e8',
+					border:{
+						width:[0,0,0,2],
+						color:'#343b3e'
+					},
+					background_color : null,
+				},
+				sector:{
+					border:{
+						enable:false
+					}
+				},
+				border:{
+					width:[0,20,0,20],
+					color:'#1e2223'
+				},
+				width : 700,
 				height : 400
-			}).draw();
+			});
+			
+			chart.draw();
+			chart.bound(0);
 		});
 		
 		</script>

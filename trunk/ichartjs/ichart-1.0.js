@@ -1516,6 +1516,7 @@ $.Html = $.extend($.Element,{
 	},
 	//render ? named
 	redraw : function() {
+		
 		this.container.draw();
 	},
 	commonDraw : function(opts) {
@@ -2612,7 +2613,7 @@ $.Label = $.extend($.Component, {
 			this.save();
 			if (last)
 				this.gCO(last);
-			if (b)
+			if (bo)
 				this.strokeStyle(bow, boc);
 			this.shadowOn(sw).fillStyle(c).moveTo(x, y).beginPath();
 
@@ -2624,7 +2625,7 @@ $.Label = $.extend($.Component, {
 				angle += inc;
 			}
 			this.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e)))).closePath();
-			if (b)
+			if (bo)
 				this.stroke();
 			if (c)
 				this.fill();
@@ -5302,7 +5303,7 @@ $.Pie = $.extend($.Chart, {
 	 * @return void
 	 */
 	bound : function(i) {
-		this.data[i || 0].reference.bound();
+		this.data[i||0].reference.bound();
 	},
 	/**
 	 * @method rebound sector by a specific index.

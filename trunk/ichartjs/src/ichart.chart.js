@@ -85,7 +85,7 @@
 			this.save();
 			if (last)
 				this.gCO(last);
-			if (b)
+			if (bo)
 				this.strokeStyle(bow, boc);
 			this.shadowOn(sw).fillStyle(c).moveTo(x, y).beginPath();
 
@@ -97,7 +97,7 @@
 				angle += inc;
 			}
 			this.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e)))).closePath();
-			if (b)
+			if (bo)
 				this.stroke();
 			if (c)
 				this.fill();
