@@ -254,12 +254,15 @@
 		createRadialGradient : function(xs, ys, rs, xe, ye, re) {
 			return this.c.createRadialGradient(xs, ys, rs, xe, ye, re);
 		},
-		fillText : function(t, x, y, max, color, mode, h) {
+		text : function(t, x, y, max, color, align, line, font, mode, h,sw) {
+			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw).restore();
+		},
+		fillText : function(t, x, y, max, color, mode, h,sw) {
 			t = t + "";
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
-			this.fillStyle(color);
+			this.save().fillStyle(color).shadowOn(sw);
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			T.each(function(t) {
 				try {
@@ -272,7 +275,8 @@
 					console.log(e.message + '[' + t + ',' + x + ',' + y + ']');
 				}
 			}, this);
-			return this;
+			
+			return this.restore();
 		},
 		measureText : function(text) {
 			return this.c.measureText(text).width;
@@ -312,9 +316,6 @@
 		fill : function() {
 			this.c.fill();
 			return this;
-		},
-		text : function(t, x, y, max, color, align, line, font, mode, h) {
-			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h).restore();
 		},
 		/**
 		 * can use cube3D instead of this?

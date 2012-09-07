@@ -82,9 +82,8 @@
 		doDraw:function(opts){
 			if(this.get('box_feature'))
 			this.T.box(this.x,this.y,this.get('width'),this.get('height'),this.get('border'),this.get('f_color'));
-			
 			if(this.get('text')!='')
-			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
+			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'),0,0,this.get('shadow'));
 		},
 		doConfig:function(){
 			iChart.Text.superclass.doConfig.call(this);
