@@ -105,6 +105,8 @@
 					return simple.call(this,[].concat(d),i);
 				}else if(this.dataType=='complex'){
 					complex.call(this,[].concat(d),i);
+				}else{
+					this.data = this.data.concat(d);
 				}
 			},
 			_3D:function(){

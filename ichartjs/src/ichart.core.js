@@ -885,9 +885,9 @@
 	Array.prototype.eachAll = function(f, s) {
 		this.each(function(d, i) {
 			if (iChart_.isArray(d)) {
-				d.eachAll(f, s);
+				return d.eachAll(f, s);
 			} else {
-				s ? f.call(s, d, i) : f(d, i);
+				return s ? f.call(s, d, i) : f(d, i);
 			}
 		}, s);
 	};

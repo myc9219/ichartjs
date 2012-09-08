@@ -14,8 +14,8 @@
 			iChart.Scatter2D.superclass.configure.call(this);
 			
 			this.type = 'scatter2d';
-			this.dataType=='custom';
-			
+			this.dataType='custom';
+			this.tipInvokeHeap = [];
 		},
 		doAnimation:function(t,d){
 			var l,ps,p;
@@ -37,6 +37,8 @@
 			
 			this.pushComponent(this.coo,true);
 			this.push('segment_style.coordinate',this.coo);
+			this.push('segment_style.tip.showType','follow');
+			this.push('segment_style.tipInvokeHeap',this.tipInvokeHeap);
 			
 			//get the max/min scale of this coordinate for calculated the height
 			var S = this.coo.getScale(this.get('scaleAlign')),
@@ -55,7 +57,7 @@
 					x = (v.x-B.start)*W/B.distance;
 					y = (v.y-S.start)*H/S.distance;
 					p = {x:ox+x,y:oy-y,value:v.x+'/'+v.y,text:v.x+'/'+v.y};
-					iChart.merge(p,this.fireEvent(this,'parsePoint',[d,x,y,j]))
+					iChart.merge(p,this.fireEvent(this,'parsePoint',[d,v,x,y,j]));
 					points.push(p);
 				},this);	
 				this.push('segment_style.points',points);
@@ -63,6 +65,7 @@
 				this.push('segment_style.background_color',d.color);
 				
 				this.lines.push(new iChart.Points(this.get('segment_style'),this));
+				
 			},this);
 			
 			this.pushComponent(this.lines);

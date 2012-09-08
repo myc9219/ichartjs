@@ -90,6 +90,13 @@ iChart.Line = iChart.extend(iChart.Chart, {
 
 		this.lines = [];
 	},
+	/**
+	 * @method Returns the coordinate of this element.
+	 * @return iChart.Coordinate2D
+	 */
+	getCoordinate:function(){
+		return this.coo;
+	},
 	doConfig : function() {
 		iChart.Line.superclass.doConfig.call(this);
 

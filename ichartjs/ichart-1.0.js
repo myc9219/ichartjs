@@ -885,9 +885,9 @@
 	Array.prototype.eachAll = function(f, s) {
 		this.each(function(d, i) {
 			if (iChart_.isArray(d)) {
-				d.eachAll(f, s);
+				return d.eachAll(f, s);
 			} else {
-				s ? f.call(s, d, i) : f(d, i);
+				return s ? f.call(s, d, i) : f(d, i);
 			}
 		}, s);
 	};
@@ -1641,6 +1641,8 @@ $.Html = $.extend($.Element,{
 					return simple.call(this,[].concat(d),i);
 				}else if(this.dataType=='complex'){
 					complex.call(this,[].concat(d),i);
+				}else{
+					this.data = this.data.concat(d);
 				}
 			},
 			_3D:function(){
@@ -2507,9 +2509,8 @@ $.Label = $.extend($.Component, {
 		doDraw:function(opts){
 			if(this.get('box_feature'))
 			this.T.box(this.x,this.y,this.get('width'),this.get('height'),this.get('border'),this.get('f_color'));
-			
 			if(this.get('text')!='')
-			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
+			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'),0,0,this.get('shadow'));
 		},
 		doConfig:function(){
 			$.Text.superclass.doConfig.call(this);
@@ -2782,12 +2783,15 @@ $.Label = $.extend($.Component, {
 		createRadialGradient : function(xs, ys, rs, xe, ye, re) {
 			return this.c.createRadialGradient(xs, ys, rs, xe, ye, re);
 		},
-		fillText : function(t, x, y, max, color, mode, h) {
+		text : function(t, x, y, max, color, align, line, font, mode, h,sw) {
+			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw).restore();
+		},
+		fillText : function(t, x, y, max, color, mode, h,sw) {
 			t = t + "";
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
-			this.fillStyle(color);
+			this.save().fillStyle(color).shadowOn(sw);
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			T.each(function(t) {
 				try {
@@ -2800,7 +2804,8 @@ $.Label = $.extend($.Component, {
 					console.log(e.message + '[' + t + ',' + x + ',' + y + ']');
 				}
 			}, this);
-			return this;
+			
+			return this.restore();
 		},
 		measureText : function(text) {
 			return this.c.measureText(text).width;
@@ -2840,9 +2845,6 @@ $.Label = $.extend($.Component, {
 		fill : function() {
 			this.c.fill();
 			return this;
-		},
-		text : function(t, x, y, max, color, align, line, font, mode, h) {
-			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h).restore();
 		},
 		/**
 		 * can use cube3D instead of this?
@@ -3296,7 +3298,6 @@ $.Label = $.extend($.Component, {
 			this.data = [];
 			this.components = [];
 			this.total = 0;
-
 		},
 		pushComponent : function(c, b) {
 			if (!!b)
@@ -3304,9 +3305,22 @@ $.Label = $.extend($.Component, {
 			else
 				this.components.push(c);;
 		},
-		plugin : function(c, b) {
+		plugin : function(c, b, i) {
 			this.init();
 			c.inject(this);
+			/**
+			 * 临时解决方案
+			 */
+			if(i){
+				var clone = [];
+				this.components.each(function(d,j){
+					if(i==j)
+						clone.push(c);
+						clone.push(d);
+				});
+				this.components = clone;
+			}
+			else
 			this.pushComponent(c, b);
 		},
 		toImageURL : function() {
@@ -3509,6 +3523,9 @@ $.Label = $.extend($.Component, {
 								cot.fireEvent(cot, 'mouseover', [e, M]);
 							}
 							cot.fireEvent(cot, 'mousemove', [e, M]);
+							if(M.stop){
+								return false;
+							}
 						} else {
 							if (cE.mouseover) {
 								cE.mouseover = false;
@@ -6526,6 +6543,13 @@ $.Line = $.extend($.Chart, {
 		'parsePoint');
 
 		this.lines = [];
+	},
+	/**
+	 * @method Returns the coordinate of this element.
+	 * @return $.Coordinate2D
+	 */
+	getCoordinate:function(){
+		return this.coo;
 	},
 	doConfig : function() {
 		$.Line.superclass.doConfig.call(this);

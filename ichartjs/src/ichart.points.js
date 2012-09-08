@@ -36,6 +36,7 @@ iChart.Points = iChart.extend(iChart.Component, {
 			 * @cfg {Number} Specifies the size of point.(default size 3).Only applies when intersection is true
 			 */
 			point_size : 3,
+			event_size : 0,
 			/**
 			 * @inner {Array} the set of points to compose line segment
 			 */
@@ -52,6 +53,7 @@ iChart.Points = iChart.extend(iChart.Component, {
 			 * @inner {Number} Specifies the space between two point
 			 */
 			point_space : 0,
+			tip_offset : 2,
 			/**
 			 * @inner {Object} reference of coordinate
 			 */
@@ -91,9 +93,83 @@ iChart.Points = iChart.extend(iChart.Component, {
 			valid : false
 		};
 	},
+	tipInvoke : function() {
+		var x = this.x, y = this.y, o = this.get('tip_offset'), s = this.get('point_size') + o, _ = this;
+		return function(w, h, m) {
+			var l = m.left, t = m.top;
+			l = ((_.tipPosition < 3 && (m.left - w - x - o > 0)) || (_.tipPosition > 2 && (m.left - w - x - o < 0))) ? l - (w + o) : l + o;
+			t = _.tipPosition % 2 == 0 ? m.top + s : m.top - h - s;
+			return {
+				left : l,
+				top : t
+			}
+		}
+	},
 	doConfig : function() {
 		iChart.Points.superclass.doConfig.call(this);
 		
+		var _ = this, size = _.get('event_size'), heap = _.get('tipInvokeHeap'), p = _.get('points');
+		if(size==0){
+			size = _.push('event_size',_.get('point_size'));
+		}
+		
+		for ( var i = 0; i < p.length; i++) {
+			p[i].x_ = p[i].x;
+			p[i].y_ = p[i].y;
+		}
+		
+		if (_.get('tip.enable')) {
+			/**
+			 * _ use for tip coincidence
+			 */
+			_.on('mouseover', function(e, m) {
+				heap.push(_);
+				_.tipPosition = heap.length;
+			}).on('mouseout', function(e, m) {
+				heap.pop();
+			});
+			_.push('tip.invokeOffsetDynamic', true);
+			_.tip = new iChart.Tip(_.get('tip'), _);
+		}
+		
+		var c = _.get('coordinate'),valid = function(p0, x, y) {
+			if (Math.abs(x - (p0.x)) < size &&  Math.abs(y - (p0.y)) < size) {
+				return true;
+			}
+			return false;
+		}, to = function(i) {
+			return {
+				valid : true,
+				stop : true,
+				text : p[i].text,
+				value : p[i].value,
+				top : p[i].y,
+				left : p[i].x,
+				i:i,
+				hit : true
+			};
+		};
+
+		/**
+		 * override the default method
+		 */
+		_.isEventValid = function(e) {
+			// console.time('mouseover');
+			if (c && !c.isEventValid(e).valid) {
+				return {
+					valid : false
+				};
+			}
+			// calculate the pointer's position will between which two point?this function can improve location speed
+			for ( var i = 0; i < p.length; i++) {
+				if (valid(p[i], e.offsetX, e.offsetY))
+					return to(i);
+			}
+			// console.timeEnd('mouseover');
+			return {
+				valid : false
+			};
+		}
 
 	}
 });// @end
