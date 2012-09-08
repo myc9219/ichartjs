@@ -769,7 +769,6 @@
 			this.data = [];
 			this.components = [];
 			this.total = 0;
-
 		},
 		pushComponent : function(c, b) {
 			if (!!b)
@@ -777,9 +776,22 @@
 			else
 				this.components.push(c);;
 		},
-		plugin : function(c, b) {
+		plugin : function(c, b, i) {
 			this.init();
 			c.inject(this);
+			/**
+			 * 临时解决方案
+			 */
+			if(i){
+				var clone = [];
+				this.components.each(function(d,j){
+					if(i==j)
+						clone.push(c);
+						clone.push(d);
+				});
+				this.components = clone;
+			}
+			else
 			this.pushComponent(c, b);
 		},
 		toImageURL : function() {
@@ -982,6 +994,9 @@
 								cot.fireEvent(cot, 'mouseover', [e, M]);
 							}
 							cot.fireEvent(cot, 'mousemove', [e, M]);
+							if(M.stop){
+								return false;
+							}
 						} else {
 							if (cE.mouseover) {
 								cE.mouseover = false;
