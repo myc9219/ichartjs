@@ -92,6 +92,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 
 		this.label = null;
 		this.tip = null;
+		this.ignored_ = false;
 	},
 	drawSegment : function() {
 		this.T.shadowOn(this.get('shadow'));
@@ -113,17 +114,19 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			 */
 			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
 		}
-
-		this.T.lineArray(p, this.get('brushsize'), this.get('f_color'), this.get('smooth'), this.get('smoothing'));
+		
+		this.T[this.ignored_?"manyLine":"lineArray"](p, this.get('brushsize'), this.get('f_color'), this.get('smooth'), this.get('smoothing'));
 		
 		if (this.get('intersection')) {
-			for ( var i = 0; i < p.length; i++) {
-				if (this.get('point_hollow')) {
-					this.T.round(p[i].x, p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('f_color'));
-				} else {
-					this.T.round(p[i].x, p[i].y, this.get('point_size'), this.get('f_color'));
+			p.each(function(q,i){
+				if(!q.ignored){
+					if (this.get('point_hollow')) {
+						this.T.round(q.x, q.y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('f_color'));
+					} else {
+						this.T.round(q.x, q.y, this.get('point_size'), this.get('f_color'));
+					}
 				}
-			}
+			},this);
 		}
 
 		if (this.get('shadow')) {
@@ -133,10 +136,11 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 	doDraw : function(opts) {
 		this.drawSegment();
 		if (this.get('intersection') && this.get('label')) {
-			var p = this.get('points');
-			for ( var i = 0; i < p.length; i++) {
-				this.T.text(p[i].value, p[i].x, p[i].y - this.get('point_size') * 3 / 2, false, this.get('f_color'), 'center', 'bottom', this.get('fontStyle'));
-			}
+			this.get('points').each(function(q,i){
+				if(!q.ignored){
+					this.T.text(q.value, q.x, q.y - this.get('point_size') * 3 / 2, false, this.get('f_color'), 'center', 'bottom', this.get('fontStyle'));
+				}
+			},this);
 		}
 	},
 	isEventValid : function(e) {
@@ -165,6 +169,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		for ( var i = 0; i < p.length; i++) {
 			p[i].x_ = p[i].x;
 			p[i].y_ = p[i].y;
+			if(p[i].ignored)this.ignored_ = true;
 		}
 
 		if (rx == 0) {
@@ -190,8 +195,8 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			_.tip = new iChart.Tip(_.get('tip'), _);
 		}
 
-		var c = _.get('coordinate'), ly = _.get('limit_y'), k = _.get('keep_with_coordinate'), valid = function(i, x, y) {
-			if (Math.abs(x - (p[i].x)) < rx && (!ly || (ly && Math.abs(y - (p[i].y)) < ry))) {
+		var c = _.get('coordinate'), ly = _.get('limit_y'), k = _.get('keep_with_coordinate'), valid = function(p0, x, y) {
+			if (!p0.ignored&&Math.abs(x - (p0.x)) < rx && (!ly || (ly && Math.abs(y - (p0.y)) < ry))) {
 				return true;
 			}
 			return false;
@@ -206,7 +211,6 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 				hit : true
 			};
 		};
-
 		/**
 		 * override the default method
 		 */
@@ -220,7 +224,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			var ii = Math.floor((e.offsetX - _.x) / sp);
 			if (ii < 0 || ii >= (p.length - 1)) {
 				ii = iChart.between(0, p.length - 1, ii);
-				if (valid(ii, e.offsetX, e.offsetY))
+				if (valid(p[ii], e.offsetX, e.offsetY))
 					return to(ii);
 				else
 					return {
@@ -229,7 +233,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			}
 			// calculate the pointer's position will between which two point?this function can improve location speed
 			for ( var i = ii; i <= ii + 1; i++) {
-				if (valid(i, e.offsetX, e.offsetY))
+				if (valid(p[i], e.offsetX, e.offsetY))
 					return to(i);
 			}
 			// console.timeEnd('mouseover');

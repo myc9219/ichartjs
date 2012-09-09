@@ -48,10 +48,11 @@
 				 */
 				 style:'textAlign:left;padding:4px 5px;cursor:pointer;backgroundColor:rgba(239,239,239,.85);fontSize:12px;color:black;',
 				 /**
-				 * @cfg {Object} Override the default as enable = true
+				 * @cfg {Object} Override the default as enable = true,radius = 5
 				 */
 				 border:{
-					enable:true
+					enable:true,
+					radius : 5
 				 },
 				 delay:200
 			});

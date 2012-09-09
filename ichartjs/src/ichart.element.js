@@ -112,7 +112,7 @@ iChart.Element.prototype = {
 			iChart.merge(this.options, c);
 	},
 	pushIf : function(name, value) {
-		if (!this.get(name)) {
+		if (!iChart.isDefined(this.get(name))) {
 			return this.push(name, value);
 		}
 		return this.get(name);

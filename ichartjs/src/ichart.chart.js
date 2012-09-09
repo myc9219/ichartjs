@@ -475,7 +475,7 @@
 		lineArray : function(p, w, c, smooth, smo) {
 			if (p.length < 2)
 				return this;
-			this.save().beginPath().strokeStyle(w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
+			this.strokeStyle(w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
 			if (smooth) {
 				for ( var i = 1; i < p.length; i++)
 					this.bezierCurveTo(getCurvePoint(p, p[i], i, smo));
@@ -483,7 +483,20 @@
 				for ( var i = 1; i < p.length; i++)
 					this.lineTo(fd(w, p[i].x), fd(w, p[i].y));
 			}
-			return this.stroke().restore();
+			return this.stroke();
+		},
+		manyLine : function(p, w, c, smooth, smo) {
+			var T = [],Q  = false;
+			p.each(function(p0){
+				if(p0.ignored&&Q){
+					this.lineArray(T, w, c, smooth, smo);
+					T = [];
+					Q = false;
+				}else{
+					T.push(p0);
+					Q = true;
+				}
+			},this);
 		},
 		line : function(x1, y1, x2, y2, w, c, last) {
 			if (!w || w == 0)
