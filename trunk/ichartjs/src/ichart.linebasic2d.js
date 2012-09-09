@@ -70,11 +70,12 @@
 					x = sp*j;
 					y = (v-S.start)*H/S.distance;
 					p = {x:ox+x,y:oy-y,value:v,text:v};
-					iChart.merge(p,this.fireEvent(this,'parsePoint',[d,x,y,j]))
+					iChart.merge(p,this.fireEvent(this,'parsePoint',[d,v,x,y,j]))
 					if (this.get('tip.enable'))
 						p.text = this.fireString(this,'parseTipText',[d,v,j],v);
 					points.push(p);
 				},this);	
+				
 				this.push('segment_style.points',points);
 				this.push('segment_style.brushsize',d.linewidth||1);
 				this.push('segment_style.background_color',d.color);

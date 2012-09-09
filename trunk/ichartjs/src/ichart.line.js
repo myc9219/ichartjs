@@ -77,7 +77,8 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		this.registerEvent(
 		/**
 		 * @event Fires when parse this element'data.Return value will override existing.
-		 * @paramter object#data the point's data
+		 * @paramter object#data the data of one linesegment
+		 * @paramter object#v the point's value
 		 * @paramter int#x coordinate-x of point
 		 * @paramter int#y coordinate-y of point
 		 * @paramter int#index the index of point
@@ -125,7 +126,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 
 		_.push('segment_style.limit_y', !s);
 
-		_.push('segment_style.keep_with_coordinate', s);
+		_.pushIf('segment_style.keep_with_coordinate', s);
 
 		
 		if(_.get('crosshair.enable')){
@@ -133,6 +134,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			_.push('coordinate.crosshair.hcross',s);
 			_.push('coordinate.crosshair.invokeOffset', function(e, m) {
 				var r = _.lines[0].isEventValid(e);
+					//console.log(r);
 					/**
 					 * TODO how fire muti line?
 					 */

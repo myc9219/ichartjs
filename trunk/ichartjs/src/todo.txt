@@ -3,6 +3,7 @@
 2.gradient
 2.5.将有5个以上的push方法修改为set
 2.6.设置z-index值,以满足层次关系
+2.7.十字指针还是放到各自组件中,方便管理
 3.barmuti2d鼠标移动鼠标样式-cause by the sequence of event invoking
 5.考虑将this.的属性全部去掉，以免设置属性不能同步*
 12.图表的border自定义,不传递到组件中去*
