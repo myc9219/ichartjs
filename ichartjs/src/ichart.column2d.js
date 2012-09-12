@@ -40,8 +40,8 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 
 		}, this);
 
-		this.pushComponent(this.labels);
-		this.pushComponent(this.rectangles);
+		this.components.push(this.labels);
+		this.components.push(this.rectangles);
 	}
 
 });// @end

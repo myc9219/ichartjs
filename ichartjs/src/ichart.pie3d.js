@@ -48,7 +48,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 			_.doParse(d, i);
 		}, _);
 
-	_.pushComponent(_.sectors);
+	_.components.push(_.sectors);
 	
 	_.proxy = new iChart.Custom({
 			z_index:_.get('z_index'),
@@ -123,6 +123,6 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 			_.T.ellipse(s.x, s.y, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, false, true);
 		}, _);
 	}
-	_.pushComponent(_.proxy);
+	_.components.push(_.proxy);
 }
 });// @end

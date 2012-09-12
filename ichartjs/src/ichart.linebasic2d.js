@@ -48,7 +48,7 @@
 				},this.get('coordinate')),this);
 			
 			
-			this.pushComponent(this.coo,true);
+			this.components.push(this.coo);
 			
 			//get the max/min scale of this coordinate for calculated the height
 			var S = this.coo.getScale(this.get('scaleAlign')),
@@ -82,7 +82,7 @@
 				
 				this.lines.push(new iChart.LineSegment(this.get('segment_style'),this));
 			},this);
-			this.pushComponent(this.lines);
+			this.components.push(this.lines);
 			
 		}
 		

@@ -73,7 +73,7 @@
 				LS.brushsize = style.linewidth || 1;
 				LS.background_color = style.color || '#BDBDBD';
 			var L = new iChart.LineSegment(LS, this);
-			this.pushComponent(L);
+			this.components.push(L);
 			var queue = new Queue(this,L);
 			//this.queues.push(queue);
 			return queue;
@@ -81,53 +81,53 @@
 		doConfig : function() {
 			iChart.LineMonitor2D.superclass.doConfig.call(this);
 			
-			var self = this;
+			var _ = this;
 			//the monitor not support the animation now
-			self.push('animation',false);
+			_.push('animation',false);
 			
 			
-			if (self.get('coordinate.crosshair.enable')) {
-				self.push('coordinate.crosshair.hcross',self.data.length == 1);
-				self.push('coordinate.crosshair.invokeOffset',function(e, m) {
-						var r = self.lines[0].isEventValid(e);
+			if (_.get('coordinate.crosshair.enable')) {
+				_.push('coordinate.crosshair.hcross',_.data.length == 1);
+				_.push('coordinate.crosshair.invokeOffset',function(e, m) {
+						var r = _.lines[0].isEventValid(e);
 						return r.valid ? r : false;
 				});
 			}
 			
-			self.coo = new iChart.Coordinate2D(iChart.merge( {
+			_.coo = new iChart.Coordinate2D(iChart.merge( {
 				scale : [ {
-					position : self.get('scaleAlign'),
-					max_scale : self.get('maxValue')
+					position : _.get('scaleAlign'),
+					max_scale : _.get('maxValue')
 				}, {
-					position : self.get('labelAlign'),
+					position : _.get('labelAlign'),
 					scaleEnable : false,
 					start_scale : 1,
 					scale : 1,
-					end_scale : self.get('maxItemSize'),
-					labels : self.get('labels')
+					end_scale : _.get('maxItemSize'),
+					labels : _.get('labels')
 				} ],
 				axis : {
 					width : [ 0, 0, 1, 1 ]
 				}
-			}, self.get('coordinate')), self);
+			}, _.get('coordinate')), _);
 
-			self.pushComponent(self.coo, true);
+			_.components.push(_.coo);
 			
-			self.push('label_spacing',self.get('coordinate.valid_width')/(self.get('queue_size')-1));
+			_.push('label_spacing',_.get('coordinate.valid_width')/(_.get('queue_size')-1));
 			
-			if (!self.get('segment_style.tip')) {
-				self.push('segment_style.tip', self.get('tip'));
+			if (!_.get('segment_style.tip')) {
+				_.push('segment_style.tip', _.get('tip'));
 			} else {
-				self.push('segment_style.tip.wrap', self.get('tip.wrap'));
+				_.push('segment_style.tip.wrap', _.get('tip.wrap'));
 			}
 
-			self.push('segment_style.tip.showType','follow');
-			self.push('segment_style.coordinate',self.coo);
-			self.push('segment_style.keep_with_coordinate',true);
+			_.push('segment_style.tip.showType','follow');
+			_.push('segment_style.coordinate',_.coo);
+			_.push('segment_style.keep_with_coordinate',true);
 			
 			//get the max/min scale of this coordinate for calculated the height
-			self.S = self.coo.getScale(self.get('scaleAlign'));
-			self.S.uh = self.get('coordinate.valid_height')/ self.S.distance;
+			_.S = _.coo.getScale(_.get('scaleAlign'));
+			_.S.uh = _.get('coordinate.valid_height')/ _.S.distance;
 			
 
 		}

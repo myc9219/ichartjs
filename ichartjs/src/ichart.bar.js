@@ -103,7 +103,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		 * use option create a coordinate
 		 */
 		this.coo = iChart.Interface.coordinate_.call(this);
-		this.pushComponent(this.coo, true);
+		this.components.push(this.coo);
 
 		/**
 		 * Quick config to all rectangle

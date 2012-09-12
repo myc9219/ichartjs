@@ -782,29 +782,10 @@
 			this.components = [];
 			this.total = 0;
 		},
-		pushComponent : function(c, b) {
-			if (!!b)
-				this.components.unshift(c);
-			else
-				this.components.push(c);;
-		},
-		plugin : function(c, b, i) {
+		plugin : function(c) {
 			this.init();
 			c.inject(this);
-			/**
-			 * 临时解决方案
-			 */
-			if(i){
-				var clone = [];
-				this.components.each(function(d,j){
-					if(i==j)
-						clone.push(c);
-						clone.push(d);
-				});
-				this.components = clone;
-			}
-			else
-			this.pushComponent(c, b);
+			this.components.push(c);
 		},
 		toImageURL : function() {
 			return this.T.toImageURL();

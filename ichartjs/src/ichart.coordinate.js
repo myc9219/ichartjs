@@ -416,6 +416,8 @@ iChart.Coordinate2D = iChart.extend(iChart.Component,
 					 * @cfg {Number} Required,Specifies the height of this coordinate.(default to undefined)
 					 */
 					height : undefined,
+					
+					z_index:-1,
 					/**
 					 * @cfg {Object} Specifies style for axis of this coordinate. Available property are:
 					 * @Option enable {Boolean} True to display the axis.(default to true)
