@@ -100,7 +100,9 @@ iChart.Line = iChart.extend(iChart.Chart, {
 	},
 	doConfig : function() {
 		iChart.Line.superclass.doConfig.call(this);
-
+		
+		this.lines.zIndex = this.get('z_index');
+		
 		/**
 		 * apply the coordinate feature
 		 */

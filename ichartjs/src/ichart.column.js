@@ -89,7 +89,11 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		 * apply the coordinate feature
 		 */
 		iChart.Interface.coordinate.call(this);
-
+		
+		this.rectangles.zIndex = this.get('z_index');
+		this.labels.zIndex = this.get('z_index') + 1;
+		
+		
 		if (this.dataType == 'simple') {
 			var L = this.data.length, W = this.get('coordinate.width'), hw = this.pushIf('colwidth', W / (L * 2 + 1));
 

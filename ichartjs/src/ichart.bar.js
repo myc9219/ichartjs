@@ -76,6 +76,10 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		 * Apply the coordinate feature
 		 */
 		iChart.Interface.coordinate.call(this);
+		
+		this.rectangles.zIndex = this.get('z_index');
+		
+		this.labels.zIndex = this.get('z_index') + 1;
 
 		if (this.dataType == 'simple') {
 

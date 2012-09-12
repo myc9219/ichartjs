@@ -61,7 +61,7 @@
 			if(!iChart.inEllipse(e.offsetX - this.x,e.offsetY-this.y,this.a,this.b)){
 				return {valid:false};
 			}
-			if(iChart.inRange(this.sA,this.eA,(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
+			if(iChart.angleInRange(this.sA,this.eA,(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
 				return {valid:true};
 			}
 			return {valid:false};
