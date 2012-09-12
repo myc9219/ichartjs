@@ -67,6 +67,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			border : {
 				enable : true
 			},
+			z_index:0,
 			/**
 			 * @cfg {Object} A config object containing one or more event handlers.(default to null)
 			 */

@@ -43,6 +43,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		_.push('sector.semi_minor_axis', _.r * z / 90);
 		_.push('sector.semi_major_axis', _.r);
 		_.push('sector.originy',_.get('originy')-_.get('yHeight')/2);
+		
 		_.data.each(function(d, i) {
 			_.doParse(d, i);
 		}, _);
@@ -50,13 +51,14 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 	_.pushComponent(_.sectors);
 	
 	_.proxy = new iChart.Custom({
+			z_index:_.get('z_index'),
 			drawFn : function() {
 				this.drawSector();
 				/**
 				 * draw the labels
 				 */
 				if (_.get('label.enable')) {
-					_.sectors.eachAll(function(s, i) {
+					_.sectors.each(function(s, i) {
 						s.label.draw();
 					}, _);
 				}
@@ -73,7 +75,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		/**
 		 * paint bottom layer
 		 */
-		_.sectors.eachAll(function(s, i) {
+		_.sectors.each(function(s, i) {
 			_.T.ellipse(s.x, s.y + s.h, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), s.get('shadow'), c, true);
 		}, _);
 		
@@ -82,7 +84,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		/**
 		 * sort layer
 		 */
-		_.sectors.eachAll(function(f, i) {
+		_.sectors.each(function(f, i) {
 			s = f.get(t);e = f.get(d),fc = $.dark(f.get('f_color'));
 			if(c ? (s < a || s > b) : (s > a && s < b)){
 				layer.push({g:s,x:f.x,y:f.y,a:f.a,b:f.b,color:fc,h:f.h});
@@ -98,9 +100,10 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		/**
 		 * paint inside layer
 		 */
-		layer.eachAll(function(f, i) {
+		layer.each(function(f, i) {
 			_.T.sector3D.layerDraw.call(_.T, f.x, f.y, f.a, f.b, c, f.h, f.g, f.color);
 		}, _);
+		
 		/**
 		 * realtime sort outside layer
 		 */
@@ -109,14 +112,14 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		/**
 		 * paint outside layer
 		 */
-		_.sectors.eachAll(function(s, i) {
+		_.sectors.each(function(s, i) {
 			_.T.sector3D.sPaint.call(_.T, s.x, s.y, s.a, s.b, s.get(t), s.get(d), false, s.h, s.get('f_color'));
 		}, _);
 		
 		/**
 		 * paint top layer
 		 */
-		_.sectors.eachAll(function(s, i) {
+		_.sectors.each(function(s, i) {
 			_.T.ellipse(s.x, s.y, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, false, true);
 		}, _);
 	}

@@ -120,8 +120,6 @@
 		},
 		sector3D : function() {
 			var x0, y0, sPaint = function(x, y, a, b, s, e, ccw, h, c) {
-				if ((ccw && e <= PI) || (!ccw && s >= PI))
-					return false;
 				var Lo = function(A, h) {
 					this.lineTo(x + a * cos(A), y + (h || 0) + (ccw ? (-b * sin(A)) : (b * sin(A))));
 				};
@@ -733,6 +731,7 @@
 				 * @cfg {Number} Specifies the duration when animation complete in millisecond.(default to 1000)
 				 */
 				duration_animation_duration : 1000,
+				z_index:999,
 				/**
 				 * @cfg {Object}Specifies the config of Legend.For details see <link>iChart.Legend</link> Note:this has a extra property named 'enable',indicate whether legend available(default to false)
 				 */
@@ -847,16 +846,22 @@
 		doAnimation : function(t, d) {
 			this.get('doAnimationFn').call(this, t, d);
 		},
+		doSort:function(){
+			this.components.sort(function(p, q){return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
+		},
 		commonDraw : function() {
 			$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
 			$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
 			$.Assert.gtZero(this.data.length, this.type + '\'data is empty.');
-
+			
 			/**
 			 * console.time('Test for draw');
 			 */
 
 			if (!this.redraw) {
+				//console.log(this.components);
+				this.doSort();
+				//console.log(this.components);
 				if (this.title) {
 					this.title.draw();
 				}

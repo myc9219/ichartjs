@@ -1012,7 +1012,7 @@ $.Element.prototype = {
 			$.merge(this.options, c);
 	},
 	pushIf : function(name, value) {
-		if (!this.get(name)) {
+		if (!$.isDefined(this.get(name))) {
 			return this.push(name, value);
 		}
 		return this.get(name);
@@ -1789,10 +1789,11 @@ $.Html = $.extend($.Element,{
 				 */
 				 style:'textAlign:left;padding:4px 5px;cursor:pointer;backgroundColor:rgba(239,239,239,.85);fontSize:12px;color:black;',
 				 /**
-				 * @cfg {Object} Override the default as enable = true
+				 * @cfg {Object} Override the default as enable = true,radius = 5
 				 */
 				 border:{
-					enable:true
+					enable:true,
+					radius : 5
 				 },
 				 delay:200
 			});
@@ -3004,7 +3005,7 @@ $.Label = $.extend($.Component, {
 		lineArray : function(p, w, c, smooth, smo) {
 			if (p.length < 2)
 				return this;
-			this.save().beginPath().strokeStyle(w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
+			this.strokeStyle(w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
 			if (smooth) {
 				for ( var i = 1; i < p.length; i++)
 					this.bezierCurveTo(getCurvePoint(p, p[i], i, smo));
@@ -3012,7 +3013,20 @@ $.Label = $.extend($.Component, {
 				for ( var i = 1; i < p.length; i++)
 					this.lineTo(fd(w, p[i].x), fd(w, p[i].y));
 			}
-			return this.stroke().restore();
+			return this.stroke();
+		},
+		manyLine : function(p, w, c, smooth, smo) {
+			var T = [],Q  = false;
+			p.each(function(p0){
+				if(p0.ignored&&Q){
+					this.lineArray(T, w, c, smooth, smo);
+					T = [];
+					Q = false;
+				}else{
+					T.push(p0);
+					Q = true;
+				}
+			},this);
 		},
 		line : function(x1, y1, x2, y2, w, c, last) {
 			if (!w || w == 0)
@@ -6303,6 +6317,7 @@ $.LineSegment = $.extend($.Component, {
 
 		this.label = null;
 		this.tip = null;
+		this.ignored_ = false;
 	},
 	drawSegment : function() {
 		this.T.shadowOn(this.get('shadow'));
@@ -6324,17 +6339,19 @@ $.LineSegment = $.extend($.Component, {
 			 */
 			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
 		}
-
-		this.T.lineArray(p, this.get('brushsize'), this.get('f_color'), this.get('smooth'), this.get('smoothing'));
+		
+		this.T[this.ignored_?"manyLine":"lineArray"](p, this.get('brushsize'), this.get('f_color'), this.get('smooth'), this.get('smoothing'));
 		
 		if (this.get('intersection')) {
-			for ( var i = 0; i < p.length; i++) {
-				if (this.get('point_hollow')) {
-					this.T.round(p[i].x, p[i].y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('f_color'));
-				} else {
-					this.T.round(p[i].x, p[i].y, this.get('point_size'), this.get('f_color'));
+			p.each(function(q,i){
+				if(!q.ignored){
+					if (this.get('point_hollow')) {
+						this.T.round(q.x, q.y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('f_color'));
+					} else {
+						this.T.round(q.x, q.y, this.get('point_size'), this.get('f_color'));
+					}
 				}
-			}
+			},this);
 		}
 
 		if (this.get('shadow')) {
@@ -6344,10 +6361,11 @@ $.LineSegment = $.extend($.Component, {
 	doDraw : function(opts) {
 		this.drawSegment();
 		if (this.get('intersection') && this.get('label')) {
-			var p = this.get('points');
-			for ( var i = 0; i < p.length; i++) {
-				this.T.text(p[i].value, p[i].x, p[i].y - this.get('point_size') * 3 / 2, false, this.get('f_color'), 'center', 'bottom', this.get('fontStyle'));
-			}
+			this.get('points').each(function(q,i){
+				if(!q.ignored){
+					this.T.text(q.value, q.x, q.y - this.get('point_size') * 3 / 2, false, this.get('f_color'), 'center', 'bottom', this.get('fontStyle'));
+				}
+			},this);
 		}
 	},
 	isEventValid : function(e) {
@@ -6376,6 +6394,7 @@ $.LineSegment = $.extend($.Component, {
 		for ( var i = 0; i < p.length; i++) {
 			p[i].x_ = p[i].x;
 			p[i].y_ = p[i].y;
+			if(p[i].ignored)this.ignored_ = true;
 		}
 
 		if (rx == 0) {
@@ -6401,8 +6420,8 @@ $.LineSegment = $.extend($.Component, {
 			_.tip = new $.Tip(_.get('tip'), _);
 		}
 
-		var c = _.get('coordinate'), ly = _.get('limit_y'), k = _.get('keep_with_coordinate'), valid = function(i, x, y) {
-			if (Math.abs(x - (p[i].x)) < rx && (!ly || (ly && Math.abs(y - (p[i].y)) < ry))) {
+		var c = _.get('coordinate'), ly = _.get('limit_y'), k = _.get('keep_with_coordinate'), valid = function(p0, x, y) {
+			if (!p0.ignored&&Math.abs(x - (p0.x)) < rx && (!ly || (ly && Math.abs(y - (p0.y)) < ry))) {
 				return true;
 			}
 			return false;
@@ -6417,7 +6436,6 @@ $.LineSegment = $.extend($.Component, {
 				hit : true
 			};
 		};
-
 		/**
 		 * override the default method
 		 */
@@ -6431,7 +6449,7 @@ $.LineSegment = $.extend($.Component, {
 			var ii = Math.floor((e.offsetX - _.x) / sp);
 			if (ii < 0 || ii >= (p.length - 1)) {
 				ii = $.between(0, p.length - 1, ii);
-				if (valid(ii, e.offsetX, e.offsetY))
+				if (valid(p[ii], e.offsetX, e.offsetY))
 					return to(ii);
 				else
 					return {
@@ -6440,7 +6458,7 @@ $.LineSegment = $.extend($.Component, {
 			}
 			// calculate the pointer's position will between which two point?this function can improve location speed
 			for ( var i = ii; i <= ii + 1; i++) {
-				if (valid(i, e.offsetX, e.offsetY))
+				if (valid(p[i], e.offsetX, e.offsetY))
 					return to(i);
 			}
 			// console.timeEnd('mouseover');
@@ -6531,7 +6549,8 @@ $.Line = $.extend($.Chart, {
 		this.registerEvent(
 		/**
 		 * @event Fires when parse this element'data.Return value will override existing.
-		 * @paramter object#data the point's data
+		 * @paramter object#data the data of one linesegment
+		 * @paramter object#v the point's value
 		 * @paramter int#x coordinate-x of point
 		 * @paramter int#y coordinate-y of point
 		 * @paramter int#index the index of point
@@ -6579,7 +6598,7 @@ $.Line = $.extend($.Chart, {
 
 		_.push('segment_style.limit_y', !s);
 
-		_.push('segment_style.keep_with_coordinate', s);
+		_.pushIf('segment_style.keep_with_coordinate', s);
 
 		
 		if(_.get('crosshair.enable')){
@@ -6587,6 +6606,7 @@ $.Line = $.extend($.Chart, {
 			_.push('coordinate.crosshair.hcross',s);
 			_.push('coordinate.crosshair.invokeOffset', function(e, m) {
 				var r = _.lines[0].isEventValid(e);
+					//console.log(r);
 					/**
 					 * TODO how fire muti line?
 					 */
@@ -6675,11 +6695,12 @@ $.Line = $.extend($.Chart, {
 					x = sp*j;
 					y = (v-S.start)*H/S.distance;
 					p = {x:ox+x,y:oy-y,value:v,text:v};
-					$.merge(p,this.fireEvent(this,'parsePoint',[d,x,y,j]))
+					$.merge(p,this.fireEvent(this,'parsePoint',[d,v,x,y,j]))
 					if (this.get('tip.enable'))
 						p.text = this.fireString(this,'parseTipText',[d,v,j],v);
 					points.push(p);
 				},this);	
+				
 				this.push('segment_style.points',points);
 				this.push('segment_style.brushsize',d.linewidth||1);
 				this.push('segment_style.background_color',d.color);

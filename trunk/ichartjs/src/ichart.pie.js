@@ -207,8 +207,13 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		iChart.Pie.superclass.doConfig.call(this);
 		iChart.Assert.gtZero(this.total, 'this.total');
 
+
+		this.sectors.zIndex = this.get('z_index');
+		
 		this.oA = iChart.angle2Radian(this.get('offsetAngle'));
+		
 		var r = this.get('radius'), f = this.get('label.enable') ? 0.35 : 0.44;
+		
 		if(this.is3D())f+=0.06;f = this.get('minDistance') * f;
 		
 		this.calculate();
