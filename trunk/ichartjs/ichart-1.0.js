@@ -1113,6 +1113,7 @@ $.Painter = $.extend($.Element, {
 			border : {
 				enable : true
 			},
+			z_index:0,
 			/**
 			 * @cfg {Object} A config object containing one or more event handlers.(default to null)
 			 */
@@ -2650,8 +2651,6 @@ $.Label = $.extend($.Component, {
 		},
 		sector3D : function() {
 			var x0, y0, sPaint = function(x, y, a, b, s, e, ccw, h, c) {
-				if ((ccw && e <= PI) || (!ccw && s >= PI))
-					return false;
 				var Lo = function(A, h) {
 					this.lineTo(x + a * cos(A), y + (h || 0) + (ccw ? (-b * sin(A)) : (b * sin(A))));
 				};
@@ -3263,6 +3262,7 @@ $.Label = $.extend($.Component, {
 				 * @cfg {Number} Specifies the duration when animation complete in millisecond.(default to 1000)
 				 */
 				duration_animation_duration : 1000,
+				z_index:999,
 				/**
 				 * @cfg {Object}Specifies the config of Legend.For details see <link>$.Legend</link> Note:this has a extra property named 'enable',indicate whether legend available(default to false)
 				 */
@@ -3313,29 +3313,10 @@ $.Label = $.extend($.Component, {
 			this.components = [];
 			this.total = 0;
 		},
-		pushComponent : function(c, b) {
-			if (!!b)
-				this.components.unshift(c);
-			else
-				this.components.push(c);;
-		},
-		plugin : function(c, b, i) {
+		plugin : function(c) {
 			this.init();
 			c.inject(this);
-			/**
-			 * 临时解决方案
-			 */
-			if(i){
-				var clone = [];
-				this.components.each(function(d,j){
-					if(i==j)
-						clone.push(c);
-						clone.push(d);
-				});
-				this.components = clone;
-			}
-			else
-			this.pushComponent(c, b);
+			this.components.push(c);
 		},
 		toImageURL : function() {
 			return this.T.toImageURL();
@@ -3377,16 +3358,22 @@ $.Label = $.extend($.Component, {
 		doAnimation : function(t, d) {
 			this.get('doAnimationFn').call(this, t, d);
 		},
+		doSort:function(){
+			this.components.sort(function(p, q){return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
+		},
 		commonDraw : function() {
 			$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
 			$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
 			$.Assert.gtZero(this.data.length, this.type + '\'data is empty.');
-
+			
 			/**
 			 * console.time('Test for draw');
 			 */
 
 			if (!this.redraw) {
+				//console.log(this.components);
+				this.doSort();
+				//console.log(this.components);
 				if (this.title) {
 					this.title.draw();
 				}
@@ -4100,6 +4087,8 @@ $.Coordinate2D = $.extend($.Component,
 					 * @cfg {Number} Required,Specifies the height of this coordinate.(default to undefined)
 					 */
 					height : undefined,
+					
+					z_index:-1,
 					/**
 					 * @cfg {Object} Specifies style for axis of this coordinate. Available property are:
 					 * @Option enable {Boolean} True to display the axis.(default to true)
@@ -4968,12 +4957,12 @@ $.Sector = $.extend($.Component, {
 
 		_.on(_.get('bound_event'), function(_, e, r) {
 			// console.profile('Test for pop');
-				// console.time('Test for pop');
+				 //console.time('Test for pop');
 				_.variable.event.poped = true;
 				_.expanded = !_.expanded;
 				_.redraw();
 				_.variable.event.poped = false;
-				// console.timeEnd('Test for pop');
+				 //console.timeEnd('Test for pop');
 				// console.profileEnd('Test for pop');
 			});
 
@@ -5162,7 +5151,7 @@ $.Sector = $.extend($.Component, {
 			if(!$.inEllipse(e.offsetX - this.x,e.offsetY-this.y,this.a,this.b)){
 				return {valid:false};
 			}
-			if($.inRange(this.sA,this.eA,(2*Math.PI - $.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
+			if($.angleInRange(this.sA,this.eA,(2*Math.PI - $.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
 				return {valid:true};
 			}
 			return {valid:false};
@@ -5441,8 +5430,13 @@ $.Pie = $.extend($.Chart, {
 		$.Pie.superclass.doConfig.call(this);
 		$.Assert.gtZero(this.total, 'this.total');
 
+
+		this.sectors.zIndex = this.get('z_index');
+		
 		this.oA = $.angle2Radian(this.get('offsetAngle'));
+		
 		var r = this.get('radius'), f = this.get('label.enable') ? 0.35 : 0.44;
+		
 		if(this.is3D())f+=0.06;f = this.get('minDistance') * f;
 		
 		this.calculate();
@@ -5521,7 +5515,7 @@ $.Pie2D = $.extend($.Pie, {
 			this.doParse(d,i);
 		},this);
 		
-		this.pushComponent(this.sectors);
+		this.components.push(this.sectors);
 	}
 });
 /**
@@ -5569,20 +5563,22 @@ $.Pie3D = $.extend($.Pie, {
 		_.push('sector.semi_minor_axis', _.r * z / 90);
 		_.push('sector.semi_major_axis', _.r);
 		_.push('sector.originy',_.get('originy')-_.get('yHeight')/2);
+		
 		_.data.each(function(d, i) {
 			_.doParse(d, i);
 		}, _);
 
-	_.pushComponent(_.sectors);
+	_.components.push(_.sectors);
 	
 	_.proxy = new $.Custom({
+			z_index:_.get('z_index'),
 			drawFn : function() {
 				this.drawSector();
 				/**
 				 * draw the labels
 				 */
 				if (_.get('label.enable')) {
-					_.sectors.eachAll(function(s, i) {
+					_.sectors.each(function(s, i) {
 						s.label.draw();
 					}, _);
 				}
@@ -5599,7 +5595,7 @@ $.Pie3D = $.extend($.Pie, {
 		/**
 		 * paint bottom layer
 		 */
-		_.sectors.eachAll(function(s, i) {
+		_.sectors.each(function(s, i) {
 			_.T.ellipse(s.x, s.y + s.h, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), s.get('shadow'), c, true);
 		}, _);
 		
@@ -5608,7 +5604,7 @@ $.Pie3D = $.extend($.Pie, {
 		/**
 		 * sort layer
 		 */
-		_.sectors.eachAll(function(f, i) {
+		_.sectors.each(function(f, i) {
 			s = f.get(t);e = f.get(d),fc = $.dark(f.get('f_color'));
 			if(c ? (s < a || s > b) : (s > a && s < b)){
 				layer.push({g:s,x:f.x,y:f.y,a:f.a,b:f.b,color:fc,h:f.h});
@@ -5624,9 +5620,10 @@ $.Pie3D = $.extend($.Pie, {
 		/**
 		 * paint inside layer
 		 */
-		layer.eachAll(function(f, i) {
+		layer.each(function(f, i) {
 			_.T.sector3D.layerDraw.call(_.T, f.x, f.y, f.a, f.b, c, f.h, f.g, f.color);
 		}, _);
+		
 		/**
 		 * realtime sort outside layer
 		 */
@@ -5635,18 +5632,18 @@ $.Pie3D = $.extend($.Pie, {
 		/**
 		 * paint outside layer
 		 */
-		_.sectors.eachAll(function(s, i) {
+		_.sectors.each(function(s, i) {
 			_.T.sector3D.sPaint.call(_.T, s.x, s.y, s.a, s.b, s.get(t), s.get(d), false, s.h, s.get('f_color'));
 		}, _);
 		
 		/**
 		 * paint top layer
 		 */
-		_.sectors.eachAll(function(s, i) {
+		_.sectors.each(function(s, i) {
 			_.T.ellipse(s.x, s.y, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, false, true);
 		}, _);
 	}
-	_.pushComponent(_.proxy);
+	_.components.push(_.proxy);
 }
 });// @end
 
@@ -5741,7 +5738,11 @@ $.Column = $.extend($.Chart, {
 		 * apply the coordinate feature
 		 */
 		$.Interface.coordinate.call(this);
-
+		
+		this.rectangles.zIndex = this.get('z_index');
+		this.labels.zIndex = this.get('z_index') + 1;
+		
+		
 		if (this.dataType == 'simple') {
 			var L = this.data.length, W = this.get('coordinate.width'), hw = this.pushIf('colwidth', W / (L * 2 + 1));
 
@@ -5765,7 +5766,7 @@ $.Column = $.extend($.Chart, {
 		 */
 		this.coo = $.Interface.coordinate_.call(this);
 
-		this.pushComponent(this.coo,true);
+		this.components.push(this.coo);
 
 		/**
 		 * quick config to all rectangle
@@ -5819,8 +5820,8 @@ $.Column2D = $.extend($.Column, {
 
 		}, this);
 
-		this.pushComponent(this.labels);
-		this.pushComponent(this.rectangles);
+		this.components.push(this.labels);
+		this.components.push(this.rectangles);
 	}
 
 });// @end
@@ -5893,8 +5894,8 @@ $.Column2D = $.extend($.Column, {
 				
 			}, this);
 			
-			this.pushComponent(this.labels);
-			this.pushComponent(this.rectangles);
+			this.components.push(this.labels);
+			this.components.push(this.rectangles);
 		}
 		
 });
@@ -5972,8 +5973,8 @@ $.Column2D = $.extend($.Column, {
 				
 			}, this);
 			
-			this.pushComponent(this.labels);
-			this.pushComponent(this.rectangles);
+			this.components.push(this.labels);
+			this.components.push(this.rectangles);
 		}
 });
 /**
@@ -6054,6 +6055,10 @@ $.Bar = $.extend($.Chart, {
 		 * Apply the coordinate feature
 		 */
 		$.Interface.coordinate.call(this);
+		
+		this.rectangles.zIndex = this.get('z_index');
+		
+		this.labels.zIndex = this.get('z_index') + 1;
 
 		if (this.dataType == 'simple') {
 
@@ -6077,7 +6082,7 @@ $.Bar = $.extend($.Chart, {
 		 * use option create a coordinate
 		 */
 		this.coo = $.Interface.coordinate_.call(this);
-		this.pushComponent(this.coo, true);
+		this.components.push(this.coo);
 
 		/**
 		 * Quick config to all rectangle
@@ -6142,8 +6147,8 @@ $.Bar = $.extend($.Chart, {
 				},this));
 			}, this);
 			
-			this.pushComponent(this.labels);
-			this.pushComponent(this.rectangles);
+			this.components.push(this.labels);
+			this.components.push(this.rectangles);
 		}
 		
 });
@@ -6218,8 +6223,8 @@ $.Bar = $.extend($.Chart, {
 					
 				}, this);
 				
-				this.pushComponent(this.labels);
-				this.pushComponent(this.rectangles);
+				this.components.push(this.labels);
+				this.components.push(this.rectangles);
 			}
 			
 	});
@@ -6572,7 +6577,9 @@ $.Line = $.extend($.Chart, {
 	},
 	doConfig : function() {
 		$.Line.superclass.doConfig.call(this);
-
+		
+		this.lines.zIndex = this.get('z_index');
+		
 		/**
 		 * apply the coordinate feature
 		 */
@@ -6673,7 +6680,7 @@ $.Line = $.extend($.Chart, {
 				},this.get('coordinate')),this);
 			
 			
-			this.pushComponent(this.coo,true);
+			this.components.push(this.coo);
 			
 			//get the max/min scale of this coordinate for calculated the height
 			var S = this.coo.getScale(this.get('scaleAlign')),
@@ -6707,7 +6714,7 @@ $.Line = $.extend($.Chart, {
 				
 				this.lines.push(new $.LineSegment(this.get('segment_style'),this));
 			},this);
-			this.pushComponent(this.lines);
+			this.components.push(this.lines);
 			
 		}
 		
@@ -6787,7 +6794,7 @@ $.Line = $.extend($.Chart, {
 				LS.brushsize = style.linewidth || 1;
 				LS.background_color = style.color || '#BDBDBD';
 			var L = new $.LineSegment(LS, this);
-			this.pushComponent(L);
+			this.components.push(L);
 			var queue = new Queue(this,L);
 			//this.queues.push(queue);
 			return queue;
@@ -6795,53 +6802,53 @@ $.Line = $.extend($.Chart, {
 		doConfig : function() {
 			$.LineMonitor2D.superclass.doConfig.call(this);
 			
-			var self = this;
+			var _ = this;
 			//the monitor not support the animation now
-			self.push('animation',false);
+			_.push('animation',false);
 			
 			
-			if (self.get('coordinate.crosshair.enable')) {
-				self.push('coordinate.crosshair.hcross',self.data.length == 1);
-				self.push('coordinate.crosshair.invokeOffset',function(e, m) {
-						var r = self.lines[0].isEventValid(e);
+			if (_.get('coordinate.crosshair.enable')) {
+				_.push('coordinate.crosshair.hcross',_.data.length == 1);
+				_.push('coordinate.crosshair.invokeOffset',function(e, m) {
+						var r = _.lines[0].isEventValid(e);
 						return r.valid ? r : false;
 				});
 			}
 			
-			self.coo = new $.Coordinate2D($.merge( {
+			_.coo = new $.Coordinate2D($.merge( {
 				scale : [ {
-					position : self.get('scaleAlign'),
-					max_scale : self.get('maxValue')
+					position : _.get('scaleAlign'),
+					max_scale : _.get('maxValue')
 				}, {
-					position : self.get('labelAlign'),
+					position : _.get('labelAlign'),
 					scaleEnable : false,
 					start_scale : 1,
 					scale : 1,
-					end_scale : self.get('maxItemSize'),
-					labels : self.get('labels')
+					end_scale : _.get('maxItemSize'),
+					labels : _.get('labels')
 				} ],
 				axis : {
 					width : [ 0, 0, 1, 1 ]
 				}
-			}, self.get('coordinate')), self);
+			}, _.get('coordinate')), _);
 
-			self.pushComponent(self.coo, true);
+			_.components.push(_.coo);
 			
-			self.push('label_spacing',self.get('coordinate.valid_width')/(self.get('queue_size')-1));
+			_.push('label_spacing',_.get('coordinate.valid_width')/(_.get('queue_size')-1));
 			
-			if (!self.get('segment_style.tip')) {
-				self.push('segment_style.tip', self.get('tip'));
+			if (!_.get('segment_style.tip')) {
+				_.push('segment_style.tip', _.get('tip'));
 			} else {
-				self.push('segment_style.tip.wrap', self.get('tip.wrap'));
+				_.push('segment_style.tip.wrap', _.get('tip.wrap'));
 			}
 
-			self.push('segment_style.tip.showType','follow');
-			self.push('segment_style.coordinate',self.coo);
-			self.push('segment_style.keep_with_coordinate',true);
+			_.push('segment_style.tip.showType','follow');
+			_.push('segment_style.coordinate',_.coo);
+			_.push('segment_style.keep_with_coordinate',true);
 			
 			//get the max/min scale of this coordinate for calculated the height
-			self.S = self.coo.getScale(self.get('scaleAlign'));
-			self.S.uh = self.get('coordinate.valid_height')/ self.S.distance;
+			_.S = _.coo.getScale(_.get('scaleAlign'));
+			_.S.uh = _.get('coordinate.valid_height')/ _.S.distance;
 			
 
 		}

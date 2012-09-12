@@ -117,7 +117,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		 */
 		this.coo = iChart.Interface.coordinate_.call(this);
 
-		this.pushComponent(this.coo,true);
+		this.components.push(this.coo);
 
 		/**
 		 * quick config to all rectangle

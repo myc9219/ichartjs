@@ -30,6 +30,6 @@ iChart.Pie2D = iChart.extend(iChart.Pie, {
 			this.doParse(d,i);
 		},this);
 		
-		this.pushComponent(this.sectors);
+		this.components.push(this.sectors);
 	}
 });//@end
