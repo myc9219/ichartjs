@@ -37,37 +37,38 @@
 		},
 		doConfig:function(){
 			iChart.Column3D.superclass.doConfig.call(this);
+			
+			//get the max/min scale of this coordinate for calculated the height
+			var _ = this._(),S = _.coo.getScale(_.get('scaleAlign')),
+				zh = _.get('zHeight')*(_.get('bottom_scale')-1)/2*_.get('yAngle_'),
+				h2 = _.get('colwidth')/2,
+				gw = _.get('colwidth')+_.get('hispace'),
+				H = _.coo.get('height'),h;
+			
 			/**
 			 * quick config to all rectangle
 			 */
-			this.push('rectangle.xAngle_',this.get('xAngle_'));
-			this.push('rectangle.yAngle_',this.get('yAngle_'));
+			_.push('rectangle.xAngle_',_.get('xAngle_'));
+			_.push('rectangle.yAngle_',_.get('yAngle_'));
 			
-			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('scaleAlign')),
-				zh = this.get('zHeight')*(this.get('bottom_scale')-1)/2*this.get('yAngle_'),
-				h2 = this.get('colwidth')/2,
-				gw = this.get('colwidth')+this.get('hispace'),
-				H = this.coo.get('height'),h;
-			
-			this.data.each(function(d, i) {
+			_.data.each(function(d, i) {
 				h = (d.value - S.start) * H / S.distance;
 				
-				this.doParse(d, i, i, this.x + this.get('hispace') + i * gw, this.y +(H-h)-zh, h);
-				d.reference = new iChart.Rectangle3D(this.get('rectangle'), this);
-				this.rectangles.push(d.reference);
+				_.doParse(_,d, i, i, _.x + _.get('hispace') + i * gw, _.y +(H-h)-zh, h);
+				d.reference = new iChart.Rectangle3D(_.get('rectangle'), _);
+				_.rectangles.push(d.reference);
 				
-				this.labels.push(new iChart.Text({
+				_.labels.push(new iChart.Text({
 					id : i,
 					text : d.name,
-					originx : this.x + this.get('hispace') + gw * i + h2,
-					originy : this.y + H + this.get('text_space')
-				}, this));
+					originx : _.x + _.get('hispace') + gw * i + h2,
+					originy : _.y + H + _.get('text_space')
+				}, _));
 				
-			}, this);
+			}, _);
 			
-			this.components.push(this.labels);
-			this.components.push(this.rectangles);
+			_.components.push(_.labels);
+			_.components.push(_.rectangles);
 		}
 		
 });//@end

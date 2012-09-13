@@ -920,7 +920,7 @@
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
 
-			var _ = this, E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
+			var _ = this._(), E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
 
 			$.Assert.isArray(_.data);
 
@@ -1071,7 +1071,10 @@
 
 			_.push('centerx', l + w / 2);
 			_.push('centery', t + h / 2);
-
+			
+			_.push('communal_option',['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip']);
+			
+			
 			/**
 			 * legend
 			 */

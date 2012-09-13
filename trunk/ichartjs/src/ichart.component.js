@@ -59,34 +59,35 @@
 	},
 	doConfig : function() {
 		iChart.Component.superclass.doConfig.call(this);
+		var _ = this._();
 		/**
 		 * originx
 		 */
-		this.x = this.get('originx')+this.get('offsetx');
+		_.x = _.get('originx')+_.get('offsetx');
 		/**
 		 * 
 		 * originy
 		 */
-		this.y = this.get('originy')+this.get('offsety');
+		_.y = _.get('originy')+_.get('offsety');
 		
 		/**
 		 * if have evaluate it
 		 */
-		this.data = this.get('data');
+		_.data = _.get('data');
 	
-		iChart.Interface._3D.call(this);
+		iChart.Interface._3D.call(_);
 		
-		if (this.get('tip.enable')) {
+		if (_.get('tip.enable')) {
 			/**
 			 * make tip's border in accord with sector
 			 */
-			this.pushIf('tip.border.color', this.get('f_color'));
+			_.pushIf('tip.border.color', _.get('f_color'));
 	
-			if (!iChart.isFunction(this.get('tip.invokeOffset')))
+			if (!iChart.isFunction(_.get('tip.invokeOffset')))
 				/**
 				 * indicate the tip must calculate position
 				 */
-				this.push('tip.invokeOffset', this.tipInvoke());
+				_.push('tip.invokeOffset', _.tipInvoke());
 		}
 	
 	},

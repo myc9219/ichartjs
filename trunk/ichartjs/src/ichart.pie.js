@@ -100,7 +100,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @return void
 	 */
 	bound : function(i) {
-		this.data[i||0].reference.bound();
+		this.data[i || 0].reference.bound();
 	},
 	/**
 	 * @method rebound sector by a specific index.
@@ -125,10 +125,10 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
 			cs += si;
-			if(!this.is3D())
+			if (!this.is3D())
 				s.drawSector();
 		}, this);
-		if(this.is3D()){
+		if (this.is3D()) {
 			this.proxy.drawSector();
 		}
 	},
@@ -207,24 +207,25 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		iChart.Pie.superclass.doConfig.call(this);
 		iChart.Assert.gtZero(this.total, 'this.total');
 
-
 		this.sectors.zIndex = this.get('z_index');
-		
+
 		this.oA = iChart.angle2Radian(this.get('offsetAngle'));
-		
+
 		var r = this.get('radius'), f = this.get('label.enable') ? 0.35 : 0.44;
-		
-		if(this.is3D())f+=0.06;f = this.get('minDistance') * f;
-		
+
+		if (this.is3D())
+			f += 0.06;
+		f = this.get('minDistance') * f;
+
 		this.calculate();
-		
+
 		/**
 		 * calculate pie chart's radius
 		 */
 		if (r <= 0 || r > f) {
 			r = this.push('radius', Math.floor(f));
 		}
-
+		
 		this.r = r;
 		
 		/**
@@ -239,23 +240,8 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		}
 		this.push('originy', this.get('centery') + this.get('offsety'));
 
-		iChart.apply(this.get('sector'), iChart.clone([
-				'originx',
-				'originy',
-				'bound_event',
-				'customize_layout',
-				'counterclockwise',
-				'mutex',
-				'shadow',
-				'shadow_color',
-				'shadow_blur',
-				'shadow_offsetx',
-				'shadow_offsety',
-				'increment',
-				'gradient',
-				'color_factor',
-				'label',
-				'tip'], this.options));
-
+		iChart.apply(this.get('sector'), iChart.clone(this.get('communal_option').concat(['originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'mutex', 'increment', 'label']), this.options));
+		
 	}
-});// @end
+});
+/** @end */

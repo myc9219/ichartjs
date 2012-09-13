@@ -22,55 +22,53 @@
 			doConfig:function(){
 				iChart.BarMulti2D.superclass.doConfig.call(this);
 				
-				var L = this.data.length,
-					KL= this.data_labels.length,
-					W = this.coo.get('width'),
-					H = this.coo.get('height'),
+				var _ = this._(),L = _.data.length,
+					KL= _.data_labels.length,
+					W = _.coo.get('width'),
+					H = _.coo.get('height'),
+					b = 'barheight',
+					s = 'barspace',
 					total = KL*L,
 					/**
 					 * bar's height
 					 */
-					bh = this.pushIf('barheight',H/(KL+1+total));
-				
+					bh = _.pushIf(b,H/(KL+1+total));
 				if(bh*L>H){
-					bh = this.push('barheight',H/(KL+1+total));
+					bh = _.push(b,H/(KL+1+total));
 				}
-				
 				/**
 				 * the space of two bar
 				 */
-				this.push('barspace',(H - bh*total)/(KL+1));
-				
+				_.push(s,(H - bh*total)/(KL+1));
 				/**
 				 * get the max/min scale of this coordinate for calculated the height
 				 */
-				var S = this.coo.getScale(this.get('scaleAlign')),
-					gw = L*bh+this.get('barspace'),
-					h2 = this.get('barheight')/2,
+				var S = _.coo.getScale(_.get('scaleAlign')),
+					gw = L*bh+_.get(s),
+					h2 = _.get(b)/2,
 					w;
-				
-				this.push('rectangle.height',bh);
-				this.columns.each(function(column, i) {
+				_.push('rectangle.height',bh);
+				_.columns.each(function(column, i) {
 					column.item.each(function(d, j) {
 						w = (d.value - S.start) * W / S.distance;
-						this.doParse(d, j, i+'-'+j, this.x + this.get('hispace')+j*bh+i*gw,this.y + this.get('barspace')+j*bh+i*gw, w);
-						d.reference = new iChart.Rectangle2D(this.get('rectangle'), this);
-						this.rectangles.push(d.reference);
-					}, this);
+						_.doParse(_,d, j, i+'-'+j, _.x + _.get('hispace')+j*bh+i*gw,_.y + _.get(s)+j*bh+i*gw, w);
+						d.reference = new iChart.Rectangle2D(_.get('rectangle'), _);
+						_.rectangles.push(d.reference);
+					}, _);
 					
-					this.labels.push(new iChart.Text({
+					_.labels.push(new iChart.Text({
 						id:i,
 						text:column.name,
 						textAlign:'right',
 						textBaseline:'middle',
-						originx:this.x - this.get('text_space'),
-		 				originy:this.y + this.get('barspace')*0.5+(i+0.5)*gw
-					},this));
+						originx:_.x - _.get('text_space'),
+		 				originy:_.y + _.get(s)*0.5+(i+0.5)*gw
+					},_));
 					
-				}, this);
+				}, _);
 				
-				this.components.push(this.labels);
-				this.components.push(this.rectangles);
+				_.components.push(_.labels);
+				_.components.push(_.rectangles);
 			}
 			
 	});//@end

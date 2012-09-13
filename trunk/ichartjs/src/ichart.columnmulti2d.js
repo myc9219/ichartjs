@@ -29,7 +29,8 @@
 		doConfig:function(){
 			iChart.ColumnMulti2D.superclass.doConfig.call(this);
 			
-			var L = this.data.length,
+			var _ = this._(),
+				L = this.data.length,
 				KL= this.data_labels.length,
 				W = this.get('coordinate.width'),
 				H = this.get('coordinate.height'),
@@ -57,7 +58,7 @@
 				
 				column.item.each(function(d, j) {
 					h = (d.value - S.start) * H / S.distance;
-					this.doParse(d, j, i+'-'+j, this.x + this.get('hispace')+j*bw+i*gw, this.y + H - h - bs, h);
+					this.doParse(_,d, j, i+'-'+j, this.x + this.get('hispace')+j*bw+i*gw, this.y + H - h - bs, h);
 					d.reference = new iChart.Rectangle2D(this.get('rectangle'), this);
 					this.rectangles.push(d.reference);
 					

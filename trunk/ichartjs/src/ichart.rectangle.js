@@ -77,11 +77,11 @@
 			
 			this.registerEvent(
 					/**
-					 * @event Fires when draw this label.Return value will override existing value.
+					 * @event Fires when draw label's text.Return text will override existing text.
 					 * @paramter iChart.Rectangle#rect
 					 * @paramter string#text the current label's text
 					 */
-					'drawLabelText');
+					'drawText');
 			
 		},
 		doDraw:function(opts){

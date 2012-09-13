@@ -47,18 +47,17 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		this.labels.ignore = true;
 	},
 	doAnimation : function(t, d) {
-		var r, h;
-		this.coo.draw();
-		for ( var i = 0; i < this.labels.length; i++) {
-			this.labels[i].draw();
-		}
-		for ( var i = 0; i < this.rectangles.length; i++) {
-			r = this.rectangles[i];
-			h = Math.ceil(this.animationArithmetic(t, 0, r.height, d));
+		var _ = this._(), h;
+		_.coo.draw();
+		_.labels.each(function(l){
+			l.draw();
+		});
+		_.rectangles.each(function(r){
+			h = Math.ceil(_.animationArithmetic(t, 0, r.height, d));
 			r.push('originy', r.y + (r.height - h));
 			r.push('height', h);
 			r.drawRectangle();
-		}
+		});
 	},
 	/**
 	 * @method Returns the coordinate of this element.
@@ -67,64 +66,67 @@ iChart.Column = iChart.extend(iChart.Chart, {
 	getCoordinate:function(){
 		return this.coo;
 	},
-	doParse : function(d, i, id, x, y, h) {
-		var t = (this.get('showpercent') ? iChart.toPercent(d.value / this.total, this.get('decimalsnum')) : d.value);
-		
-		if (this.get('tip.enable'))
-			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d,d.value,i],d.name + ' '+t));
-		
-		this.push('rectangle.value', t);
-		this.push('rectangle.name', d.name);
-		this.push('rectangle.background_color', d.color);
-
-		this.push('rectangle.id', id);
-		this.push('rectangle.originx', x);
-		this.push('rectangle.originy', y);
-		this.push('rectangle.height', h);
-
+	doParse : function(_,d, i, id, x, y, h) {
+		var t = (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
+		if (_.get('tip.enable'))
+			_.push('rectangle.tip.text', _.fireString(_, 'parseTipText', [d,d.value,i],d.name + ' '+t));
+		_.set({
+			rectangle:{
+				id:id,
+				name:d.name,
+				value:t,
+				background_color:d.color,
+				originx:x,
+				originy:y,
+				height:h
+			}
+		});	
 	},
 	doConfig : function() {
 		iChart.Column.superclass.doConfig.call(this);
+		
+		var _ = this._(),c = 'colwidth',z = 'z_index';
 		/**
 		 * apply the coordinate feature
 		 */
-		iChart.Interface.coordinate.call(this);
+		iChart.Interface.coordinate.call(_);
 		
-		this.rectangles.zIndex = this.get('z_index');
-		this.labels.zIndex = this.get('z_index') + 1;
+		_.rectangles.zIndex = _.get(z);
+		
+		_.labels.zIndex = _.get(z) + 1;
 		
 		
-		if (this.dataType == 'simple') {
-			var L = this.data.length, W = this.get('coordinate.width'), hw = this.pushIf('colwidth', W / (L * 2 + 1));
+		if (_.dataType == 'simple') {
+			var L = _.data.length, W = _.get('coordinate.width'), hw = _.pushIf(c, W / (L * 2 + 1));
 
 			if (hw * L > W) {
-				hw = this.push('colwidth', W / (L * 2 + 1));
+				hw = _.push(c, W / (L * 2 + 1));
 			}
 			
 			/**
 			 * the space of two column
 			 */
-			this.push('hispace', (W - hw * L) / (L + 1));
+			_.push('hispace', (W - hw * L) / (L + 1));
 
 		}
 
-		if (this.is3D()) {
-			this.push('zHeight', this.get('colwidth') * this.get('zScale'));
+		if (_.is3D()) {
+			_.push('zHeight', _.get(c) * _.get('zScale'));
 		}
-
+		
 		/**
 		 * use option create a coordinate
 		 */
-		this.coo = iChart.Interface.coordinate_.call(this);
+		_.coo = iChart.Interface.coordinate_.call(_);
 
-		this.components.push(this.coo);
-
+		_.components.push(_.coo);
+		
 		/**
 		 * quick config to all rectangle
 		 */
-		iChart.apply(this.get('rectangle'), iChart.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor', 'label', 'tip'], this.options));
-
-		this.push('rectangle.width', this.get('colwidth'));
+		iChart.applyIf(_.get('rectangle'), iChart.clone(_.get('communal_option'), _.options));
+		
+		_.push('rectangle.width', _.get(c));
 	}
 
 });// @end
