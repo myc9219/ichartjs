@@ -18,30 +18,29 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 	},
 	doConfig : function() {
 		iChart.Column2D.superclass.doConfig.call(this);
-
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = this.coo.getScale(this.get('scaleAlign')), bs = this.coo.get('brushsize'), H = this.coo.get('height'), h2 = this.get('colwidth') / 2, gw = this.get('colwidth') + this.get('hispace'), h;
-
-		this.data.each(function(d, i) {
+		var _ = this._(),S = _.coo.getScale(_.get('scaleAlign')), bs = _.coo.get('brushsize'), H = _.coo.get('height'), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), h;
+		
+		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
+			_.doParse(_,d, i, i, _.x + _.get('hispace') + i * gw, _.y + H - h - bs, h);
 			
-			this.doParse(d, i, i, this.x + this.get('hispace') + i * gw, this.y + H - h - bs, h);
-			d.reference = new iChart.Rectangle2D(this.get('rectangle'), this);
-			this.rectangles.push(d.reference);
+			d.reference = new iChart.Rectangle2D(_.get('rectangle'), _);
+			_.rectangles.push(d.reference);
 			
-			this.labels.push(new iChart.Text({
+			_.labels.push(new iChart.Text({
 				id : i,
 				text : d.name,
-				originx : this.x + this.get('hispace') + gw * i + h2,
-				originy : this.y + H + this.get('text_space')
-			}, this));
+				originx : _.x + _.get('hispace') + gw * i + h2,
+				originy : _.y + H + _.get('text_space')
+			}, _));
 
-		}, this);
+		}, _);
 
-		this.components.push(this.labels);
-		this.components.push(this.rectangles);
+		_.components.push(_.labels);
+		_.components.push(_.rectangles);
 	}
 
 });// @end

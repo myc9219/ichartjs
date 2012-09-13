@@ -107,6 +107,7 @@ iChart.Element = function(config) {
 }
 
 iChart.Element.prototype = {
+	_:function(){return this},	
 	set : function(c) {
 		if (iChart.isObject(c))
 			iChart.merge(this.options, c);

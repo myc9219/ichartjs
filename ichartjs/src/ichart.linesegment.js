@@ -106,6 +106,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			polygons.push(this.x + this.get('width'));
 			polygons.push(this.y);
 			var bg = this.get('light_color');
+			
 			if (this.get('gradient')) {
 				bg = this.T.avgLinearGradient(this.x, this.y - this.get('height'), this.x, this.y, [this.get('light_color2'), bg]);
 			}

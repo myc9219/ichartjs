@@ -1,6 +1,5 @@
 /**
- * @overview The interface this class defined include draw and event,so the sub class has must capability to draw and aware of event.
- * this class is a abstract class,so you should not try to initialize it.
+ * @overview The interface this class defined include draw and event,so the sub class has must capability to draw and aware of event. this class is a abstract class,so you should not try to initialize it.
  * @component#iChart.Painter
  * @extend#iChart.Element
  */
@@ -70,7 +69,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			/**
 			 * @cfg {Number}Specifies the z-index.(default to 0)
 			 */
-			z_index:0,
+			z_index : 0,
 			/**
 			 * @cfg {Object} A config object containing one or more event handlers.(default to null)
 			 */
@@ -88,8 +87,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		this.variable.event = {
 			mouseover : false
 		};
-		
-		
+
 		/**
 		 * register the common event
 		 */
@@ -143,7 +141,6 @@ iChart.Painter = iChart.extend(iChart.Element, {
 
 	},
 	afterConfiguration : function() {
-
 	},
 	registerEvent : function() {
 		for ( var i = 0; i < arguments.length; i++) {
@@ -177,7 +174,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	 */
 	draw : function(o) {
 		this.init();
-		this.draw = function(o){
+		this.draw = function(o) {
 			/**
 			 * fire the beforedraw event
 			 */
@@ -212,44 +209,47 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	},
 	on : function(name, fn) {
 		if (iChart.isString(name) && iChart.isFunction(fn))
-			if(!this.events[name]){
+			if (!this.events[name]) {
 				console.log(name);
 			}
-			this.events[name].push(fn);
+		this.events[name].push(fn);
 		return this;
 	},
 	doConfig : function() {
-		var p = iChart.parsePadding(this.get('padding')),b=this.get('border.enable'),b = b?iChart.parsePadding(this.get('border.width')):[0,0,0,0], bg = this.get('background_color'), f = this.get('color_factor');
-		this.push('border_top', b[0]);
-		this.push('border_right', b[1]);
-		this.push('border_bottom', b[2]);
-		this.push('border_left', b[3]);
-		this.push('hborder',b[1]+b[3]);
-		this.push('vborder',b[0]+b[2]);
+		var _ = this._(), p = iChart.parsePadding(_.get('padding')), b = _.get('border.enable'), b = b ? iChart.parsePadding(_.get('border.width')) : [0, 0, 0, 0], bg = _.get('background_color'), f = _.get('color_factor');
 		
-		this.push('padding_top', p[0]+b[0]);
-		this.push('padding_right', p[1]+b[1]);
-		this.push('padding_bottom', p[2]+b[2]);
-		this.push('padding_left', p[3]+b[3]);
-		this.push('hpadding', p[1] + p[3]+b[1]+b[3]);
-		this.push('vpadding', p[0] + p[2]+b[0]+b[2]);
-		
-		if(this.get('shadow')){
-			this.push('shadow',{
-				color : this.get('shadow_color'),
-				blur : this.get('shadow_blur'),
-				offsetx : this.get('shadow_offsetx'),
-				offsety : this.get('shadow_offsety')
+		_.push('border_top', b[0]);
+		_.push('border_right', b[1]);
+		_.push('border_bottom', b[2]);
+		_.push('border_left', b[3]);
+		_.push('hborder', b[1] + b[3]);
+		_.push('vborder', b[0] + b[2]);
+
+		_.push('padding_top', p[0] + b[0]);
+		_.push('padding_right', p[1] + b[1]);
+		_.push('padding_bottom', p[2] + b[2]);
+		_.push('padding_left', p[3] + b[3]);
+		_.push('hpadding', p[1] + p[3] + b[1] + b[3]);
+		_.push('vpadding', p[0] + p[2] + b[0] + b[2]);
+
+		if (_.get('shadow')) {
+			_.push('shadow', {
+				color : _.get('shadow_color'),
+				blur : _.get('shadow_blur'),
+				offsetx : _.get('shadow_offsetx'),
+				offsety : _.get('shadow_offsety')
 			});
 		}
 		
-		this.push('fontStyle', iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
-		this.push('f_color', bg);
-		this.push("light_color", iChart.light(bg, f));
-		this.push("dark_color", iChart.dark(bg, f));
-		this.push("light_color2", iChart.light(bg, f * 2));
-		this.push("dark_color2", iChart.dark(bg, f) * 2);
-		this.id = this.get('id');
+		_.push('fontStyle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
+		_.push('f_color', bg);
+		
+		_.push("light_color", iChart.light(bg, f));
+		_.push("dark_color", iChart.dark(bg, f));
+		_.push("light_color2", iChart.light(bg, f * 2));
+		_.push("dark_color2", iChart.dark(bg, f) * 2);
+		
+		_.id = _.get('id');
 
 	}
-});//@end
+});// @end

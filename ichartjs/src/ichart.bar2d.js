@@ -23,29 +23,29 @@
 			/**
 			 * get the max/min scale of this coordinate for calculated the height
 			 */
-			var S = this.coo.getScale(this.get('scaleAlign')),
-				W = this.coo.get('width'),
-				h2 = this.get('barheight')/2,
-				gw = this.get('barheight')+this.get('barspace');
+			var _ = this._(),
+				S = _.coo.getScale(_.get('scaleAlign')),
+				W = _.coo.get('width'),
+				h2 = _.get('barheight')/2,
+				gw = _.get('barheight')+_.get('barspace');
 			
-			this.data.each(function(d, i) {
+			_.data.each(function(d, i) {
+				_.doParse(_,d, i, i, 0, _.y+_.get('barspace')+i*gw, (d.value - S.start) * W / S.distance);
+				d.reference = new iChart.Rectangle2D(_.get('rectangle'), _);
+				_.rectangles.push(d.reference);
 				
-				this.doParse(d, i, i, 0, this.y+this.get('barspace')+i*gw, (d.value - S.start) * W / S.distance);
-				d.reference = new iChart.Rectangle2D(this.get('rectangle'), this);
-				this.rectangles.push(d.reference);
-				
-				this.labels.push(new iChart.Text({
+				_.labels.push(new iChart.Text({
 					id:i,
 					textAlign:'right',
 					textBaseline:'middle',
 					text:d.name,
-					originx:this.x - this.get('text_space'),
-	 				originy:this.y + this.get('barspace')+i*gw +h2
-				},this));
-			}, this);
+					originx:_.x - _.get('text_space'),
+	 				originy:_.y + _.get('barspace')+i*gw +h2
+				},_));
+			}, _);
 			
-			this.components.push(this.labels);
-			this.components.push(this.rectangles);
+			_.components.push(_.labels);
+			_.components.push(_.rectangles);
 		}
 		
 });//@end

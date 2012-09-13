@@ -46,18 +46,21 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		this.rectangles = [];
 		this.labels = [];
 	},
-	doParse : function(d, i, id, x, y, w) {
-		var t = (this.get('showpercent') ? iChart.toPercent(d.value / this.total, this.get('decimalsnum')) : d.value);
-		if (this.get('tip.enable'))
-			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, d.value, i], d.name + ' ' + t));
-
-		this.push('rectangle.value', t);
-		this.push('rectangle.background_color', d.color);
-
-		this.push('rectangle.id', id);
-		this.push('rectangle.originy', y);
-		this.push('rectangle.width', w);
-
+	doParse : function(_,d, i, id, x, y, w) {
+		var t = (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
+		if (_.get('tip.enable'))
+			_.push('rectangle.tip.text', _.fireString(_, 'parseTipText', [d, d.value, i], d.name + ' ' + t));
+		
+		_.set({
+			rectangle:{
+				id:id,
+				name:d.name,
+				value:t,
+				background_color:d.color,
+				originy:y,
+				width:w
+			}
+		});	
 	},
 	doAnimation : function(t, d) {
 		this.coo.draw();
@@ -72,51 +75,53 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 	},
 	doConfig : function() {
 		iChart.Bar.superclass.doConfig.call(this);
+		
+		var _ = this._(),b = 'barheight',z = 'z_index';
 		/**
 		 * Apply the coordinate feature
 		 */
-		iChart.Interface.coordinate.call(this);
+		iChart.Interface.coordinate.call(_);
 		
-		this.rectangles.zIndex = this.get('z_index');
+		_.rectangles.zIndex = _.get(z);
 		
-		this.labels.zIndex = this.get('z_index') + 1;
+		_.labels.zIndex = _.get(z) + 1;
 
-		if (this.dataType == 'simple') {
+		if (_.dataType == 'simple') {
 
-			var L = this.data.length, H = this.get('coordinate.height'), bh = this.pushIf('barheight', H / (L * 2 + 1));
+			var L = _.data.length, H = _.get('coordinate.height'), bh = _.pushIf(b, H / (L * 2 + 1));
 			/**
 			 * bar's height
 			 */
 			if (bh * L > H) {
-				bh = this.push('barheight', H / (L * 2 + 1));
+				bh = _.push(b, H / (L * 2 + 1));
 			}
 			/**
 			 * the space of two bar
 			 */
-			this.push('barspace', (H - bh * L) / (L + 1));
+			_.push('barspace', (H - bh * L) / (L + 1));
 		}
 
-		if (this.is3D()) {
+		if (_.is3D()) {
 
 		}
 		/**
 		 * use option create a coordinate
 		 */
-		this.coo = iChart.Interface.coordinate_.call(this);
-		this.components.push(this.coo);
+		_.coo = iChart.Interface.coordinate_.call(_);
+		_.components.push(_.coo);
 
 		/**
 		 * Quick config to all rectangle
 		 */
-		iChart.apply(this.get('rectangle'), iChart.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety', 'gradient', 'color_factor'], this.options));
-
+		iChart.applyIf(_.get('rectangle'), iChart.clone(_.get('communal_option'), _.options));
+		
 		/**
 		 * quick config to all rectangle
 		 */
-		this.push('rectangle.height', bh);
-		this.push('rectangle.valueAlign', 'right');
-		this.push('rectangle.tipAlign', 'right');
-		this.push('rectangle.originx', this.x + this.coo.get('brushsize'));
+		_.push('rectangle.height', bh);
+		_.push('rectangle.valueAlign', 'right');
+		_.push('rectangle.tipAlign', 'right');
+		_.push('rectangle.originx', _.x + _.coo.get('brushsize'));
 
 	}
 
