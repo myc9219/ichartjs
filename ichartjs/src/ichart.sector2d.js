@@ -28,6 +28,7 @@
 					this.x,
 					this.y,
 					this.r,
+					this.get('donutwidth'),
 					this.get('startAngle'),
 					this.get('endAngle'),
 					this.get('f_color'),
@@ -37,17 +38,15 @@
 					this.get('shadow'),
 					this.get('counterclockwise'));
 		},
+		
 		isEventValid:function(e){
 			if(this.label&&this.label.isEventValid(e).valid)
 				return {valid:true};
-				
-			if((this.r)<iChart.distanceP2P(this.x,this.y,e.offsetX,e.offsetY)){
+			var r = iChart.distanceP2P(this.x,this.y,e.x,e.y),b=this.get('donutwidth');	
+			if(this.r<r||(b&&(this.r-b)>r)){
 				return {valid:false};
 			}
-			/**
-			 * 与x轴正方向形成的夹角、x轴逆时针的角度、并转换弧度参照 
-			 */
-			if(iChart.angleInRange(this.get('startAngle'),this.get('endAngle'),(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
+			if(iChart.angleInRange(this.get('startAngle'),this.get('endAngle'),(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.x,e.y)))){
 				return {valid:true};
 			}
 			return {valid:false};
@@ -64,36 +63,40 @@
 		},
 		doConfig:function(){
 			iChart.Sector2D.superclass.doConfig.call(this);
+			var _ = this._();
+			_.r = _.get('radius');
 			
-			this.r = this.get('radius');
-			iChart.Assert.gtZero(this.r);
+			iChart.Assert.gtZero(_.r);
 			
-			
-			if(this.get('gradient')){
-				this.push('f_color',this.T.avgRadialGradient(this.x,this.y,0,this.x,this.y,this.r,[this.get('light_color'),this.get('dark_color')]));
+			if(_.get('donutwidth')>_.r){
+				_.push('donutwidth',0);
 			}
-			this.pushIf('increment',iChart.lowTo(5,this.r/10));
 			
-			var A = this.get('middleAngle'),inc = this.get('increment');
-			this.push('inc_x',inc * Math.cos(2 * Math.PI -A));
-			this.push('inc_y',inc * Math.sin(2 * Math.PI - A));
+			if(_.get('gradient')){
+				_.push('f_color',_.T.avgRadialGradient(_.x,_.y,0,_.x,_.y,_.r,[_.get('light_color'),_.get('dark_color')]));
+			}
+			_.pushIf('increment',iChart.lowTo(5,_.r/10));
 			
-			if(this.get('label.enable')){
-				this.pushIf('label.linelength',iChart.lowTo(10,this.r/8));
+			var A = _.get('middleAngle'),inc = _.get('increment');
+			_.push('inc_x',inc * Math.cos(2 * Math.PI -A));
+			_.push('inc_y',inc * Math.sin(2 * Math.PI - A));
+			
+			if(_.get('label.enable')){
+				_.pushIf('label.linelength',iChart.lowTo(10,_.r/8));
 				Q  = iChart.quadrantd(A),
 				
-				P2 = iChart.p2Point(this.x,this.y,A,this.r/2);
-			
-				this.push('label.originx',P2.x);
-				this.push('label.originy',P2.y);
-				this.push('label.quadrantd',Q);
+				P2 = iChart.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
 				
-				var P = iChart.p2Point(this.x,this.y,A,this.r + this.get('label.linelength'));
-				this.push('label.line_potins',[P2.x,P2.y,P.x,P.y]);
-				this.push('label.labelx',P.x);
-				this.push('label.labely',P.y);
+				_.push('label.originx',P2.x);
+				_.push('label.originy',P2.y);
+				_.push('label.quadrantd',Q);
 				
-				this.label = new iChart.Label(this.get('label'),this);
+				var P = iChart.p2Point(_.x,_.y,A,_.r + _.get('label.linelength'));
+				_.push('label.line_potins',[P2.x,P2.y,P.x,P.y]);
+				_.push('label.labelx',P.x);
+				_.push('label.labely',P.y);
+				
+				_.label = new iChart.Label(_.get('label'),_);
 			}
 		}
 });//@end

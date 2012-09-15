@@ -59,64 +59,48 @@
 				return this.canvas.style[a];
 		},
 		/**
-		 * arc
-		 */
-		arc : function(x, y, r, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
-			var x0, y0, ccw = !!ccw, a2r = !!a2r;
-			this.save();
-			if (last)
-				this.gCO(last);
-			if (b)
-				this.strokeStyle(bw, bc);
-			this.shadowOn(sw).fillStyle(c).moveTo(x, y).beginPath();
-			this.c.arc(x, y, r, s, e, ccw);
-			if (a2r)
-				this.lineTo(x, y);
-			this.closePath().fill();
-			if (b)
-				this.stroke();
-			return this.restore();
-		},
-		/**
 		 * draw ellipse API
 		 */
 		ellipse : function(x, y, a, b, s, e, c, bo, bow, boc, sw, ccw, a2r, last) {
 			var angle = s, ccw = !!ccw, a2r = !!a2r;
-			this.save();
-			if (last)
-				this.gCO(last);
-			if (bo)
-				this.strokeStyle(bow, boc);
-			this.shadowOn(sw).fillStyle(c).moveTo(x, y).beginPath();
-
+			this.save().gCo(last).strokeStyle(bo,bow, boc).shadowOn(sw).fillStyle(c).moveTo(x, y).beginPath();
+			
 			if (a2r)
 				this.moveTo(x, y);
-
+			
 			while (angle <= e) {
 				this.lineTo(x + a * cos(angle), y + (ccw ? (-b * sin(angle)) : (b * sin(angle))));
 				angle += inc;
 			}
-			this.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e)))).closePath();
-			if (bo)
-				this.stroke();
-			if (c)
-				this.fill();
-			return this.restore();
+			return this.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e)))).closePath().stroke(bo).fill(c).restore();
+		},
+		/**
+		 * arc
+		 */
+		arc : function(x, y, r, dw, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
+			var ccw = !!ccw, a2r = !!a2r&&!dw;
+			this.save().gCo(last).strokeStyle(b,bw,bc).shadowOn(sw).fillStyle(c).beginPath();
+			
+			if(dw){
+				this.moveTo(x+cos(s)*(r-dw),y+sin(s)*(r-dw)).lineTo(x+cos(s)*r,y+sin(s)*r);
+				this.c.arc(x, y, r, s, e,ccw);
+				this.lineTo(x+cos(e)*(r-dw),y+sin(e)*(r-dw));
+				this.c.arc(x, y, r-dw, e, s,!ccw);
+			}else{
+				this.c.arc(x, y, r, s, e, ccw);
+			}
+			
+			if (a2r)
+				this.lineTo(x, y);
+			return this.closePath().fill(c).stroke(b).restore();
 		},
 		/**
 		 * draw sector
 		 */
-		sector : function(x, y, r, s, e, c, b, bw, bc, sw, ccw) {
-			if (sw) {
-				/**
-				 * fixed Chrome and Opera bug
-				 */
-				this.arc(x, y, r, s, e, c, b, bw, bc, sw,ccw, true);
-				this.arc(x, y, r, s, e, c, b, bw, bc, false,ccw, true);
-			} else {
-				this.arc(x, y, r, s, e, c, b, bw, bc, false, ccw, true);
-			}
-			return this;
+		sector : function(x, y, r, dw,s, e, c, b, bw, bc, sw, ccw) {
+			if (sw)
+				this.arc(x, y, r, dw, s, e, c,0,0,0,sw,ccw, true, true);
+			return this.arc(x, y, r, dw, s, e, c, b, bw, bc, false, ccw, true);
 		},
 		sector3D : function() {
 			var x0, y0, sPaint = function(x, y, a, b, s, e, ccw, h, c) {
@@ -139,11 +123,11 @@
 					angle = angle - inc;
 				}
 				Lo.call(this, s, h);
-				this.lineTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).closePath().fill();
+				this.lineTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).closePath().fill(true);
 			}, layerDraw = function(x, y, a, b, ccw, h, A, c) {
 				var x0 = x + a * cos(A);
 				var y0 = y + h + (ccw ? (-b * sin(A)) : (b * sin(A)));
-				this.moveTo(x, y).beginPath().fillStyle(c).lineTo(x, y + h).lineTo(x0, y0).lineTo(x0, y0 - h).lineTo(x, y).closePath().fill();
+				this.moveTo(x, y).beginPath().fillStyle(c).lineTo(x, y + h).lineTo(x0, y0).lineTo(x0, y0 - h).lineTo(x, y).closePath().fill(true);
 			}, layerPaint = function(x, y, a, b, s, e, ccw, h, c) {
 				var ds = ccw ? (s < PI / 2 || s > 1.5 * PI) : (s > PI / 2 && s < 1.5 * PI), de = ccw ? (e > PI / 2 && e < 1.5 * PI) : (e < PI / 2 || e > 1.5 * PI);
 				if (!ds && !de)
@@ -182,13 +166,15 @@
 		textStyle : function(a, l, f) {
 			return this.textAlign(a).textBaseline(l).textFont(f);
 		},
-		strokeStyle : function(w, c, j) {
-			if (w)
-				this.c.lineWidth = w;
-			if (c)
-				this.c.strokeStyle = c;
-			if (j)
-				this.c.lineJoin = j;
+		strokeStyle : function(b,w, c, j) {
+			if(b){
+				if (w)
+					this.c.lineWidth = w;
+				if (c)
+					this.c.strokeStyle = c;
+				if (j)
+					this.c.lineJoin = j;
+			}
 			return this;
 		},
 		globalAlpha : function(v) {
@@ -307,11 +293,13 @@
 			this.c.closePath();
 			return this;
 		},
-		stroke : function() {
+		stroke : function(s) {
+			if(s)
 			this.c.stroke();
 			return this;
 		},
-		fill : function() {
+		fill : function(f) {
+			if(f)
 			this.c.fill();
 			return this;
 		},
@@ -444,27 +432,20 @@
 		polygon : function(bg, b, bw, bc, sw, alpham, points) {
 			if (points.length < 2)
 				return;
-			this.save().strokeStyle(bw, bc).beginPath().fillStyle(bg).globalAlpha(alpham).shadowOn(sw).moveTo(points[0], points[1]);
+			this.save().strokeStyle(b,bw, bc).beginPath().fillStyle(bg).globalAlpha(alpham).shadowOn(sw).moveTo(points[0], points[1]);
 			for ( var i = 2; i < points.length; i += 2) {
 				this.lineTo(points[i], points[i + 1]);
 			}
-			this.closePath();
-			if (b)
-				this.stroke();
-			this.fill().restore();
-			return this;
+			return this.closePath().stroke(b).fill(true).restore();
 		},
 		lines : function(p, w, c, last) {
 			if (p.length < 4)
 				return this;
-			this.save();
-			if (last)
-				this.gCO(last);
-			this.beginPath().strokeStyle(w, c).moveTo(fd(w, p[0]), fd(w, p[1]));
+			this.save().gCo(last).beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0]), fd(w, p[1]));
 			for ( var i = 2; i < p.length - 1; i += 2) {
 				this.lineTo(fd(w, p[i]), fd(w, p[i + 1]));
 			}
-			return this.stroke().restore();
+			return this.stroke(true).restore();
 		},
 		bezierCurveTo : function(r) {
 			this.c.bezierCurveTo(r[0], r[1], r[2], r[3], r[4], r[5]);
@@ -473,7 +454,7 @@
 		lineArray : function(p, w, c, smooth, smo) {
 			if (p.length < 2)
 				return this;
-			this.strokeStyle(w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
+			this.strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
 			if (smooth) {
 				for ( var i = 1; i < p.length; i++)
 					this.bezierCurveTo(getCurvePoint(p, p[i], i, smo));
@@ -481,7 +462,7 @@
 				for ( var i = 1; i < p.length; i++)
 					this.lineTo(fd(w, p[i].x), fd(w, p[i].y));
 			}
-			return this.stroke();
+			return this.stroke(true);
 		},
 		manyLine : function(p, w, c, smooth, smo) {
 			var T = [],Q  = false;
@@ -499,13 +480,11 @@
 		line : function(x1, y1, x2, y2, w, c, last) {
 			if (!w || w == 0)
 				return this;
-			this.save();
-			if (last)
-				this.gCO(last);
-			return this.beginPath().strokeStyle(w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke().restore();
+			this.save().gCo(last);
+			return this.beginPath().strokeStyle(true,w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke(true).restore();
 		},
 		round : function(x, y, r, c, bw, bc) {
-			return this.arc(x, y, r, 0, PI2, c, !!bc, bw, bc);
+			return this.arc(x, y, r,0, 0, PI2, c, !!bc, bw, bc);
 		},
 		fillRect : function(x, y, w, h) {
 			this.c.fillRect(x, y, w, h);
@@ -521,6 +500,11 @@
 			w = w || this.width;
 			h = h || this.height;
 			this.c.clearRect(x, y, w, h);
+			return this;
+		},
+		gCo : function(l) {
+			if(l)
+			return this.gCO(l);
 			return this;
 		},
 		gCO : function(l) {
@@ -543,24 +527,15 @@
 				j = f ? j[0] : j;
 				r = (!f || r == 0 || r == '0') ? 0 : $.parsePadding(r);
 			}
-			this.save().translate(x, y).shadowOn(shadow);
-			if (last)
-				this.gCO(last);
-			if (bg)
-				this.fillStyle(bg);
-			if (f)
-				this.strokeStyle(j, c);
+			
+			this.save().translate(x, y).shadowOn(shadow).gCo(last).fillStyle(bg).strokeStyle(f,j, c);
 
 			/**
 			 * draw a round corners border
 			 */
 			if (r) {
 				this.beginPath().moveTo(r[0], fd(j, 0)).lineTo(w - r[1], fd(j, 0)).arc2(w, fd(j, 0), w, r[1], r[1]).lineTo(fd(j, w), h - r[2]).arc2(fd(j, w), h, w - r[2], h, r[2]).lineTo(r[3], fd(j, h)).arc2(0, fd(j, h), 0, h - r[3], r[3]).lineTo(fd(j, 0), r[0]).arc2(fd(j, 0),
-						0, r[0], 0, r[0]).closePath();
-				if (bg)
-					this.fill();
-				if (j)
-					this.stroke();
+						0, r[0], 0, r[0]).closePath().fill(bg).stroke(j);
 			} else {
 				if (!b.enable || f) {
 					if (b.enable)
@@ -569,7 +544,7 @@
 						this.fillRect(0, 0, w, h);
 				} else {
 					if (bg) {
-						this.beginPath().moveTo(floor(j[3] / 2), floor(j[0] / 2)).lineTo(ceil(w - j[1] / 2), j[0] / 2).lineTo(ceil(w - j[1] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), floor(j[0] / 2)).closePath().fill();
+						this.beginPath().moveTo(floor(j[3] / 2), floor(j[0] / 2)).lineTo(ceil(w - j[1] / 2), j[0] / 2).lineTo(ceil(w - j[1] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), floor(j[0] / 2)).closePath().fill(true);
 					}
 					if (j) {
 						c = $.isArray(c) ? c : [c, c, c, c];
@@ -776,14 +751,12 @@
 
 			this.T = null;
 			this.rendered = false;
-
 			this.animationed = false;
 			this.data = [];
 			this.components = [];
 			this.total = 0;
 		},
 		plugin : function(c) {
-			this.init();
 			c.inject(this);
 			this.components.push(c);
 		},
@@ -833,7 +806,7 @@
 		commonDraw : function() {
 			$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
 			$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
-			$.Assert.gtZero(this.data.length, this.type + '\'data is empty.');
+			$.Assert.gtZero(this.data.length, this.type + '\'s data is empty.');
 			
 			/**
 			 * console.time('Test for draw');
@@ -926,7 +899,7 @@
 
 			$.Interface._3D.call(_);
 
-			_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
+			_.T.strokeStyle(true,_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');
 

@@ -70,15 +70,15 @@
 				}
 			}else{
 				if(this.get('showType')=='follow'){
-					style.top = (e.offsetY-this.height()*1.1-2)+"px";
-					style.left = (e.offsetX+2)+"px";
+					style.top = (e.y-this.height()*1.1-2)+"px";
+					style.left = (e.x+2)+"px";
 				}else if(iChart.isFunction(this.get('invokeOffset'))){
 					var o = this.get('invokeOffset')(this.width(),this.height(),m);
 					style.top =  o.top+"px";
 					style.left = o.left+"px";
 				}else{
-					style.top = (e.offsetY-this.height()*1.1-2)+"px";
-					style.left = (e.offsetX+2)+"px";
+					style.top = (e.y-this.height()*1.1-2)+"px";
+					style.left = (e.x+2)+"px";
 				}
 			}
 		},
@@ -105,7 +105,7 @@
 		initialize:function(){
 			iChart.Tip.superclass.initialize.call(this);
 			
-			var _ = this;
+			var _ = this._();
 			
 			_.css('position','absolute');
 			_.dom.innerHTML = _.get('text');

@@ -222,10 +222,10 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 					valid : false
 				};
 			}
-			var ii = Math.floor((e.offsetX - _.x) / sp);
+			var ii = Math.floor((e.x - _.x) / sp);
 			if (ii < 0 || ii >= (p.length - 1)) {
 				ii = iChart.between(0, p.length - 1, ii);
-				if (valid(p[ii], e.offsetX, e.offsetY))
+				if (valid(p[ii], e.x, e.y))
 					return to(ii);
 				else
 					return {
@@ -234,7 +234,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			}
 			// calculate the pointer's position will between which two point?this function can improve location speed
 			for ( var i = ii; i <= ii + 1; i++) {
-				if (valid(p[i], e.offsetX, e.offsetY))
+				if (valid(p[i], e.x, e.y))
 					return to(i);
 			}
 			// console.timeEnd('mouseover');

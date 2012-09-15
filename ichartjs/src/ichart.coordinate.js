@@ -459,7 +459,7 @@ iChart.Coordinate2D = iChart
 					},
 					isEventValid : function(e) {
 						return {
-							valid : e.offsetX > this.x && e.offsetX < (this.x + this.get('width')) && e.offsetY < this.y + this.get('height') && e.offsetY > this.y
+							valid : e.x > this.x && e.x < (this.x + this.get('width')) && e.y < this.y + this.get('height') && e.y > this.y
 						};
 					},
 					doDraw : function(opts) {

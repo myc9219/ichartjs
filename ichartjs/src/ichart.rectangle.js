@@ -91,36 +91,38 @@
 		doConfig:function(){
 			iChart.Rectangle.superclass.doConfig.call(this);
 			iChart.Assert.gtZero(this.get('width'),'width');
-			this.width = this.get('width');
-			this.height = this.get('height');
+			var _ = this._(),v = _.variable.event;
 			
-			this.centerX = this.x + this.width/2;
-			this.centerY = this.y + this.height/2;
+			_.width = _.get('width');
+			_.height = _.get('height');
 			
-			if(this.get('tip.enable')){
-				if(this.get('tip.showType')!='follow'){
-					this.push('tip.invokeOffsetDynamic',false);
+			_.centerX = _.x + _.width/2;
+			_.centerY = _.y + _.height/2;
+			
+			if(_.get('tip.enable')){
+				if(_.get('tip.showType')!='follow'){
+					_.push('tip.invokeOffsetDynamic',false);
 				}
-				this.tip = new iChart.Tip(this.get('tip'),this);
+				_.tip = new iChart.Tip(_.get('tip'),_);
 			}
 			
-			this.variable.event.highlight = false;
+			v.highlight = false;
 			
-			this.on('mouseover',function(e){
+			_.on('mouseover',function(e){
 				//console.time('mouseover');
-				this.variable.event.highlight = true;
-				this.redraw();
-				this.variable.event.highlight = false;
+				v.highlight = true;
+				_.redraw();
+				v.highlight = false;
 				//console.timeEnd('mouseover');
 			}).on('mouseout',function(e){
 				//console.time('mouseout');
-				this.variable.event.highlight = false;
-				this.redraw();
+				v.highlight = false;
+				_.redraw();
 				//console.timeEnd('mouseout');
 			});
 			
-			this.on('beforedraw',function(){
-				this.push('f_color',this.variable.event.highlight?this.get('light_color'):this.get('background_color'));
+			_.on('beforedraw',function(){
+				_.push('f_color',v.highlight?_.get('light_color'):_.get('background_color'));
 				return true;
 			});
 		}

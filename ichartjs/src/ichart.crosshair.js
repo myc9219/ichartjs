@@ -64,8 +64,8 @@
 				/**
 				 * set the 1px offset will make the line at the top left all the time
 				 */
-				this.horizontal.style.top = (e.offsetY-this.top-1)+"px";
-				this.vertical.style.left = (e.offsetX-this.left-1)+"px";
+				this.horizontal.style.top = (e.y-this.top-1)+"px";
+				this.vertical.style.left = (e.x-this.left-1)+"px";
 			}
 		},
 		beforeshow:function(e,m){
@@ -74,7 +74,7 @@
 		initialize:function(){
 			iChart.CrossHair.superclass.initialize.call(this);
 			
-			var _ = this;
+			var _ = this._();
 			
 			_.top = iChart.fixPixel(_.get('top'));
 			_.left = iChart.fixPixel(_.get('left'));

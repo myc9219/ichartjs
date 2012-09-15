@@ -32,57 +32,58 @@
 		},
 		doConfig:function(){
 			iChart.LineBasic2D.superclass.doConfig.call(this);
+			var _ = this._();
 			
-			this.coo = new iChart.Coordinate2D(iChart.merge({
+			_.coo = new iChart.Coordinate2D(iChart.merge({
 					scale:[{
-						 position:this.get('scaleAlign'),	
-						 max_scale:this.get('maxValue')
+						 position:_.get('scaleAlign'),	
+						 max_scale:_.get('maxValue')
 					},{
-						 position:this.get('labelAlign'),	
+						 position:_.get('labelAlign'),	
 						 scaleEnable:false,
 						 start_scale:1,
 						 scale:1,
-						 end_scale:this.get('maxItemSize'),
-						 labels:this.get('data_labels')
+						 end_scale:_.get('maxItemSize'),
+						 labels:_.get('data_labels')
 					}]
-				},this.get('coordinate')),this);
+				},_.get('coordinate')),_);
 			
 			
-			this.components.push(this.coo);
+			_.components.push(_.coo);
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('scaleAlign')),
-				H=this.get('coordinate.valid_height'),
-				sp=this.get('label_spacing'),
+			var S = _.coo.getScale(_.get('scaleAlign')),
+				H=_.get('coordinate.valid_height'),
+				sp=_.get('label_spacing'),
 				points,x,y,
-				ox=this.get('segment_style.originx'),
-				oy=this.get('segment_style.originy'),
+				ox=_.get('segment_style.originx'),
+				oy=_.get('segment_style.originy'),
 				p;
 			
-			this.push('segment_style.tip.showType','follow');
-			this.push('segment_style.coordinate',this.coo);
-			this.push('segment_style.tipInvokeHeap',this.tipInvokeHeap);
-			this.push('segment_style.point_space',sp);
+			_.push('segment_style.tip.showType','follow');
+			_.push('segment_style.coordinate',_.coo);
+			_.push('segment_style.tipInvokeHeap',_.tipInvokeHeap);
+			_.push('segment_style.point_space',sp);
 			
-			this.data.each(function(d,i){
+			_.data.each(function(d,i){
 				points = [];
 				d.value.each(function(v,j){
 					x = sp*j;
 					y = (v-S.start)*H/S.distance;
 					p = {x:ox+x,y:oy-y,value:v,text:v};
-					iChart.merge(p,this.fireEvent(this,'parsePoint',[d,v,x,y,j]))
-					if (this.get('tip.enable'))
-						p.text = this.fireString(this,'parseTipText',[d,v,j],v);
+					iChart.merge(p,_.fireEvent(_,'parsePoint',[d,v,x,y,j]))
+					if (_.get('tip.enable'))
+						p.text = _.fireString(_,'parseTipText',[d,v,j],v);
 					points.push(p);
-				},this);	
+				},_);	
 				
-				this.push('segment_style.points',points);
-				this.push('segment_style.brushsize',d.linewidth||1);
-				this.push('segment_style.background_color',d.color);
+				_.push('segment_style.points',points);
+				_.push('segment_style.brushsize',d.linewidth||1);
+				_.push('segment_style.background_color',d.color);
 				
-				this.lines.push(new iChart.LineSegment(this.get('segment_style'),this));
+				_.lines.push(new iChart.LineSegment(_.get('segment_style'),_));
 			},this);
-			this.components.push(this.lines);
+			_.components.push(_.lines);
 			
 		}
 		

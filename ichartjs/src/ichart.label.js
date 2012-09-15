@@ -70,7 +70,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 	},
 	isEventValid : function(e) {
 		return {
-			valid : iChart.inRange(this.labelx,this.labelx + this.get('width'), e.offsetX) && iChart.inRange(this.labely, this.labely + this.get('height'), e.offsetY)
+			valid : iChart.inRange(this.labelx,this.labelx + this.get('width'), e.x) && iChart.inRange(this.labely, this.labely + this.get('height'), e.y)
 		};
 	},
 	text : function(text) {
@@ -109,18 +109,18 @@ iChart.Label = iChart.extend(iChart.Component, {
 	},
 	doConfig : function() {
 		iChart.Label.superclass.doConfig.call(this);
-
-		this.T.textFont(iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
+		var _ = this._();
+		_.T.textFont(iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
 		
-		if(this.get('fontsize')>this.get('line_height')){
-			this.push('line_height',this.get('fontsize'));
+		if(_.get('fontsize')>_.get('line_height')){
+			_.push('line_height',_.get('fontsize'));
 		}
 		
-		this.push('height',this.get('line_height') + this.get('vpadding'));
+		_.push('height',_.get('line_height') + _.get('vpadding'));
 		
-		this.text();
+		_.text();
 		
-		this.localizer();
+		_.localizer();
 		
 
 	}
