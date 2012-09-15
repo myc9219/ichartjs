@@ -53,6 +53,10 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 */
 			expand : false,
 			/**
+			 * @cfg {Number} Specifies the width when show a donut.only applies when it not 0.(default to 0)
+			 */
+			donutwidth : 0,
+			/**
 			 * @cfg {Boolean} If true means just one piece could bound at same time.(default to false)
 			 */
 			mutex : false,
@@ -117,12 +121,12 @@ iChart.Sector = iChart.extend(iChart.Component, {
 	doConfig : function() {
 		iChart.Sector.superclass.doConfig.call(this);
 
-		var _ = this;
+		var _ = this._(),v = _.variable.event;
 
 		_.push('totalAngle', _.get('endAngle') - _.get('startAngle'));
 
 
-		if(this.get('label.enable')){
+		if(_.get('label.enable')){
 			_.pushIf('label.border.color',_.get('border.color'));
 			/**
 			 * make the label's color in accord with sector
@@ -138,30 +142,40 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			_.tip = new iChart.Tip(_.get('tip'), _);
 		}
 
-		_.variable.event.poped = false;
+		v.poped = false;
 
 		_.on(_.get('bound_event'), function(_, e, r) {
 			// console.profile('Test for pop');
 				 //console.time('Test for pop');
-				_.variable.event.poped = true;
+				v.poped = true;
 				_.expanded = !_.expanded;
 				_.redraw();
-				_.variable.event.poped = false;
+				v.poped = false;
 				 //console.timeEnd('Test for pop');
 				// console.profileEnd('Test for pop');
 			});
-
+		
+		_.on('mouseover',function(e){
+			v.highlight = true;
+			_.redraw();
+			v.highlight = false;
+		}).on('mouseout',function(e){
+			v.highlight = false;
+			_.redraw();
+		});
+		
 		_.on('beforedraw', function() {
+			_.push('f_color',v.highlight?_.get('light_color'):_.get('background_color'));
 			_.x = _.get('originx');
 			_.y = _.get('originy');
-			if (_.variable.event.status != _.expanded) {
+			if (v.status != _.expanded) {
 				_.fireEvent(_, 'changed', [_, _.expanded]);
 				if(_.get('label.enable'))
 				_.labelInvoke((_.expanded?1:-1));
 			}
-			_.variable.event.status = _.expanded;
+			v.status = _.expanded;
 			if (_.expanded) {
-				if (_.get('mutex') && !_.variable.event.poped) {
+				if (_.get('mutex') && !v.poped) {
 					_.expanded = false;
 				} else {
 					_.x += _.get('inc_x');

@@ -11,8 +11,15 @@
 (function(window) {
 	var ua = navigator.userAgent.toLowerCase(), mc = function(e) {
 		return e.test(ua)
-	}, ts = Object.prototype.toString, docMode = document.documentMode, isOpera = mc(/opera/), isChrome = mc(/\bchrome\b/), isWebKit = mc(/webkit/), isSafari = !isChrome && mc(/safari/), isIE = !isOpera && mc(/msie/), supportCanvas = !!document.createElement('canvas').getContext, isGecko = !isWebKit
-			&& mc(/gecko/), isFF = isGecko && mc(/firefox/), isMobile = mc(/ipod|ipad|iphone|android/gi), isWindows = mc(/windows|win32/), isMac = mc(/macintosh|mac os x/), isLinux = mc(/linux/), arithmetic = {
+	}, ts = Object.prototype.toString,
+	isOpera = mc(/opera/), isChrome = mc(/\bchrome\b/),
+	isWebKit = mc(/webkit/),
+	isSafari = !isChrome && mc(/safari/),
+	isIE = !isOpera && mc(/msie/),
+	supportCanvas = !!document.createElement('canvas').getContext,
+	isGecko = !isWebKit&& mc(/gecko/), 
+	isMobile = mc(/ipod|ipad|iphone|android/gi),
+	arithmetic = {
 		Linear : function(t, b, c, d) {
 			return c * t / d + b;
 		},
@@ -69,7 +76,10 @@
 			}
 		}
 	};
-	var iChart_ = (function(window) {// spirit from jquery
+	var iChart_ = (function(window) {
+		/**
+		 * spirit from jquery
+		 */
 		var isReady = false, readyBound = false, readyList = [], DOMContentLoaded = (function() {
 			if (document.addEventListener) {
 				return function() {
@@ -205,7 +215,9 @@
 			}
 			return d;
 		};
-		// get attribute that given
+		/**
+		 * clone attribute that given
+		 */
 		_.clone = function(a, e, deep) {
 			var d = {};
 			if (ts.apply(a) === "[object Array]" && ts.apply(e) === "[object Object]") {
@@ -236,7 +248,11 @@
 				}
 			}
 		};
-		_.extend = function() { // spirit from ext2.0
+		
+		/**
+		 * spirit from ext2.0
+		 */
+		_.extend = function() {
 			var C = function(E) {
 				for ( var D in E) {
 					this[D] = E[D];
@@ -252,7 +268,7 @@
 				E.prototype = D;
 				H = J.prototype = new E();
 				H.constructor = J;
-				J.superclass = D;// the pointer to the superclass
+				J.superclass = D;
 				if (D.constructor == e) {
 					D.constructor = G;
 				}
@@ -284,7 +300,8 @@
 				return pF((v / f + "").substring(0, (v + "").length + 1));
 			}
 			return Math.ceil(v / f);
-		}, innerColor = ["navy", "olive", "silver", "gold", "lime", "fuchsia", "aqua", "green", "red", "blue", "pink", "purple", "yellow", "maroon", "black", "gray", "white"], colors = {
+		},
+		colors = {
 			navy : 'rgb(0,0,128)',
 			olive : 'rgb(128,128,0)',
 			orange : 'rgb(255,165,0)',
@@ -329,7 +346,14 @@
 			lightyellow : 'rgb(255,255,224)',
 			magenta : 'rgb(255,0,255)',
 			violet : 'rgb(128,0,128)'
-		}, hex2Rgb = function(hex) {
+		},
+		innerColor = function(){
+			var r = [];
+			for(var c in colors)
+				r.push(colors[c]);
+			return r;
+		}(), 
+		hex2Rgb = function(hex) {
 			hex = hex.replace(/#/g, "").replace(/^(\w)(\w)(\w)$/, "$1$1$2$2$3$3");
 			return 'rgb(' + parseInt(hex.substring(0, 2), 16) + ',' + parseInt(hex.substring(2, 4), 16) + ',' + parseInt(hex.substring(4, 6), 16) + ')';
 		}, i2hex = function(N) {
@@ -484,7 +508,7 @@
 
 		_.apply(_, {
 			version : "1.0",
-			email : 'wanghetommy@gmail.com',
+			email : 'taylor@ichartjs.com',
 			isEmpty : function(C, e) {
 				return C === null || C === undefined || ((_.isArray(C) && !C.length)) || (!e ? C === "" : false)
 			},
@@ -547,7 +571,7 @@
 			/**
 			 * simple noConflict implements
 			 */
-			noConflict : function(deep) {
+			noConflict : function() {
 				return iChart_;
 			},
 			parsePadding : function(s, d) {
@@ -665,11 +689,6 @@
 			},
 			/**
 			 * 计算空间点坐标矢量
-			 * 
-			 * @param {Number}
-			 *            x
-			 * @param {Number}
-			 *            y
 			 */
 			vectorP2P : function(x, y, radian) {
 				if (!radian) {
@@ -709,7 +728,7 @@
 				return max - factor(max, f);
 			},
 			get : function(i) {
-				return innerColor[i % 16];
+				return innerColor[i % 44];
 			},
 			_2D : '2d',
 			_3D : '3d',
@@ -735,18 +754,10 @@
 			isSafari : isSafari,
 			isIE : isIE,
 			isGecko : isGecko,
-			isFF : isFF,
-			isLinux : isLinux,
 			isMobile : isMobile,
-			isWindows : isWindows,
-			isMac : isMac,
-			/**
-			 * static variable
-			 */
-			FRAME : isMobile ? 24 : 54,
+			FRAME : isMobile ? 30 : 60,
 			DefaultAnimationArithmetic : 'Cubic'
 		});
-
 		_.Assert = {
 			gtZero : function(v, n) {
 				_.Assert.gt(v, 0, n);
@@ -759,21 +770,9 @@
 				if (!_.isNumber(v))
 					throw new Error(n + " required Number,given:" + v);
 			},
-			isNotEmpty : function(v, cause) {
-				if (!v || v == '') {
-					throw new Error(" required not empty.cause:" + cause);
-				}
-				if (_.isArray(v) && v.length == 0) {
-					throw new Error("required must has one element at least.cause:" + cause);
-				}
-			},
 			isArray : function(v, n) {
 				if (!_.isArray(v))
 					throw new Error(n + " required Array,given:" + v);
-			},
-			isFunction : function(v, n) {
-				if (!_.isFunction(v))
-					throw new Error(n + " required Function,given:" + v);
 			},
 			isTrue : function(v, cause) {
 				if (v !== true)
@@ -792,6 +791,7 @@
 				window.setTimeout(callback, 1000 / 60);
 			};
 		})();
+		
 		/**
 		 * defined Event
 		 */
@@ -804,21 +804,17 @@
 				else
 					ele['on' + type] = fn;
 			},
-			fix : function(e) { // inspire by jquery
+			fix : function(e) {
 				// Fix event for mise
 				if (typeof (e) == 'undefined') {
 					e = window.event;
 				}
+				
 				// Fix target property, if necessary
 				if (!e.target) {
 					e.target = e.srcElement || document;
 				}
-
-				// Add relatedTarget, if necessary
-				if (!e.relatedTarget && e.fromElement) {
-					e.relatedTarget = e.fromElement === e.target ? e.toElement : e.fromElement;
-				}
-
+				
 				// Calculate pageX/Y if missing and clientX/Y available
 				if (e.pageX == null && e.clientX != null) {
 					var doc = document.documentElement, body = document.body;
@@ -840,23 +836,10 @@
 						e.offsetY = e.pageY - y;
 					}
 				}
-
-				// Add which for key events
-				if (e.which == null && (e.charCode != null || e.keyCode != null)) {
-					e.which = e.charCode != null ? e.charCode : e.keyCode;
-				}
-
-				// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
-				if (!e.metaKey && e.ctrlKey) {
-					e.metaKey = e.ctrlKey;
-				}
-
-				// Add which for click: 1 === left; 2 === middle; 3 === right
-				// Note: button is not normalized, so don't use it
-				if (!e.which && e.button !== undefined) {
-					e.which = (e.button & 1 ? 1 : (e.button & 2 ? 3 : (e.button & 4 ? 2 : 0)));
-				}
-
+				
+				e.x = e.offsetX;
+				e.y = e.offsetY;
+				
 				// Any browser that doesn't implement stopPropagation() (MSIE)
 				if (!e.stopPropagation) {
 					e.stopPropagation = function() {
@@ -882,6 +865,7 @@
 			}
 		};
 	};
+	
 	Array.prototype.eachAll = function(f, s) {
 		this.each(function(d, i) {
 			if (iChart_.isArray(d)) {
@@ -891,6 +875,7 @@
 			}
 		}, s);
 	};
+	
 	window.iChart = iChart_;
 	if (!window.$) {
 		window.$ = window.iChart;
@@ -1485,34 +1470,35 @@ $.Html = $.extend($.Element,{
 	},
 	doConfig : function() {
 		$.Component.superclass.doConfig.call(this);
+		var _ = this._();
 		/**
 		 * originx
 		 */
-		this.x = this.get('originx')+this.get('offsetx');
+		_.x = _.get('originx')+_.get('offsetx');
 		/**
 		 * 
 		 * originy
 		 */
-		this.y = this.get('originy')+this.get('offsety');
+		_.y = _.get('originy')+_.get('offsety');
 		
 		/**
 		 * if have evaluate it
 		 */
-		this.data = this.get('data');
+		_.data = _.get('data');
 	
-		$.Interface._3D.call(this);
+		$.Interface._3D.call(_);
 		
-		if (this.get('tip.enable')) {
+		if (_.get('tip.enable')) {
 			/**
 			 * make tip's border in accord with sector
 			 */
-			this.pushIf('tip.border.color', this.get('f_color'));
+			_.pushIf('tip.border.color', _.get('f_color'));
 	
-			if (!$.isFunction(this.get('tip.invokeOffset')))
+			if (!$.isFunction(_.get('tip.invokeOffset')))
 				/**
 				 * indicate the tip must calculate position
 				 */
-				this.push('tip.invokeOffset', this.tipInvoke());
+				_.push('tip.invokeOffset', _.tipInvoke());
 		}
 	
 	},
@@ -1816,15 +1802,15 @@ $.Html = $.extend($.Element,{
 				}
 			}else{
 				if(this.get('showType')=='follow'){
-					style.top = (e.offsetY-this.height()*1.1-2)+"px";
-					style.left = (e.offsetX+2)+"px";
+					style.top = (e.y-this.height()*1.1-2)+"px";
+					style.left = (e.x+2)+"px";
 				}else if($.isFunction(this.get('invokeOffset'))){
 					var o = this.get('invokeOffset')(this.width(),this.height(),m);
 					style.top =  o.top+"px";
 					style.left = o.left+"px";
 				}else{
-					style.top = (e.offsetY-this.height()*1.1-2)+"px";
-					style.left = (e.offsetX+2)+"px";
+					style.top = (e.y-this.height()*1.1-2)+"px";
+					style.left = (e.x+2)+"px";
 				}
 			}
 		},
@@ -1851,7 +1837,7 @@ $.Html = $.extend($.Element,{
 		initialize:function(){
 			$.Tip.superclass.initialize.call(this);
 			
-			var _ = this;
+			var _ = this._();
 			
 			_.css('position','absolute');
 			_.dom.innerHTML = _.get('text');
@@ -1958,8 +1944,8 @@ $.Html = $.extend($.Element,{
 				/**
 				 * set the 1px offset will make the line at the top left all the time
 				 */
-				this.horizontal.style.top = (e.offsetY-this.top-1)+"px";
-				this.vertical.style.left = (e.offsetX-this.left-1)+"px";
+				this.horizontal.style.top = (e.y-this.top-1)+"px";
+				this.vertical.style.left = (e.x-this.left-1)+"px";
 			}
 		},
 		beforeshow:function(e,m){
@@ -1968,7 +1954,7 @@ $.Html = $.extend($.Element,{
 		initialize:function(){
 			$.CrossHair.superclass.initialize.call(this);
 			
-			var _ = this;
+			var _ = this._();
 			
 			_.top = $.fixPixel(_.get('top'));
 			_.left = $.fixPixel(_.get('left'));
@@ -2133,13 +2119,13 @@ $.Legend = $.extend($.Component, {
 		if (n == 'round') {
 			this.T.round(x + s / 2, y + s / 2, s / 2, color);
 		} else if (n == 'round-bar') {
-			this.T.box(x, y + s * 5 / 12, s, s / 6,0, color);
+			this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
 			this.T.round(x + s / 2, y + s / 2, s / 4, color);
 		} else if (n == 'square-bar') {
-			this.T.box(x, y + s * 5 / 12, s, s / 6, 0,color);
-			this.T.box(x + s / 4, y + s / 4, s / 2, s / 2, 0,color);
+			this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
+			this.T.box(x + s / 4, y + s / 4, s / 2, s / 2, 0, color);
 		} else {
-			this.T.box(x, y, s, s, 0,color);
+			this.T.box(x, y, s, s, 0, color);
 		}
 		var textcolor = this.get('color');
 
@@ -2167,23 +2153,23 @@ $.Legend = $.extend($.Component, {
 	isEventValid : function(e) {
 		var r = {
 			valid : false
-		};
-		if (e.offsetX > this.x && e.offsetX < (this.x + this.width) && e.offsetY > this.y && e.offsetY < (this.y + this.height)) {
-			this.data.each(function(d, i) {
-				if (e.offsetX > d.x && e.offsetX < (d.x + d.width + this.get('signwidth')) && e.offsetY > d.y && e.offsetY < (d.y + this.get('line_height'))) {
+		},_ = this._();
+		if (e.x > this.x && e.x < (_.x + _.width) && e.y > _.y && e.y < (_.y + _.height)) {
+			_.data.each(function(d, i) {
+				if (e.x > d.x && e.x < (d.x + d.width + _.get('signwidth')) && e.y > d.y && e.y < (d.y + _.get('line_height'))) {
 					r = {
 						valid : true,
 						index : i,
 						target : d
 					}
 				}
-			}, this);
+			}, _);
 		}
 		return r;
 	},
 	doDraw : function() {
 		this.T.box(this.x, this.y, this.width, this.height, this.get('border'), this.get('f_color'), false, this.get('shadow'));
-		
+
 		this.T.textStyle('left', 'middle', $.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
 
 		var x = this.x + this.get('padding_left'), y = this.y + this.get('padding_top'), text, c = this.get('column'), r = this.get('row');
@@ -2194,114 +2180,116 @@ $.Legend = $.extend($.Component, {
 			this.fireEvent(this, 'drawRaw', [this, i * c]);
 		}
 	},
-	calculate : function(data, D) {
-		this.data = data;
-
-		var suffix = 0, maxwidth = w = this.get('width'), width = 0, wauto = (w == 'auto'), c = $.isNumber(this.get('column')), r = $.isNumber(this.get('row')), L = this.data.length, d, h, g = this.container;
-
-		if (!c && !r)
-			c = 1;
-
-		if (c && !r)
-			this.push('row', Math.ceil(L / this.get('column')));
-		if (!c && r)
-			this.push('column', Math.ceil(L / this.get('row')));
-
-		c = this.get('column');
-		r = this.get('row');
-
-		if (L > r * c) {
-			r += Math.ceil((L - r * c) / c);
-			this.push('row', r);
-		}
-
-		this.columnwidth = new Array(c);
-
-		if (wauto) {
-			maxwidth = 0;// 行最大宽度
-}
-
-// calculate the width each item will used
-D.each(function(d, i) {
-	$.merge(d, this.fireEvent(this, 'parse', [this, d.name, i]));
-	d.text = d.text || d.name;
-	d.width = this.T.measureText(d.text);
-}, this);
-
-// calculate the each column's width it will used
-for ( var i = 0; i < c; i++) {
-	width = 0;
-	suffix = i;
-	while (suffix < L) {
-		width = Math.max(width, this.data[suffix].width);
-		suffix += c;
-	}
-	this.columnwidth[i] = width;
-	maxwidth += width;
-}
-
-if (wauto) {
-	w = this.push('width', maxwidth + this.get('hpadding') + this.get('signwidth') * c + (c - 1) * this.get('legend_space'));
-}
-
-if (w > this.get('maxwidth')) {
-	w = this.push('width', this.get('maxwidth'));
-}
-
-this.push('textwidth', w - this.get('hpadding') - this.get('signwidth'));
-
-this.width = w;
-this.height = h = this.push('height', r * this.get('line_height') + this.get('vpadding'));
-
-if (this.get('valign') == 'top') {
-	this.y = g.get('t_originy');
-} else if (this.get('valign') == 'bottom') {
-	this.y = g.get('b_originy') - h;
-} else {
-	this.y = g.get('centery') - h / 2;
-}
-
-if (this.get('align') == 'left') {
-	this.x = g.get('l_originx');
-} else if (this.get('align') == 'center') {
-	this.x = g.get('centerx') - this.get('textwidth') / 2;
-} else {
-	this.x = g.get('r_originx') - w;
-}
-
-this.x = this.push('originx', this.x + this.get('offsetx'));
-this.y = this.push('originy', this.y + this.get('offsety'));
-},
 	doConfig : function() {
 		$.Legend.superclass.doConfig.call(this);
-		$.Assert.isNotEmpty(this.get('data'), this.type + '[data]');
+		
+		var _ = this._(),ss = _.get('sign_size'), g = _.container;
 
-		var ss = this.get('sign_size'), g = this.container;
+		_.T.textFont(_.get('fontStyle'));
 
-		this.T.textFont(this.get('fontStyle'));
+		_.push('signwidth', (ss + _.get('sign_space')));
 
-		this.push('signwidth', (ss + this.get('sign_space')));
-
-		if (this.get('line_height') < ss) {
-			this.push('line_height', ss + ss / 5);
+		if (_.get('line_height') < ss) {
+			_.push('line_height', ss + ss / 5);
 		}
 
-		// if the position is incompatible,rectify it.
-		if (this.get('align') == 'center' && this.get('valign') == 'middle') {
-			this.push('valign', 'top');
+		/**
+		 * if the position is incompatible,rectify it.
+		 */
+		if (_.get('align') == 'center' && _.get('valign') == 'middle') {
+			_.push('valign', 'top');
 		}
 
-		// if this position incompatible with container,rectify it.
+		/**
+		 * if this position incompatible with container,rectify it.
+		 */
 		if (g.get('align') == 'left') {
-			if (this.get('valign') == 'middle') {
-				this.push('align', 'right');
+			if (_.get('valign') == 'middle') {
+				_.push('align', 'right');
 			}
 		}
 
-		this.calculate(this.data, this.data);
+		var suffix = 0, maxwidth = w = _.get('width'), width = 0, wauto = (w == 'auto'), c = $.isNumber(_.get('column')), r = $.isNumber(_.get('row')), L = _.data.length, d, h;
+		
+		if (!c && !r)
+			c = 1;
+		
+		if (c && !r)
+			_.push('row', Math.ceil(L / _.get('column')));
+		if (!c && r)
+			_.push('column', Math.ceil(L / _.get('row')));
+
+		c = _.get('column');
+		r = _.get('row');
+
+		if (L > r * c) {
+			r += Math.ceil((L - r * c) / c);
+			_.push('row', r);
+		}
+
+		_.columnwidth = new Array(c);
+
+		if (wauto) {
+			maxwidth = 0;
+		}
+
+		/**
+		 * calculate the width each item will used
+		 */
+		_.data.each(function(d, i) {
+			$.merge(d, _.fireEvent(_, 'parse', [_, d.name, i]));
+			d.text = d.text || d.name;
+			d.width = _.T.measureText(d.text);
+		}, _);
+
+		/**
+		 * calculate the each column's width it will used
+		 */
+		for ( var i = 0; i < c; i++) {
+			width = 0;
+			suffix = i;
+			while (suffix < L) {
+				width = Math.max(width, _.data[suffix].width);
+				suffix += c;
+			}
+			_.columnwidth[i] = width;
+			maxwidth += width;
+		}
+
+		if (wauto) {
+			w = _.push('width', maxwidth + _.get('hpadding') + _.get('signwidth') * c + (c - 1) * _.get('legend_space'));
+		}
+
+		if (w > _.get('maxwidth')) {
+			w = _.push('width', _.get('maxwidth'));
+		}
+
+		_.push('textwidth', w - _.get('hpadding') - _.get('signwidth'));
+
+		_.width = w;
+		_.height = h = _.push('height', r * _.get('line_height') + _.get('vpadding'));
+
+		if (_.get('valign') == 'top') {
+			_.y = g.get('t_originy');
+		} else if (_.get('valign') == 'bottom') {
+			_.y = g.get('b_originy') - h;
+		} else {
+			_.y = g.get('centery') - h / 2;
+		}
+
+		if (_.get('align') == 'left') {
+			_.x = g.get('l_originx');
+		} else if (_.get('align') == 'center') {
+			_.x = g.get('centerx') - _.get('textwidth') / 2;
+		} else {
+			_.x = g.get('r_originx') - w;
+		}
+
+		_.x = _.push('originx', _.x + _.get('offsetx'));
+		_.y = _.push('originy', _.y + _.get('offsety'));
 
 	}
-});// @end
+});/** @end */
 
 /**
  * @overview this component use for abc
@@ -2375,7 +2363,7 @@ $.Label = $.extend($.Component, {
 	},
 	isEventValid : function(e) {
 		return {
-			valid : $.inRange(this.labelx,this.labelx + this.get('width'), e.offsetX) && $.inRange(this.labely, this.labely + this.get('height'), e.offsetY)
+			valid : $.inRange(this.labelx,this.labelx + this.get('width'), e.x) && $.inRange(this.labely, this.labely + this.get('height'), e.y)
 		};
 	},
 	text : function(text) {
@@ -2414,18 +2402,18 @@ $.Label = $.extend($.Component, {
 	},
 	doConfig : function() {
 		$.Label.superclass.doConfig.call(this);
-
-		this.T.textFont($.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
+		var _ = this._();
+		_.T.textFont($.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
 		
-		if(this.get('fontsize')>this.get('line_height')){
-			this.push('line_height',this.get('fontsize'));
+		if(_.get('fontsize')>_.get('line_height')){
+			_.push('line_height',_.get('fontsize'));
 		}
 		
-		this.push('height',this.get('line_height') + this.get('vpadding'));
+		_.push('height',_.get('line_height') + _.get('vpadding'));
 		
-		this.text();
+		_.text();
 		
-		this.localizer();
+		_.localizer();
 		
 
 	}
@@ -2520,15 +2508,15 @@ $.Label = $.extend($.Component, {
 		},
 		doConfig:function(){
 			$.Text.superclass.doConfig.call(this);
-			var x = this.x,y=this.y,w=this.get('width'),h=this.get('height'),a=this.get('textAlign');
+			var _ = this._(),x = _.x,y=_.y,w=_.get('width'),h=_.get('height'),a=_.get('textAlign');
 			x+=(a=='center'?w/2:(a=='right'?w:0));
 			if(h){
 				y+=h/2;
-				this.push('textBaseline','middle');
+				_.push('textBaseline','middle');
 			}
-			this.push('textx',x);
-			this.push('texty',y);
-			this.push('box_feature',w&&h);
+			_.push('textx',x);
+			_.push('texty',y);
+			_.push('box_feature',w&&h);
 			
 			
 		}
@@ -2594,64 +2582,48 @@ $.Label = $.extend($.Component, {
 				return this.canvas.style[a];
 		},
 		/**
-		 * arc
-		 */
-		arc : function(x, y, r, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
-			var x0, y0, ccw = !!ccw, a2r = !!a2r;
-			this.save();
-			if (last)
-				this.gCO(last);
-			if (b)
-				this.strokeStyle(bw, bc);
-			this.shadowOn(sw).fillStyle(c).moveTo(x, y).beginPath();
-			this.c.arc(x, y, r, s, e, ccw);
-			if (a2r)
-				this.lineTo(x, y);
-			this.closePath().fill();
-			if (b)
-				this.stroke();
-			return this.restore();
-		},
-		/**
 		 * draw ellipse API
 		 */
 		ellipse : function(x, y, a, b, s, e, c, bo, bow, boc, sw, ccw, a2r, last) {
 			var angle = s, ccw = !!ccw, a2r = !!a2r;
-			this.save();
-			if (last)
-				this.gCO(last);
-			if (bo)
-				this.strokeStyle(bow, boc);
-			this.shadowOn(sw).fillStyle(c).moveTo(x, y).beginPath();
-
+			this.save().gCo(last).strokeStyle(bo,bow, boc).shadowOn(sw).fillStyle(c).moveTo(x, y).beginPath();
+			
 			if (a2r)
 				this.moveTo(x, y);
-
+			
 			while (angle <= e) {
 				this.lineTo(x + a * cos(angle), y + (ccw ? (-b * sin(angle)) : (b * sin(angle))));
 				angle += inc;
 			}
-			this.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e)))).closePath();
-			if (bo)
-				this.stroke();
-			if (c)
-				this.fill();
-			return this.restore();
+			return this.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e)))).closePath().stroke(bo).fill(c).restore();
+		},
+		/**
+		 * arc
+		 */
+		arc : function(x, y, r, dw, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
+			var ccw = !!ccw, a2r = !!a2r&&!dw;
+			this.save().gCo(last).strokeStyle(b,bw,bc).shadowOn(sw).fillStyle(c).beginPath();
+			
+			if(dw){
+				this.moveTo(x+cos(s)*(r-dw),y+sin(s)*(r-dw)).lineTo(x+cos(s)*r,y+sin(s)*r);
+				this.c.arc(x, y, r, s, e,ccw);
+				this.lineTo(x+cos(e)*(r-dw),y+sin(e)*(r-dw));
+				this.c.arc(x, y, r-dw, e, s,!ccw);
+			}else{
+				this.c.arc(x, y, r, s, e, ccw);
+			}
+			
+			if (a2r)
+				this.lineTo(x, y);
+			return this.closePath().fill(c).stroke(b).restore();
 		},
 		/**
 		 * draw sector
 		 */
-		sector : function(x, y, r, s, e, c, b, bw, bc, sw, ccw) {
-			if (sw) {
-				/**
-				 * fixed Chrome and Opera bug
-				 */
-				this.arc(x, y, r, s, e, c, b, bw, bc, sw,ccw, true);
-				this.arc(x, y, r, s, e, c, b, bw, bc, false,ccw, true);
-			} else {
-				this.arc(x, y, r, s, e, c, b, bw, bc, false, ccw, true);
-			}
-			return this;
+		sector : function(x, y, r, dw,s, e, c, b, bw, bc, sw, ccw) {
+			if (sw)
+				this.arc(x, y, r, dw, s, e, c,0,0,0,sw,ccw, true, true);
+			return this.arc(x, y, r, dw, s, e, c, b, bw, bc, false, ccw, true);
 		},
 		sector3D : function() {
 			var x0, y0, sPaint = function(x, y, a, b, s, e, ccw, h, c) {
@@ -2674,11 +2646,11 @@ $.Label = $.extend($.Component, {
 					angle = angle - inc;
 				}
 				Lo.call(this, s, h);
-				this.lineTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).closePath().fill();
+				this.lineTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).closePath().fill(true);
 			}, layerDraw = function(x, y, a, b, ccw, h, A, c) {
 				var x0 = x + a * cos(A);
 				var y0 = y + h + (ccw ? (-b * sin(A)) : (b * sin(A)));
-				this.moveTo(x, y).beginPath().fillStyle(c).lineTo(x, y + h).lineTo(x0, y0).lineTo(x0, y0 - h).lineTo(x, y).closePath().fill();
+				this.moveTo(x, y).beginPath().fillStyle(c).lineTo(x, y + h).lineTo(x0, y0).lineTo(x0, y0 - h).lineTo(x, y).closePath().fill(true);
 			}, layerPaint = function(x, y, a, b, s, e, ccw, h, c) {
 				var ds = ccw ? (s < PI / 2 || s > 1.5 * PI) : (s > PI / 2 && s < 1.5 * PI), de = ccw ? (e > PI / 2 && e < 1.5 * PI) : (e < PI / 2 || e > 1.5 * PI);
 				if (!ds && !de)
@@ -2717,13 +2689,15 @@ $.Label = $.extend($.Component, {
 		textStyle : function(a, l, f) {
 			return this.textAlign(a).textBaseline(l).textFont(f);
 		},
-		strokeStyle : function(w, c, j) {
-			if (w)
-				this.c.lineWidth = w;
-			if (c)
-				this.c.strokeStyle = c;
-			if (j)
-				this.c.lineJoin = j;
+		strokeStyle : function(b,w, c, j) {
+			if(b){
+				if (w)
+					this.c.lineWidth = w;
+				if (c)
+					this.c.strokeStyle = c;
+				if (j)
+					this.c.lineJoin = j;
+			}
 			return this;
 		},
 		globalAlpha : function(v) {
@@ -2842,11 +2816,13 @@ $.Label = $.extend($.Component, {
 			this.c.closePath();
 			return this;
 		},
-		stroke : function() {
+		stroke : function(s) {
+			if(s)
 			this.c.stroke();
 			return this;
 		},
-		fill : function() {
+		fill : function(f) {
+			if(f)
 			this.c.fill();
 			return this;
 		},
@@ -2979,27 +2955,20 @@ $.Label = $.extend($.Component, {
 		polygon : function(bg, b, bw, bc, sw, alpham, points) {
 			if (points.length < 2)
 				return;
-			this.save().strokeStyle(bw, bc).beginPath().fillStyle(bg).globalAlpha(alpham).shadowOn(sw).moveTo(points[0], points[1]);
+			this.save().strokeStyle(b,bw, bc).beginPath().fillStyle(bg).globalAlpha(alpham).shadowOn(sw).moveTo(points[0], points[1]);
 			for ( var i = 2; i < points.length; i += 2) {
 				this.lineTo(points[i], points[i + 1]);
 			}
-			this.closePath();
-			if (b)
-				this.stroke();
-			this.fill().restore();
-			return this;
+			return this.closePath().stroke(b).fill(true).restore();
 		},
 		lines : function(p, w, c, last) {
 			if (p.length < 4)
 				return this;
-			this.save();
-			if (last)
-				this.gCO(last);
-			this.beginPath().strokeStyle(w, c).moveTo(fd(w, p[0]), fd(w, p[1]));
+			this.save().gCo(last).beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0]), fd(w, p[1]));
 			for ( var i = 2; i < p.length - 1; i += 2) {
 				this.lineTo(fd(w, p[i]), fd(w, p[i + 1]));
 			}
-			return this.stroke().restore();
+			return this.stroke(true).restore();
 		},
 		bezierCurveTo : function(r) {
 			this.c.bezierCurveTo(r[0], r[1], r[2], r[3], r[4], r[5]);
@@ -3008,7 +2977,7 @@ $.Label = $.extend($.Component, {
 		lineArray : function(p, w, c, smooth, smo) {
 			if (p.length < 2)
 				return this;
-			this.strokeStyle(w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
+			this.strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
 			if (smooth) {
 				for ( var i = 1; i < p.length; i++)
 					this.bezierCurveTo(getCurvePoint(p, p[i], i, smo));
@@ -3016,7 +2985,7 @@ $.Label = $.extend($.Component, {
 				for ( var i = 1; i < p.length; i++)
 					this.lineTo(fd(w, p[i].x), fd(w, p[i].y));
 			}
-			return this.stroke();
+			return this.stroke(true);
 		},
 		manyLine : function(p, w, c, smooth, smo) {
 			var T = [],Q  = false;
@@ -3034,13 +3003,11 @@ $.Label = $.extend($.Component, {
 		line : function(x1, y1, x2, y2, w, c, last) {
 			if (!w || w == 0)
 				return this;
-			this.save();
-			if (last)
-				this.gCO(last);
-			return this.beginPath().strokeStyle(w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke().restore();
+			this.save().gCo(last);
+			return this.beginPath().strokeStyle(true,w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke(true).restore();
 		},
 		round : function(x, y, r, c, bw, bc) {
-			return this.arc(x, y, r, 0, PI2, c, !!bc, bw, bc);
+			return this.arc(x, y, r,0, 0, PI2, c, !!bc, bw, bc);
 		},
 		fillRect : function(x, y, w, h) {
 			this.c.fillRect(x, y, w, h);
@@ -3056,6 +3023,11 @@ $.Label = $.extend($.Component, {
 			w = w || this.width;
 			h = h || this.height;
 			this.c.clearRect(x, y, w, h);
+			return this;
+		},
+		gCo : function(l) {
+			if(l)
+			return this.gCO(l);
 			return this;
 		},
 		gCO : function(l) {
@@ -3078,24 +3050,15 @@ $.Label = $.extend($.Component, {
 				j = f ? j[0] : j;
 				r = (!f || r == 0 || r == '0') ? 0 : $.parsePadding(r);
 			}
-			this.save().translate(x, y).shadowOn(shadow);
-			if (last)
-				this.gCO(last);
-			if (bg)
-				this.fillStyle(bg);
-			if (f)
-				this.strokeStyle(j, c);
+			
+			this.save().translate(x, y).shadowOn(shadow).gCo(last).fillStyle(bg).strokeStyle(f,j, c);
 
 			/**
 			 * draw a round corners border
 			 */
 			if (r) {
 				this.beginPath().moveTo(r[0], fd(j, 0)).lineTo(w - r[1], fd(j, 0)).arc2(w, fd(j, 0), w, r[1], r[1]).lineTo(fd(j, w), h - r[2]).arc2(fd(j, w), h, w - r[2], h, r[2]).lineTo(r[3], fd(j, h)).arc2(0, fd(j, h), 0, h - r[3], r[3]).lineTo(fd(j, 0), r[0]).arc2(fd(j, 0),
-						0, r[0], 0, r[0]).closePath();
-				if (bg)
-					this.fill();
-				if (j)
-					this.stroke();
+						0, r[0], 0, r[0]).closePath().fill(bg).stroke(j);
 			} else {
 				if (!b.enable || f) {
 					if (b.enable)
@@ -3104,7 +3067,7 @@ $.Label = $.extend($.Component, {
 						this.fillRect(0, 0, w, h);
 				} else {
 					if (bg) {
-						this.beginPath().moveTo(floor(j[3] / 2), floor(j[0] / 2)).lineTo(ceil(w - j[1] / 2), j[0] / 2).lineTo(ceil(w - j[1] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), floor(j[0] / 2)).closePath().fill();
+						this.beginPath().moveTo(floor(j[3] / 2), floor(j[0] / 2)).lineTo(ceil(w - j[1] / 2), j[0] / 2).lineTo(ceil(w - j[1] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), floor(j[0] / 2)).closePath().fill(true);
 					}
 					if (j) {
 						c = $.isArray(c) ? c : [c, c, c, c];
@@ -3311,14 +3274,12 @@ $.Label = $.extend($.Component, {
 
 			this.T = null;
 			this.rendered = false;
-
 			this.animationed = false;
 			this.data = [];
 			this.components = [];
 			this.total = 0;
 		},
 		plugin : function(c) {
-			this.init();
 			c.inject(this);
 			this.components.push(c);
 		},
@@ -3368,7 +3329,7 @@ $.Label = $.extend($.Component, {
 		commonDraw : function() {
 			$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
 			$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
-			$.Assert.gtZero(this.data.length, this.type + '\'data is empty.');
+			$.Assert.gtZero(this.data.length, this.type + '\'s data is empty.');
 			
 			/**
 			 * console.time('Test for draw');
@@ -3461,7 +3422,7 @@ $.Label = $.extend($.Component, {
 
 			$.Interface._3D.call(_);
 
-			_.T.strokeStyle(_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
+			_.T.strokeStyle(true,_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');
 
@@ -3823,8 +3784,8 @@ $.Scale = $.extend($.Component, {
 	 * 按照从左自右,从上至下原则
 	 */
 	doDraw : function() {
-		var x = 0, y = 0, x0 = 0, y0 = 0, tx = 0, ty = 0, w = this.get('scale_width'), w2 = w / 2, sa = this.get('scaleAlign'), ta = this.get('textAlign'), ts = this.get('text_space');
-		if (this.isH) {
+		var _ = this._(),x = 0, y = 0, x0 = 0, y0 = 0, tx = 0, ty = 0, w = _.get('scale_width'), w2 = w / 2, sa = _.get('scaleAlign'), ta = _.get('textAlign'), ts = _.get('text_space');
+		if (_.isH) {
 			if (sa == 'top') {
 				y = -w;
 			} else if (sa == 'center') {
@@ -3833,13 +3794,13 @@ $.Scale = $.extend($.Component, {
 			} else {
 				y0 = w;
 			}
-			this.T.textAlign('center');
+			_.T.textAlign('center');
 			if (ta == 'top') {
 				ty = -ts;
-				this.T.textBaseline('bottom');
+				_.T.textBaseline('bottom');
 			} else {
 				ty = ts;
-				this.T.textBaseline('top');
+				_.T.textBaseline('top');
 			}
 		} else {
 			if (sa == 'left') {
@@ -3850,12 +3811,12 @@ $.Scale = $.extend($.Component, {
 			} else {
 				x0 = w;
 			}
-			this.T.textBaseline('middle');
+			_.T.textBaseline('middle');
 			if (ta == 'right') {
-				this.T.textAlign('left');
+				_.T.textAlign('left');
 				tx = ts;
 			} else {
-				this.T.textAlign('right');
+				_.T.textAlign('right');
 				tx = -ts;
 			}
 		}
@@ -3866,56 +3827,59 @@ $.Scale = $.extend($.Component, {
 		/**
 		 * individuation text?
 		 */
-		this.T.textFont(this.get('fontStyle'));
+		_.T.textFont(_.get('fontStyle'));
 
-		for ( var i = 0; i < this.items.length; i++) {
-			if (this.get('scale_enable'))
-				this.T.line(this.items[i].x + x, this.items[i].y + y, this.items[i].x + x0, this.items[i].y + y0, this.get('scale_size'), this.get('scale_color'), false);
+		_.items.each(function(item){
+			if (_.get('scale_enable'))
+				_.T.line(item.x + x, item.y + y, item.x + x0, item.y + y0, _.get('scale_size'), _.get('scale_color'), false);
 
-			this.T.fillText(this.items[i].text, this.items[i].textX + tx, this.items[i].textY + ty, false, this.get('color'), 'lr', this.get('text_height'));
-		}
+			_.T.fillText(item.text, item.textX + tx, item.textY + ty, false, _.get('color'), 'lr', _.get('text_height'));
+		});
+		
 	},
 	doConfig : function() {
 		$.Scale.superclass.doConfig.call(this);
 		$.Assert.isNumber(this.get('distance'), 'distance');
 
-		var customLabel = this.get('labels').length, min_scale = this.get('min_scale'), max_scale = this.get('max_scale'), scale_space = this.get('scale_space'), end_scale = this.get('end_scale'), start_scale = this.get('start_scale');
-		if (customLabel > 0) {
-			this.number = customLabel - 1;
+		var _ = this._(), customL = _.get('labels').length,
+		min_s = _.get('min_scale'), max_s = _.get('max_scale'), s_space = _.get('scale_space'), e_scale = _.get('end_scale'), start_scale = _.get('start_scale');
+		
+		if (customL > 0) {
+			_.number = customL - 1;
 		} else {
-			$.Assert.isTrue($.isNumber(max_scale) || $.isNumber(end_scale), 'max_scale&end_scale');
-
+			$.Assert.isTrue($.isNumber(max_s) || $.isNumber(e_scale), 'max_scale&end_scale');
 			/**
 			 * end_scale must greater than maxScale
 			 */
-			if (!end_scale || end_scale < max_scale) {
-				end_scale = this.push('end_scale', $.ceil(max_scale));
+			if (!e_scale || e_scale < max_s) {
+				e_scale = _.push('end_scale', $.ceil(max_s));
 			}
-
+			
 			/**
 			 * startScale must less than minScale
 			 */
-			if (start_scale > min_scale) {
-				this.push('start_scale', $.floor(min_scale));
+			if (start_scale > min_s) {
+				_.push('start_scale', $.floor(min_s));
 			}
 
-			if (scale_space && scale_space < end_scale - start_scale) {
-				this.push('scale_share', (end_scale - start_scale) / scale_space);
+			if (s_space && s_space < e_scale - start_scale) {
+				_.push('scale_share', (e_scale - start_scale) / s_space);
 			}
 
 			/**
 			 * value of each scale
 			 */
-			if (!scale_space || scale_space > end_scale - start_scale) {
-				scale_space = this.push('scale', (end_scale - start_scale) / this.get('scale_share'));
+			if (!s_space || s_space > e_scale - start_scale) {
+				s_space = _.push('scale', (e_scale - start_scale) / _.get('scale_share'));
 			}
 
-			this.number = this.get('scale_share');
-			if (scale_space < 1 && this.get('decimalsnum') == 0) {
-				var dec = scale_space;
+			_.number = _.get('scale_share');
+			
+			if (s_space < 1 && _.get('decimalsnum') == 0) {
+				var dec = s_space;
 				while (dec < 1) {
 					dec *= 10;
-					this.push('decimalsnum', this.get('decimalsnum') + 1);
+					_.push('decimalsnum', _.get('decimalsnum') + 1);
 				}
 			}
 
@@ -3924,63 +3888,63 @@ $.Scale = $.extend($.Component, {
 		/**
 		 * the real distance of each scale
 		 */
-		this.push('distanceOne', this.get('valid_distance') / this.number);
+		_.push('distanceOne', _.get('valid_distance') / _.number);
 
 		var text, maxwidth = 0, x, y;
 
-		this.T.textFont(this.get('fontStyle'));
-		this.push('which', this.get('which').toLowerCase());
-		this.isH = this.get('which') == 'h';
+		_.T.textFont(_.get('fontStyle'));
+		_.push('which', _.get('which').toLowerCase());
+		_.isH = _.get('which') == 'h';
 		/**
 		 * 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
 		 */
-		for ( var i = 0; i <= this.number; i++) {
-			text = customLabel ? this.get('labels')[i] : (scale_space * i + start_scale).toFixed(this.get('decimalsnum'));
-			x = this.isH ? this.get('valid_x') + i * this.get('distanceOne') : this.x;
-			y = this.isH ? this.y : this.get('valid_y') + this.get('distance') - i * this.get('distanceOne');
-			this.items.push($.merge({
+		for ( var i = 0; i <= _.number; i++) {
+			text = customL ? _.get('labels')[i] : (s_space * i + start_scale).toFixed(_.get('decimalsnum'));
+			x = _.isH ? _.get('valid_x') + i * _.get('distanceOne') : _.x;
+			y = _.isH ? _.y : _.get('valid_y') + _.get('distance') - i * _.get('distanceOne');
+			_.items.push($.merge({
 				text : text,
 				x : x,
 				y : y,
 				textX : x,
 				textY : y
-			}, this.fireEvent(this, 'parseText', [text, x, y, i])));
-			maxwidth = Math.max(maxwidth, this.T.measureText(text));
+			}, _.fireEvent(_, 'parseText', [text, x, y, i])));
+			maxwidth = Math.max(maxwidth, _.T.measureText(text));
 		}
 
 		/**
 		 * what does follow code doing?
 		 */
-		this.left = this.right = this.top = this.bottom = 0;
-		var ts = this.get('text_space'), ta = this.get('textAlign'), sa = this.get('scaleAlign'), w = this.get('scale_width'), w2 = w / 2;
+		_.left = _.right = _.top = _.bottom = 0;
+		var ts = _.get('text_space'), ta = _.get('textAlign'), sa = _.get('scaleAlign'), w = _.get('scale_width'), w2 = w / 2;
 
-		if (this.isH) {
+		if (_.isH) {
 			if (sa == 'top') {
-				this.top = w;
+				_.top = w;
 			} else if (sa == 'center') {
-				this.top = w2;
+				_.top = w2;
 			} else {
-				this.top = 0;
+				_.top = 0;
 			}
-			this.bottom = w - this.top;
+			_.bottom = w - _.top;
 			if (ta == 'top') {
-				this.top += this.get('text_height') + ts;
+				_.top += _.get('text_height') + ts;
 			} else {
-				this.bottom += this.get('text_height') + ts;
+				_.bottom += _.get('text_height') + ts;
 			}
 		} else {
 			if (sa == 'left') {
-				this.left = w;
+				_.left = w;
 			} else if (sa == 'center') {
-				this.left = w2;
+				_.left = w2;
 			} else {
-				this.left = 0;
+				_.left = 0;
 			}
-			this.right = w - this.left;
+			_.right = w - _.left;
 			if (ta == 'left') {
-				this.left += maxwidth + ts;
+				_.left += maxwidth + ts;
 			} else {
-				this.right += maxwidth + ts;
+				_.right += maxwidth + ts;
 			}
 		}
 	}
@@ -3993,353 +3957,357 @@ $.Scale = $.extend($.Component, {
  * @component#$.Coordinate2D
  * @extend#$.Component
  */
-$.Coordinate2D = $.extend($.Component,
-		{
-			configure : function() {
-				/**
-				 * invoked the super class's configurationuration
-				 */
-				$.Coordinate2D.superclass.configure.apply(this, arguments);
+$.Coordinate2D = $
+		.extend($.Component,
+				{
+					configure : function() {
+						/**
+						 * invoked the super class's configurationuration
+						 */
+						$.Coordinate2D.superclass.configure.apply(this, arguments);
 
-				/**
-				 * indicate the component's type
-				 */
-				this.type = 'coordinate2d';
+						/**
+						 * indicate the component's type
+						 */
+						this.type = 'coordinate2d';
 
-				this.set({
-					/**
-					 * @inner {Number}
-					 */
-					sign_size : 12,
-					/**
-					 * @inner {Number}
-					 */
-					sign_space : 5,
-					/**
-					 * @cfg {Array} the option for scale.For details see <link>$.Scale</link>
-					 */
-					scale : [],
-					/**
-					 * @cfg {Number} Specifies the valid width,less than the width of coordinate.(default same as width)
-					 */
-					valid_width : undefined,
-					/**
-					 * @cfg {Number} Specifies the valid height,less than the height of coordinate.(default same as height)
-					 */
-					valid_height : undefined,
-					/**
-					 * @cfg {Number} Specifies the linewidth of the grid.(default to 1)
-					 */
-					grid_line_width : 1,
-					/**
-					 * @cfg {String} Specifies the color of the grid.(default to '#dbe1e1')
-					 */
-					grid_color : '#dbe1e1',
-					/**
-					 * @cfg {Boolean} True to display grid line.(default to true)
-					 */
-					gridlinesVisible : true,
-					/**
-					 * @cfg {Boolean} indicate whether the grid is accord with scale,on the premise of grids is not specify. this just give a convenient way bulid grid for default.and actual value depend on scale's scale2grid
-					 */
-					scale2grid : true,
-					/**
-					 * @cfg {Object} this is grid config for custom.there has two valid property horizontal and vertical.the property's sub property is: way:the manner calculate grid-line (default to 'share_alike') Available property are:
-					 * @Option share_alike
-					 * @Option given_value value: when property way apply to 'share_alike' this property mean to the number of grid's line. when apply to 'given_value' this property mean to the distance each grid line(unit:pixel) . code will like: { horizontal: {
-					 *         way:'share_alike', value:10 } vertical: { way:'given_value', value:40 } }
-					 */
-					grids : undefined,
-					/**
-					 * @cfg {Boolean} If True the grid line will be ignored when gird and axis overlap.(default to true)
-					 */
-					ignoreOverlap : true,
-					/**
-					 * @cfg {Boolean} If True the grid line will be ignored when gird and coordinate's edge overlap.(default to false)
-					 */
-					ignoreEdge : false,
-					/**
-					 * @inner {String} Specifies the label on x-axis
-					 */
-					xlabel : '',
-					/**
-					 * @inner {String} Specifies the label on y-axis
-					 */
-					ylabel : '',
-					/**
-					 * @cfg {Boolean} If True the grid background-color will be alternate.(default to true)
-					 */
-					alternate_color : true,
-					/**
-					 * @cfg {String} Specifies the direction apply alternate color.(default to 'v')Available value are:
-					 * @Option 'h' horizontal
-					 * @Option 'v' vertical
-					 */
-					alternate_direction : 'v',
-					/**
-					 * @cfg {float(0.01 - 0.5)} Specifies the factor make color dark alternate_color,relative to background-color,the bigger the value you set,the larger the color changed.(defaults to '0.01')
-					 */
-					alternate_color_factor : 0.01,
-					/**
-					 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>$.CrossHair</link> Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
-					 */
-					crosshair : {
-						enable : false
+						this.set({
+							/**
+							 * @inner {Number}
+							 */
+							sign_size : 12,
+							/**
+							 * @inner {Number}
+							 */
+							sign_space : 5,
+							/**
+							 * @cfg {Array} the option for scale.For details see <link>$.Scale</link>
+							 */
+							scale : [],
+							/**
+							 * @cfg {Number} Specifies the valid width,less than the width of coordinate.(default same as width)
+							 */
+							valid_width : undefined,
+							/**
+							 * @cfg {Number} Specifies the valid height,less than the height of coordinate.(default same as height)
+							 */
+							valid_height : undefined,
+							/**
+							 * @cfg {Number} Specifies the linewidth of the grid.(default to 1)
+							 */
+							grid_line_width : 1,
+							/**
+							 * @cfg {String} Specifies the color of the grid.(default to '#dbe1e1')
+							 */
+							grid_color : '#dbe1e1',
+							/**
+							 * @cfg {Boolean} True to display grid line.(default to true)
+							 */
+							gridlinesVisible : true,
+							/**
+							 * @cfg {Boolean} indicate whether the grid is accord with scale,on the premise of grids is not specify. this just give a convenient way bulid grid for default.and actual value depend on scale's scale2grid
+							 */
+							scale2grid : true,
+							/**
+							 * @cfg {Object} this is grid config for custom.there has two valid property horizontal and vertical.the property's sub property is: way:the manner calculate grid-line (default to 'share_alike') Available property are:
+							 * @Option share_alike
+							 * @Option given_value value: when property way apply to 'share_alike' this property mean to the number of grid's line. when apply to 'given_value' this property mean to the distance each grid line(unit:pixel) . code will like: { horizontal: {
+							 *         way:'share_alike', value:10 } vertical: { way:'given_value', value:40 } }
+							 */
+							grids : undefined,
+							/**
+							 * @cfg {Boolean} If True the grid line will be ignored when gird and axis overlap.(default to true)
+							 */
+							ignoreOverlap : true,
+							/**
+							 * @cfg {Boolean} If True the grid line will be ignored when gird and coordinate's edge overlap.(default to false)
+							 */
+							ignoreEdge : false,
+							/**
+							 * @inner {String} Specifies the label on x-axis
+							 */
+							xlabel : '',
+							/**
+							 * @inner {String} Specifies the label on y-axis
+							 */
+							ylabel : '',
+							/**
+							 * @cfg {Boolean} If True the grid background-color will be alternate.(default to true)
+							 */
+							alternate_color : true,
+							/**
+							 * @cfg {String} Specifies the direction apply alternate color.(default to 'v')Available value are:
+							 * @Option 'h' horizontal
+							 * @Option 'v' vertical
+							 */
+							alternate_direction : 'v',
+							/**
+							 * @cfg {float(0.01 - 0.5)} Specifies the factor make color dark alternate_color,relative to background-color,the bigger the value you set,the larger the color changed.(defaults to '0.01')
+							 */
+							alternate_color_factor : 0.01,
+							/**
+							 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>$.CrossHair</link> Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
+							 */
+							crosshair : {
+								enable : false
+							},
+							/**
+							 * @cfg {Number} Required,Specifies the width of this coordinate.(default to undefined)
+							 */
+							width : undefined,
+							/**
+							 * @cfg {Number} Required,Specifies the height of this coordinate.(default to undefined)
+							 */
+							height : undefined,
+
+							z_index : -1,
+							/**
+							 * @cfg {Object} Specifies style for axis of this coordinate. Available property are:
+							 * @Option enable {Boolean} True to display the axis.(default to true)
+							 * @Option color {String} Specifies the color of each axis.(default to '#666666')
+							 * @Option width {Number/Array} Specifies the width of each axis, If given the a array,there must be have have 4 element, like this:[1,0,0,1](top-right-bottom-left).(default to 1)
+							 */
+							axis : {
+								enable : true,
+								color : '#666666',
+								width : 1
+							}
+						});
+
+						this.registerEvent();
+
+						this.scale = [];
+						this.gridlines = [];
 					},
-					/**
-					 * @cfg {Number} Required,Specifies the width of this coordinate.(default to undefined)
-					 */
-					width : undefined,
-					/**
-					 * @cfg {Number} Required,Specifies the height of this coordinate.(default to undefined)
-					 */
-					height : undefined,
-					
-					z_index:-1,
-					/**
-					 * @cfg {Object} Specifies style for axis of this coordinate. Available property are:
-					 * @Option enable {Boolean} True to display the axis.(default to true)
-					 * @Option color {String} Specifies the color of each axis.(default to '#666666')
-					 * @Option width {Number/Array} Specifies the width of each axis, If given the a array,there must be have have 4 element, like this:[1,0,0,1](top-right-bottom-left).(default to 1)
-					 */
-					axis : {
-						enable : true,
-						color : '#666666',
-						width : 1
-					}
-				});
-
-				this.registerEvent();
-
-				this.scale = [];
-				this.gridlines = [];
-			},
-			getScale : function(p) {
-				for ( var i = 0; i < this.scale.length; i++) {
-					var k = this.scale[i];
-					if (k.get('position') == p) {
+					getScale : function(p) {
+						for ( var i = 0; i < this.scale.length; i++) {
+							var k = this.scale[i];
+							if (k.get('position') == p) {
+								return {
+									start : k.get('start_scale'),
+									end : k.get('end_scale'),
+									distance : k.get('end_scale') - k.get('start_scale')
+								};
+							}
+						}
 						return {
-							start : k.get('start_scale'),
-							end : k.get('end_scale'),
-							distance : k.get('end_scale') - k.get('start_scale')
+							start : 0,
+							end : 0,
+							distance : 0
 						};
-					}
-				}
-				return {
-					start : 0,
-					end : 0,
-					distance : 0
-				};
-			},
-			isEventValid : function(e) {
-				return {
-					valid : e.offsetX > this.x && e.offsetX < (this.x + this.get('width')) && e.offsetY < this.y + this.get('height') && e.offsetY > this.y
-				};
-			},
-			doDraw : function(opts) {
-				this.T.box(this.x, this.y, this.get('width'), this.get('height'),0,this.get('f_color'));
-				if (this.get('alternate_color')) {
-					var x, y, f = false, axis = [0, 0, 0, 0], c = $.dark(this.get('f_color'), this.get('alternate_color_factor'));
-					if (this.get('axis.enable')) {
-						axis = this.get('axis.width');
-					}
-				}
-				var gl = this.gridlines, glw = this.get('grid_line_width'), v = this.get('alternate_direction') == 'v';
-				for ( var i = 0; i < gl.length; i++) {
-					gl[i].x1 = Math.round(gl[i].x1);
-					gl[i].y1 = Math.round(gl[i].y1);
-					gl[i].x2 = Math.round(gl[i].x2);
-					gl[i].y2 = Math.round(gl[i].y2);
-					if (this.get('alternate_color')) {
-						if (f) {
-							if (v)
-								this.T.box(gl[i].x1 + axis[3], gl[i].y1 + glw, gl[i].x2 - gl[i].x1 - axis[3] - axis[1], y - gl[i].y1 - glw,0,c);
-							else
-								this.T.box(x + glw, gl[i].y2 + axis[0], gl[i].x1 - x, gl[i].y1 - gl[i].y2 - axis[0] - axis[2],0,c);
+					},
+					isEventValid : function(e) {
+						return {
+							valid : e.x > this.x && e.x < (this.x + this.get('width')) && e.y < this.y + this.get('height') && e.y > this.y
+						};
+					},
+					doDraw : function(opts) {
+						var _ = this._();
+						_.T.box(_.x, _.y, _.get('width'), _.get('height'), 0, _.get('f_color'));
+						if (_.get('alternate_color')) {
+							var x, y, f = false, axis = [0, 0, 0, 0], c = $.dark(_.get('f_color'), _.get('alternate_color_factor'));
+							if (_.get('axis.enable')) {
+								axis = _.get('axis.width');
+							}
 						}
-						x = gl[i].x1;
-						y = gl[i].y1;
-						f = !f;
+						
+						var glw = _.get('grid_line_width'), v = _.get('alternate_direction') == 'v';
+						
+						_.gridlines.each(function(g){
+							g.x1 = Math.round(g.x1);
+							g.y1 = Math.round(g.y1);
+							g.x2 = Math.round(g.x2);
+							g.y2 = Math.round(g.y2);
+							if (_.get('alternate_color')) {
+								if (f) {
+									if (v)
+										_.T.box(g.x1 + axis[3], g.y1 + glw, g.x2 - g.x1 - axis[3] - axis[1], y - g.y1 - glw, 0, c);
+									else
+										_.T.box(x + glw, g.y2 + axis[0], g.x1 - x, g.y1 - g.y2 - axis[0] - axis[2], 0, c);
+								}
+								x = g.x1;
+								y = g.y1;
+								f = !f;
+							}
+							_.T.line(g.x1, g.y1, g.x2, g.y2, glw, _.get('grid_color'));
+						});
+						
+						_.T.box(_.x, _.y, _.get('width'), _.get('height'), _.get('axis'), false, _.get('shadow'));
+						
+						_.scale.each(function(s){s.draw()});
+					},
+					doConfig : function() {
+						$.Coordinate2D.superclass.doConfig.call(this);
+						
+						var _ = this._();
+						
+						$.Assert.isNumber(_.get('width'), 'width');
+						$.Assert.isNumber(_.get('height'), 'height');
+						
+						/**
+						 * this element not atomic because it is a container,so this is a particular case.
+						 */
+						_.atomic = false;
+
+						/**
+						 * apply the gradient color to f_color
+						 */
+						if (_.get('gradient') && $.isString(_.get('f_color'))) {
+							_.push('f_color', _.T.avgLinearGradient(_.x, _.y, _.x, _.y + _.get('height'), [_.get('dark_color'), _.get('light_color')]));
+						}
+
+						if (_.get('axis.enable')) {
+							var aw = _.get('axis.width');
+							if (!$.isArray(aw))
+								_.push('axis.width', [aw, aw, aw, aw]);
+						}
+
+						if (_.get('crosshair.enable')) {
+							_.push('crosshair.wrap', _.container.shell);
+							_.push('crosshair.height', _.get('height'));
+							_.push('crosshair.width', _.get('width'));
+							_.push('crosshair.top', _.y);
+							_.push('crosshair.left', _.x);
+
+							_.crosshair = new $.CrossHair(_.get('crosshair'), _);
+						}
+
+						var jp, cg = !!(_.get('gridlinesVisible') && _.get('grids')), // custom grid
+					hg = cg && !!_.get('grids.horizontal'), vg = cg && !!_.get('grids.vertical'), h = _.get('height'), w = _.get('width'), vw = _.get('valid_width'), vh = _.get('valid_height'), k2g = _.get('gridlinesVisible') && _.get('scale2grid')
+							&& !(hg && vg), sw = (w - vw) / 2, sh = (h - vh) / 2, axis = _.get('axis.width');
+
+					if (!$.isArray(_.get('scale'))) {
+						if ($.isObject(_.get('scale')))
+							_.push('scale', [_.get('scale')]);
+						else
+							_.push('scale', []);
 					}
-					this.T.line(gl[i].x1, gl[i].y1, gl[i].x2, gl[i].y2, glw, this.get('grid_color'));
-				}
+					_.get('scale').each(function(kd, i) {
+						jp = kd['position'];
+						jp = jp || 'left';
+						jp = jp.toLowerCase();
+						kd['originx'] = _.x;
+						kd['originy'] = _.y;
+						kd['valid_x'] = _.x + sw;
+						kd['valid_y'] = _.y + sh;
+						kd['position'] = jp;
+						// calculate coordinate,direction,distance
+							if (jp == 'top') {
+								kd['which'] = 'h';
+								kd['distance'] = w;
+								kd['valid_distance'] = vw;
+							} else if (jp == 'right') {
+								kd['which'] = 'v';
+								kd['distance'] = h;
+								kd['valid_distance'] = vh;
+								kd['originx'] += w;
+								kd['valid_x'] += vw;
+							} else if (jp == 'bottom') {
+								kd['which'] = 'h';
+								kd['distance'] = w;
+								kd['valid_distance'] = vw;
+								kd['originy'] += h;
+								kd['valid_y'] += vh;
+							} else {
+								kd['which'] = 'v';
+								kd['distance'] = h;
+								kd['valid_distance'] = vh;
+							}
+							_.scale.push(new $.Scale(kd, _.container));
+						}, _);
 
-				this.T.box(this.x, this.y, this.get('width'), this.get('height'),  this.get('axis'), false,this.get('shadow'));
+					var iol = _.push('ignoreOverlap', _.get('ignoreOverlap') && _.get('axis.enable') || _.get('ignoreEdge'));
 
-				for ( var i = 0; i < this.scale.length; i++) {
-					this.scale[i].draw();
-				}
-			},
-			doConfig : function() {
-				$.Coordinate2D.superclass.doConfig.call(this);
-				$.Assert.isNumber(this.get('width'), 'width');
-				$.Assert.isNumber(this.get('height'), 'height');
-
-				/**
-				 * this element not atomic because it is a container,so this is a particular case.
-				 */
-				this.atomic = false;
-
-				/**
-				 * apply the gradient color to f_color
-				 */
-				if (this.get('gradient') && $.isString(this.get('f_color'))) {
-					this.push('f_color', this.T.avgLinearGradient(this.x, this.y, this.x, this.y + this.get('height'), [this.get('dark_color'), this.get('light_color')]));
-				}
-				
-				if (this.get('axis.enable')) {
-					var aw = this.get('axis.width');
-					if (!$.isArray(aw))
-						this.push('axis.width', [aw, aw, aw, aw]);
-				}
-				
-				if (this.get('crosshair.enable')) {
-					this.push('crosshair.wrap', this.container.shell);
-					this.push('crosshair.height', this.get('height'));
-					this.push('crosshair.width', this.get('width'));
-					this.push('crosshair.top', this.y);
-					this.push('crosshair.left', this.x);
-
-					this.crosshair = new $.CrossHair(this.get('crosshair'), this);
-				}
-
-				var jp, cg = !!(this.get('gridlinesVisible') && this.get('grids')), // custom grid
-				hg = cg && !!this.get('grids.horizontal'), vg = cg && !!this.get('grids.vertical'), h = this.get('height'), w = this.get('width'), vw = this.get('valid_width'), vh = this.get('valid_height'), k2g = this.get('gridlinesVisible') && this.get('scale2grid')
-						&& !(hg && vg), sw = (w - vw) / 2, sh = (h - vh) / 2, axis = this.get('axis.width');
-
-				if (!$.isArray(this.get('scale'))) {
-					if ($.isObject(this.get('scale')))
-						this.push('scale', [this.get('scale')]);
-					else
-						this.push('scale', []);
-				}
-				this.get('scale').each(function(kd, i) {
-					jp = kd['position'];
-					jp = jp || 'left';
-					jp = jp.toLowerCase();
-					kd['originx'] = this.x;
-					kd['originy'] = this.y;
-					kd['valid_x'] = this.x + sw;
-					kd['valid_y'] = this.y + sh;
-					kd['position'] = jp;
-					// calculate coordinate,direction,distance
-						if (jp == 'top') {
-							kd['which'] = 'h';
-							kd['distance'] = w;
-							kd['valid_distance'] = vw;
-						} else if (jp == 'right') {
-							kd['which'] = 'v';
-							kd['distance'] = h;
-							kd['valid_distance'] = vh;
-							kd['originx'] += w;
-							kd['valid_x'] += vw;
-						} else if (jp == 'bottom') {
-							kd['which'] = 'h';
-							kd['distance'] = w;
-							kd['valid_distance'] = vw;
-							kd['originy'] += h;
-							kd['valid_y'] += vh;
+					if (iol) {
+						if (_.get('ignoreEdge')) {
+							var ignoreOverlap = function(w, x, y) {
+								return w == 'v' ? (y == _.y) || (y == _.y + h) : (x == _.x) || (x == _.x + w);
+							}
 						} else {
-							kd['which'] = 'v';
-							kd['distance'] = h;
-							kd['valid_distance'] = vh;
-						}
-						this.scale.push(new $.Scale(kd, this.container));
-					}, this);
-
-				var iol = this.push('ignoreOverlap', this.get('ignoreOverlap') && this.get('axis.enable') || this.get('ignoreEdge'));
-
-				if (iol) {
-					if (this.get('ignoreEdge')) {
-						var ignoreOverlap = function(w, x, y) {
-							return w == 'v' ? (y == this.y) || (y == this.y + h) : (x == this.x) || (x == this.x + w);
-						}
-					} else {
-						var ignoreOverlap = function(wh, x, y) {
-							return wh == 'v' ? (y == this.y && axis[0] > 0) || (y == (this.y + h) && axis[2] > 0) : (x == this.x && axis[3] > 0) || (x == (this.x + w) && axis[1] > 0);
+							var ignoreOverlap = function(wh, x, y) {
+								return wh == 'v' ? (y == _.y && axis[0] > 0) || (y == (_.y + h) && axis[2] > 0) : (x == _.x && axis[3] > 0) || (x == (_.x + w) && axis[1] > 0);
+							}
 						}
 					}
-				}
 
-				if (k2g) {
-					var scale, x, y,p;
-					for ( var i = 0; i < this.scale.length; i++) {
-						scale = this.scale[i];
-						p = scale.get('position');
-						// disable,given specfiy grid will ignore scale2grid
-						if ($.isFalse(scale.get('scale2grid')) || hg && scale.get('which') == 'v' || vg && scale.get('which') == 'h') {
-							continue;
+					if (k2g) {
+						var scale, x, y, p;
+						for ( var i = 0; i < _.scale.length; i++) {
+							scale = _.scale[i];
+							p = scale.get('position');
+							// disable,given specfiy grid will ignore scale2grid
+							if ($.isFalse(scale.get('scale2grid')) || hg && scale.get('which') == 'v' || vg && scale.get('which') == 'h') {
+								continue;
+							}
+							x = y = 0;
+							if (p == 'top') {
+								y = h;
+							} else if (p == 'right') {
+								x = -w;
+							} else if (p == 'bottom') {
+								y = -h;
+							} else {
+								x = w;
+							}
+							for ( var j = 0; j < scale.items.length; j++) {
+								if (iol)
+									if (ignoreOverlap.call(_, scale.get('which'), scale.items[j].x, scale.items[j].y))
+										continue;
+								_.gridlines.push({
+									x1 : scale.items[j].x,
+									y1 : scale.items[j].y,
+									x2 : scale.items[j].x + x,
+									y2 : scale.items[j].y + y
+								});
+							}
 						}
-						x = y = 0;
-						if (p == 'top') {
-							y = h;
-						} else if (p == 'right') {
-							x = -w;
-						} else if (p == 'bottom') {
-							y = -h;
-						} else {
-							x = w;
+					}
+					if (vg) {
+						var gv = _.get('grids.vertical');
+						$.Assert.gtZero(gv['value'], 'value');
+						var d = w / gv['value'], n = gv['value'];
+						if (gv['way'] == 'given_value') {
+							n = d;
+							d = gv['value'];
+							d = d > w ? w : d;
 						}
-						for ( var j = 0; j < scale.items.length; j++) {
+
+						for ( var i = 0; i <= n; i++) {
 							if (iol)
-								if (ignoreOverlap.call(this, scale.get('which'), scale.items[j].x, scale.items[j].y))
+								if (ignoreOverlap.call(_, 'h', _.x + i * d, _.y))
 									continue;
-							this.gridlines.push({
-								x1 : scale.items[j].x,
-								y1 : scale.items[j].y,
-								x2 : scale.items[j].x + x,
-								y2 : scale.items[j].y + y
+							_.gridlines.push({
+								x1 : _.x + i * d,
+								y1 : _.y,
+								x2 : _.x + i * d,
+								y2 : _.y + h
+							});
+						}
+					}
+					if (hg) {
+						var gh = _.get('grids.horizontal');
+						$.Assert.gtZero(gh['value'], 'value');
+						var d = h / gh['value'], n = gh['value'];
+						if (gh['way'] == 'given_value') {
+							n = d;
+							d = gh['value'];
+							d = d > h ? h : d;
+						}
+
+						for ( var i = 0; i <= n; i++) {
+							if (iol)
+								if (ignoreOverlap.call(_, 'v', _.x, _.y + i * d))
+									continue;
+							_.gridlines.push({
+								x1 : _.x,
+								y1 : _.y + i * d,
+								x2 : _.x + w,
+								y2 : _.y + i * d
 							});
 						}
 					}
 				}
-				if (vg) {
-					var gv = this.get('grids.vertical');
-					$.Assert.gtZero(gv['value'], 'value');
-					var d = w / gv['value'], n = gv['value'];
-					if (gv['way'] == 'given_value') {
-						n = d;
-						d = gv['value'];
-						d = d > w ? w : d;
-					}
-
-					for ( var i = 0; i <= n; i++) {
-						if (iol)
-							if (ignoreOverlap.call(this, 'h', this.x + i * d, this.y))
-								continue;
-						this.gridlines.push({
-							x1 : this.x + i * d,
-							y1 : this.y,
-							x2 : this.x + i * d,
-							y2 : this.y + h
-						});
-					}
-				}
-				if (hg) {
-					var gh = this.get('grids.horizontal');
-					$.Assert.gtZero(gh['value'], 'value');
-					var d = h / gh['value'], n = gh['value'];
-					if (gh['way'] == 'given_value') {
-						n = d;
-						d = gh['value'];
-						d = d > h ? h : d;
-					}
-
-					for ( var i = 0; i <= n; i++) {
-						if (iol)
-							if (ignoreOverlap.call(this, 'v', this.x, this.y + i * d))
-								continue;
-						this.gridlines.push({
-							x1 : this.x,
-							y1 : this.y + i * d,
-							x2 : this.x + w,
-							y2 : this.y + i * d
-						});
-					}
-				}
-
-			}
-		});
+				});
 /**
  * @end
  */
@@ -4431,35 +4399,32 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		});
 	},
 	doDraw : function(opts) {
-		var w = this.get('width'), h = this.get('height'), xa = this.get('xAngle_'), ya = this.get('yAngle_'), zh = this.get('zHeight'), offx = xa * zh, offy = ya * zh, gl = this.gridlines;
-
+		var _ = this._(),w = _.get('width'), h = _.get('height'), xa = _.get('xAngle_'), ya = _.get('yAngle_'), zh = _.get('zHeight'), offx = xa * zh, offy = ya * zh;
 		/**
 		 * bottom
 		 */
-		this.T.cube3D(this.x, this.y + h + this.get('pedestal_height'), xa, ya, false, w, this.get('pedestal_height'), zh * 3 / 2, this.get('axis.enable'), this.get('axis.width'), this.get('axis.color'), this.get('bottom_style'));
+		_.T.cube3D(_.x, _.y + h + _.get('pedestal_height'), xa, ya, false, w, _.get('pedestal_height'), zh * 3 / 2, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('bottom_style'));
 		/**
 		 * board_style
 		 */
-		this.T.cube3D(this.x + this.get('board_deep') * xa, this.y + h - this.get('board_deep') * ya, xa, ya, false, w, h, zh, this.get('axis.enable'), this.get('axis.width'), this.get('axis.color'), this.get('board_style'));
+		_.T.cube3D(_.x + _.get('board_deep') * xa, _.y + h - _.get('board_deep') * ya, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('board_style'));
 
-		this.T.cube3D(this.x, this.y + h, xa, ya, false, w, h, zh, this.get('axis.enable'), this.get('axis.width'), this.get('axis.color'), this.get('wall_style'));
+		_.T.cube3D(_.x, _.y + h, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('wall_style'));
 
-		for ( var i = 0; i < gl.length; i++) {
-			this.T.line(gl[i].x1, gl[i].y1, gl[i].x1 + offx, gl[i].y1 - offy, this.get('grid_line_width'), this.get('grid_color'));
-			this.T.line(gl[i].x1 + offx, gl[i].y1 - offy, gl[i].x2 + offx, gl[i].y2 - offy, this.get('grid_line_width'), this.get('grid_color'));
-		}
-
-		for ( var i = 0; i < this.scale.length; i++) {
-			this.scale[i].draw();
-		}
+		_.gridlines.each(function(g){
+			_.T.line(g.x1, g.y1, g.x1 + offx, g.y1 - offy, _.get('grid_line_width'), _.get('grid_color'));
+			_.T.line(g.x1 + offx, g.y1 - offy, g.x2 + offx, g.y2 - offy, _.get('grid_line_width'), _.get('grid_color'));
+		});
+		
+		_.scale.each(function(s){s.draw()});
 	},
 	doConfig : function() {
 		$.Coordinate3D.superclass.doConfig.call(this);
-		
-		var bg = this.get('background_color'), c = $.dark(bg, 0.1), c1 = this.get('dark_color'), h = this.get('height') , w = this.get('width');
 
-		if (this.get('wall_style').length < 3) {
-			this.push('wall_style', [{
+		var _ = this._(),bg = _.get('background_color'), c = $.dark(bg, 0.1), c1 = _.get('dark_color'), h = _.get('height'), w = _.get('width');
+
+		if (_.get('wall_style').length < 3) {
+			_.push('wall_style', [{
 				color : c
 			}, {
 				color : bg
@@ -4468,13 +4433,13 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			}]);
 		}
 
-		var dark = this.get('wall_style')[0].color;
+		var dark = _.get('wall_style')[0].color;
 
 		/**
 		 * 右-前
 		 */
-		this.push('bottom_style', [{
-			shadow : this.get('shadow')
+		_.push('bottom_style', [{
+			shadow : _.get('shadow')
 		}, false, false, {
 			color : dark
 		}, {
@@ -4486,7 +4451,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		/**
 		 * 上-右
 		 */
-		this.push('board_style', [false, false, false, {
+		_.push('board_style', [false, false, false, {
 			color : dark
 		}, {
 			color : bg
@@ -4494,19 +4459,19 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		/**
 		 * 下底-底-左-右-上-前
 		 */
-		if (this.get('gradient')) {
-			var offx = this.get('xAngle_') * this.get('zHeight'), offy = this.get('yAngle_') * this.get('zHeight'), ws = this.get('wall_style'), bs = this.get('bottom_style');
+		if (_.get('gradient')) {
+			var offx = _.get('xAngle_') * _.get('zHeight'), offy = _.get('yAngle_') * _.get('zHeight'), ws = _.get('wall_style'), bs = _.get('bottom_style');
 
 			if ($.isString(ws[0].color)) {
-				ws[0].color = this.T.avgLinearGradient(this.x, this.y + h, this.x + w, this.y + h, [dark, c1]);
+				ws[0].color = _.T.avgLinearGradient(_.x, _.y + h, _.x + w, _.y + h, [dark, c1]);
 			}
 			if ($.isString(ws[1].color)) {
-				ws[1].color = this.T.avgLinearGradient(this.x + offx, this.y - offy, this.x + offx, this.y + h - offy, [c1, this.get('light_color')]);
+				ws[1].color = _.T.avgLinearGradient(_.x + offx, _.y - offy, _.x + offx, _.y + h - offy, [c1, _.get('light_color')]);
 			}
 			if ($.isString(ws[2].color)) {
-				ws[2].color = this.T.avgLinearGradient(this.x, this.y, this.x, this.y + h, [bg, c1]);
+				ws[2].color = _.T.avgLinearGradient(_.x, _.y, _.x, _.y + h, [bg, c1]);
 			}
-			bs[5].color = this.T.avgLinearGradient(this.x, this.y + h, this.x, this.y + h + this.get('pedestal_height'), [bg, c]);
+			bs[5].color = _.T.avgLinearGradient(_.x, _.y + h, _.x, _.y + h + _.get('pedestal_height'), [bg, c]);
 		}
 
 	}
@@ -4605,36 +4570,38 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		doConfig:function(){
 			$.Rectangle.superclass.doConfig.call(this);
 			$.Assert.gtZero(this.get('width'),'width');
-			this.width = this.get('width');
-			this.height = this.get('height');
+			var _ = this._(),v = _.variable.event;
 			
-			this.centerX = this.x + this.width/2;
-			this.centerY = this.y + this.height/2;
+			_.width = _.get('width');
+			_.height = _.get('height');
 			
-			if(this.get('tip.enable')){
-				if(this.get('tip.showType')!='follow'){
-					this.push('tip.invokeOffsetDynamic',false);
+			_.centerX = _.x + _.width/2;
+			_.centerY = _.y + _.height/2;
+			
+			if(_.get('tip.enable')){
+				if(_.get('tip.showType')!='follow'){
+					_.push('tip.invokeOffsetDynamic',false);
 				}
-				this.tip = new $.Tip(this.get('tip'),this);
+				_.tip = new $.Tip(_.get('tip'),_);
 			}
 			
-			this.variable.event.highlight = false;
+			v.highlight = false;
 			
-			this.on('mouseover',function(e){
+			_.on('mouseover',function(e){
 				//console.time('mouseover');
-				this.variable.event.highlight = true;
-				this.redraw();
-				this.variable.event.highlight = false;
+				v.highlight = true;
+				_.redraw();
+				v.highlight = false;
 				//console.timeEnd('mouseover');
 			}).on('mouseout',function(e){
 				//console.time('mouseout');
-				this.variable.event.highlight = false;
-				this.redraw();
+				v.highlight = false;
+				_.redraw();
 				//console.timeEnd('mouseout');
 			});
 			
-			this.on('beforedraw',function(){
-				this.push('f_color',this.variable.event.highlight?this.get('light_color'):this.get('background_color'));
+			_.on('beforedraw',function(){
+				_.push('f_color',v.highlight?_.get('light_color'):_.get('background_color'));
 				return true;
 			});
 		}
@@ -4680,11 +4647,13 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				this.get('shadow'));
 		},
 		isEventValid:function(e){
-			return {valid:e.offsetX>this.x&&e.offsetX<(this.x+this.width)&&e.offsetY<(this.y+this.height)&&e.offsetY>(this.y)};
+			return {valid:e.x>this.x&&e.x<(this.x+this.width)&&e.y<(this.y+this.height)&&e.y>(this.y)};
 		},
 		tipInvoke:function(){
 			var _ = this;
-			//base on event? NEXT
+			/**
+			 * base on event?
+			 */
 			return function(w,h){
 				return {
 					left:_.tipX(w,h),
@@ -4796,7 +4765,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			);
 		},
 		isEventValid:function(e){
-			return {valid:!this.preventEvent&&e.offsetX>this.x&&e.offsetX<(this.x+this.get('width'))&&e.offsetY<this.y+this.get('height')&&e.offsetY>this.y};
+			return {valid:!this.preventEvent&&e.x>this.x&&e.x<(this.x+this.get('width'))&&e.y<this.y+this.get('height')&&e.y>this.y};
 		},
 		tipInvoke:function(){
 			var self = this;
@@ -4809,14 +4778,14 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		},
 		doConfig:function(){
 			$.Rectangle3D.superclass.doConfig.call(this);
+			var _ = this._();
+			_.pushIf("zHeight",_.get('width'));
 			
-			this.pushIf("zHeight",this.get('width'));
+			_.centerX=_.x+_.get('width')/2;
 			
-			this.centerX=this.x+this.get('width')/2;
+			_.topCenterX=_.x+(_.get('width')+_.get('width')*_.get('xAngle_'))/2;
 			
-			this.topCenterX=this.x+(this.get('width')+this.get('width')*this.get('xAngle_'))/2;
-			
-			this.topCenterY=this.y-this.get('width')*this.get('yAngle_')/2;
+			_.topCenterY=_.y-_.get('width')*_.get('yAngle_')/2;
 			
 		}
 });
@@ -4874,6 +4843,10 @@ $.Sector = $.extend($.Component, {
 			 * @cfg {Boolean} True to bound this sector.(default to false)
 			 */
 			expand : false,
+			/**
+			 * @cfg {Number} Specifies the width when show a donut.only applies when it not 0.(default to 0)
+			 */
+			donutwidth : 0,
 			/**
 			 * @cfg {Boolean} If true means just one piece could bound at same time.(default to false)
 			 */
@@ -4939,12 +4912,12 @@ $.Sector = $.extend($.Component, {
 	doConfig : function() {
 		$.Sector.superclass.doConfig.call(this);
 
-		var _ = this;
+		var _ = this._(),v = _.variable.event;
 
 		_.push('totalAngle', _.get('endAngle') - _.get('startAngle'));
 
 
-		if(this.get('label.enable')){
+		if(_.get('label.enable')){
 			_.pushIf('label.border.color',_.get('border.color'));
 			/**
 			 * make the label's color in accord with sector
@@ -4960,30 +4933,40 @@ $.Sector = $.extend($.Component, {
 			_.tip = new $.Tip(_.get('tip'), _);
 		}
 
-		_.variable.event.poped = false;
+		v.poped = false;
 
 		_.on(_.get('bound_event'), function(_, e, r) {
 			// console.profile('Test for pop');
 				 //console.time('Test for pop');
-				_.variable.event.poped = true;
+				v.poped = true;
 				_.expanded = !_.expanded;
 				_.redraw();
-				_.variable.event.poped = false;
+				v.poped = false;
 				 //console.timeEnd('Test for pop');
 				// console.profileEnd('Test for pop');
 			});
-
+		
+		_.on('mouseover',function(e){
+			v.highlight = true;
+			_.redraw();
+			v.highlight = false;
+		}).on('mouseout',function(e){
+			v.highlight = false;
+			_.redraw();
+		});
+		
 		_.on('beforedraw', function() {
+			_.push('f_color',v.highlight?_.get('light_color'):_.get('background_color'));
 			_.x = _.get('originx');
 			_.y = _.get('originy');
-			if (_.variable.event.status != _.expanded) {
+			if (v.status != _.expanded) {
 				_.fireEvent(_, 'changed', [_, _.expanded]);
 				if(_.get('label.enable'))
 				_.labelInvoke((_.expanded?1:-1));
 			}
-			_.variable.event.status = _.expanded;
+			v.status = _.expanded;
 			if (_.expanded) {
-				if (_.get('mutex') && !_.variable.event.poped) {
+				if (_.get('mutex') && !v.poped) {
 					_.expanded = false;
 				} else {
 					_.x += _.get('inc_x');
@@ -5026,6 +5009,7 @@ $.Sector = $.extend($.Component, {
 					this.x,
 					this.y,
 					this.r,
+					this.get('donutwidth'),
 					this.get('startAngle'),
 					this.get('endAngle'),
 					this.get('f_color'),
@@ -5035,17 +5019,15 @@ $.Sector = $.extend($.Component, {
 					this.get('shadow'),
 					this.get('counterclockwise'));
 		},
+		
 		isEventValid:function(e){
 			if(this.label&&this.label.isEventValid(e).valid)
 				return {valid:true};
-				
-			if((this.r)<$.distanceP2P(this.x,this.y,e.offsetX,e.offsetY)){
+			var r = $.distanceP2P(this.x,this.y,e.x,e.y),b=this.get('donutwidth');	
+			if(this.r<r||(b&&(this.r-b)>r)){
 				return {valid:false};
 			}
-			/**
-			 * 与x轴正方向形成的夹角、x轴逆时针的角度、并转换弧度参照 
-			 */
-			if($.angleInRange(this.get('startAngle'),this.get('endAngle'),(2*Math.PI - $.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
+			if($.angleInRange(this.get('startAngle'),this.get('endAngle'),(2*Math.PI - $.atan2Radian(this.x,this.y,e.x,e.y)))){
 				return {valid:true};
 			}
 			return {valid:false};
@@ -5062,36 +5044,40 @@ $.Sector = $.extend($.Component, {
 		},
 		doConfig:function(){
 			$.Sector2D.superclass.doConfig.call(this);
+			var _ = this._();
+			_.r = _.get('radius');
 			
-			this.r = this.get('radius');
-			$.Assert.gtZero(this.r);
+			$.Assert.gtZero(_.r);
 			
-			
-			if(this.get('gradient')){
-				this.push('f_color',this.T.avgRadialGradient(this.x,this.y,0,this.x,this.y,this.r,[this.get('light_color'),this.get('dark_color')]));
+			if(_.get('donutwidth')>_.r){
+				_.push('donutwidth',0);
 			}
-			this.pushIf('increment',$.lowTo(5,this.r/10));
 			
-			var A = this.get('middleAngle'),inc = this.get('increment');
-			this.push('inc_x',inc * Math.cos(2 * Math.PI -A));
-			this.push('inc_y',inc * Math.sin(2 * Math.PI - A));
+			if(_.get('gradient')){
+				_.push('f_color',_.T.avgRadialGradient(_.x,_.y,0,_.x,_.y,_.r,[_.get('light_color'),_.get('dark_color')]));
+			}
+			_.pushIf('increment',$.lowTo(5,_.r/10));
 			
-			if(this.get('label.enable')){
-				this.pushIf('label.linelength',$.lowTo(10,this.r/8));
+			var A = _.get('middleAngle'),inc = _.get('increment');
+			_.push('inc_x',inc * Math.cos(2 * Math.PI -A));
+			_.push('inc_y',inc * Math.sin(2 * Math.PI - A));
+			
+			if(_.get('label.enable')){
+				_.pushIf('label.linelength',$.lowTo(10,_.r/8));
 				Q  = $.quadrantd(A),
 				
-				P2 = $.p2Point(this.x,this.y,A,this.r/2);
-			
-				this.push('label.originx',P2.x);
-				this.push('label.originy',P2.y);
-				this.push('label.quadrantd',Q);
+				P2 = $.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
 				
-				var P = $.p2Point(this.x,this.y,A,this.r + this.get('label.linelength'));
-				this.push('label.line_potins',[P2.x,P2.y,P.x,P.y]);
-				this.push('label.labelx',P.x);
-				this.push('label.labely',P.y);
+				_.push('label.originx',P2.x);
+				_.push('label.originy',P2.y);
+				_.push('label.quadrantd',Q);
 				
-				this.label = new $.Label(this.get('label'),this);
+				var P = $.p2Point(_.x,_.y,A,_.r + _.get('label.linelength'));
+				_.push('label.line_potins',[P2.x,P2.y,P.x,P.y]);
+				_.push('label.labelx',P.x);
+				_.push('label.labely',P.y);
+				
+				_.label = new $.Label(_.get('label'),_);
 			}
 		}
 });
@@ -5155,10 +5141,10 @@ $.Sector = $.extend($.Component, {
 				if(this.label.isEventValid(e).valid)
 					return {valid:true};
 			}
-			if(!$.inEllipse(e.offsetX - this.x,e.offsetY-this.y,this.a,this.b)){
+			if(!$.inEllipse(e.x - this.x,e.y-this.y,this.a,this.b)){
 				return {valid:false};
 			}
-			if($.angleInRange(this.sA,this.eA,(2*Math.PI - $.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
+			if($.angleInRange(this.sA,this.eA,(2*Math.PI - $.atan2Radian(this.x,this.y,e.x,e.y)))){
 				return {valid:true};
 			}
 			return {valid:false};
@@ -5181,7 +5167,7 @@ $.Sector = $.extend($.Component, {
 		},
 		doConfig:function(){
 			$.Sector3D.superclass.doConfig.call(this);
-			var _ = this,ccw = _.get('counterclockwise'),mA = _.get('middleAngle');
+			var _ = this._(),ccw = _.get('counterclockwise'),mA = _.get('middleAngle');
 			
 			_.a = _.get('semi_major_axis');
 			_.b = _.get('semi_minor_axis');
@@ -5199,7 +5185,8 @@ $.Sector = $.extend($.Component, {
 				}
 				return t;
 			},
-			inc = this.get('increment');
+			
+			inc = _.get('increment');
 			
 			_.sA = toAngle.call(_,_.get('startAngle'));
 			_.eA = toAngle.call(_,_.get('endAngle'));
@@ -5416,61 +5403,59 @@ $.Pie = $.extend($.Chart, {
 			this.localizer(d.reference.label);
 		}
 	},
-	/**
-	 * calculate pie chart's angle
-	 */
-	calculate : function() {
-		var eA = this.oA, sA = eA, L = this.data.length;
-		this.data.each(function(d, i) {
-			eA += (2 * d.value / this.total) * Math.PI;
+	doConfig : function() {
+		$.Pie.superclass.doConfig.call(this);
+		$.Assert.gtZero(this.total, 'this.total');
+		
+		var _ = this._(),r = _.get('radius'), f = _.get('label.enable') ? 0.35 : 0.44;
+		
+		_.sectors.zIndex = _.get('z_index');
+
+		_.oA = $.angle2Radian(_.get('offsetAngle'));
+		
+		//If 3D,let it bigger
+		if (_.is3D())
+			f += 0.06;
+		
+		f = _.get('minDistance') * f;
+		
+		var eA = _.oA, sA = eA, L = _.data.length;
+		
+		_.data.each(function(d, i) {
+			eA += (2 * d.value / _.total) * Math.PI;
 			if (i == (L - 1)) {
-				eA = 2 * Math.PI + this.oA;
+				eA = 2 * Math.PI + _.oA;
 			}
 			d.startAngle = sA;
 			d.endAngle = eA;
 			d.totalAngle = eA - sA;
 			d.middleAngle = (sA + eA) / 2;
 			sA = eA;
-		}, this);
-	},
-	doConfig : function() {
-		$.Pie.superclass.doConfig.call(this);
-		$.Assert.gtZero(this.total, 'this.total');
-
-		this.sectors.zIndex = this.get('z_index');
-
-		this.oA = $.angle2Radian(this.get('offsetAngle'));
-
-		var r = this.get('radius'), f = this.get('label.enable') ? 0.35 : 0.44;
-
-		if (this.is3D())
-			f += 0.06;
-		f = this.get('minDistance') * f;
-
-		this.calculate();
-
+		}, _);
+		
+		
 		/**
 		 * calculate pie chart's radius
 		 */
 		if (r <= 0 || r > f) {
-			r = this.push('radius', Math.floor(f));
+			r = _.push('radius', Math.floor(f));
 		}
 		
-		this.r = r;
+		_.r = r;
 		
 		/**
 		 * calculate pie chart's alignment
 		 */
-		if (this.get('align') == 'left') {
-			this.push('originx', r + this.get('l_originx') + this.get('offsetx'));
-		} else if (this.get('align') == 'right') {
-			this.push('originx', this.get('r_originx') - r + this.get('offsetx'));
+		if (_.get('align') == 'left') {
+			_.push('originx', r + _.get('l_originx') + _.get('offsetx'));
+		} else if (_.get('align') == 'right') {
+			_.push('originx', _.get('r_originx') - r + _.get('offsetx'));
 		} else {
-			this.push('originx', this.get('centerx') + this.get('offsetx'));
+			_.push('originx', _.get('centerx') + _.get('offsetx'));
 		}
-		this.push('originy', this.get('centery') + this.get('offsety'));
+		_.push('originy', _.get('centery') + _.get('offsety'));
 
-		$.apply(this.get('sector'), $.clone(this.get('communal_option').concat(['originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'mutex', 'increment', 'label']), this.options));
+		$.apply(_.get('sector'), $.clone(_.get('communal_option').concat(['originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'mutex', 'increment', 'label']), _.options));
 		
 	}
 });
@@ -5689,18 +5674,17 @@ $.Column = $.extend($.Chart, {
 		this.labels.ignore = true;
 	},
 	doAnimation : function(t, d) {
-		var r, h;
-		this.coo.draw();
-		for ( var i = 0; i < this.labels.length; i++) {
-			this.labels[i].draw();
-		}
-		for ( var i = 0; i < this.rectangles.length; i++) {
-			r = this.rectangles[i];
-			h = Math.ceil(this.animationArithmetic(t, 0, r.height, d));
+		var _ = this._(), h;
+		_.coo.draw();
+		_.labels.each(function(l){
+			l.draw();
+		});
+		_.rectangles.each(function(r){
+			h = Math.ceil(_.animationArithmetic(t, 0, r.height, d));
 			r.push('originy', r.y + (r.height - h));
 			r.push('height', h);
 			r.drawRectangle();
-		}
+		});
 	},
 	/**
 	 * @method Returns the coordinate of this element.
@@ -5727,11 +5711,12 @@ $.Column = $.extend($.Chart, {
 	},
 	doConfig : function() {
 		$.Column.superclass.doConfig.call(this);
+		
+		var _ = this._(),c = 'colwidth',z = 'z_index';
 		/**
 		 * apply the coordinate feature
 		 */
-		$.Interface.coordinate.call(this);
-		var _ = this._(),c = 'colwidth',z = 'z_index';
+		$.Interface.coordinate.call(_);
 		
 		_.rectangles.zIndex = _.get(z);
 		
@@ -5925,51 +5910,52 @@ $.Column2D = $.extend($.Column, {
 		doConfig:function(){
 			$.ColumnMulti2D.superclass.doConfig.call(this);
 			
-			var L = this.data.length,
-				KL= this.data_labels.length,
-				W = this.get('coordinate.width'),
-				H = this.get('coordinate.height'),
+			var _ = this._(),
+				L = _.data.length,
+				KL= _.data_labels.length,
+				W = _.get('coordinate.width'),
+				H = _.get('coordinate.height'),
 				total = KL*L,
-				bw = this.pushIf('colwidth',W/(KL+1+total));
+				bw = _.pushIf('colwidth',W/(KL+1+total));
 			
 			if(bw*total>W){
-				bw = this.push('colwidth',W/(KL+1+total));
+				bw = _.push('colwidth',W/(KL+1+total));
 			}
 			
-			this.push('hispace',(W - bw*total)/(KL+1));
+			_.push('hispace',(W - bw*total)/(KL+1));
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('scaleAlign')),
-				bs = this.coo.get('brushsize'),
-				gw = this.data.length*bw+this.get('hispace'),
+			var S = _.coo.getScale(_.get('scaleAlign')),
+				bs = _.coo.get('brushsize'),
+				gw = _.data.length*bw+_.get('hispace'),
 				h;
 			
 			/**
 			 * quick config to all rectangle
 			 */
-			this.push('rectangle.width',bw);
+			_.push('rectangle.width',bw);
 			
-			this.columns.each(function(column, i) {
+			_.columns.each(function(column, i) {
 				
 				column.item.each(function(d, j) {
 					h = (d.value - S.start) * H / S.distance;
-					this.doParse(d, j, i+'-'+j, this.x + this.get('hispace')+j*bw+i*gw, this.y + H - h - bs, h);
-					d.reference = new $.Rectangle2D(this.get('rectangle'), this);
-					this.rectangles.push(d.reference);
+					_.doParse(_,d, j, i+'-'+j, _.x + _.get('hispace')+j*bw+i*gw, _.y + H - h - bs, h);
+					d.reference = new $.Rectangle2D(_.get('rectangle'), this);
+					_.rectangles.push(d.reference);
 					
-				}, this);
+				}, _);
 				
-				this.labels.push(new $.Text({
+				_.labels.push(new $.Text({
 					id:i,
 					text:column.name,
-					originx:this.x +this.get('hispace')*0.5+(i+0.5)*gw,
-	 				originy:this.get('originy')+H+this.get('text_space')
-				},this));
+					originx:_.x +_.get('hispace')*0.5+(i+0.5)*gw,
+	 				originy:_.get('originy')+H+_.get('text_space')
+				},_));
 				
-			}, this);
+			}, _);
 			
-			this.components.push(this.labels);
-			this.components.push(this.rectangles);
+			_.components.push(_.labels);
+			_.components.push(_.rectangles);
 		}
 });
 /**
@@ -6020,18 +6006,21 @@ $.Bar = $.extend($.Chart, {
 		this.rectangles = [];
 		this.labels = [];
 	},
-	doParse : function(d, i, id, x, y, w) {
-		var t = (this.get('showpercent') ? $.toPercent(d.value / this.total, this.get('decimalsnum')) : d.value);
-		if (this.get('tip.enable'))
-			this.push('rectangle.tip.text', this.fireString(this, 'parseTipText', [d, d.value, i], d.name + ' ' + t));
-
-		this.push('rectangle.value', t);
-		this.push('rectangle.background_color', d.color);
-
-		this.push('rectangle.id', id);
-		this.push('rectangle.originy', y);
-		this.push('rectangle.width', w);
-
+	doParse : function(_,d, i, id, x, y, w) {
+		var t = (_.get('showpercent') ? $.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
+		if (_.get('tip.enable'))
+			_.push('rectangle.tip.text', _.fireString(_, 'parseTipText', [d, d.value, i], d.name + ' ' + t));
+		
+		_.set({
+			rectangle:{
+				id:id,
+				name:d.name,
+				value:t,
+				background_color:d.color,
+				originy:y,
+				width:w
+			}
+		});	
 	},
 	doAnimation : function(t, d) {
 		this.coo.draw();
@@ -6046,51 +6035,53 @@ $.Bar = $.extend($.Chart, {
 	},
 	doConfig : function() {
 		$.Bar.superclass.doConfig.call(this);
+		
+		var _ = this._(),b = 'barheight',z = 'z_index';
 		/**
 		 * Apply the coordinate feature
 		 */
-		$.Interface.coordinate.call(this);
+		$.Interface.coordinate.call(_);
 		
-		this.rectangles.zIndex = this.get('z_index');
+		_.rectangles.zIndex = _.get(z);
 		
-		this.labels.zIndex = this.get('z_index') + 1;
+		_.labels.zIndex = _.get(z) + 1;
 
-		if (this.dataType == 'simple') {
+		if (_.dataType == 'simple') {
 
-			var L = this.data.length, H = this.get('coordinate.height'), bh = this.pushIf('barheight', H / (L * 2 + 1));
+			var L = _.data.length, H = _.get('coordinate.height'), bh = _.pushIf(b, H / (L * 2 + 1));
 			/**
 			 * bar's height
 			 */
 			if (bh * L > H) {
-				bh = this.push('barheight', H / (L * 2 + 1));
+				bh = _.push(b, H / (L * 2 + 1));
 			}
 			/**
 			 * the space of two bar
 			 */
-			this.push('barspace', (H - bh * L) / (L + 1));
+			_.push('barspace', (H - bh * L) / (L + 1));
 		}
 
-		if (this.is3D()) {
+		if (_.is3D()) {
 
 		}
 		/**
 		 * use option create a coordinate
 		 */
-		this.coo = $.Interface.coordinate_.call(this);
-		this.components.push(this.coo);
+		_.coo = $.Interface.coordinate_.call(_);
+		_.components.push(_.coo);
 
 		/**
 		 * Quick config to all rectangle
 		 */
-		$.applyIf(this.get('rectangle'), $.clone(this.get('communal_option'), this.options));
+		$.applyIf(_.get('rectangle'), $.clone(_.get('communal_option'), _.options));
 		
 		/**
 		 * quick config to all rectangle
 		 */
-		this.push('rectangle.height', bh);
-		this.push('rectangle.valueAlign', 'right');
-		this.push('rectangle.tipAlign', 'right');
-		this.push('rectangle.originx', this.x + this.coo.get('brushsize'));
+		_.push('rectangle.height', bh);
+		_.push('rectangle.valueAlign', 'right');
+		_.push('rectangle.tipAlign', 'right');
+		_.push('rectangle.originx', _.x + _.coo.get('brushsize'));
 
 	}
 
@@ -6121,29 +6112,29 @@ $.Bar = $.extend($.Chart, {
 			/**
 			 * get the max/min scale of this coordinate for calculated the height
 			 */
-			var S = this.coo.getScale(this.get('scaleAlign')),
-				W = this.coo.get('width'),
-				h2 = this.get('barheight')/2,
-				gw = this.get('barheight')+this.get('barspace');
+			var _ = this._(),
+				S = _.coo.getScale(_.get('scaleAlign')),
+				W = _.coo.get('width'),
+				h2 = _.get('barheight')/2,
+				gw = _.get('barheight')+_.get('barspace');
 			
-			this.data.each(function(d, i) {
+			_.data.each(function(d, i) {
+				_.doParse(_,d, i, i, 0, _.y+_.get('barspace')+i*gw, (d.value - S.start) * W / S.distance);
+				d.reference = new $.Rectangle2D(_.get('rectangle'), _);
+				_.rectangles.push(d.reference);
 				
-				this.doParse(d, i, i, 0, this.y+this.get('barspace')+i*gw, (d.value - S.start) * W / S.distance);
-				d.reference = new $.Rectangle2D(this.get('rectangle'), this);
-				this.rectangles.push(d.reference);
-				
-				this.labels.push(new $.Text({
+				_.labels.push(new $.Text({
 					id:i,
 					textAlign:'right',
 					textBaseline:'middle',
 					text:d.name,
-					originx:this.x - this.get('text_space'),
-	 				originy:this.y + this.get('barspace')+i*gw +h2
-				},this));
-			}, this);
+					originx:_.x - _.get('text_space'),
+	 				originy:_.y + _.get('barspace')+i*gw +h2
+				},_));
+			}, _);
 			
-			this.components.push(this.labels);
-			this.components.push(this.rectangles);
+			_.components.push(_.labels);
+			_.components.push(_.rectangles);
 		}
 		
 });
@@ -6171,55 +6162,53 @@ $.Bar = $.extend($.Chart, {
 			doConfig:function(){
 				$.BarMulti2D.superclass.doConfig.call(this);
 				
-				var L = this.data.length,
-					KL= this.data_labels.length,
-					W = this.coo.get('width'),
-					H = this.coo.get('height'),
+				var _ = this._(),L = _.data.length,
+					KL= _.data_labels.length,
+					W = _.coo.get('width'),
+					H = _.coo.get('height'),
+					b = 'barheight',
+					s = 'barspace',
 					total = KL*L,
 					/**
 					 * bar's height
 					 */
-					bh = this.pushIf('barheight',H/(KL+1+total));
-				
+					bh = _.pushIf(b,H/(KL+1+total));
 				if(bh*L>H){
-					bh = this.push('barheight',H/(KL+1+total));
+					bh = _.push(b,H/(KL+1+total));
 				}
-				
 				/**
 				 * the space of two bar
 				 */
-				this.push('barspace',(H - bh*total)/(KL+1));
-				
+				_.push(s,(H - bh*total)/(KL+1));
 				/**
 				 * get the max/min scale of this coordinate for calculated the height
 				 */
-				var S = this.coo.getScale(this.get('scaleAlign')),
-					gw = L*bh+this.get('barspace'),
-					h2 = this.get('barheight')/2,
+				var S = _.coo.getScale(_.get('scaleAlign')),
+					gw = L*bh+_.get(s),
+					h2 = _.get(b)/2,
 					w;
-				
-				this.push('rectangle.height',bh);
-				this.columns.each(function(column, i) {
+				_.push('rectangle.height',bh);
+				_.columns.each(function(column, i) {
 					column.item.each(function(d, j) {
 						w = (d.value - S.start) * W / S.distance;
-						this.doParse(d, j, i+'-'+j, this.x + this.get('hispace')+j*bh+i*gw,this.y + this.get('barspace')+j*bh+i*gw, w);
-						d.reference = new $.Rectangle2D(this.get('rectangle'), this);
-						this.rectangles.push(d.reference);
-					}, this);
+						_.doParse(_,d, j, i+'-'+j, _.x + _.get('hispace')+j*bh+i*gw,_.y + _.get(s)+j*bh+i*gw, w);
+						d.reference = new $.Rectangle2D(_.get('rectangle'), _);
+						_.rectangles.push(d.reference);
+					}, _);
 					
-					this.labels.push(new $.Text({
+					_.labels.push(new $.Text({
 						id:i,
 						text:column.name,
 						textAlign:'right',
 						textBaseline:'middle',
-						originx:this.x - this.get('text_space'),
-		 				originy:this.y + this.get('barspace')*0.5+(i+0.5)*gw
-					},this));
+						originx:_.x - _.get('text_space'),
+		 				originy:_.y + _.get(s)*0.5+(i+0.5)*gw
+					},_));
 					
-				}, this);
+				}, _);
 				
-				this.components.push(this.labels);
-				this.components.push(this.rectangles);
+				_.components.push(_.labels);
+				_.components.push(_.rectangles);
 			}
 			
 	});
@@ -6447,10 +6436,10 @@ $.LineSegment = $.extend($.Component, {
 					valid : false
 				};
 			}
-			var ii = Math.floor((e.offsetX - _.x) / sp);
+			var ii = Math.floor((e.x - _.x) / sp);
 			if (ii < 0 || ii >= (p.length - 1)) {
 				ii = $.between(0, p.length - 1, ii);
-				if (valid(p[ii], e.offsetX, e.offsetY))
+				if (valid(p[ii], e.x, e.y))
 					return to(ii);
 				else
 					return {
@@ -6459,7 +6448,7 @@ $.LineSegment = $.extend($.Component, {
 			}
 			// calculate the pointer's position will between which two point?this function can improve location speed
 			for ( var i = ii; i <= ii + 1; i++) {
-				if (valid(p[i], e.offsetX, e.offsetY))
+				if (valid(p[i], e.x, e.y))
 					return to(i);
 			}
 			// console.timeEnd('mouseover');
@@ -6660,197 +6649,62 @@ $.Line = $.extend($.Chart, {
 		},
 		doConfig:function(){
 			$.LineBasic2D.superclass.doConfig.call(this);
+			var _ = this._();
 			
-			this.coo = new $.Coordinate2D($.merge({
+			_.coo = new $.Coordinate2D($.merge({
 					scale:[{
-						 position:this.get('scaleAlign'),	
-						 max_scale:this.get('maxValue')
+						 position:_.get('scaleAlign'),	
+						 max_scale:_.get('maxValue')
 					},{
-						 position:this.get('labelAlign'),	
+						 position:_.get('labelAlign'),	
 						 scaleEnable:false,
 						 start_scale:1,
 						 scale:1,
-						 end_scale:this.get('maxItemSize'),
-						 labels:this.get('data_labels')
+						 end_scale:_.get('maxItemSize'),
+						 labels:_.get('data_labels')
 					}]
-				},this.get('coordinate')),this);
+				},_.get('coordinate')),_);
 			
 			
-			this.components.push(this.coo);
+			_.components.push(_.coo);
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('scaleAlign')),
-				H=this.get('coordinate.valid_height'),
-				sp=this.get('label_spacing'),
+			var S = _.coo.getScale(_.get('scaleAlign')),
+				H=_.get('coordinate.valid_height'),
+				sp=_.get('label_spacing'),
 				points,x,y,
-				ox=this.get('segment_style.originx'),
-				oy=this.get('segment_style.originy'),
+				ox=_.get('segment_style.originx'),
+				oy=_.get('segment_style.originy'),
 				p;
 			
-			this.push('segment_style.tip.showType','follow');
-			this.push('segment_style.coordinate',this.coo);
-			this.push('segment_style.tipInvokeHeap',this.tipInvokeHeap);
-			this.push('segment_style.point_space',sp);
+			_.push('segment_style.tip.showType','follow');
+			_.push('segment_style.coordinate',_.coo);
+			_.push('segment_style.tipInvokeHeap',_.tipInvokeHeap);
+			_.push('segment_style.point_space',sp);
 			
-			this.data.each(function(d,i){
+			_.data.each(function(d,i){
 				points = [];
 				d.value.each(function(v,j){
 					x = sp*j;
 					y = (v-S.start)*H/S.distance;
 					p = {x:ox+x,y:oy-y,value:v,text:v};
-					$.merge(p,this.fireEvent(this,'parsePoint',[d,v,x,y,j]))
-					if (this.get('tip.enable'))
-						p.text = this.fireString(this,'parseTipText',[d,v,j],v);
+					$.merge(p,_.fireEvent(_,'parsePoint',[d,v,x,y,j]))
+					if (_.get('tip.enable'))
+						p.text = _.fireString(_,'parseTipText',[d,v,j],v);
 					points.push(p);
-				},this);	
+				},_);	
 				
-				this.push('segment_style.points',points);
-				this.push('segment_style.brushsize',d.linewidth||1);
-				this.push('segment_style.background_color',d.color);
+				_.push('segment_style.points',points);
+				_.push('segment_style.brushsize',d.linewidth||1);
+				_.push('segment_style.background_color',d.color);
 				
-				this.lines.push(new $.LineSegment(this.get('segment_style'),this));
+				_.lines.push(new $.LineSegment(_.get('segment_style'),_));
 			},this);
-			this.components.push(this.lines);
+			_.components.push(_.lines);
 			
 		}
 		
 });
-;(function(){
-	var Queue = function(T,L){
-		this.T = T;
-		this.line = L;
-		this.direction = T.get('direction');
-		this.size = T.get('queue_size');
-		this.space = T.get('label_spacing');
-		this.end = T.get('line_end');
-	}
-	
-	Queue.prototype = {
-		push:function(v){
-			if(!$.isArray(v)){
-				v = [v];
-			}
-			if(this.direction=='left'){
-				v.reverse();
-			}
-			
-			while(this.size<(this.line.get('points').length+v.length))
-				this.line.get('points').shift();
-			
-			//平移
-			for ( var j = 0; j < this.line.get('points').length; j++) {
-				this.line.get('points')[j].x += (this.space*v.length)*(this.direction=='left'?-1:1);
-			}
-			
-			for ( var j = 0; j < v.length; j++) {
-				x = this.direction=='left'?(this.end - this.space * j):(this.space * j);
-				y = ($.between(this.T.S.start,this.T.S.end,v[j]) - this.T.S.start)*this.T.S.uh;
-				this.line.get('points').push($.merge({x : x,y : y,value : v[j]},this.T.fireEvent(this.T, 'parsePoint', [v[j], x, y, j ])));
-			}
-		}
-	}
-	
-	/**
-	 * Line ability for real-time show 
-	 * @overview this component use for abc
-	 * @component#@chart#$.LineMonitor2D
-	 * @extend#$.Line
-	 */
-	$.LineMonitor2D = $.extend($.Line,{
-		/**
-		 * initialize the context for the denseline2d
-		 */
-		configure : function(config) {
-			/**
-			 * invoked the super class's  configuration
-			 */
-			$.LineMonitor2D.superclass.configure.call(this);
-
-			this.type = 'linemonitor2d';
-
-			this.set({
-				/**
-				 * @cfg {String} the direction of line run (default 'left')
-				 * Available value are:
-				 * @Option 'left'
-				 * @Option 'right'
-				 */
-				direction : 'left',
-				queue_size : 10
-			});
-			this.registerEvent();
-			
-			this.queues = [];
-			
-		},
-		createQueue:function(style){
-			this.init();
-			style = style || {};
-			var LS = $.clone(this.get('segment_style'));
-				LS.brushsize = style.linewidth || 1;
-				LS.background_color = style.color || '#BDBDBD';
-			var L = new $.LineSegment(LS, this);
-			this.components.push(L);
-			var queue = new Queue(this,L);
-			//this.queues.push(queue);
-			return queue;
-		},
-		doConfig : function() {
-			$.LineMonitor2D.superclass.doConfig.call(this);
-			
-			var _ = this;
-			//the monitor not support the animation now
-			_.push('animation',false);
-			
-			
-			if (_.get('coordinate.crosshair.enable')) {
-				_.push('coordinate.crosshair.hcross',_.data.length == 1);
-				_.push('coordinate.crosshair.invokeOffset',function(e, m) {
-						var r = _.lines[0].isEventValid(e);
-						return r.valid ? r : false;
-				});
-			}
-			
-			_.coo = new $.Coordinate2D($.merge( {
-				scale : [ {
-					position : _.get('scaleAlign'),
-					max_scale : _.get('maxValue')
-				}, {
-					position : _.get('labelAlign'),
-					scaleEnable : false,
-					start_scale : 1,
-					scale : 1,
-					end_scale : _.get('maxItemSize'),
-					labels : _.get('labels')
-				} ],
-				axis : {
-					width : [ 0, 0, 1, 1 ]
-				}
-			}, _.get('coordinate')), _);
-
-			_.components.push(_.coo);
-			
-			_.push('label_spacing',_.get('coordinate.valid_width')/(_.get('queue_size')-1));
-			
-			if (!_.get('segment_style.tip')) {
-				_.push('segment_style.tip', _.get('tip'));
-			} else {
-				_.push('segment_style.tip.wrap', _.get('tip.wrap'));
-			}
-
-			_.push('segment_style.tip.showType','follow');
-			_.push('segment_style.coordinate',_.coo);
-			_.push('segment_style.keep_with_coordinate',true);
-			
-			//get the max/min scale of this coordinate for calculated the height
-			_.S = _.coo.getScale(_.get('scaleAlign'));
-			_.S.uh = _.get('coordinate.valid_height')/ _.S.distance;
-			
-
-		}
-
-	});
-})();
 	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.Area2D

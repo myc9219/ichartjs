@@ -59,7 +59,7 @@
 			);
 		},
 		isEventValid:function(e){
-			return {valid:!this.preventEvent&&e.offsetX>this.x&&e.offsetX<(this.x+this.get('width'))&&e.offsetY<this.y+this.get('height')&&e.offsetY>this.y};
+			return {valid:!this.preventEvent&&e.x>this.x&&e.x<(this.x+this.get('width'))&&e.y<this.y+this.get('height')&&e.y>this.y};
 		},
 		tipInvoke:function(){
 			var self = this;
@@ -72,14 +72,14 @@
 		},
 		doConfig:function(){
 			iChart.Rectangle3D.superclass.doConfig.call(this);
+			var _ = this._();
+			_.pushIf("zHeight",_.get('width'));
 			
-			this.pushIf("zHeight",this.get('width'));
+			_.centerX=_.x+_.get('width')/2;
 			
-			this.centerX=this.x+this.get('width')/2;
+			_.topCenterX=_.x+(_.get('width')+_.get('width')*_.get('xAngle_'))/2;
 			
-			this.topCenterX=this.x+(this.get('width')+this.get('width')*this.get('xAngle_'))/2;
-			
-			this.topCenterY=this.y-this.get('width')*this.get('yAngle_')/2;
+			_.topCenterY=_.y-_.get('width')*_.get('yAngle_')/2;
 			
 		}
 });//@end

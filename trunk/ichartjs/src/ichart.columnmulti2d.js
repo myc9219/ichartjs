@@ -30,50 +30,50 @@
 			iChart.ColumnMulti2D.superclass.doConfig.call(this);
 			
 			var _ = this._(),
-				L = this.data.length,
-				KL= this.data_labels.length,
-				W = this.get('coordinate.width'),
-				H = this.get('coordinate.height'),
+				L = _.data.length,
+				KL= _.data_labels.length,
+				W = _.get('coordinate.width'),
+				H = _.get('coordinate.height'),
 				total = KL*L,
-				bw = this.pushIf('colwidth',W/(KL+1+total));
+				bw = _.pushIf('colwidth',W/(KL+1+total));
 			
 			if(bw*total>W){
-				bw = this.push('colwidth',W/(KL+1+total));
+				bw = _.push('colwidth',W/(KL+1+total));
 			}
 			
-			this.push('hispace',(W - bw*total)/(KL+1));
+			_.push('hispace',(W - bw*total)/(KL+1));
 			
 			//get the max/min scale of this coordinate for calculated the height
-			var S = this.coo.getScale(this.get('scaleAlign')),
-				bs = this.coo.get('brushsize'),
-				gw = this.data.length*bw+this.get('hispace'),
+			var S = _.coo.getScale(_.get('scaleAlign')),
+				bs = _.coo.get('brushsize'),
+				gw = _.data.length*bw+_.get('hispace'),
 				h;
 			
 			/**
 			 * quick config to all rectangle
 			 */
-			this.push('rectangle.width',bw);
+			_.push('rectangle.width',bw);
 			
-			this.columns.each(function(column, i) {
+			_.columns.each(function(column, i) {
 				
 				column.item.each(function(d, j) {
 					h = (d.value - S.start) * H / S.distance;
-					this.doParse(_,d, j, i+'-'+j, this.x + this.get('hispace')+j*bw+i*gw, this.y + H - h - bs, h);
-					d.reference = new iChart.Rectangle2D(this.get('rectangle'), this);
-					this.rectangles.push(d.reference);
+					_.doParse(_,d, j, i+'-'+j, _.x + _.get('hispace')+j*bw+i*gw, _.y + H - h - bs, h);
+					d.reference = new iChart.Rectangle2D(_.get('rectangle'), this);
+					_.rectangles.push(d.reference);
 					
-				}, this);
+				}, _);
 				
-				this.labels.push(new iChart.Text({
+				_.labels.push(new iChart.Text({
 					id:i,
 					text:column.name,
-					originx:this.x +this.get('hispace')*0.5+(i+0.5)*gw,
-	 				originy:this.get('originy')+H+this.get('text_space')
-				},this));
+					originx:_.x +_.get('hispace')*0.5+(i+0.5)*gw,
+	 				originy:_.get('originy')+H+_.get('text_space')
+				},_));
 				
-			}, this);
+			}, _);
 			
-			this.components.push(this.labels);
-			this.components.push(this.rectangles);
+			_.components.push(_.labels);
+			_.components.push(_.rectangles);
 		}
 });//@end

@@ -11,8 +11,15 @@
 (function(window) {
 	var ua = navigator.userAgent.toLowerCase(), mc = function(e) {
 		return e.test(ua)
-	}, ts = Object.prototype.toString, docMode = document.documentMode, isOpera = mc(/opera/), isChrome = mc(/\bchrome\b/), isWebKit = mc(/webkit/), isSafari = !isChrome && mc(/safari/), isIE = !isOpera && mc(/msie/), supportCanvas = !!document.createElement('canvas').getContext, isGecko = !isWebKit
-			&& mc(/gecko/), isFF = isGecko && mc(/firefox/), isMobile = mc(/ipod|ipad|iphone|android/gi), isWindows = mc(/windows|win32/), isMac = mc(/macintosh|mac os x/), isLinux = mc(/linux/), arithmetic = {
+	}, ts = Object.prototype.toString,
+	isOpera = mc(/opera/), isChrome = mc(/\bchrome\b/),
+	isWebKit = mc(/webkit/),
+	isSafari = !isChrome && mc(/safari/),
+	isIE = !isOpera && mc(/msie/),
+	supportCanvas = !!document.createElement('canvas').getContext,
+	isGecko = !isWebKit&& mc(/gecko/), 
+	isMobile = mc(/ipod|ipad|iphone|android/gi),
+	arithmetic = {
 		Linear : function(t, b, c, d) {
 			return c * t / d + b;
 		},
@@ -69,7 +76,10 @@
 			}
 		}
 	};
-	var iChart_ = (function(window) {// spirit from jquery
+	var iChart_ = (function(window) {
+		/**
+		 * spirit from jquery
+		 */
 		var isReady = false, readyBound = false, readyList = [], DOMContentLoaded = (function() {
 			if (document.addEventListener) {
 				return function() {
@@ -205,7 +215,9 @@
 			}
 			return d;
 		};
-		// get attribute that given
+		/**
+		 * clone attribute that given
+		 */
 		_.clone = function(a, e, deep) {
 			var d = {};
 			if (ts.apply(a) === "[object Array]" && ts.apply(e) === "[object Object]") {
@@ -236,7 +248,11 @@
 				}
 			}
 		};
-		_.extend = function() { // spirit from ext2.0
+		
+		/**
+		 * spirit from ext2.0
+		 */
+		_.extend = function() {
 			var C = function(E) {
 				for ( var D in E) {
 					this[D] = E[D];
@@ -252,7 +268,7 @@
 				E.prototype = D;
 				H = J.prototype = new E();
 				H.constructor = J;
-				J.superclass = D;// the pointer to the superclass
+				J.superclass = D;
 				if (D.constructor == e) {
 					D.constructor = G;
 				}
@@ -284,7 +300,8 @@
 				return pF((v / f + "").substring(0, (v + "").length + 1));
 			}
 			return Math.ceil(v / f);
-		}, innerColor = ["navy", "olive", "silver", "gold", "lime", "fuchsia", "aqua", "green", "red", "blue", "pink", "purple", "yellow", "maroon", "black", "gray", "white"], colors = {
+		},
+		colors = {
 			navy : 'rgb(0,0,128)',
 			olive : 'rgb(128,128,0)',
 			orange : 'rgb(255,165,0)',
@@ -329,7 +346,14 @@
 			lightyellow : 'rgb(255,255,224)',
 			magenta : 'rgb(255,0,255)',
 			violet : 'rgb(128,0,128)'
-		}, hex2Rgb = function(hex) {
+		},
+		innerColor = function(){
+			var r = [];
+			for(var c in colors)
+				r.push(colors[c]);
+			return r;
+		}(), 
+		hex2Rgb = function(hex) {
 			hex = hex.replace(/#/g, "").replace(/^(\w)(\w)(\w)$/, "$1$1$2$2$3$3");
 			return 'rgb(' + parseInt(hex.substring(0, 2), 16) + ',' + parseInt(hex.substring(2, 4), 16) + ',' + parseInt(hex.substring(4, 6), 16) + ')';
 		}, i2hex = function(N) {
@@ -484,7 +508,7 @@
 
 		_.apply(_, {
 			version : "1.0",
-			email : 'wanghetommy@gmail.com',
+			email : 'taylor@ichartjs.com',
 			isEmpty : function(C, e) {
 				return C === null || C === undefined || ((_.isArray(C) && !C.length)) || (!e ? C === "" : false)
 			},
@@ -547,7 +571,7 @@
 			/**
 			 * simple noConflict implements
 			 */
-			noConflict : function(deep) {
+			noConflict : function() {
 				return iChart_;
 			},
 			parsePadding : function(s, d) {
@@ -665,11 +689,6 @@
 			},
 			/**
 			 * 计算空间点坐标矢量
-			 * 
-			 * @param {Number}
-			 *            x
-			 * @param {Number}
-			 *            y
 			 */
 			vectorP2P : function(x, y, radian) {
 				if (!radian) {
@@ -709,7 +728,7 @@
 				return max - factor(max, f);
 			},
 			get : function(i) {
-				return innerColor[i % 16];
+				return innerColor[i % 44];
 			},
 			_2D : '2d',
 			_3D : '3d',
@@ -735,18 +754,10 @@
 			isSafari : isSafari,
 			isIE : isIE,
 			isGecko : isGecko,
-			isFF : isFF,
-			isLinux : isLinux,
 			isMobile : isMobile,
-			isWindows : isWindows,
-			isMac : isMac,
-			/**
-			 * static variable
-			 */
-			FRAME : isMobile ? 24 : 54,
+			FRAME : isMobile ? 30 : 60,
 			DefaultAnimationArithmetic : 'Cubic'
 		});
-
 		_.Assert = {
 			gtZero : function(v, n) {
 				_.Assert.gt(v, 0, n);
@@ -759,21 +770,9 @@
 				if (!_.isNumber(v))
 					throw new Error(n + " required Number,given:" + v);
 			},
-			isNotEmpty : function(v, cause) {
-				if (!v || v == '') {
-					throw new Error(" required not empty.cause:" + cause);
-				}
-				if (_.isArray(v) && v.length == 0) {
-					throw new Error("required must has one element at least.cause:" + cause);
-				}
-			},
 			isArray : function(v, n) {
 				if (!_.isArray(v))
 					throw new Error(n + " required Array,given:" + v);
-			},
-			isFunction : function(v, n) {
-				if (!_.isFunction(v))
-					throw new Error(n + " required Function,given:" + v);
 			},
 			isTrue : function(v, cause) {
 				if (v !== true)
@@ -792,6 +791,7 @@
 				window.setTimeout(callback, 1000 / 60);
 			};
 		})();
+		
 		/**
 		 * defined Event
 		 */
@@ -804,21 +804,17 @@
 				else
 					ele['on' + type] = fn;
 			},
-			fix : function(e) { // inspire by jquery
+			fix : function(e) {
 				// Fix event for mise
 				if (typeof (e) == 'undefined') {
 					e = window.event;
 				}
+				
 				// Fix target property, if necessary
 				if (!e.target) {
 					e.target = e.srcElement || document;
 				}
-
-				// Add relatedTarget, if necessary
-				if (!e.relatedTarget && e.fromElement) {
-					e.relatedTarget = e.fromElement === e.target ? e.toElement : e.fromElement;
-				}
-
+				
 				// Calculate pageX/Y if missing and clientX/Y available
 				if (e.pageX == null && e.clientX != null) {
 					var doc = document.documentElement, body = document.body;
@@ -840,23 +836,10 @@
 						e.offsetY = e.pageY - y;
 					}
 				}
-
-				// Add which for key events
-				if (e.which == null && (e.charCode != null || e.keyCode != null)) {
-					e.which = e.charCode != null ? e.charCode : e.keyCode;
-				}
-
-				// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
-				if (!e.metaKey && e.ctrlKey) {
-					e.metaKey = e.ctrlKey;
-				}
-
-				// Add which for click: 1 === left; 2 === middle; 3 === right
-				// Note: button is not normalized, so don't use it
-				if (!e.which && e.button !== undefined) {
-					e.which = (e.button & 1 ? 1 : (e.button & 2 ? 3 : (e.button & 4 ? 2 : 0)));
-				}
-
+				
+				e.x = e.offsetX;
+				e.y = e.offsetY;
+				
 				// Any browser that doesn't implement stopPropagation() (MSIE)
 				if (!e.stopPropagation) {
 					e.stopPropagation = function() {
@@ -882,6 +865,7 @@
 			}
 		};
 	};
+	
 	Array.prototype.eachAll = function(f, s) {
 		this.each(function(d, i) {
 			if (iChart_.isArray(d)) {
@@ -891,6 +875,7 @@
 			}
 		}, s);
 	};
+	
 	window.iChart = iChart_;
 	if (!window.$) {
 		window.$ = window.iChart;

@@ -39,11 +39,13 @@
 				this.get('shadow'));
 		},
 		isEventValid:function(e){
-			return {valid:e.offsetX>this.x&&e.offsetX<(this.x+this.width)&&e.offsetY<(this.y+this.height)&&e.offsetY>(this.y)};
+			return {valid:e.x>this.x&&e.x<(this.x+this.width)&&e.y<(this.y+this.height)&&e.y>(this.y)};
 		},
 		tipInvoke:function(){
 			var _ = this;
-			//base on event? NEXT
+			/**
+			 * base on event?
+			 */
 			return function(w,h){
 				return {
 					left:_.tipX(w,h),

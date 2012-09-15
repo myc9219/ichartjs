@@ -58,10 +58,10 @@
 				if(this.label.isEventValid(e).valid)
 					return {valid:true};
 			}
-			if(!iChart.inEllipse(e.offsetX - this.x,e.offsetY-this.y,this.a,this.b)){
+			if(!iChart.inEllipse(e.x - this.x,e.y-this.y,this.a,this.b)){
 				return {valid:false};
 			}
-			if(iChart.angleInRange(this.sA,this.eA,(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.offsetX,e.offsetY)))){
+			if(iChart.angleInRange(this.sA,this.eA,(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.x,e.y)))){
 				return {valid:true};
 			}
 			return {valid:false};
@@ -84,7 +84,7 @@
 		},
 		doConfig:function(){
 			iChart.Sector3D.superclass.doConfig.call(this);
-			var _ = this,ccw = _.get('counterclockwise'),mA = _.get('middleAngle');
+			var _ = this._(),ccw = _.get('counterclockwise'),mA = _.get('middleAngle');
 			
 			_.a = _.get('semi_major_axis');
 			_.b = _.get('semi_minor_axis');
@@ -102,7 +102,8 @@
 				}
 				return t;
 			},
-			inc = this.get('increment');
+			
+			inc = _.get('increment');
 			
 			_.sA = toAngle.call(_,_.get('startAngle'));
 			_.eA = toAngle.call(_,_.get('endAngle'));

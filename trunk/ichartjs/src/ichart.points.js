@@ -162,7 +162,7 @@ iChart.Points = iChart.extend(iChart.Component, {
 			}
 			// calculate the pointer's position will between which two point?this function can improve location speed
 			for ( var i = 0; i < p.length; i++) {
-				if (valid(p[i], e.offsetX, e.offsetY))
+				if (valid(p[i], e.x, e.y))
 					return to(i);
 			}
 			// console.timeEnd('mouseover');

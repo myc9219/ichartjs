@@ -87,15 +87,15 @@
 		},
 		doConfig:function(){
 			iChart.Text.superclass.doConfig.call(this);
-			var x = this.x,y=this.y,w=this.get('width'),h=this.get('height'),a=this.get('textAlign');
+			var _ = this._(),x = _.x,y=_.y,w=_.get('width'),h=_.get('height'),a=_.get('textAlign');
 			x+=(a=='center'?w/2:(a=='right'?w:0));
 			if(h){
 				y+=h/2;
-				this.push('textBaseline','middle');
+				_.push('textBaseline','middle');
 			}
-			this.push('textx',x);
-			this.push('texty',y);
-			this.push('box_feature',w&&h);
+			_.push('textx',x);
+			_.push('texty',y);
+			_.push('box_feature',w&&h);
 			
 			
 		}

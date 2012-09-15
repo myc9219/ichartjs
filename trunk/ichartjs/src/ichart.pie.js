@@ -186,61 +186,59 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			this.localizer(d.reference.label);
 		}
 	},
-	/**
-	 * calculate pie chart's angle
-	 */
-	calculate : function() {
-		var eA = this.oA, sA = eA, L = this.data.length;
-		this.data.each(function(d, i) {
-			eA += (2 * d.value / this.total) * Math.PI;
+	doConfig : function() {
+		iChart.Pie.superclass.doConfig.call(this);
+		iChart.Assert.gtZero(this.total, 'this.total');
+		
+		var _ = this._(),r = _.get('radius'), f = _.get('label.enable') ? 0.35 : 0.44;
+		
+		_.sectors.zIndex = _.get('z_index');
+
+		_.oA = iChart.angle2Radian(_.get('offsetAngle'));
+		
+		//If 3D,let it bigger
+		if (_.is3D())
+			f += 0.06;
+		
+		f = _.get('minDistance') * f;
+		
+		var eA = _.oA, sA = eA, L = _.data.length;
+		
+		_.data.each(function(d, i) {
+			eA += (2 * d.value / _.total) * Math.PI;
 			if (i == (L - 1)) {
-				eA = 2 * Math.PI + this.oA;
+				eA = 2 * Math.PI + _.oA;
 			}
 			d.startAngle = sA;
 			d.endAngle = eA;
 			d.totalAngle = eA - sA;
 			d.middleAngle = (sA + eA) / 2;
 			sA = eA;
-		}, this);
-	},
-	doConfig : function() {
-		iChart.Pie.superclass.doConfig.call(this);
-		iChart.Assert.gtZero(this.total, 'this.total');
-
-		this.sectors.zIndex = this.get('z_index');
-
-		this.oA = iChart.angle2Radian(this.get('offsetAngle'));
-
-		var r = this.get('radius'), f = this.get('label.enable') ? 0.35 : 0.44;
-
-		if (this.is3D())
-			f += 0.06;
-		f = this.get('minDistance') * f;
-
-		this.calculate();
-
+		}, _);
+		
+		
 		/**
 		 * calculate pie chart's radius
 		 */
 		if (r <= 0 || r > f) {
-			r = this.push('radius', Math.floor(f));
+			r = _.push('radius', Math.floor(f));
 		}
 		
-		this.r = r;
+		_.r = r;
 		
 		/**
 		 * calculate pie chart's alignment
 		 */
-		if (this.get('align') == 'left') {
-			this.push('originx', r + this.get('l_originx') + this.get('offsetx'));
-		} else if (this.get('align') == 'right') {
-			this.push('originx', this.get('r_originx') - r + this.get('offsetx'));
+		if (_.get('align') == 'left') {
+			_.push('originx', r + _.get('l_originx') + _.get('offsetx'));
+		} else if (_.get('align') == 'right') {
+			_.push('originx', _.get('r_originx') - r + _.get('offsetx'));
 		} else {
-			this.push('originx', this.get('centerx') + this.get('offsetx'));
+			_.push('originx', _.get('centerx') + _.get('offsetx'));
 		}
-		this.push('originy', this.get('centery') + this.get('offsety'));
+		_.push('originy', _.get('centery') + _.get('offsety'));
 
-		iChart.apply(this.get('sector'), iChart.clone(this.get('communal_option').concat(['originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'mutex', 'increment', 'label']), this.options));
+		iChart.apply(_.get('sector'), iChart.clone(_.get('communal_option').concat(['originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'mutex', 'increment', 'label']), _.options));
 		
 	}
 });
