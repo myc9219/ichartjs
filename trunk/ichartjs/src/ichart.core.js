@@ -347,12 +347,6 @@
 			magenta : 'rgb(255,0,255)',
 			violet : 'rgb(128,0,128)'
 		},
-		innerColor = function(){
-			var r = [];
-			for(var c in colors)
-				r.push(colors[c]);
-			return r;
-		}(), 
 		hex2Rgb = function(hex) {
 			hex = hex.replace(/#/g, "").replace(/^(\w)(\w)(\w)$/, "$1$1$2$2$3$3");
 			return 'rgb(' + parseInt(hex.substring(0, 2), 16) + ',' + parseInt(hex.substring(2, 4), 16) + ',' + parseInt(hex.substring(4, 6), 16) + ')';
@@ -726,9 +720,6 @@
 			 */
 			floor : function(max, f) {
 				return max - factor(max, f);
-			},
-			get : function(i) {
-				return innerColor[i % 44];
 			},
 			_2D : '2d',
 			_3D : '3d',
