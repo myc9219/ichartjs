@@ -39,17 +39,15 @@
 	pF = function(n){
 		return $.isNumber(n)?n:$.parseFloat(n,n);
 	},
-	simple = function(c,z) {
-		var M=0,V=0,MI,ML=0;
+	simple = function(c) {
+		var M=0,V=0,MI,ML=0,n='minValue',x='maxValue';
 		c.each(function(d,i){
-			$.merge(d,this.fireEvent(this,'parseData',[this,d,i]));
-			d.color = d.color || $.get(i);
 			V  = d.value;
 			if($.isArray(V)){
 				var T = 0;
 				ML = V.length>ML?V.length:ML;
 				for(var j=0;j<V.length;j++){
-					V[j] = parse(V[j]);
+					V[j] = pF(V[j]);
 					T+=V[j];
 					if(!MI)
 					MI = V;
@@ -68,18 +66,12 @@
 			}
 		},this);
 		
-		if($.isNumber(z)){
-			Array.prototype.splice.apply(this.data,[z,0].concat(c));
-		}else{
-			this.data = this.data.concat(c);
+		if(this.get(n)){
+			MI = this.get(n)<MI?this.get(n):MI;
 		}
 		
-		if(this.get('minValue')){
-			MI = this.get('minValue')<MI?this.get('minValue'):MI;
-		}
-		
-		if(this.get('maxValue')){
-			M = this.get('maxValue')<M?this.get('maxValue'):M;
+		if(this.get(x)){
+			M = this.get(x)<M?this.get(x):M;
 		}
 		
 		if($.isArray(this.get('data_labels'))){
@@ -87,33 +79,21 @@
 		}
 		
 		this.push('maxItemSize',ML);
-		this.push('minValue',MI);
-		this.push('maxValue',M);
+		this.push(n,MI);
+		this.push(x,M);
 		this.push('total',this.total);
 		
-		return c;
 	},
-	complex = function(c,z){
+	complex = function(c){
 		this.data_labels = this.get('data_labels');
 		var M=0,MI=0,V,d,L=this.data_labels.length;
-		
-		this.data = this.data.concat(c);
-		
-		this.data.each(function(d,i){
-			$.merge(d,this.fireEvent(this,'parseData',[this,d,i,this.data_labels]));
-			$.Assert.equal(d.value.length,L,this.type+':data length and data_labels not corresponding.');
-		},this);
-		
 		for(var i=0;i<L;i++){
 			var item = [];
-			for(var j=0;j<this.data.length;j++){
-				d = this.data[j];
+			for(var j=0;j<c.length;j++){
+				d = c[j];
 				V = d.value[i];
 				V =  pF(V,V);
 				d.value[i] = V;
-				if(!d.color)
-				d.color = $.get(j);
-				//NEXT 此总数需考虑?
 				this.total+=V;
 				M = V>M?V:M;
 				MI = V<MI?V:MI;
@@ -824,13 +804,6 @@
 			 */
 			this.registerEvent(
 			/**
-			 * @event Fires when parse this element'data.Return value will override existing.
-			 * @paramter iChart.Chart#this
-			 * @paramter Object#data this element'data item
-			 * @paramter int#i the index of data
-			 */
-			'parseData',
-			/**
 			 * @event Fires when parse this tip's data.Return value will override existing. Only valid when tip is available
 			 * @paramter Object#data this tip's data item
 			 * @paramter int#i the index of data
@@ -985,12 +958,12 @@
 			
 			if (d.length > 0 && _.rendered && !_.initialization) {
 				if(_.dataType=='simple'){
-					simple.call(_,[].concat(d),i);
+					simple.call(_,d);
 				}else if(_.dataType=='complex'){
-					complex.call(_,[].concat(d),i);
-				}else{
-					_.data = _.data.concat(d);
+					complex.call(_,d);
 				}
+				
+				_.data = d;
 				
 				_.doConfig();
 				_.initialization = true;
