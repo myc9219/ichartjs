@@ -250,6 +250,11 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		_.push("dark_color2", iChart.dark(bg, f) * 2);
 		
 		_.id = _.get('id');
-
+		
+		if(_.is3D()&&!_.get('xAngle_')){
+			var P = iChart.vectorP2P(_.get('xAngle'),_.get('yAngle'));
+			_.push('xAngle_',P.x);
+			_.push('yAngle_',P.y);
+		}
 	}
 });// @end

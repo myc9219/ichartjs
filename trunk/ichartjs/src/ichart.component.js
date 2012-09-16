@@ -74,8 +74,6 @@
 		 * if have evaluate it
 		 */
 		_.data = _.get('data');
-	
-		iChart.Interface._3D.call(_);
 		
 		if (_.get('tip.enable')) {
 			/**

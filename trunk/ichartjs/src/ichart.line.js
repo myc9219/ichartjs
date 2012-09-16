@@ -106,7 +106,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		/**
 		 * apply the coordinate feature
 		 */
-		iChart.Interface.coordinate.call(this);
+		iChart.Coordinate.coordinate.call(this);
 
 		var _ = this,s=_.data.length == 1;
 		

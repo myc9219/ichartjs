@@ -35,7 +35,105 @@
 			point.rcy = rcy;
 		}
 		return [lp.rcx || lp.x, lp.rcy || lp.y, lcx || x, lcy || y, x, y];
-	}
+	},
+	pF = function(n){
+		return $.isNumber(n)?n:$.parseFloat(n,n);
+	},
+	simple = function(c,z) {
+		var M=0,V=0,MI,ML=0;
+		c.each(function(d,i){
+			$.merge(d,this.fireEvent(this,'parseData',[this,d,i]));
+			d.color = d.color || $.get(i);
+			V  = d.value;
+			if($.isArray(V)){
+				var T = 0;
+				ML = V.length>ML?V.length:ML;
+				for(var j=0;j<V.length;j++){
+					V[j] = parse(V[j]);
+					T+=V[j];
+					if(!MI)
+					MI = V;
+					M = V[j]>M?V[j]:M;
+					MI = V[j]<MI?V[j]:MI;
+				}
+				d.total = T;
+			}else{
+				V = pF(V);
+				d.value = V;
+				this.total+=V;
+				M = V>M?V:M;
+				if(!MI)
+					MI = V;
+				MI = V<MI?V:MI;
+			}
+		},this);
+		
+		if($.isNumber(z)){
+			Array.prototype.splice.apply(this.data,[z,0].concat(c));
+		}else{
+			this.data = this.data.concat(c);
+		}
+		
+		if(this.get('minValue')){
+			MI = this.get('minValue')<MI?this.get('minValue'):MI;
+		}
+		
+		if(this.get('maxValue')){
+			M = this.get('maxValue')<M?this.get('maxValue'):M;
+		}
+		
+		if($.isArray(this.get('data_labels'))){
+			ML = this.get('data_labels').length>ML?this.get('data_labels').length:ML;
+		}
+		
+		this.push('maxItemSize',ML);
+		this.push('minValue',MI);
+		this.push('maxValue',M);
+		this.push('total',this.total);
+		
+		return c;
+	},
+	complex = function(c,z){
+		this.data_labels = this.get('data_labels');
+		var M=0,MI=0,V,d,L=this.data_labels.length;
+		
+		this.data = this.data.concat(c);
+		
+		this.data.each(function(d,i){
+			$.merge(d,this.fireEvent(this,'parseData',[this,d,i,this.data_labels]));
+			$.Assert.equal(d.value.length,L,this.type+':data length and data_labels not corresponding.');
+		},this);
+		
+		for(var i=0;i<L;i++){
+			var item = [];
+			for(var j=0;j<this.data.length;j++){
+				d = this.data[j];
+				V = d.value[i];
+				V =  pF(V,V);
+				d.value[i] = V;
+				if(!d.color)
+				d.color = $.get(j);
+				//NEXT 此总数需考虑?
+				this.total+=V;
+				M = V>M?V:M;
+				MI = V<MI?V:MI;
+				
+				item.push({
+					name:d.name,
+					value:d.value[i],
+					color:d.color
+				});
+			}
+			this.columns.push({
+				name:this.data_labels[i],
+				item:item
+			});
+		}
+		this.push('minValue',MI); 
+		this.push('maxValue',M);
+		this.push('total',this.total);
+	};
+	
 	/**
 	 * @private support an improved API for drawing in canvas
 	 */
@@ -876,18 +974,26 @@
 			this.push('render', id);
 		},
 		initialize : function() {
-			if (!this.rendered) {
-				var r = this.get('render');
+			var _ = this._(),d = _.get('data');
+			if (!_.rendered) {
+				var r = _.get('render');
 				if (typeof r == "string" && document.getElementById(r))
-					this.create(document.getElementById(r));
+					_.create(document.getElementById(r));
 				else if (typeof r == 'object')
-					this.create(r);
+					_.create(r);
 			}
-
-			if (this.get('data').length > 0 && this.rendered && !this.initialization) {
-				$.Interface.parser.call(this, this.get('data'));
-				this.doConfig();
-				this.initialization = true;
+			
+			if (d.length > 0 && _.rendered && !_.initialization) {
+				if(_.dataType=='simple'){
+					simple.call(_,[].concat(d),i);
+				}else if(_.dataType=='complex'){
+					complex.call(_,[].concat(d),i);
+				}else{
+					_.data = _.data.concat(d);
+				}
+				
+				_.doConfig();
+				_.initialization = true;
 			}
 		},
 		doConfig : function() {
@@ -896,9 +1002,7 @@
 			var _ = this._(), E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
 
 			$.Assert.isArray(_.data);
-
-			$.Interface._3D.call(_);
-
+				
 			_.T.strokeStyle(true,_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');

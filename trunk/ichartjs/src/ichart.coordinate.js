@@ -310,9 +310,93 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		}
 	}
 });
+
 /**
  * @end
  */
+iChart.Coordinate = {
+		coordinate_:function(){
+			var _ = this._();
+			if(_.is3D()){
+				_.push('coordinate.xAngle_',_.get('xAngle_'));
+				_.push('coordinate.yAngle_',_.get('yAngle_'));
+				//the Coordinate' Z is same as long as the column's
+				_.push('coordinate.zHeight',_.get('zHeight')*_.get('bottom_scale'));
+				return new iChart.Coordinate3D(iChart.apply({
+					scale:{
+						 position:_.get('scaleAlign'),	
+						 scaleAlign:_.get('scaleAlign'),	
+						 max_scale:_.get('maxValue'),
+						 min_scale:_.get('minValue')
+					}
+				},_.get('coordinate')),_);
+			}else{
+				return new iChart.Coordinate2D(iChart.apply({
+					scale:{
+						 position:_.get('scaleAlign'),	
+						 max_scale:_.get('maxValue'),
+						 min_scale:_.get('minValue')
+					}
+				},_.get('coordinate')),_);
+			}
+		},
+		coordinate:function(){
+			/**
+			 * calculate  chart's measurement
+			 */
+			var _ = this._(),
+				f =0.9,
+				_w = _.get('client_width'),
+				_h = _.get('client_height'),
+				w = _.pushIf('coordinate.width',Math.floor(_w*f)),
+				h=_.pushIf('coordinate.height',Math.floor(_h*f));
+			
+			if(h>_h){
+				h = _.push('coordinate.height',_h*f);
+			}
+			if(w>_w){
+				w = _.push('coordinate.width',_w*f);
+			}
+			if(_.is3D()){
+				h = _.push('coordinate.height',h - (_.get('coordinate.pedestal_height')||22) - (_.get('coordinate.board_deep')||20));
+			}	
+			
+			/**
+			 * calculate chart's alignment
+			 */
+			if (_.get('align') == 'left') {
+				_.push('originx',_.get('l_originx'));
+			}else if (_.get('align') == 'right'){
+				_.push('originx',_.get('r_originx')-w);
+			}else{
+				_.push('originx',_.get('centerx')-w/2);
+			}
+			
+			_.push('originx',_.get('originx')+_.get('offsetx'));
+			_.push('originy',_.get('centery')-h/2+_.get('offsety'));
+			
+			if(!_.get('coordinate.valid_width')||_.get('coordinate.valid_width')>w){
+				_.push('coordinate.valid_width',w);
+			}
+			
+			if(!_.get('coordinate.valid_height')||_.get('coordinate.valid_height')>h){
+				_.push('coordinate.valid_height',h);
+			}
+			
+			/**
+			 * originx for short
+			 */
+			_.x = _.get('originx');
+			/**
+			 * 
+			 * originy for short 
+			 */
+			_.y = _.get('originy');
+			
+			_.push('coordinate.originx',_.x);
+			_.push('coordinate.originy',_.y);
+		}
+}
 /**
  * @overview this component use for abc
  * @component#iChart.Coordinate2D
