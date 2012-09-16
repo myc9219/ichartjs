@@ -80,7 +80,7 @@ iChart.Element = function(config) {
 	 * the running variable cache
 	 */
 	this.variable = {};
-
+	
 	/**
 	 * the container of all events
 	 */
@@ -108,6 +108,9 @@ iChart.Element = function(config) {
 
 iChart.Element.prototype = {
 	_:function(){return this},	
+	getPlugin:function(n){
+		return this.constructor.plugin_[n];
+	},
 	set : function(c) {
 		if (iChart.isObject(c))
 			iChart.merge(this.options, c);

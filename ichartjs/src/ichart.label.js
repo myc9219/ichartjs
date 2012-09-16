@@ -84,28 +84,30 @@ iChart.Label = iChart.extend(iChart.Component, {
         this.labely = Q>=3?(this.get('labely') - this.get('height')):this.get('labely');
 	},
 	doDraw : function() {
-		this.localizer();
+		var _ = this._();
 		
-		var p = this.get('line_potins'),ss = this.get('sign_size'),
-		x = this.labelx + this.get('padding_left'),
-		y = this.labely +this.get('padding_top');
+		_.localizer();
 		
-		this.T.lines(p,this.get('line_thickness'), this.get('border.color'),this.get('line_globalComposite'));
+		var p = _.get('line_potins'),ss = _.get('sign_size'),
+		x = _.labelx + _.get('padding_left'),
+		y = _.labely +_.get('padding_top');
 		
-		this.T.box(this.labelx, this.labely, this.get('width'), this.get('height'), this.get('border'), this.get('f_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
+		_.T.lines(p,_.get('line_thickness'), _.get('border.color'),_.get('line_globalComposite'));
 		
-		this.T.textStyle('left', 'top', this.get('fontStyle'));
+		_.T.box(_.labelx, _.labely, _.get('width'), _.get('height'), _.get('border'), _.get('f_color'), false, _.get('shadow'), _.get('shadow_color'), _.get('shadow_blur'), _.get('shadow_offsetx'), _.get('shadow_offsety'));
 		
-		var textcolor = this.get('color');
-		if (this.get('text_with_sign_color')) {
-			textcolor = this.get('scolor');
+		_.T.textStyle('left', 'top', _.get('fontStyle'));
+		
+		var textcolor = _.get('color');
+		if (_.get('text_with_sign_color')) {
+			textcolor = _.get('scolor');
 		}
-		if (this.get('sign') == 'square') {
-			this.T.box(x, y, ss, ss,0,this.get('scolor'));
+		if (_.get('sign') == 'square') {
+			_.T.box(x, y, ss, ss,0,_.get('scolor'));
 		} else {
-			this.T.round(x + ss / 2, y + ss / 2, ss / 2, this.get('scolor'));
+			_.T.round(x + ss / 2, y + ss / 2, ss / 2, _.get('scolor'));
 		}
-		this.T.fillText(this.get('text'), x + ss + this.get('sign_space'), y, this.get('textwidth'), textcolor);
+		_.T.fillText(_.get('text'), x + ss + _.get('sign_space'), y, _.get('textwidth'), textcolor);
 	},
 	doConfig : function() {
 		iChart.Label.superclass.doConfig.call(this);

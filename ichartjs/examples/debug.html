@@ -11,7 +11,6 @@
 		<script type="text/javascript" src="../src/ichart.html.js"></script>
 		<script type="text/javascript" src="../src/ichart.painter.js"></script>
 		<script type="text/javascript" src="../src/ichart.component.js"></script>
-		<script type="text/javascript" src="../src/ichart.interface.js"></script>
 		<script type="text/javascript" src="../src/ichart.legend.js"></script>
 		<script type="text/javascript" src="../src/ichart.label.js"></script>
 		<script type="text/javascript" src="../src/ichart.chart.js"></script>
@@ -45,6 +44,7 @@
 		<script type="text/javascript" src="../src/ichart.linemonitor2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.points.js"></script>
 		<script type="text/javascript" src="../src/ichart.scatter2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.interface.js"></script>
 	<style type="text/css">
 		body{
 			margin-top:10px;
@@ -65,7 +65,7 @@
 			        	{name : 'Other',value : 0.73,color:'#6f83a5'}
 		        	];
 	    	
-			new iChart.Column2D({
+			new iChart.Pie2D({
 				render : 'canvasDiv',
 				data: data,
 				title : 'Top 5 Browsers from 1 to 29 Feb 2012',

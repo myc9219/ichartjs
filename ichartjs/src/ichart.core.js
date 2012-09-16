@@ -283,6 +283,7 @@
 				J.extend = function(F) {
 					return _.extend(J, F)
 				};
+				J.plugin_ = {};
 				return J;
 			}
 		}();
@@ -499,7 +500,7 @@
 			}
 			return hsv2Rgb(hsv, rgb[3]);
 		};
-
+		
 		_.apply(_, {
 			version : "1.0",
 			email : 'taylor@ichartjs.com',
@@ -567,6 +568,11 @@
 			 */
 			noConflict : function() {
 				return iChart_;
+			},
+			plugin:function(t,m,f){
+				if(_.isFunction(t)&&_.isString(m)&&_.isFunction(f)){
+					t.plugin_[m] = f;
+				}
 			},
 			parsePadding : function(s, d) {
 				if (_.isNumber(s))
@@ -782,6 +788,7 @@
 				window.setTimeout(callback, 1000 / 60);
 			};
 		})();
+		
 		
 		/**
 		 * defined Event

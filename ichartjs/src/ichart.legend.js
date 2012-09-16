@@ -109,8 +109,12 @@ iChart.Legend = iChart.extend(iChart.Component, {
 
 	},
 	drawCell : function(x, y, text, color) {
-		var s = this.get('sign_size'), n = this.get('sign');
-		if (n == 'round') {
+		var s = this.get('sign_size'), n = this.get('sign'),f = this.getPlugin(n);
+		
+		if(f){
+			f.call(this,this.T,x,y,s,color);
+		}
+		else if (n == 'round') {
 			this.T.round(x + s / 2, y + s / 2, s / 2, color);
 		} else if (n == 'round-bar') {
 			this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
@@ -121,6 +125,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		} else {
 			this.T.box(x, y, s, s, 0, color);
 		}
+		
 		var textcolor = this.get('color');
 
 		if (this.get('text_with_sign_color')) {
