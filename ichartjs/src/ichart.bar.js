@@ -80,7 +80,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		/**
 		 * Apply the coordinate feature
 		 */
-		iChart.Interface.coordinate.call(_);
+		iChart.Coordinate.coordinate.call(_);
 		
 		_.rectangles.zIndex = _.get(z);
 		
@@ -107,7 +107,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		/**
 		 * use option create a coordinate
 		 */
-		_.coo = iChart.Interface.coordinate_.call(_);
+		_.coo = iChart.Coordinate.coordinate_.call(_);
 		_.components.push(_.coo);
 
 		/**
