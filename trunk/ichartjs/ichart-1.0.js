@@ -347,12 +347,6 @@
 			magenta : 'rgb(255,0,255)',
 			violet : 'rgb(128,0,128)'
 		},
-		innerColor = function(){
-			var r = [];
-			for(var c in colors)
-				r.push(colors[c]);
-			return r;
-		}(), 
 		hex2Rgb = function(hex) {
 			hex = hex.replace(/#/g, "").replace(/^(\w)(\w)(\w)$/, "$1$1$2$2$3$3");
 			return 'rgb(' + parseInt(hex.substring(0, 2), 16) + ',' + parseInt(hex.substring(2, 4), 16) + ',' + parseInt(hex.substring(4, 6), 16) + ')';
@@ -726,9 +720,6 @@
 			 */
 			floor : function(max, f) {
 				return max - factor(max, f);
-			},
-			get : function(i) {
-				return innerColor[i % 44];
 			},
 			_2D : '2d',
 			_3D : '3d',
@@ -1282,7 +1273,12 @@ $.Painter = $.extend($.Element, {
 		_.push("dark_color2", $.dark(bg, f) * 2);
 		
 		_.id = _.get('id');
-
+		
+		if(_.is3D()&&!_.get('xAngle_')){
+			var P = $.vectorP2P(_.get('xAngle'),_.get('yAngle'));
+			_.push('xAngle_',P.x);
+			_.push('yAngle_',P.y);
+		}
 	}
 });// @end
 
@@ -1485,8 +1481,6 @@ $.Html = $.extend($.Element,{
 		 * if have evaluate it
 		 */
 		_.data = _.get('data');
-	
-		$.Interface._3D.call(_);
 		
 		if (_.get('tip.enable')) {
 			/**
@@ -1525,211 +1519,6 @@ $.Html = $.extend($.Element,{
 		}
 	}
 	});
-	$.Interface = function(){
-		var parse = function(n){
-			return $.isNumber(n)?n:$.parseFloat(n,n);
-		},
-		simple = function(c,z) {
-			var M=0,V=0,MI,ML=0;
-			c.each(function(d,i){
-				$.merge(d,this.fireEvent(this,'parseData',[this,d,i]));
-				d.color = d.color || $.get(i);
-				V  = d.value;
-				if($.isArray(V)){
-					var T = 0;
-					ML = V.length>ML?V.length:ML;
-					for(var j=0;j<V.length;j++){
-						V[j] = parse(V[j]);
-						T+=V[j];
-						if(!MI)
-						MI = V;
-						M = V[j]>M?V[j]:M;
-						MI = V[j]<MI?V[j]:MI;
-					}
-					d.total = T;
-				}else{
-					V = parse(V);
-					d.value = V;
-					this.total+=V;
-					M = V>M?V:M;
-					if(!MI)
-						MI = V;
-					MI = V<MI?V:MI;
-				}
-			},this);
-			
-			if($.isNumber(z)){
-				Array.prototype.splice.apply(this.data,[z,0].concat(c));
-			}else{
-				this.data = this.data.concat(c);
-			}
-			
-			if(this.get('minValue')){
-				MI = this.get('minValue')<MI?this.get('minValue'):MI;
-			}
-			
-			if(this.get('maxValue')){
-				M = this.get('maxValue')<M?this.get('maxValue'):M;
-			}
-			
-			if($.isArray(this.get('data_labels'))){
-				ML = this.get('data_labels').length>ML?this.get('data_labels').length:ML;
-			}
-			
-			this.push('maxItemSize',ML);
-			this.push('minValue',MI);
-			this.push('maxValue',M);
-			this.push('total',this.total);
-			
-			return c;
-		},
-		complex = function(c,z){
-			this.data_labels = this.get('data_labels');
-			var M=0,MI=0,V,d,L=this.data_labels.length;
-			
-			this.data = this.data.concat(c);
-			
-			this.data.each(function(d,i){
-				$.merge(d,this.fireEvent(this,'parseData',[this,d,i,this.data_labels]));
-				$.Assert.equal(d.value.length,L,this.type+':data length and data_labels not corresponding.');
-			},this);
-			
-			for(var i=0;i<L;i++){
-				var item = [];
-				for(var j=0;j<this.data.length;j++){
-					d = this.data[j];
-					V = d.value[i];
-					V =  parse(V,V);
-					d.value[i] = V;
-					if(!d.color)
-					d.color = $.get(j);
-					//NEXT 此总数需考虑?
-					this.total+=V;
-					M = V>M?V:M;
-					MI = V<MI?V:MI;
-					
-					item.push({
-						name:d.name,
-						value:d.value[i],
-						color:d.color
-					});
-				}
-				this.columns.push({
-					name:this.data_labels[i],
-					item:item
-				});
-			}
-			
-			
-			
-			this.push('minValue',MI); 
-			this.push('maxValue',M);
-			this.push('total',this.total);
-		};
-		return {
-			parser:function(d,i){
-				if(this.dataType=='simple'){
-					return simple.call(this,[].concat(d),i);
-				}else if(this.dataType=='complex'){
-					complex.call(this,[].concat(d),i);
-				}else{
-					this.data = this.data.concat(d);
-				}
-			},
-			_3D:function(){
-				if(this.is3D()&&!this.get('xAngle_')){
-					var P = $.vectorP2P(this.get('xAngle'),this.get('yAngle'));
-					this.push('xAngle_',P.x);
-					this.push('yAngle_',P.y);
-				}
-			},
-			_2D:function(){
-			},
-			coordinate_:function(){
-				if(this.is3D()){
-					this.push('coordinate.xAngle_',this.get('xAngle_'));
-					this.push('coordinate.yAngle_',this.get('yAngle_'));
-					
-					//the Coordinate' Z is same as long as the column's
-					this.push('coordinate.zHeight',this.get('zHeight')*this.get('bottom_scale'));
-					
-					return new $.Coordinate3D($.apply({
-						scale:{
-							 position:this.get('scaleAlign'),	
-							 scaleAlign:this.get('scaleAlign'),	
-							 max_scale:this.get('maxValue'),
-							 min_scale:this.get('minValue')
-						}
-					},this.get('coordinate')),this);
-				}else{
-					return new $.Coordinate2D($.apply({
-						scale:{
-							 position:this.get('scaleAlign'),	
-							 max_scale:this.get('maxValue'),
-							 min_scale:this.get('minValue')
-						}
-					},this.get('coordinate')),this);
-				}
-			},
-			coordinate:function(){
-				/**
-				 * calculate  chart's measurement
-				 */
-				var f =0.9,
-					_w = this.get('client_width'),
-					_h = this.get('client_height'),
-					w = this.pushIf('coordinate.width',Math.floor(_w*f)),
-					h=this.pushIf('coordinate.height',Math.floor(_h*f));
-				
-				if(h>_h){
-					h = this.push('coordinate.height',_h*f);
-				}
-				if(w>_w){
-					w = this.push('coordinate.width',_w*f);
-				}
-				if(this.is3D()){
-					h = this.push('coordinate.height',h - (this.get('coordinate.pedestal_height')||22) - (this.get('coordinate.board_deep')||20));
-				}	
-				
-				/**
-				 * calculate chart's alignment
-				 */
-				if (this.get('align') == 'left') {
-					this.push('originx',this.get('l_originx'));
-				}else if (this.get('align') == 'right'){
-					this.push('originx',this.get('r_originx')-w);
-				}else{
-					this.push('originx',this.get('centerx')-w/2);
-				}
-				
-				this.push('originx',this.get('originx')+this.get('offsetx'));
-				this.push('originy',this.get('centery')-h/2+this.get('offsety'));
-				
-				if(!this.get('coordinate.valid_width')||this.get('coordinate.valid_width')>w){
-					this.push('coordinate.valid_width',w);
-				}
-				
-				if(!this.get('coordinate.valid_height')||this.get('coordinate.valid_height')>h){
-					this.push('coordinate.valid_height',h);
-				}
-				
-				/**
-				 * originx for short
-				 */
-				this.x = this.get('originx');
-				/**
-				 * 
-				 * originy for short 
-				 */
-				this.y = this.get('originy');
-				
-				this.push('coordinate.originx',this.x);
-				this.push('coordinate.originy',this.y);
-				
-			}
-		}	
-	}();
-
  	/**
 	 * @overview this component use for abc
 	 * @component#$.Tip
@@ -2558,7 +2347,85 @@ $.Label = $.extend($.Component, {
 			point.rcy = rcy;
 		}
 		return [lp.rcx || lp.x, lp.rcy || lp.y, lcx || x, lcy || y, x, y];
-	}
+	},
+	pF = function(n){
+		return $.isNumber(n)?n:$.parseFloat(n,n);
+	},
+	simple = function(c) {
+		var M=0,V=0,MI,ML=0,n='minValue',x='maxValue';
+		c.each(function(d,i){
+			V  = d.value;
+			if($.isArray(V)){
+				var T = 0;
+				ML = V.length>ML?V.length:ML;
+				for(var j=0;j<V.length;j++){
+					V[j] = pF(V[j]);
+					T+=V[j];
+					if(!MI)
+					MI = V;
+					M = V[j]>M?V[j]:M;
+					MI = V[j]<MI?V[j]:MI;
+				}
+				d.total = T;
+			}else{
+				V = pF(V);
+				d.value = V;
+				this.total+=V;
+				M = V>M?V:M;
+				if(!MI)
+					MI = V;
+				MI = V<MI?V:MI;
+			}
+		},this);
+		
+		if(this.get(n)){
+			MI = this.get(n)<MI?this.get(n):MI;
+		}
+		
+		if(this.get(x)){
+			M = this.get(x)<M?this.get(x):M;
+		}
+		
+		if($.isArray(this.get('data_labels'))){
+			ML = this.get('data_labels').length>ML?this.get('data_labels').length:ML;
+		}
+		
+		this.push('maxItemSize',ML);
+		this.push(n,MI);
+		this.push(x,M);
+		this.push('total',this.total);
+		
+	},
+	complex = function(c){
+		this.data_labels = this.get('data_labels');
+		var M=0,MI=0,V,d,L=this.data_labels.length;
+		for(var i=0;i<L;i++){
+			var item = [];
+			for(var j=0;j<c.length;j++){
+				d = c[j];
+				V = d.value[i];
+				V =  pF(V,V);
+				d.value[i] = V;
+				this.total+=V;
+				M = V>M?V:M;
+				MI = V<MI?V:MI;
+				
+				item.push({
+					name:d.name,
+					value:d.value[i],
+					color:d.color
+				});
+			}
+			this.columns.push({
+				name:this.data_labels[i],
+				item:item
+			});
+		}
+		this.push('minValue',MI); 
+		this.push('maxValue',M);
+		this.push('total',this.total);
+	};
+	
 	/**
 	 * @private support an improved API for drawing in canvas
 	 */
@@ -3249,13 +3116,6 @@ $.Label = $.extend($.Component, {
 			 */
 			this.registerEvent(
 			/**
-			 * @event Fires when parse this element'data.Return value will override existing.
-			 * @paramter $.Chart#this
-			 * @paramter Object#data this element'data item
-			 * @paramter int#i the index of data
-			 */
-			'parseData',
-			/**
 			 * @event Fires when parse this tip's data.Return value will override existing. Only valid when tip is available
 			 * @paramter Object#data this tip's data item
 			 * @paramter int#i the index of data
@@ -3399,18 +3259,26 @@ $.Label = $.extend($.Component, {
 			this.push('render', id);
 		},
 		initialize : function() {
-			if (!this.rendered) {
-				var r = this.get('render');
+			var _ = this._(),d = _.get('data');
+			if (!_.rendered) {
+				var r = _.get('render');
 				if (typeof r == "string" && document.getElementById(r))
-					this.create(document.getElementById(r));
+					_.create(document.getElementById(r));
 				else if (typeof r == 'object')
-					this.create(r);
+					_.create(r);
 			}
-
-			if (this.get('data').length > 0 && this.rendered && !this.initialization) {
-				$.Interface.parser.call(this, this.get('data'));
-				this.doConfig();
-				this.initialization = true;
+			
+			if (d.length > 0 && _.rendered && !_.initialization) {
+				if(_.dataType=='simple'){
+					simple.call(_,d);
+				}else if(_.dataType=='complex'){
+					complex.call(_,d);
+				}
+				
+				_.data = d;
+				
+				_.doConfig();
+				_.initialization = true;
 			}
 		},
 		doConfig : function() {
@@ -3419,9 +3287,7 @@ $.Label = $.extend($.Component, {
 			var _ = this._(), E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
 
 			$.Assert.isArray(_.data);
-
-			$.Interface._3D.call(_);
-
+				
 			_.T.strokeStyle(true,_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');
@@ -3949,9 +3815,93 @@ $.Scale = $.extend($.Component, {
 		}
 	}
 });
+
 /**
  * @end
  */
+$.Coordinate = {
+		coordinate_:function(){
+			var _ = this._();
+			if(_.is3D()){
+				_.push('coordinate.xAngle_',_.get('xAngle_'));
+				_.push('coordinate.yAngle_',_.get('yAngle_'));
+				//the Coordinate' Z is same as long as the column's
+				_.push('coordinate.zHeight',_.get('zHeight')*_.get('bottom_scale'));
+				return new $.Coordinate3D($.apply({
+					scale:{
+						 position:_.get('scaleAlign'),	
+						 scaleAlign:_.get('scaleAlign'),	
+						 max_scale:_.get('maxValue'),
+						 min_scale:_.get('minValue')
+					}
+				},_.get('coordinate')),_);
+			}else{
+				return new $.Coordinate2D($.apply({
+					scale:{
+						 position:_.get('scaleAlign'),	
+						 max_scale:_.get('maxValue'),
+						 min_scale:_.get('minValue')
+					}
+				},_.get('coordinate')),_);
+			}
+		},
+		coordinate:function(){
+			/**
+			 * calculate  chart's measurement
+			 */
+			var _ = this._(),
+				f =0.9,
+				_w = _.get('client_width'),
+				_h = _.get('client_height'),
+				w = _.pushIf('coordinate.width',Math.floor(_w*f)),
+				h=_.pushIf('coordinate.height',Math.floor(_h*f));
+			
+			if(h>_h){
+				h = _.push('coordinate.height',_h*f);
+			}
+			if(w>_w){
+				w = _.push('coordinate.width',_w*f);
+			}
+			if(_.is3D()){
+				h = _.push('coordinate.height',h - (_.get('coordinate.pedestal_height')||22) - (_.get('coordinate.board_deep')||20));
+			}	
+			
+			/**
+			 * calculate chart's alignment
+			 */
+			if (_.get('align') == 'left') {
+				_.push('originx',_.get('l_originx'));
+			}else if (_.get('align') == 'right'){
+				_.push('originx',_.get('r_originx')-w);
+			}else{
+				_.push('originx',_.get('centerx')-w/2);
+			}
+			
+			_.push('originx',_.get('originx')+_.get('offsetx'));
+			_.push('originy',_.get('centery')-h/2+_.get('offsety'));
+			
+			if(!_.get('coordinate.valid_width')||_.get('coordinate.valid_width')>w){
+				_.push('coordinate.valid_width',w);
+			}
+			
+			if(!_.get('coordinate.valid_height')||_.get('coordinate.valid_height')>h){
+				_.push('coordinate.valid_height',h);
+			}
+			
+			/**
+			 * originx for short
+			 */
+			_.x = _.get('originx');
+			/**
+			 * 
+			 * originy for short 
+			 */
+			_.y = _.get('originy');
+			
+			_.push('coordinate.originx',_.x);
+			_.push('coordinate.originy',_.y);
+		}
+}
 /**
  * @overview this component use for abc
  * @component#$.Coordinate2D
@@ -5716,7 +5666,7 @@ $.Column = $.extend($.Chart, {
 		/**
 		 * apply the coordinate feature
 		 */
-		$.Interface.coordinate.call(_);
+		$.Coordinate.coordinate.call(_);
 		
 		_.rectangles.zIndex = _.get(z);
 		
@@ -5744,7 +5694,7 @@ $.Column = $.extend($.Chart, {
 		/**
 		 * use option create a coordinate
 		 */
-		_.coo = $.Interface.coordinate_.call(_);
+		_.coo = $.Coordinate.coordinate_.call(_);
 
 		_.components.push(_.coo);
 		
@@ -6040,7 +5990,7 @@ $.Bar = $.extend($.Chart, {
 		/**
 		 * Apply the coordinate feature
 		 */
-		$.Interface.coordinate.call(_);
+		$.Coordinate.coordinate.call(_);
 		
 		_.rectangles.zIndex = _.get(z);
 		
@@ -6067,7 +6017,7 @@ $.Bar = $.extend($.Chart, {
 		/**
 		 * use option create a coordinate
 		 */
-		_.coo = $.Interface.coordinate_.call(_);
+		_.coo = $.Coordinate.coordinate_.call(_);
 		_.components.push(_.coo);
 
 		/**
@@ -6568,7 +6518,7 @@ $.Line = $.extend($.Chart, {
 		/**
 		 * apply the coordinate feature
 		 */
-		$.Interface.coordinate.call(this);
+		$.Coordinate.coordinate.call(this);
 
 		var _ = this,s=_.data.length == 1;
 		

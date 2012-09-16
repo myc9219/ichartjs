@@ -64,6 +64,7 @@
 				this.push('segment_style.brushsize',d.linewidth||1);
 				this.push('segment_style.background_color',d.color);
 				
+				
 				this.lines.push(new iChart.Points(this.get('segment_style'),this));
 				
 			},this);

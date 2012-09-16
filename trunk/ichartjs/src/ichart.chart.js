@@ -1133,7 +1133,7 @@
 					maxwidth : w,
 					data : _.data
 				}, _.get('legend')), _);
-
+				
 				_.components.push(_.legend);
 			}
 			/**
