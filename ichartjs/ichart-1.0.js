@@ -1,25 +1,15 @@
 /**
- * ichartjs Library v1.0 
- * http://www.ichartjs.cn/ 
- * @author wanghe 
- * @Copyright 2012 wanghetommy@gmail.com 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * ichartjs Library v1.0 http://www.ichartjs.cn/
+ * 
+ * @author wanghe
+ * @Copyright 2012 wanghetommy@gmail.com Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 ;
 (function(window) {
 	var ua = navigator.userAgent.toLowerCase(), mc = function(e) {
 		return e.test(ua)
-	}, ts = Object.prototype.toString,
-	isOpera = mc(/opera/), isChrome = mc(/\bchrome\b/),
-	isWebKit = mc(/webkit/),
-	isSafari = !isChrome && mc(/safari/),
-	isIE = !isOpera && mc(/msie/),
-	supportCanvas = !!document.createElement('canvas').getContext,
-	isGecko = !isWebKit&& mc(/gecko/), 
-	isMobile = mc(/ipod|ipad|iphone|android/gi),
-	arithmetic = {
+	}, ts = Object.prototype.toString, isOpera = mc(/opera/), isChrome = mc(/\bchrome\b/), isWebKit = mc(/webkit/), isSafari = !isChrome && mc(/safari/), isIE = !isOpera && mc(/msie/), supportCanvas = !!document.createElement('canvas').getContext, isGecko = !isWebKit
+			&& mc(/gecko/), isMobile = mc(/ipod|ipad|iphone|android/gi), arithmetic = {
 		Linear : function(t, b, c, d) {
 			return c * t / d + b;
 		},
@@ -176,13 +166,52 @@
 			}
 			return d
 		};
+
+		_.apply(_, {
+			version : "1.0",
+			email : 'taylor@ichartjs.com',
+			isEmpty : function(C, e) {
+				return C === null || C === undefined || ((_.isArray(C) && !C.length)) || (!e ? C === "" : false)
+			},
+			isArray : function(e) {
+				return ts.apply(e) === "[object Array]"
+			},
+			isDate : function(e) {
+				return ts.apply(e) === "[object Date]"
+			},
+			isObject : function(e) {
+				return !!e && ts.apply(e) === "[object Object]"
+			},
+			isFunction : function(e) {
+				return ts.apply(e) === "[object Function]"
+			},
+			isNumber : function(e) {
+				return typeof e === "number" && isFinite(e)
+			},
+			isString : function(e) {
+				return typeof e === "string"
+			},
+			isBoolean : function(e) {
+				return typeof e === "boolean"
+			},
+			isFalse : function(e) {
+				return typeof e === "boolean" && !e;
+			},
+			isElement : function(e) {
+				return e ? !!e.tagName : false
+			},
+			isDefined : function(e) {
+				return typeof e !== "undefined"
+			}
+		});
+
 		/**
 		 * only get the attr that target not exist
 		 */
 		_.applyIf = function(d, e) {
-			if (d && e && typeof e == "object") {
+			if (d && _.isObject(e)) {
 				for ( var a in e) {
-					if (typeof e[a] != 'undefined' && typeof d[a] == 'undefined')
+					if (_.isDefined(e[a]) && !_.isDefined(d[a]))
 						d[a] = e[a]
 				}
 			}
@@ -195,11 +224,11 @@
 		 * there will apply a deep clone
 		 */
 		_.merge = function(d, e, f) {
-			if (d && e && typeof e == "object") {
+			if (d && _.isObject(e)) {
 				for ( var a in e) {
-					if (typeof e[a] != 'undefined') {
-						if (ts.apply(e[a]) === "[object Object]") {
-							if (ts.apply(d[a]) === "[object Object]") {
+					if (_.isDefined(e[a])) {
+						if (_.isObject(e[a])) {
+							if (_.isObject(d[a])) {
 								_.merge(d[a], e[a]);
 							} else {
 								d[a] = _.clone(e[a], true);
@@ -209,7 +238,7 @@
 						}
 					}
 				}
-				if (typeof f == "object") {
+				if (_.isObject(f)) {
 					return _.merge(d, f);
 				}
 			}
@@ -220,17 +249,17 @@
 		 */
 		_.clone = function(a, e, deep) {
 			var d = {};
-			if (ts.apply(a) === "[object Array]" && ts.apply(e) === "[object Object]") {
+			if (_.isArray(a)&& _.isObject(e)) {
 				for ( var i = 0; i < a.length; i++) {
-					if (deep && ts.apply(e[a[i]]) === "[object Object]")
+					if (deep && _.isObject(e[a[i]]))
 						d[a[i]] = _.clone(e[a[i]]);
 					else
 						d[a[i]] = e[a[i]];
 				}
-			} else if (ts.apply(a) === "[object Object]") {
+			} else if (_.isObject(a)) {
 				for ( var b in a) {
 					// avoid recursion reference
-					if (e && ts.apply(a[b]) === "[object Object]" && !(a[b] instanceof _.Painter))
+					if (e && _.isObject(a[b])&& !(a[b] instanceof _.Painter))
 						d[b] = _.clone(a[b], e);
 					else
 						d[b] = a[b];
@@ -248,7 +277,7 @@
 				}
 			}
 		};
-		
+
 		/**
 		 * spirit from ext2.0
 		 */
@@ -283,6 +312,7 @@
 				J.extend = function(F) {
 					return _.extend(J, F)
 				};
+				J.plugin_ = {};
 				return J;
 			}
 		}();
@@ -300,8 +330,7 @@
 				return pF((v / f + "").substring(0, (v + "").length + 1));
 			}
 			return Math.ceil(v / f);
-		},
-		colors = {
+		}, colors = {
 			navy : 'rgb(0,0,128)',
 			olive : 'rgb(128,128,0)',
 			orange : 'rgb(255,165,0)',
@@ -346,8 +375,7 @@
 			lightyellow : 'rgb(255,255,224)',
 			magenta : 'rgb(255,0,255)',
 			violet : 'rgb(128,0,128)'
-		},
-		hex2Rgb = function(hex) {
+		}, hex2Rgb = function(hex) {
 			hex = hex.replace(/#/g, "").replace(/^(\w)(\w)(\w)$/, "$1$1$2$2$3$3");
 			return 'rgb(' + parseInt(hex.substring(0, 2), 16) + ',' + parseInt(hex.substring(2, 4), 16) + ',' + parseInt(hex.substring(4, 6), 16) + ')';
 		}, i2hex = function(N) {
@@ -484,7 +512,8 @@
 		 *            is 纯度(0-1)
 		 */
 		anole = function(d, rgb, iv, is) {
-			if(!rgb)return rgb;
+			if (!rgb)
+				return rgb;
 			rgb = c2a(toRgb(rgb));
 			var hsv = toHsv(rgb);
 			hsv[1] -= is || s_inc;
@@ -501,41 +530,6 @@
 		};
 
 		_.apply(_, {
-			version : "1.0",
-			email : 'taylor@ichartjs.com',
-			isEmpty : function(C, e) {
-				return C === null || C === undefined || ((_.isArray(C) && !C.length)) || (!e ? C === "" : false)
-			},
-			isArray : function(e) {
-				return ts.apply(e) === "[object Array]"
-			},
-			isDate : function(e) {
-				return ts.apply(e) === "[object Date]"
-			},
-			isObject : function(e) {
-				return !!e && ts.apply(e) === "[object Object]"
-			},
-			isFunction : function(e) {
-				return ts.apply(e) === "[object Function]"
-			},
-			isNumber : function(e) {
-				return typeof e === "number" && isFinite(e)
-			},
-			isString : function(e) {
-				return typeof e === "string"
-			},
-			isBoolean : function(e) {
-				return typeof e === "boolean"
-			},
-			isFalse : function(e) {
-				return typeof e === "boolean" && !e;
-			},
-			isElement : function(e) {
-				return e ? !!e.tagName : false
-			},
-			isDefined : function(e) {
-				return typeof e !== "undefined"
-			},
 			getFont : function(w, s, f) {
 				return w + " " + s + "px " + f;
 			},
@@ -567,6 +561,11 @@
 			 */
 			noConflict : function() {
 				return iChart_;
+			},
+			plugin : function(t, m, f) {
+				if (_.isFunction(t) && _.isString(m) && _.isFunction(f)) {
+					t.plugin_[m] = f;
+				}
 			},
 			parsePadding : function(s, d) {
 				if (_.isNumber(s))
@@ -782,7 +781,7 @@
 				window.setTimeout(callback, 1000 / 60);
 			};
 		})();
-		
+
 		/**
 		 * defined Event
 		 */
@@ -797,48 +796,48 @@
 			},
 			fix : function(e) {
 				// Fix event for mise
-				if (typeof (e) == 'undefined') {
-					e = window.event;
-				}
-				
-				// Fix target property, if necessary
-				if (!e.target) {
-					e.target = e.srcElement || document;
-				}
-				
-				// Calculate pageX/Y if missing and clientX/Y available
-				if (e.pageX == null && e.clientX != null) {
-					var doc = document.documentElement, body = document.body;
-					e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
-					e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
-				}
-
-				// This is mainly for FF which doesn't provide offsetX
-				if (typeof (e.offsetX) == 'undefined' && typeof (e.offsetY) == 'undefined') {
-					// Browser not with offsetX and offsetY
-					if (typeof (e.offsetX) != 'number') {
-						var x = 0, y = 0, obj = e.target;
-						while (obj != document.body && obj) {
-							x += obj.offsetLeft;
-							y += obj.offsetTop;
-							obj = obj.offsetParent;
-						}
-						e.offsetX = e.pageX - x;
-						e.offsetY = e.pageY - y;
-					}
-				}
-				
-				e.x = e.offsetX;
-				e.y = e.offsetY;
-				
-				// Any browser that doesn't implement stopPropagation() (MSIE)
-				if (!e.stopPropagation) {
-					e.stopPropagation = function() {
-						window.event.cancelBubble = true;
-					}
-				}
-				return e;
+			if (typeof (e) == 'undefined') {
+				e = window.event;
 			}
+
+			// Fix target property, if necessary
+			if (!e.target) {
+				e.target = e.srcElement || document;
+			}
+
+			// Calculate pageX/Y if missing and clientX/Y available
+			if (e.pageX == null && e.clientX != null) {
+				var doc = document.documentElement, body = document.body;
+				e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+				e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
+			}
+
+			// This is mainly for FF which doesn't provide offsetX
+			if (typeof (e.offsetX) == 'undefined' && typeof (e.offsetY) == 'undefined') {
+				// Browser not with offsetX and offsetY
+				if (typeof (e.offsetX) != 'number') {
+					var x = 0, y = 0, obj = e.target;
+					while (obj != document.body && obj) {
+						x += obj.offsetLeft;
+						y += obj.offsetTop;
+						obj = obj.offsetParent;
+					}
+					e.offsetX = e.pageX - x;
+					e.offsetY = e.pageY - y;
+				}
+			}
+
+			e.x = e.offsetX;
+			e.y = e.offsetY;
+
+			// Any browser that doesn't implement stopPropagation() (MSIE)
+			if (!e.stopPropagation) {
+				e.stopPropagation = function() {
+					window.event.cancelBubble = true;
+				}
+			}
+			return e;
+		}
 		};
 		return _;
 
@@ -856,7 +855,7 @@
 			}
 		};
 	};
-	
+
 	Array.prototype.eachAll = function(f, s) {
 		this.each(function(d, i) {
 			if (iChart_.isArray(d)) {
@@ -866,7 +865,7 @@
 			}
 		}, s);
 	};
-	
+
 	window.iChart = iChart_;
 	if (!window.$) {
 		window.$ = window.iChart;
@@ -956,7 +955,7 @@ $.Element = function(config) {
 	 * the running variable cache
 	 */
 	this.variable = {};
-
+	
 	/**
 	 * the container of all events
 	 */
@@ -984,6 +983,9 @@ $.Element = function(config) {
 
 $.Element.prototype = {
 	_:function(){return this},	
+	getPlugin:function(n){
+		return this.constructor.plugin_[n];
+	},
 	set : function(c) {
 		if ($.isObject(c))
 			$.merge(this.options, c);
@@ -1110,7 +1112,7 @@ $.Painter = $.extend($.Element, {
 		this.variable.event = {
 			mouseover : false
 		};
-
+		
 		/**
 		 * register the common event
 		 */
@@ -1904,8 +1906,12 @@ $.Legend = $.extend($.Component, {
 
 	},
 	drawCell : function(x, y, text, color) {
-		var s = this.get('sign_size'), n = this.get('sign');
-		if (n == 'round') {
+		var s = this.get('sign_size'), n = this.get('sign'),f = this.getPlugin(n);
+		
+		if(f){
+			f.call(this,this.T,x,y,s,color);
+		}
+		else if (n == 'round') {
 			this.T.round(x + s / 2, y + s / 2, s / 2, color);
 		} else if (n == 'round-bar') {
 			this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
@@ -1916,6 +1922,7 @@ $.Legend = $.extend($.Component, {
 		} else {
 			this.T.box(x, y, s, s, 0, color);
 		}
+		
 		var textcolor = this.get('color');
 
 		if (this.get('text_with_sign_color')) {
@@ -2166,28 +2173,30 @@ $.Label = $.extend($.Component, {
         this.labely = Q>=3?(this.get('labely') - this.get('height')):this.get('labely');
 	},
 	doDraw : function() {
-		this.localizer();
+		var _ = this._();
 		
-		var p = this.get('line_potins'),ss = this.get('sign_size'),
-		x = this.labelx + this.get('padding_left'),
-		y = this.labely +this.get('padding_top');
+		_.localizer();
 		
-		this.T.lines(p,this.get('line_thickness'), this.get('border.color'),this.get('line_globalComposite'));
+		var p = _.get('line_potins'),ss = _.get('sign_size'),
+		x = _.labelx + _.get('padding_left'),
+		y = _.labely +_.get('padding_top');
 		
-		this.T.box(this.labelx, this.labely, this.get('width'), this.get('height'), this.get('border'), this.get('f_color'), false, this.get('shadow'), this.get('shadow_color'), this.get('shadow_blur'), this.get('shadow_offsetx'), this.get('shadow_offsety'));
+		_.T.lines(p,_.get('line_thickness'), _.get('border.color'),_.get('line_globalComposite'));
 		
-		this.T.textStyle('left', 'top', this.get('fontStyle'));
+		_.T.box(_.labelx, _.labely, _.get('width'), _.get('height'), _.get('border'), _.get('f_color'), false, _.get('shadow'), _.get('shadow_color'), _.get('shadow_blur'), _.get('shadow_offsetx'), _.get('shadow_offsety'));
 		
-		var textcolor = this.get('color');
-		if (this.get('text_with_sign_color')) {
-			textcolor = this.get('scolor');
+		_.T.textStyle('left', 'top', _.get('fontStyle'));
+		
+		var textcolor = _.get('color');
+		if (_.get('text_with_sign_color')) {
+			textcolor = _.get('scolor');
 		}
-		if (this.get('sign') == 'square') {
-			this.T.box(x, y, ss, ss,0,this.get('scolor'));
+		if (_.get('sign') == 'square') {
+			_.T.box(x, y, ss, ss,0,_.get('scolor'));
 		} else {
-			this.T.round(x + ss / 2, y + ss / 2, ss / 2, this.get('scolor'));
+			_.T.round(x + ss / 2, y + ss / 2, ss / 2, _.get('scolor'));
 		}
-		this.T.fillText(this.get('text'), x + ss + this.get('sign_space'), y, this.get('textwidth'), textcolor);
+		_.T.fillText(_.get('text'), x + ss + _.get('sign_space'), y, _.get('textwidth'), textcolor);
 	},
 	doConfig : function() {
 		$.Label.superclass.doConfig.call(this);
@@ -3445,7 +3454,7 @@ $.Label = $.extend($.Component, {
 					maxwidth : w,
 					data : _.data
 				}, _.get('legend')), _);
-
+				
 				_.components.push(_.legend);
 			}
 			/**
@@ -5576,6 +5585,58 @@ $.Pie3D = $.extend($.Pie, {
 });// @end
 
 /**
+ * @overview this component use for show a donut chart
+ * @component#@chart#$.Donut2D
+ * @extend#$.Pie
+ */
+$.Donut2D = $.extend($.Pie, {
+	/**
+	 * initialize the context for the pie2d
+	 */
+	configure : function() {
+		/**
+		 * invoked the super class's configuration
+		 */
+		$.Donut2D.superclass.configure.call(this);
+		
+		this.type = 'pie2d';
+		
+		this.set({
+			/**
+			 * @cfg {Number} Specifies the width when show a donut.If the value lt 1,It will be as a percentage,value will be radius*donutwidth.only applies when it not 0.(default to 0.3)
+			 */
+			donutwidth : 0.3
+		});
+	},
+	doSector:function(){
+		return  new $.Sector2D(this.get('sector'), this);
+	},
+	doConfig : function() {
+		$.Donut2D.superclass.doConfig.call(this);
+		
+		var _ = this._(),d='donutwidth',r = _.r;
+		/**
+		 * quick config to all rectangle
+		 */
+		_.push('sector.radius',r)
+		if(_.get(d)>0){
+			if(_.get(d)<1){
+				_.push(d,Math.floor(r*_.get(d)));
+			}else if(_.get(d)>=r){
+				_.push(d,0);
+			}
+			_.push('sector.donutwidth',_.get(d));
+		}
+		
+		
+		_.data.each(function(d,i){
+			_.doParse(d,i);
+		},_);
+		
+		_.components.push(_.sectors);
+	}
+});
+/**
  * @overview this component use for abc
  * @component#$.Column
  * @extend#$.Chart
@@ -5958,6 +6019,7 @@ $.Bar = $.extend($.Chart, {
 	},
 	doParse : function(_,d, i, id, x, y, w) {
 		var t = (_.get('showpercent') ? $.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
+		
 		if (_.get('tip.enable'))
 			_.push('rectangle.tip.text', _.fireString(_, 'parseTipText', [d, d.value, i], d.name + ' ' + t));
 		
@@ -6276,8 +6338,8 @@ $.LineSegment = $.extend($.Component, {
 			}
 			/**
 			 * NEXT Config the area polygon 应用CurvePoint,polygons传入集合点
-			 */
-			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
+			 */			    
+			this.T.polygon(bg, false, 1, '', false,this.get('area_opacity'), polygons);
 		}
 		
 		this.T[this.ignored_?"manyLine":"lineArray"](p, this.get('brushsize'), this.get('f_color'), this.get('smooth'), this.get('smoothing'));

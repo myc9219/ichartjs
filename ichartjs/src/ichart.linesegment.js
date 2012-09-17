@@ -112,8 +112,8 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			}
 			/**
 			 * NEXT Config the area polygon 应用CurvePoint,polygons传入集合点
-			 */
-			this.T.polygon(bg, false, 1, '', false, '', 0, 0, 0, this.get('area_opacity'), polygons);
+			 */			    
+			this.T.polygon(bg, false, 1, '', false,this.get('area_opacity'), polygons);
 		}
 		
 		this.T[this.ignored_?"manyLine":"lineArray"](p, this.get('brushsize'), this.get('f_color'), this.get('smooth'), this.get('smoothing'));
