@@ -19,7 +19,7 @@ iChart.Donut2D = iChart.extend(iChart.Pie, {
 			/**
 			 * @cfg {Number} Specifies the width when show a donut.If the value lt 1,It will be as a percentage,value will be radius*donutwidth.only applies when it not 0.(default to 0.3)
 			 */
-			donutwidth : 0.3,
+			donutwidth : 0.3
 		});
 	},
 	doSector:function(){

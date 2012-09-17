@@ -1,25 +1,15 @@
 /**
- * ichartjs Library v1.0 
- * http://www.ichartjs.cn/ 
- * @author wanghe 
- * @Copyright 2012 wanghetommy@gmail.com 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * ichartjs Library v1.0 http://www.ichartjs.cn/
+ * 
+ * @author wanghe
+ * @Copyright 2012 wanghetommy@gmail.com Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 ;
 (function(window) {
 	var ua = navigator.userAgent.toLowerCase(), mc = function(e) {
 		return e.test(ua)
-	}, ts = Object.prototype.toString,
-	isOpera = mc(/opera/), isChrome = mc(/\bchrome\b/),
-	isWebKit = mc(/webkit/),
-	isSafari = !isChrome && mc(/safari/),
-	isIE = !isOpera && mc(/msie/),
-	supportCanvas = !!document.createElement('canvas').getContext,
-	isGecko = !isWebKit&& mc(/gecko/), 
-	isMobile = mc(/ipod|ipad|iphone|android/gi),
-	arithmetic = {
+	}, ts = Object.prototype.toString, isOpera = mc(/opera/), isChrome = mc(/\bchrome\b/), isWebKit = mc(/webkit/), isSafari = !isChrome && mc(/safari/), isIE = !isOpera && mc(/msie/), supportCanvas = !!document.createElement('canvas').getContext, isGecko = !isWebKit
+			&& mc(/gecko/), isMobile = mc(/ipod|ipad|iphone|android/gi), arithmetic = {
 		Linear : function(t, b, c, d) {
 			return c * t / d + b;
 		},
@@ -176,13 +166,52 @@
 			}
 			return d
 		};
+
+		_.apply(_, {
+			version : "1.0",
+			email : 'taylor@ichartjs.com',
+			isEmpty : function(C, e) {
+				return C === null || C === undefined || ((_.isArray(C) && !C.length)) || (!e ? C === "" : false)
+			},
+			isArray : function(e) {
+				return ts.apply(e) === "[object Array]"
+			},
+			isDate : function(e) {
+				return ts.apply(e) === "[object Date]"
+			},
+			isObject : function(e) {
+				return !!e && ts.apply(e) === "[object Object]"
+			},
+			isFunction : function(e) {
+				return ts.apply(e) === "[object Function]"
+			},
+			isNumber : function(e) {
+				return typeof e === "number" && isFinite(e)
+			},
+			isString : function(e) {
+				return typeof e === "string"
+			},
+			isBoolean : function(e) {
+				return typeof e === "boolean"
+			},
+			isFalse : function(e) {
+				return typeof e === "boolean" && !e;
+			},
+			isElement : function(e) {
+				return e ? !!e.tagName : false
+			},
+			isDefined : function(e) {
+				return typeof e !== "undefined"
+			}
+		});
+
 		/**
 		 * only get the attr that target not exist
 		 */
 		_.applyIf = function(d, e) {
-			if (d && e && typeof e == "object") {
+			if (d && _.isObject(e)) {
 				for ( var a in e) {
-					if (typeof e[a] != 'undefined' && typeof d[a] == 'undefined')
+					if (_.isDefined(e[a]) && !_.isDefined(d[a]))
 						d[a] = e[a]
 				}
 			}
@@ -195,11 +224,11 @@
 		 * there will apply a deep clone
 		 */
 		_.merge = function(d, e, f) {
-			if (d && e && typeof e == "object") {
+			if (d && _.isObject(e)) {
 				for ( var a in e) {
-					if (typeof e[a] != 'undefined') {
-						if (ts.apply(e[a]) === "[object Object]") {
-							if (ts.apply(d[a]) === "[object Object]") {
+					if (_.isDefined(e[a])) {
+						if (_.isObject(e[a])) {
+							if (_.isObject(d[a])) {
 								_.merge(d[a], e[a]);
 							} else {
 								d[a] = _.clone(e[a], true);
@@ -209,7 +238,7 @@
 						}
 					}
 				}
-				if (typeof f == "object") {
+				if (_.isObject(f)) {
 					return _.merge(d, f);
 				}
 			}
@@ -220,17 +249,17 @@
 		 */
 		_.clone = function(a, e, deep) {
 			var d = {};
-			if (ts.apply(a) === "[object Array]" && ts.apply(e) === "[object Object]") {
+			if (_.isArray(a)&& _.isObject(e)) {
 				for ( var i = 0; i < a.length; i++) {
-					if (deep && ts.apply(e[a[i]]) === "[object Object]")
+					if (deep && _.isObject(e[a[i]]))
 						d[a[i]] = _.clone(e[a[i]]);
 					else
 						d[a[i]] = e[a[i]];
 				}
-			} else if (ts.apply(a) === "[object Object]") {
+			} else if (_.isObject(a)) {
 				for ( var b in a) {
 					// avoid recursion reference
-					if (e && ts.apply(a[b]) === "[object Object]" && !(a[b] instanceof _.Painter))
+					if (e && _.isObject(a[b])&& !(a[b] instanceof _.Painter))
 						d[b] = _.clone(a[b], e);
 					else
 						d[b] = a[b];
@@ -248,7 +277,7 @@
 				}
 			}
 		};
-		
+
 		/**
 		 * spirit from ext2.0
 		 */
@@ -301,8 +330,7 @@
 				return pF((v / f + "").substring(0, (v + "").length + 1));
 			}
 			return Math.ceil(v / f);
-		},
-		colors = {
+		}, colors = {
 			navy : 'rgb(0,0,128)',
 			olive : 'rgb(128,128,0)',
 			orange : 'rgb(255,165,0)',
@@ -347,8 +375,7 @@
 			lightyellow : 'rgb(255,255,224)',
 			magenta : 'rgb(255,0,255)',
 			violet : 'rgb(128,0,128)'
-		},
-		hex2Rgb = function(hex) {
+		}, hex2Rgb = function(hex) {
 			hex = hex.replace(/#/g, "").replace(/^(\w)(\w)(\w)$/, "$1$1$2$2$3$3");
 			return 'rgb(' + parseInt(hex.substring(0, 2), 16) + ',' + parseInt(hex.substring(2, 4), 16) + ',' + parseInt(hex.substring(4, 6), 16) + ')';
 		}, i2hex = function(N) {
@@ -485,7 +512,8 @@
 		 *            is 纯度(0-1)
 		 */
 		anole = function(d, rgb, iv, is) {
-			if(!rgb)return rgb;
+			if (!rgb)
+				return rgb;
 			rgb = c2a(toRgb(rgb));
 			var hsv = toHsv(rgb);
 			hsv[1] -= is || s_inc;
@@ -500,43 +528,8 @@
 			}
 			return hsv2Rgb(hsv, rgb[3]);
 		};
-		
+
 		_.apply(_, {
-			version : "1.0",
-			email : 'taylor@ichartjs.com',
-			isEmpty : function(C, e) {
-				return C === null || C === undefined || ((_.isArray(C) && !C.length)) || (!e ? C === "" : false)
-			},
-			isArray : function(e) {
-				return ts.apply(e) === "[object Array]"
-			},
-			isDate : function(e) {
-				return ts.apply(e) === "[object Date]"
-			},
-			isObject : function(e) {
-				return !!e && ts.apply(e) === "[object Object]"
-			},
-			isFunction : function(e) {
-				return ts.apply(e) === "[object Function]"
-			},
-			isNumber : function(e) {
-				return typeof e === "number" && isFinite(e)
-			},
-			isString : function(e) {
-				return typeof e === "string"
-			},
-			isBoolean : function(e) {
-				return typeof e === "boolean"
-			},
-			isFalse : function(e) {
-				return typeof e === "boolean" && !e;
-			},
-			isElement : function(e) {
-				return e ? !!e.tagName : false
-			},
-			isDefined : function(e) {
-				return typeof e !== "undefined"
-			},
 			getFont : function(w, s, f) {
 				return w + " " + s + "px " + f;
 			},
@@ -569,8 +562,8 @@
 			noConflict : function() {
 				return iChart_;
 			},
-			plugin:function(t,m,f){
-				if(_.isFunction(t)&&_.isString(m)&&_.isFunction(f)){
+			plugin : function(t, m, f) {
+				if (_.isFunction(t) && _.isString(m) && _.isFunction(f)) {
 					t.plugin_[m] = f;
 				}
 			},
@@ -788,8 +781,7 @@
 				window.setTimeout(callback, 1000 / 60);
 			};
 		})();
-		
-		
+
 		/**
 		 * defined Event
 		 */
@@ -804,48 +796,48 @@
 			},
 			fix : function(e) {
 				// Fix event for mise
-				if (typeof (e) == 'undefined') {
-					e = window.event;
-				}
-				
-				// Fix target property, if necessary
-				if (!e.target) {
-					e.target = e.srcElement || document;
-				}
-				
-				// Calculate pageX/Y if missing and clientX/Y available
-				if (e.pageX == null && e.clientX != null) {
-					var doc = document.documentElement, body = document.body;
-					e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
-					e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
-				}
-
-				// This is mainly for FF which doesn't provide offsetX
-				if (typeof (e.offsetX) == 'undefined' && typeof (e.offsetY) == 'undefined') {
-					// Browser not with offsetX and offsetY
-					if (typeof (e.offsetX) != 'number') {
-						var x = 0, y = 0, obj = e.target;
-						while (obj != document.body && obj) {
-							x += obj.offsetLeft;
-							y += obj.offsetTop;
-							obj = obj.offsetParent;
-						}
-						e.offsetX = e.pageX - x;
-						e.offsetY = e.pageY - y;
-					}
-				}
-				
-				e.x = e.offsetX;
-				e.y = e.offsetY;
-				
-				// Any browser that doesn't implement stopPropagation() (MSIE)
-				if (!e.stopPropagation) {
-					e.stopPropagation = function() {
-						window.event.cancelBubble = true;
-					}
-				}
-				return e;
+			if (typeof (e) == 'undefined') {
+				e = window.event;
 			}
+
+			// Fix target property, if necessary
+			if (!e.target) {
+				e.target = e.srcElement || document;
+			}
+
+			// Calculate pageX/Y if missing and clientX/Y available
+			if (e.pageX == null && e.clientX != null) {
+				var doc = document.documentElement, body = document.body;
+				e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+				e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
+			}
+
+			// This is mainly for FF which doesn't provide offsetX
+			if (typeof (e.offsetX) == 'undefined' && typeof (e.offsetY) == 'undefined') {
+				// Browser not with offsetX and offsetY
+				if (typeof (e.offsetX) != 'number') {
+					var x = 0, y = 0, obj = e.target;
+					while (obj != document.body && obj) {
+						x += obj.offsetLeft;
+						y += obj.offsetTop;
+						obj = obj.offsetParent;
+					}
+					e.offsetX = e.pageX - x;
+					e.offsetY = e.pageY - y;
+				}
+			}
+
+			e.x = e.offsetX;
+			e.y = e.offsetY;
+
+			// Any browser that doesn't implement stopPropagation() (MSIE)
+			if (!e.stopPropagation) {
+				e.stopPropagation = function() {
+					window.event.cancelBubble = true;
+				}
+			}
+			return e;
+		}
 		};
 		return _;
 
@@ -863,7 +855,7 @@
 			}
 		};
 	};
-	
+
 	Array.prototype.eachAll = function(f, s) {
 		this.each(function(d, i) {
 			if (iChart_.isArray(d)) {
@@ -873,7 +865,7 @@
 			}
 		}, s);
 	};
-	
+
 	window.iChart = iChart_;
 	if (!window.$) {
 		window.$ = window.iChart;

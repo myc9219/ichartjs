@@ -48,6 +48,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 	},
 	doParse : function(_,d, i, id, x, y, w) {
 		var t = (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
+		
 		if (_.get('tip.enable'))
 			_.push('rectangle.tip.text', _.fireString(_, 'parseTipText', [d, d.value, i], d.name + ' ' + t));
 		
