@@ -108,22 +108,20 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		'drawCell');
 
 	},
-	drawCell : function(x, y, text, color) {
-		var s = this.get('sign_size'), n = this.get('sign'),f = this.getPlugin(n);
-		
-		if(f){
-			f.call(this,this.T,x,y,s,color);
-		}
-		else if (n == 'round') {
-			this.T.round(x + s / 2, y + s / 2, s / 2, color);
-		} else if (n == 'round-bar') {
-			this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
-			this.T.round(x + s / 2, y + s / 2, s / 4, color);
-		} else if (n == 'square-bar') {
-			this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
-			this.T.box(x + s / 4, y + s / 4, s / 2, s / 2, 0, color);
-		} else {
-			this.T.box(x, y, s, s, 0, color);
+	drawCell : function(x, y, text, color,n) {
+		var s = this.get('sign_size'),f = this.getPlugin('sign');
+		if(!f||!f.call(this,this.T,n,x + s / 2,y + s / 2,s,color)){
+			if (n == 'round') {
+				this.T.round(x + s / 2, y + s / 2, s / 2, color);
+			} else if (n == 'round-bar') {
+				this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
+				this.T.round(x + s / 2, y + s / 2, s / 4, color);
+			} else if (n == 'square-bar') {
+				this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
+				this.T.box(x + s / 4, y + s / 4, s / 2, s / 2, 0, color);
+			} else {
+				this.T.box(x, y, s, s, 0, color);
+			}
 		}
 		
 		var textcolor = this.get('color');
@@ -133,15 +131,14 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		}
 		this.T.fillText(text, x + this.get('signwidth'), y + s / 2, this.get('textwidth'), textcolor);
 
-		this.fireEvent(this, 'drawCell', [this]);
 	},
 	drawRow : function(suffix, x, y) {
 		var d;
 		for ( var j = 0; j < this.get('column'); j++) {
 			d = this.data[suffix];
 			if (suffix < this.data.length) {
-				this.fireEvent(this, 'drawCell', [d]);
-				this.drawCell(x, y, d.text, d.color);
+				this.fireEvent(this, 'drawCell', [this,d]);
+				this.drawCell(x, y, d.text, d.color,d.sign || this.get('sign'));
 				d.x = x;
 				d.y = y;
 			}

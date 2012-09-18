@@ -30,11 +30,15 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			 * @cfg {String} Specifies the shape of two line segment' point(default to 'round').Only applies when intersection is true Available value are:
 			 * @Option 'round'
 			 */
-			point_style : 'round',
+			sign : 'round',
 			/**
 			 * @cfg {Boolean} If true the centre of point will be hollow.(default to true)
 			 */
-			point_hollow : true,
+			hollow : true,
+			/**
+			 * @cfg {String} Specifies the bgcolor when hollow applies true.(default to '#FEFEFE')
+			 */
+			hollow_color : '#FEFEFE',
 			/**
 			 * @cfg {Boolean} If true Line will smooth.(default to false)
 			 */
@@ -45,9 +49,9 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			 */
 			smoothing : 1.5,
 			/**
-			 * @cfg {Number} Specifies the size of point.(default size 3).Only applies when intersection is true
+			 * @cfg {Number} Specifies the size of point.(default size 6).Only applies when intersection is true
 			 */
-			point_size : 3,
+			point_size : 6,
 			/**
 			 * @inner {Array} the set of points to compose line segment
 			 */
@@ -96,7 +100,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 	},
 	drawSegment : function() {
 		this.T.shadowOn(this.get('shadow'));
-		var p = this.get('points');
+		var p = this.get('points'),b=this.get('f_color'),h=this.get('brushsize');
 		if (this.get('area')) {
 			var polygons = [this.x, this.y];
 			for ( var i = 0; i < p.length; i++) {
@@ -110,21 +114,21 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			if (this.get('gradient')) {
 				bg = this.T.avgLinearGradient(this.x, this.y - this.get('height'), this.x, this.y, [this.get('light_color2'), bg]);
 			}
-			/**
-			 * NEXT Config the area polygon 应用CurvePoint,polygons传入集合点
-			 */			    
 			this.T.polygon(bg, false, 1, '', false,this.get('area_opacity'), polygons);
 		}
 		
-		this.T[this.ignored_?"manyLine":"lineArray"](p, this.get('brushsize'), this.get('f_color'), this.get('smooth'), this.get('smoothing'));
+		this.T[this.ignored_?"manyLine":"lineArray"](p,h, b, this.get('smooth'), this.get('smoothing'));
 		
 		if (this.get('intersection')) {
+			var f = this.getPlugin('sign'),s=this.get('point_size'),j=this.get('hollow_color');
 			p.each(function(q,i){
 				if(!q.ignored){
-					if (this.get('point_hollow')) {
-						this.T.round(q.x, q.y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('f_color'));
-					} else {
-						this.T.round(q.x, q.y, this.get('point_size'), this.get('f_color'));
+					if(!f||!f.call(this,this.T,this.get('sign'),q.x, q.y,s,b)){
+						if (this.get('hollow')) {
+							this.T.round(q.x, q.y, s*3/8,this.get('hollow_color'),s/4,b);
+						} else {
+							this.T.round(q.x, q.y, s/2,b);
+						}
 					}
 				}
 			},this);
