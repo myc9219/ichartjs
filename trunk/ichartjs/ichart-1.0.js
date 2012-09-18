@@ -313,6 +313,11 @@
 					return _.extend(J, F)
 				};
 				J.plugin_ = {};
+				
+				J.plugin = function(M,F) {
+					if (_.isString(M) && _.isFunction(F))
+						J.plugin_[M] = F;
+				};
 				return J;
 			}
 		}();
@@ -563,9 +568,8 @@
 				return iChart_;
 			},
 			plugin : function(t, m, f) {
-				if (_.isFunction(t) && _.isString(m) && _.isFunction(f)) {
-					t.plugin_[m] = f;
-				}
+				if (_.isFunction(t))
+					t.plugin(m, f);
 			},
 			parsePadding : function(s, d) {
 				if (_.isNumber(s))
@@ -1905,22 +1909,20 @@ $.Legend = $.extend($.Component, {
 		'drawCell');
 
 	},
-	drawCell : function(x, y, text, color) {
-		var s = this.get('sign_size'), n = this.get('sign'),f = this.getPlugin(n);
-		
-		if(f){
-			f.call(this,this.T,x,y,s,color);
-		}
-		else if (n == 'round') {
-			this.T.round(x + s / 2, y + s / 2, s / 2, color);
-		} else if (n == 'round-bar') {
-			this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
-			this.T.round(x + s / 2, y + s / 2, s / 4, color);
-		} else if (n == 'square-bar') {
-			this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
-			this.T.box(x + s / 4, y + s / 4, s / 2, s / 2, 0, color);
-		} else {
-			this.T.box(x, y, s, s, 0, color);
+	drawCell : function(x, y, text, color,n) {
+		var s = this.get('sign_size'),f = this.getPlugin('sign');
+		if(!f||!f.call(this,this.T,n,x + s / 2,y + s / 2,s,color)){
+			if (n == 'round') {
+				this.T.round(x + s / 2, y + s / 2, s / 2, color);
+			} else if (n == 'round-bar') {
+				this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
+				this.T.round(x + s / 2, y + s / 2, s / 4, color);
+			} else if (n == 'square-bar') {
+				this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
+				this.T.box(x + s / 4, y + s / 4, s / 2, s / 2, 0, color);
+			} else {
+				this.T.box(x, y, s, s, 0, color);
+			}
 		}
 		
 		var textcolor = this.get('color');
@@ -1930,15 +1932,14 @@ $.Legend = $.extend($.Component, {
 		}
 		this.T.fillText(text, x + this.get('signwidth'), y + s / 2, this.get('textwidth'), textcolor);
 
-		this.fireEvent(this, 'drawCell', [this]);
 	},
 	drawRow : function(suffix, x, y) {
 		var d;
 		for ( var j = 0; j < this.get('column'); j++) {
 			d = this.data[suffix];
 			if (suffix < this.data.length) {
-				this.fireEvent(this, 'drawCell', [d]);
-				this.drawCell(x, y, d.text, d.color);
+				this.fireEvent(this, 'drawCell', [this,d]);
+				this.drawCell(x, y, d.text, d.color,d.sign || this.get('sign'));
 				d.x = x;
 				d.y = y;
 			}
@@ -6256,11 +6257,15 @@ $.LineSegment = $.extend($.Component, {
 			 * @cfg {String} Specifies the shape of two line segment' point(default to 'round').Only applies when intersection is true Available value are:
 			 * @Option 'round'
 			 */
-			point_style : 'round',
+			sign : 'round',
 			/**
 			 * @cfg {Boolean} If true the centre of point will be hollow.(default to true)
 			 */
-			point_hollow : true,
+			hollow : true,
+			/**
+			 * @cfg {String} Specifies the bgcolor when hollow applies true.(default to '#FEFEFE')
+			 */
+			hollow_color : '#FEFEFE',
 			/**
 			 * @cfg {Boolean} If true Line will smooth.(default to false)
 			 */
@@ -6271,9 +6276,9 @@ $.LineSegment = $.extend($.Component, {
 			 */
 			smoothing : 1.5,
 			/**
-			 * @cfg {Number} Specifies the size of point.(default size 3).Only applies when intersection is true
+			 * @cfg {Number} Specifies the size of point.(default size 6).Only applies when intersection is true
 			 */
-			point_size : 3,
+			point_size : 6,
 			/**
 			 * @inner {Array} the set of points to compose line segment
 			 */
@@ -6322,7 +6327,7 @@ $.LineSegment = $.extend($.Component, {
 	},
 	drawSegment : function() {
 		this.T.shadowOn(this.get('shadow'));
-		var p = this.get('points');
+		var p = this.get('points'),b=this.get('f_color'),h=this.get('brushsize');
 		if (this.get('area')) {
 			var polygons = [this.x, this.y];
 			for ( var i = 0; i < p.length; i++) {
@@ -6336,21 +6341,21 @@ $.LineSegment = $.extend($.Component, {
 			if (this.get('gradient')) {
 				bg = this.T.avgLinearGradient(this.x, this.y - this.get('height'), this.x, this.y, [this.get('light_color2'), bg]);
 			}
-			/**
-			 * NEXT Config the area polygon 应用CurvePoint,polygons传入集合点
-			 */			    
 			this.T.polygon(bg, false, 1, '', false,this.get('area_opacity'), polygons);
 		}
 		
-		this.T[this.ignored_?"manyLine":"lineArray"](p, this.get('brushsize'), this.get('f_color'), this.get('smooth'), this.get('smoothing'));
+		this.T[this.ignored_?"manyLine":"lineArray"](p,h, b, this.get('smooth'), this.get('smoothing'));
 		
 		if (this.get('intersection')) {
+			var f = this.getPlugin('sign'),s=this.get('point_size'),j=this.get('hollow_color');
 			p.each(function(q,i){
 				if(!q.ignored){
-					if (this.get('point_hollow')) {
-						this.T.round(q.x, q.y, this.get('point_size'), '#FEFEFE', this.get('brushsize'), this.get('f_color'));
-					} else {
-						this.T.round(q.x, q.y, this.get('point_size'), this.get('f_color'));
+					if(!f||!f.call(this,this.T,this.get('sign'),q.x, q.y,s,b)){
+						if (this.get('hollow')) {
+							this.T.round(q.x, q.y, s*3/8,this.get('hollow_color'),s/4,b);
+						} else {
+							this.T.round(q.x, q.y, s/2,b);
+						}
 					}
 				}
 			},this);

@@ -313,6 +313,11 @@
 					return _.extend(J, F)
 				};
 				J.plugin_ = {};
+				
+				J.plugin = function(M,F) {
+					if (_.isString(M) && _.isFunction(F))
+						J.plugin_[M] = F;
+				};
 				return J;
 			}
 		}();
@@ -563,9 +568,8 @@
 				return iChart_;
 			},
 			plugin : function(t, m, f) {
-				if (_.isFunction(t) && _.isString(m) && _.isFunction(f)) {
-					t.plugin_[m] = f;
-				}
+				if (_.isFunction(t))
+					t.plugin(m, f);
 			},
 			parsePadding : function(s, d) {
 				if (_.isNumber(s))

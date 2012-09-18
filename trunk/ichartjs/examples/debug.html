@@ -55,31 +55,52 @@
 		}
 	</style>
 	<script type="text/javascript">
-		$(function(){
-			var data = [
-			        	{name : 'IE',value : 35.75,color:'#9d4a4a'},
-			        	{name : 'Chrome',value : 29.84,color:'#5d7f97'},
-			        	{name : 'Firefox',value : 24.88,color:'#97b3bc'},
-			        	{name : 'Safari',value : 6.77,color:'#a5aaaa'},
-			        	{name : 'Opera',value : 2.02,color:'#778088'},
-			        	{name : 'Other',value : 0.73,color:'#6f83a5'}
-		        	];
-	    	
-			new iChart.Pie2D({
+	$(function(){
+		var data = [
+	         	{
+	         		name : '北京',
+	         		value:[{x:10,y:80},{x:20,y:60},{x:70,y:20},{x:70,y:22},{x:90,y:40},{x:32,y:70},{x:30,y:70},{x:50,y:30},{x:50,y:60}],
+	         		color:'#1f7e92'
+	         	}
+         ];	
+         
+		//定义了个性的数据格式，数组中每一个都是一个对象，有x,y两个属性，意味着横轴坐标值。
+		new iChart.Scatter2D({
 				render : 'canvasDiv',
 				data: data,
-				title : 'Top 5 Browsers from 1 to 29 Feb 2012',
-				legend : {
-					enable : true
-				},
-				shadow:true,
-				showpercent:true,
-				decimalsnum:2,
+				title : '基本的散点图',
 				width : 800,
-				height : 440,
-				radius:140
+				height : 400,
+				shadow:false,  //根据自己需要设置是否有阴影效果
+				segment_style:{
+					shadow_blur:2,
+					point_opacity:0.5,//点的透明度，点多的时候可能会有重合的，设置透明度可以观察重合的效果
+					point_size:10, //点大小，根据图中点的数量决定，点数量多时可以适当调小，点数量大多的时候可以适当调大点
+					hollow:true //根据自己需要设置是否为空心
+				},
+				coordinate:{
+					width:640,
+					height:280,
+					axis:{
+						color:'#9f9f9f',
+						width:[0,0,2,2]
+					},
+					scale:[{//scale的这两个横轴轴必须指定
+						 position:'left',	
+						 start_scale:0,
+						 end_scale:100,
+						 scale_space:10,
+						 scale_color:'#9f9f9f'
+					},{
+						 position:'bottom',	
+						 start_scale:0,
+						 end_scale:100,
+						 scale_space:10,
+						 scale_color:'#9f9f9f'
+					}]
+				}
 			}).draw();
-		});
+	});
 		
 		
 	</script>

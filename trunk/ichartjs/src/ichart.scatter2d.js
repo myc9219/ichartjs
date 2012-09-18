@@ -62,6 +62,7 @@
 				},this);	
 				this.push('segment_style.points',points);
 				this.push('segment_style.brushsize',d.linewidth||1);
+				this.push('segment_style.sign',d.sign);
 				this.push('segment_style.background_color',d.color);
 				
 				

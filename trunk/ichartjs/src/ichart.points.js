@@ -26,16 +26,20 @@ iChart.Points = iChart.extend(iChart.Component, {
 			 * @cfg {String} Specifies the shape of two line segment' point(default to 'round').Only applies when intersection is true Available value are:
 			 * @Option 'round'
 			 */
-			point_style : 'round',
+			sign : 'round',
 			/**
 			 * @cfg {Boolean} If true the centre of point will be hollow.(default to true)
 			 */
-			point_hollow : true,
-			point_opacity:0.6,
+			hollow : true,
 			/**
-			 * @cfg {Number} Specifies the size of point.(default size 3).Only applies when intersection is true
+			 * @cfg {String} Specifies the bgcolor when hollow applies true.(default to '#FEFEFE')
 			 */
-			point_size : 3,
+			hollow_color : '#FEFEFE',
+			sign_opacity:0.6,
+			/**
+			 * @cfg {Number} Specifies the size of point.(default size 8).Only applies when intersection is true
+			 */
+			point_size : 8,
 			event_size : 0,
 			/**
 			 * @inner {Array} the set of points to compose line segment
@@ -65,15 +69,22 @@ iChart.Points = iChart.extend(iChart.Component, {
 	},
 	drawSegment : function() {
 		this.T.shadowOn(this.get('shadow'));
-		var p = this.get('points');
-		this.T.globalAlpha(this.get('point_opacity'));
-		for ( var i = 0; i < p.length; i++) {
-			if (this.get('point_hollow')) {
-				this.T.round(p[i].x, p[i].y, this.get('point_size'), '#FEFEFE', Math.round(this.get('point_size')/2), this.get('f_color'));
-			} else {
-				this.T.round(p[i].x, p[i].y, this.get('point_size'), this.get('f_color'));
+		this.T.globalAlpha(this.get('sign_opacity'));
+		
+		var f = this.getPlugin('sign'),b=this.get('f_color'),s=this.get('point_size');
+		
+		this.get('points').each(function(q,i){
+			if(!q.ignored){
+				if(!f||!f.call(this,this.T,this.get('sign'),q.x, q.y,s,b)){
+					if (this.get('hollow')) {
+						this.T.round(q.x, q.y, s*3/8,this.get('hollow_color'),s/4,b);
+					} else {
+						this.T.round(q.x, q.y, s/2,b);
+					}
+				}
 			}
-		}
+		},this);
+		
 		this.T.globalAlpha(1);
 		if (this.get('shadow')) {
 			this.T.shadowOff();
