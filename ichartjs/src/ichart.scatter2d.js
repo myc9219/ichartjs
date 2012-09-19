@@ -34,7 +34,6 @@
 			
 			this.coo = new iChart.Coordinate2D(this.get('coordinate'),this);
 			
-			
 			this.components.push(this.coo);
 			this.push('segment_style.coordinate',this.coo);
 			this.push('segment_style.tip.showType','follow');

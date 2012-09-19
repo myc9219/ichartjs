@@ -183,7 +183,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			rx = _.push('event_range_x', iChart.between(1, Math.floor(sp / 2), rx));
 		}
 		if (ry == 0) {
-			ry = _.push('event_range_y', Math.floor(_.get('point_size')));
+			ry = _.push('event_range_y', Math.floor(_.get('point_size')/2));
 		}
 
 		if (_.get('tip.enable')) {

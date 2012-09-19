@@ -96,7 +96,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		/**
 		 * realtime sort
 		 */
-		layer.sort(function(p, q){return abs(p.g,b) - abs(q.g,b)});
+		layer.sor(function(p, q){return abs(p.g,b) - abs(q.g,b)});
 		/**
 		 * paint inside layer
 		 */
@@ -107,7 +107,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		/**
 		 * realtime sort outside layer
 		 */
-		_.sectors.sort(function(p, q){return abs(q.get(t),a)-abs(p.get(t),a)});
+		_.sectors.sor(function(p, q){return abs(q.get(t),a)-abs(p.get(t),a)});
 		
 		/**
 		 * paint outside layer

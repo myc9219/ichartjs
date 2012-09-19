@@ -799,26 +799,36 @@
 					ele['on' + type] = fn;
 			},
 			fix : function(e) {
-				// Fix event for mise
+				/**
+				 * Fix event for mise
+				 */
 			if (typeof (e) == 'undefined') {
 				e = window.event;
 			}
 
-			// Fix target property, if necessary
+			/**
+			 * Fix target property, if necessary
+			 */
 			if (!e.target) {
 				e.target = e.srcElement || document;
 			}
 
-			// Calculate pageX/Y if missing and clientX/Y available
+			/**
+			 * Calculate pageX/Y if missing and clientX/Y available
+			 */
 			if (e.pageX == null && e.clientX != null) {
 				var doc = document.documentElement, body = document.body;
 				e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
 				e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
 			}
 
-			// This is mainly for FF which doesn't provide offsetX
+			/**
+			 * This is mainly for FF which doesn't provide offsetX
+			 */
 			if (typeof (e.offsetX) == 'undefined' && typeof (e.offsetY) == 'undefined') {
-				// Browser not with offsetX and offsetY
+				/**
+				 * Browser not with offsetX and offsetY
+				 */
 				if (typeof (e.offsetX) != 'number') {
 					var x = 0, y = 0, obj = e.target;
 					while (obj != document.body && obj) {
@@ -834,7 +844,9 @@
 			e.x = e.offsetX;
 			e.y = e.offsetY;
 
-			// Any browser that doesn't implement stopPropagation() (MSIE)
+			/**
+			 * Any browser that doesn't implement stopPropagation() (MSIE)
+			 */
 			if (!e.stopPropagation) {
 				e.stopPropagation = function() {
 					window.event.cancelBubble = true;
@@ -869,7 +881,21 @@
 			}
 		}, s);
 	};
-
+	
+	Array.prototype.sor = function(f) {
+		var _=this,L = _.length,T; 
+		for(var i = 0; i < L - 2; i++){
+			for (var j = L -1; j >=1;j--) {
+			　　if (f?!f(_[j],_[j - 1]):(_[j] < _[j - 1])){ 
+				　　T = _[j]; 　　
+					_[j] = _[j - 1]; 　　
+					_[j - 1] = T; 
+				} 
+			} 
+		} 
+	};
+	
+	
 	window.iChart = iChart_;
 	if (!window.$) {
 		window.$ = window.iChart;

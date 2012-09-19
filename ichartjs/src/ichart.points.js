@@ -121,7 +121,7 @@ iChart.Points = iChart.extend(iChart.Component, {
 		
 		var _ = this, size = _.get('event_size'), heap = _.get('tipInvokeHeap'), p = _.get('points');
 		if(size==0){
-			size = _.push('event_size',_.get('point_size'));
+			size = _.push('event_size',_.get('point_size')/2);
 		}
 		
 		for ( var i = 0; i < p.length; i++) {
