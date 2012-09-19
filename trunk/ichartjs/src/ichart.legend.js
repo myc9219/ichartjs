@@ -60,6 +60,8 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			 * @cfg {Number} Specifies the space between the sign and text.(default to 5)
 			 */
 			legend_space : 5,
+			
+			z_index : 1000,
 			/**
 			 * @cfg {Boolean} If true the text's color will accord with sign's.(default to false)
 			 */

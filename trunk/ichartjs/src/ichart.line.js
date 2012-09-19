@@ -100,16 +100,15 @@ iChart.Line = iChart.extend(iChart.Chart, {
 	},
 	doConfig : function() {
 		iChart.Line.superclass.doConfig.call(this);
-		
-		this.lines.zIndex = this.get('z_index');
+		var _ = this._(),s=_.data.length == 1;
 		
 		/**
 		 * apply the coordinate feature
 		 */
-		iChart.Coordinate.coordinate.call(this);
+		iChart.Coordinate.coordinate.call(_);
 
-		var _ = this,s=_.data.length == 1;
 		
+		_.lines.zIndex = _.get('z_index');
 		_.push('line_start', (_.get('coordinate.width') - _.get('coordinate.valid_width')) / 2);
 		_.push('line_end', _.get('coordinate.width') - _.get('line_start'));
 

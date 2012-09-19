@@ -799,26 +799,36 @@
 					ele['on' + type] = fn;
 			},
 			fix : function(e) {
-				// Fix event for mise
+				/**
+				 * Fix event for mise
+				 */
 			if (typeof (e) == 'undefined') {
 				e = window.event;
 			}
 
-			// Fix target property, if necessary
+			/**
+			 * Fix target property, if necessary
+			 */
 			if (!e.target) {
 				e.target = e.srcElement || document;
 			}
 
-			// Calculate pageX/Y if missing and clientX/Y available
+			/**
+			 * Calculate pageX/Y if missing and clientX/Y available
+			 */
 			if (e.pageX == null && e.clientX != null) {
 				var doc = document.documentElement, body = document.body;
 				e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
 				e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
 			}
 
-			// This is mainly for FF which doesn't provide offsetX
+			/**
+			 * This is mainly for FF which doesn't provide offsetX
+			 */
 			if (typeof (e.offsetX) == 'undefined' && typeof (e.offsetY) == 'undefined') {
-				// Browser not with offsetX and offsetY
+				/**
+				 * Browser not with offsetX and offsetY
+				 */
 				if (typeof (e.offsetX) != 'number') {
 					var x = 0, y = 0, obj = e.target;
 					while (obj != document.body && obj) {
@@ -834,7 +844,9 @@
 			e.x = e.offsetX;
 			e.y = e.offsetY;
 
-			// Any browser that doesn't implement stopPropagation() (MSIE)
+			/**
+			 * Any browser that doesn't implement stopPropagation() (MSIE)
+			 */
 			if (!e.stopPropagation) {
 				e.stopPropagation = function() {
 					window.event.cancelBubble = true;
@@ -869,7 +881,21 @@
 			}
 		}, s);
 	};
-
+	
+	Array.prototype.sor = function(f) {
+		var _=this,L = _.length,T; 
+		for(var i = 0; i < L - 2; i++){
+			for (var j = L -1; j >=1;j--) {
+			　　if (f?!f(_[j],_[j - 1]):(_[j] < _[j - 1])){ 
+				　　T = _[j]; 　　
+					_[j] = _[j - 1]; 　　
+					_[j - 1] = T; 
+				} 
+			} 
+		} 
+	};
+	
+	
 	window.iChart = iChart_;
 	if (!window.$) {
 		window.$ = window.iChart;
@@ -1861,6 +1887,8 @@ $.Legend = $.extend($.Component, {
 			 * @cfg {Number} Specifies the space between the sign and text.(default to 5)
 			 */
 			legend_space : 5,
+			
+			z_index : 1000,
 			/**
 			 * @cfg {Boolean} If true the text's color will accord with sign's.(default to false)
 			 */
@@ -3194,7 +3222,7 @@ $.Label = $.extend($.Component, {
 			this.get('doAnimationFn').call(this, t, d);
 		},
 		doSort:function(){
-			this.components.sort(function(p, q){return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
+			this.components.sor(function(p, q){return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
 		commonDraw : function() {
 			$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
@@ -3206,9 +3234,7 @@ $.Label = $.extend($.Component, {
 			 */
 
 			if (!this.redraw) {
-				//console.log(this.components);
 				this.doSort();
-				//console.log(this.components);
 				if (this.title) {
 					this.title.draw();
 				}
@@ -5554,7 +5580,7 @@ $.Pie3D = $.extend($.Pie, {
 		/**
 		 * realtime sort
 		 */
-		layer.sort(function(p, q){return abs(p.g,b) - abs(q.g,b)});
+		layer.sor(function(p, q){return abs(p.g,b) - abs(q.g,b)});
 		/**
 		 * paint inside layer
 		 */
@@ -5565,7 +5591,7 @@ $.Pie3D = $.extend($.Pie, {
 		/**
 		 * realtime sort outside layer
 		 */
-		_.sectors.sort(function(p, q){return abs(q.get(t),a)-abs(p.get(t),a)});
+		_.sectors.sor(function(p, q){return abs(q.get(t),a)-abs(p.get(t),a)});
 		
 		/**
 		 * paint outside layer
@@ -6410,7 +6436,7 @@ $.LineSegment = $.extend($.Component, {
 			rx = _.push('event_range_x', $.between(1, Math.floor(sp / 2), rx));
 		}
 		if (ry == 0) {
-			ry = _.push('event_range_y', Math.floor(_.get('point_size')));
+			ry = _.push('event_range_y', Math.floor(_.get('point_size')/2));
 		}
 
 		if (_.get('tip.enable')) {
@@ -6579,16 +6605,15 @@ $.Line = $.extend($.Chart, {
 	},
 	doConfig : function() {
 		$.Line.superclass.doConfig.call(this);
-		
-		this.lines.zIndex = this.get('z_index');
+		var _ = this._(),s=_.data.length == 1;
 		
 		/**
 		 * apply the coordinate feature
 		 */
-		$.Coordinate.coordinate.call(this);
+		$.Coordinate.coordinate.call(_);
 
-		var _ = this,s=_.data.length == 1;
 		
+		_.lines.zIndex = _.get('z_index');
 		_.push('line_start', (_.get('coordinate.width') - _.get('coordinate.valid_width')) / 2);
 		_.push('line_end', _.get('coordinate.width') - _.get('line_start'));
 

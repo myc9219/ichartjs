@@ -872,7 +872,7 @@
 			this.get('doAnimationFn').call(this, t, d);
 		},
 		doSort:function(){
-			this.components.sort(function(p, q){return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
+			this.components.sor(function(p, q){return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
 		commonDraw : function() {
 			$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
@@ -884,9 +884,7 @@
 			 */
 
 			if (!this.redraw) {
-				//console.log(this.components);
 				this.doSort();
-				//console.log(this.components);
 				if (this.title) {
 					this.title.draw();
 				}
