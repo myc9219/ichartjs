@@ -85,7 +85,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		 * sort layer
 		 */
 		_.sectors.each(function(f, i) {
-			s = f.get(t);e = f.get(d),fc = $.dark(f.get('f_color'));
+			s = f.get(t);e = f.get(d),fc = $.dark(f.get('background_color'));
 			if(c ? (s < a || s > b) : (s > a && s < b)){
 				layer.push({g:s,x:f.x,y:f.y,a:f.a,b:f.b,color:fc,h:f.h});
 			}

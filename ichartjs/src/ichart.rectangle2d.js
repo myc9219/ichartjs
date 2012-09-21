@@ -72,6 +72,7 @@
 				_.tipY = function(w,h){return _.y  - h -3;};
 			}
 			
+			_.applyGradient();
 			
 			if(valueAlign=='left'){
 				_.push('textAlign','right');

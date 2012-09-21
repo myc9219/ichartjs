@@ -65,6 +65,12 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 */
 			increment : undefined,
 			/**
+			 * @cfg {String} Specifies the gradient mode of background.(defaults to 'RadialGradientOutIn')
+			 * @Option 'RadialGradientOutIn'
+			 * @Option 'RadialGradientInOut'
+			 */
+			gradient_mode:'RadialGradientOutIn',
+			/**
 			 * @cfg {Object} Specifies the config of label.For details see <link>iChart.Label</link>
 			 * Note:this has a extra property named 'enable',indicate whether label available(default to true)
 			 */

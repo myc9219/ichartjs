@@ -53,10 +53,6 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			 */
 			color_factor : 0.15,
 			/**
-			 * @inner {Boolean} True to apply the gradient.(default to false)
-			 */
-			gradient : false,
-			/**
 			 * @cfg {String} ('2d','3d')
 			 */
 			style : '',
@@ -66,6 +62,20 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			border : {
 				enable : true
 			},
+			/**
+			 * @cfg {Boolean} True to apply the gradient.(default to false)
+			 */
+			gradient : false,
+			/**
+			 * @cfg {String} Specifies the gradient mode of background.(defaults to 'LinearGradientUpDown')
+			 * @Option 'LinearGradientUpDown'
+			 * @Option 'LinearGradientDownUp'
+			 * @Option 'LinearGradientLeftRight'
+			 * @Option 'LinearGradientRightLeft'
+			 * @Option 'RadialGradientOutIn'
+			 * @Option 'RadialGradientInOut'
+			 */
+			gradient_mode:'LinearGradientUpDown',
 			/**
 			 * @cfg {Number}Specifies the z-index.(default to 0)
 			 */
@@ -168,6 +178,10 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	is3D : function() {
 		return this.dimension == iChart._3D;
 	},
+	applyGradient:function(x,y,w,h){
+		if(this.get('gradient'))
+			this.push('f_color', this.T.gradient(x||this.x||0,y||this.y||0,w||this.get('width'),h||this.get('height'),[this.get('dark_color'), this.get('light_color')],this.get('gradient_mode')));
+	},
 	/**
 	 * @method The commnd fire to draw the chart use configuration,this is a abstract method.Currently known,both <link>iChart.Chart</link> and <link>iChart.Component</link> implement this method.
 	 * @return void
@@ -218,20 +232,22 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	doConfig : function() {
 		var _ = this._(), p = iChart.parsePadding(_.get('padding')), b = _.get('border.enable'), b = b ? iChart.parsePadding(_.get('border.width')) : [0, 0, 0, 0], bg = _.get('background_color'), f = _.get('color_factor');
 		
-		_.push('border_top', b[0]);
-		_.push('border_right', b[1]);
-		_.push('border_bottom', b[2]);
-		_.push('border_left', b[3]);
-		_.push('hborder', b[1] + b[3]);
-		_.push('vborder', b[0] + b[2]);
-
-		_.push('padding_top', p[0] + b[0]);
-		_.push('padding_right', p[1] + b[1]);
-		_.push('padding_bottom', p[2] + b[2]);
-		_.push('padding_left', p[3] + b[3]);
-		_.push('hpadding', p[1] + p[3] + b[1] + b[3]);
-		_.push('vpadding', p[0] + p[2] + b[0] + b[2]);
-
+		_.set({
+			border_top:b[0],
+			border_right:b[1],
+			border_bottom:b[2],
+			border_left:b[3],
+			hborder:b[1] + b[3],
+			vborder:b[0] + b[2],
+			padding_top:p[0] + b[0],
+			padding_right:p[1] + b[1],
+			padding_bottom:p[2] + b[2],
+			padding_left:p[3] + b[3],
+			hpadding:p[1] + p[3] + b[1] + b[3],
+			vpadding:p[0] + p[2] + b[0] + b[2]
+		});	
+		
+		
 		if (_.get('shadow')) {
 			_.push('shadow', {
 				color : _.get('shadow_color'),
@@ -242,12 +258,12 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		}
 		
 		_.push('fontStyle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
-		_.push('f_color', bg);
 		
+		_.push('f_color', bg);
 		_.push("light_color", iChart.light(bg, f));
 		_.push("dark_color", iChart.dark(bg, f));
 		_.push("light_color2", iChart.light(bg, f * 2));
-		_.push("dark_color2", iChart.dark(bg, f) * 2);
+		_.push("dark_color2", iChart.dark(bg, f* 2) );
 		
 		_.id = _.get('id');
 		
