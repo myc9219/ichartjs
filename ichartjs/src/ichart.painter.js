@@ -179,8 +179,11 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		return this.dimension == iChart._3D;
 	},
 	applyGradient:function(x,y,w,h){
-		if(this.get('gradient'))
+		if(this.get('gradient')){
 			this.push('f_color', this.T.gradient(x||this.x||0,y||this.y||0,w||this.get('width'),h||this.get('height'),[this.get('dark_color'), this.get('light_color')],this.get('gradient_mode')));
+			this.push('light_color', this.T.gradient(x||this.x||0,y||this.y||0,w||this.get('width'),h||this.get('height'),[this.get('background_color'), this.get('light_color')],this.get('gradient_mode')));
+			this.push('f_color_',this.get('f_color'));
+		}
 	},
 	/**
 	 * @method The commnd fire to draw the chart use configuration,this is a abstract method.Currently known,both <link>iChart.Chart</link> and <link>iChart.Component</link> implement this method.
@@ -260,10 +263,10 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		_.push('fontStyle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
 		
 		_.push('f_color', bg);
+		_.push('f_color_', bg);
 		_.push("light_color", iChart.light(bg, f));
-		_.push("dark_color", iChart.dark(bg, f));
+		_.push("dark_color", iChart.dark(bg, f*0.8));
 		_.push("light_color2", iChart.light(bg, f * 2));
-		_.push("dark_color2", iChart.dark(bg, f* 2) );
 		
 		_.id = _.get('id');
 		

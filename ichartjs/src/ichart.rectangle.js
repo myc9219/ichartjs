@@ -122,7 +122,7 @@
 			});
 			
 			_.on('beforedraw',function(){
-				_.push('f_color',v.highlight?_.get('light_color'):_.get('background_color'));
+				_.push('f_color',v.highlight?_.get('light_color'):_.get('f_color_'));
 				return true;
 			});
 		}
