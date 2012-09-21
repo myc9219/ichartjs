@@ -1,5 +1,5 @@
 /**
- * ichartjs Library v1.0 http://www.ichartjs.cn/
+ * ichartjs Library v1.0 http://www.ichartjs.com/
  * 
  * @author wanghe
  * @Copyright 2012 

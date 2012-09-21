@@ -227,7 +227,7 @@
 				layerPaint.call(this, x, y, a, b, s, e, ccw, h, c);
 
 				/**
-				 * paint top layer var g = this.avgRadialGradient(x,y,0,x,y,a,[$.light(c,0.1),$.dark(c,0.05)]);
+				 * paint top layer
 				 */
 				this.ellipse(x, y, a, b, s, e, c, bo, bow, boc, false, ccw, true);
 				/**
@@ -297,6 +297,38 @@
 			this.c.shadowColor = 'white';
 			this.c.shadowBlur = this.c.shadowOffsetX = this.c.shadowOffsetY = 0;
 			return this;
+		},
+		gradient : function(x, y, w, h, c,m) {
+			m = m.toLowerCase();
+			var x0=x,y0=y,f=!m.indexOf("linear");
+			m = m.substring(14);
+			if(f){
+				switch(m)
+			   　　{
+			　　   case 'updown':
+			 　　    y0+=h;
+			 　　    break;
+			　　   case 'downup':
+			　　    y+=h;
+			　　     break;
+			   	 case 'leftright':
+			 　　    x0+=w;
+			 　　    break;
+			　　   case 'rightleft':
+				  x+=w;
+			　　     break;
+			　　   default:
+			　　     return c[0];
+			　　   }
+				return this.avgLinearGradient(x,y,x0,y0,c);
+			}else{
+				x+=w/2;
+				y+=h/2;
+				if(m=='outin'){
+					c.reverse();
+				}
+				return this.avgRadialGradient(x,y,0,x,y,(w>h?h:w)*0.8,c);
+			}
 		},
 		avgLinearGradient : function(xs, ys, xe, ye, c) {
 			var g = this.createLinearGradient(xs, ys, xe, ye);
@@ -606,27 +638,28 @@
 				r = (!f || r == 0 || r == '0') ? 0 : $.parsePadding(r);
 			}
 			
-			this.save().translate(x, y).shadowOn(shadow).gCo(last).fillStyle(bg).strokeStyle(f,j, c);
+			this.save().shadowOn(shadow).gCo(last).fillStyle(bg).strokeStyle(f,j, c);
 
 			/**
 			 * draw a round corners border
 			 */
 			if (r) {
-				this.beginPath().moveTo(r[0], fd(j, 0)).lineTo(w - r[1], fd(j, 0)).arc2(w, fd(j, 0), w, r[1], r[1]).lineTo(fd(j, w), h - r[2]).arc2(fd(j, w), h, w - r[2], h, r[2]).lineTo(r[3], fd(j, h)).arc2(0, fd(j, h), 0, h - r[3], r[3]).lineTo(fd(j, 0), r[0]).arc2(fd(j, 0),
-						0, r[0], 0, r[0]).closePath().fill(bg).stroke(j);
+				
+				this.beginPath().moveTo(x+r[0], fd(j, y)).lineTo(x+w - r[1], fd(j, y)).arc2(x+w, fd(j, y), x+w, y+r[1], r[1]).lineTo(fd(j, x+w), y+h - r[2]).arc2(fd(j, x+w), y+h, x+w - r[2], y+h, r[2]).lineTo(x+r[3], fd(j, y+h)).arc2(x, fd(j, y+h), x, y+h - r[3], r[3]).lineTo(fd(j,x), y+r[0]).arc2(fd(j,x),
+						y, x+r[0], y, r[0]).closePath().fill(bg).stroke(j);
 			} else {
 				if (!b.enable || f) {
 					if (b.enable)
-						this.c.strokeRect(0, 0, fd(j, w), fd(j, h));
+						this.c.strokeRect(x, y, fd(j, w), fd(j, h));
 					if (bg)
-						this.fillRect(0, 0, w, h);
+						this.fillRect(x, y, w, h);
 				} else {
 					if (bg) {
-						this.beginPath().moveTo(floor(j[3] / 2), floor(j[0] / 2)).lineTo(ceil(w - j[1] / 2), j[0] / 2).lineTo(ceil(w - j[1] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), ceil(h - j[2] / 2)).lineTo(floor(j[3] / 2), floor(j[0] / 2)).closePath().fill(true);
+						this.beginPath().moveTo(floor(x+j[3] / 2), floor(y+j[0] / 2)).lineTo(ceil(x+w - j[1] / 2), y+j[0] / 2).lineTo(ceil(x+w - j[1] / 2), ceil(y+h - j[2] / 2)).lineTo(floor(x+j[3] / 2), ceil(y+h - j[2] / 2)).lineTo(floor(x+j[3] / 2), floor(y+j[0] / 2)).closePath().fill(bg);
 					}
 					if (j) {
 						c = $.isArray(c) ? c : [c, c, c, c];
-						this.line(w, j[0] / 2, w, h - j[0] / 2, j[1], c[1], 0).line(0, j[0] / 2, 0, h - j[0] / 2, j[3], c[3], 0).line(floor(-j[3] / 2), 0, w + j[1] / 2, 0, j[0], c[0], 0).line(floor(-j[3] / 2), h, w + j[1] / 2, h, j[2], c[2], 0);
+						this.line(x+w, y+j[0] / 2, x+w, y+h - j[0] / 2, j[1], c[1], 0).line(x, y+j[0] / 2, x, y+h - j[0] / 2, j[3], c[3], 0).line(floor(x-j[3] / 2),y, x+w + j[1] / 2, y, j[0], c[0], 0).line(floor(x-j[3] / 2), y+h, x+w + j[1] / 2, y+h, j[2], c[2], 0);
 					}
 				}
 
@@ -744,14 +777,14 @@
 					height : 20
 				},
 				/**
-				 * @cfg {String} Specifies how align footnote horizontally Available value are:
+				 * @inner {String} Specifies how align footnote horizontally Available value are:
 				 * @Option 'left'
 				 * @Option 'center'
 				 * @Option 'right'
 				 */
 				footnote_align : 'right',
 				/**
-				 * @cfg {String} Specifies how align title horizontally Available value are:
+				 * @inner {String} Specifies how align title horizontally Available value are:
 				 * @Option 'left'
 				 * @Option 'center'
 				 * @Option 'right'
@@ -784,6 +817,9 @@
 				 * @cfg {Number} Specifies the duration when animation complete in millisecond.(default to 1000)
 				 */
 				duration_animation_duration : 1000,
+				/**
+				 * @cfg {Number} Specifies the chart's z_index.override the default as 999 to make it at top layer.(default to 999)
+				 */
 				z_index:999,
 				/**
 				 * @cfg {Object}Specifies the config of Legend.For details see <link>iChart.Legend</link> Note:this has a extra property named 'enable',indicate whether legend available(default to false)
@@ -985,7 +1021,9 @@
 				time : 0,
 				queue : []
 			};
-
+			
+			_.applyGradient();
+			
 			_.animationArithmetic = $.getAnimationArithmetic(_.get('animation_timing_function'));
 
 			_.on('afterAnimation', function() {

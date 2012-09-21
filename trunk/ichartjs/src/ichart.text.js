@@ -97,6 +97,7 @@
 			_.push('texty',y);
 			_.push('box_feature',w&&h);
 			
+			_.applyGradient();
 			
 		}
 });//@end
