@@ -171,7 +171,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		});
 		
 		_.on('beforedraw', function() {
-			_.push('f_color',v.highlight?_.get('light_color'):_.get('background_color'));
+			_.push('f_color',v.highlight?_.get('light_color'):_.get('f_color_'));
 			_.x = _.get('originx');
 			_.y = _.get('originy');
 			if (v.status != _.expanded) {

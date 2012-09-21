@@ -67,7 +67,7 @@
 			        	{name : 'Opera',value : 2.02,color:'#778088'},
 			        	{name : 'Other',value : 0.73,color:'#6f83a5'}
 		        	];
-			var chart = new iChart.Column2D({
+			var chart = new iChart.Pie2D({
 				render : 'canvasDiv',
 				data: data,
 				title :{
@@ -79,7 +79,7 @@
 				legend : {
 					enable : true
 				},
-				color_factor:0.26,
+				color_factor:0.2,
 				/**
 				 * @cfg {String} Specifies the gradient mode of background.(defaults to 'LinearGradientUpDown')
 				 * @Option 'LinearGradientUpDown'
@@ -89,16 +89,18 @@
 				 * @Option 'RadialGradientOutIn'
 				 * @Option 'RadialGradientInOut'
 				 */
-				gradient_mode:'RadialGradientOutIn',
+				gradient_mode:'LinearGradientDownUp',
 				coordinate : {
 					//background_color:'rgba(205,205,205,0.4)'
 					background_color:null,
 					gradient:true,
-					gradient_mode:'LinearGradientUpDown'
+					gradient_mode:'LinearGradientDownUp'
 				},
-				rectangle : {
+				sector : {
 					gradient:true,
-					gradient_mode:'LinearGradientUpDown'
+					color_factor:0.2,
+					gradient_mode:'RadialGradientInOut',
+					shadow:true
 				},
 				background_color:'#CDCDCD',
 				gradient:true,

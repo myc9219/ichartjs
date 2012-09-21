@@ -72,9 +72,7 @@
 				_.push('donutwidth',0);
 			}
 			
-			if(_.get('gradient')){
-				_.push('f_color',_.T.avgRadialGradient(_.x,_.y,0,_.x,_.y,_.r,[_.get('light_color'),_.get('dark_color')]));
-			}
+			_.applyGradient(_.x-_.r,_.y-_.r,2*_.r,2*_.r);
 			
 			_.pushIf('increment',iChart.lowTo(5,_.r/10));
 			
