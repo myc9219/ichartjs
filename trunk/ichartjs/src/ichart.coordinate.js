@@ -919,4 +919,8 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 		}
 
 	}
-});// @end
+});
+/*
+ * @end
+ */
+

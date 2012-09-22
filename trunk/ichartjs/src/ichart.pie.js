@@ -34,9 +34,13 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			counterclockwise : false,
 			/**
-			 * @inner {Boolean} 当与其他label有位置冲突时自动浮动其位置.(default to true).
+			 * @cfg {Boolean} 当与其他label有位置冲突时自动浮动其位置.(default to true).
 			 */
 			intellectLayout : true,
+			/**
+			 * @cfg {Number} Specifies the distance in pixels when two label is incompatible with each other.(default 8),
+			 */
+			layout_distance : 8,
 			/**
 			 * @inner {Boolean} if it has animate when a piece popd (default to false)
 			 */
@@ -133,6 +137,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		}
 	},
 	localizer : function(la) {
+		var d = this.get('layout_distance');
 		/**
 		 * the code not optimization,need to enhance so that the label can fit the continar
 		 */
@@ -141,17 +146,17 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			if ((la.labely <= y && (y - la.labely) < la.get('height')) || (la.labely > y && (la.labely - y) < l.get('height'))) {
 				if ((la.labelx < x && (x - la.labelx) < la.get('width')) || (la.labelx > x && (la.labelx - x) < l.get('width'))) {
 					var q = la.get('quadrantd');
-					if ((q == 2 || q == 3)) {
+					if ((q == 1 || q == 2)) {
 						/**
 						 * console.log('upper..'+la.get('text')+'==='+l.get('text'));
 						 */
-						la.push('labely', la.get('labely') - la.get('height') + y - la.labely - 2);
+						la.push('labely', la.get('labely') - la.get('height') + y - la.labely - d);
 						la.push('line_potins', la.get('line_potins').concat(la.get('labelx'), la.get('labely')));
 					} else {
 						/**
 						 * console.log('lower..'+la.get('text')+'==='+l.get('text'));
 						 */
-						la.push('labely', la.get('labely') + l.get('height') - la.labely + y + 2);
+						la.push('labely', la.get('labely') + l.get('height') - la.labely + y + d);
 						la.push('line_potins', la.get('line_potins').concat(la.get('labelx'), la.get('labely')));
 					}
 					la.localizer();

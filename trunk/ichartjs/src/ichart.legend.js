@@ -61,7 +61,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			 */
 			legend_space : 5,
 			
-			z_index : 1000,
+			z_index : 1009,
 			/**
 			 * @cfg {Boolean} If true the text's color will accord with sign's.(default to false)
 			 */

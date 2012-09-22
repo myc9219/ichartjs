@@ -182,11 +182,16 @@
 		},
 		sector3D : function() {
 			var x0, y0, sPaint = function(x, y, a, b, s, e, ccw, h, c) {
+				var q1 = $.quadrantd(s),q2 = $.quadrantd(e);
+				if((q1==2||q1==3)&&(q2==2||q2==3))return;
+				
 				var Lo = function(A, h) {
 					this.lineTo(x + a * cos(A), y + (h || 0) + (ccw ? (-b * sin(A)) : (b * sin(A))));
 				};
+				
 				s = ccw && e > PI && s < PI ? PI : s;
 				e = !ccw && s < PI && e > PI ? PI : e;
+				
 				var angle = s;
 				this.fillStyle($.dark(c)).moveTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).beginPath();
 				while (angle <= e) {

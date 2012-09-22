@@ -80,8 +80,8 @@ iChart.Label = iChart.extend(iChart.Component, {
 	},
 	localizer:function(){
 		var Q =  this.get('quadrantd');
-		this.labelx = (Q>=2&&Q<=3)?(this.get('labelx') - this.get('width')):this.get('labelx');
-        this.labely = Q>=3?(this.get('labely') - this.get('height')):this.get('labely');
+		this.labelx = (Q>=1&&Q<=2)?(this.get('labelx') - this.get('width')):this.get('labelx');
+        this.labely = Q>=2?(this.get('labely') - this.get('height')):this.get('labely');
 	},
 	doDraw : function() {
 		var _ = this._();
