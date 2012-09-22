@@ -99,43 +99,40 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		this.ignored_ = false;
 	},
 	drawSegment : function() {
-		this.T.shadowOn(this.get('shadow'));
-		var p = this.get('points'),b=this.get('f_color'),h=this.get('brushsize');
-		if (this.get('area')) {
-			var polygons = [this.x, this.y];
-			for ( var i = 0; i < p.length; i++) {
-				polygons.push(p[i].x);
-				polygons.push(p[i].y);
-			}
-			polygons.push(this.x + this.get('width'));
-			polygons.push(this.y);
-			var bg = this.get('light_color');
+		var _ = this._(),p = _.get('points'),b=_.get('f_color'),h=_.get('brushsize');
+		_.T.shadowOn(_.get('shadow'));
+		if (_.get('area')) {
+			var polygons = [_.x, _.y];
+			p.each(function(q){
+				polygons.push(q.x);
+				polygons.push(q.y);
+			});
 			
-			if (this.get('gradient')) {
-				bg = this.T.avgLinearGradient(this.x, this.y - this.get('height'), this.x, this.y, [this.get('light_color2'), bg]);
-			}
-			this.T.polygon(bg, false, 1, '', false,this.get('area_opacity'), polygons);
+			polygons.push(_.x + _.get('width'));
+			polygons.push(_.y);
+			
+			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'), polygons);
 		}
 		
-		this.T[this.ignored_?"manyLine":"lineArray"](p,h, b, this.get('smooth'), this.get('smoothing'));
+		_.T[_.ignored_?"manyLine":"lineArray"](p,h, b, _.get('smooth'), _.get('smoothing'));
 		
-		if (this.get('intersection')) {
-			var f = this.getPlugin('sign'),s=this.get('point_size'),j=this.get('hollow_color');
+		if (_.get('intersection')) {
+			var f = _.getPlugin('sign'),s=_.get('point_size'),j=_.get('hollow_color');
 			p.each(function(q,i){
 				if(!q.ignored){
-					if(!f||!f.call(this,this.T,this.get('sign'),q.x, q.y,s,b)){
-						if (this.get('hollow')) {
-							this.T.round(q.x, q.y, s*3/8,this.get('hollow_color'),s/4,b);
+					if(!f||!f.call(_,_.T,_.get('sign'),q.x, q.y,s,b)){
+						if (_.get('hollow')) {
+							_.T.round(q.x, q.y, s*3/8,_.get('hollow_color'),s/4,b);
 						} else {
-							this.T.round(q.x, q.y, s/2,b);
+							_.T.round(q.x, q.y, s/2,b);
 						}
 					}
 				}
-			},this);
+			},_);
 		}
 
-		if (this.get('shadow')) {
-			this.T.shadowOff();
+		if (_.get('shadow')) {
+			_.T.shadowOff();
 		}
 	},
 	doDraw : function(opts) {

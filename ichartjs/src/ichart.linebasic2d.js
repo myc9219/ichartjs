@@ -48,7 +48,6 @@
 					}]
 				},_.get('coordinate')),_);
 			
-			
 			_.components.push(_.coo);
 			
 			//get the max/min scale of this coordinate for calculated the height
@@ -56,14 +55,14 @@
 				H=_.get('coordinate.valid_height'),
 				sp=_.get('label_spacing'),
 				points,x,y,
-				ox=_.get('segment_style.originx'),
-				oy=_.get('segment_style.originy'),
+				ox=_.get('segment.originx'),
+				oy=_.get('segment.originy'),
 				p;
 			
-			_.push('segment_style.tip.showType','follow');
-			_.push('segment_style.coordinate',_.coo);
-			_.push('segment_style.tipInvokeHeap',_.tipInvokeHeap);
-			_.push('segment_style.point_space',sp);
+			_.push('segment.tip.showType','follow');
+			_.push('segment.coordinate',_.coo);
+			_.push('segment.tipInvokeHeap',_.tipInvokeHeap);
+			_.push('segment.point_space',sp);
 			
 			_.data.each(function(d,i){
 				points = [];
@@ -77,11 +76,11 @@
 					points.push(p);
 				},_);	
 				
-				_.push('segment_style.points',points);
-				_.push('segment_style.brushsize',d.linewidth||1);
-				_.push('segment_style.background_color',d.color);
+				_.push('segment.points',points);
+				_.push('segment.brushsize',d.linewidth||1);
+				_.push('segment.background_color',d.color);
 				
-				_.lines.push(new iChart.LineSegment(_.get('segment_style'),_));
+				_.lines.push(new iChart.LineSegment(_.get('segment'),_));
 			},this);
 			_.components.push(_.lines);
 			

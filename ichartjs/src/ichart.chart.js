@@ -551,7 +551,7 @@
 			for ( var i = 2; i < points.length; i += 2) {
 				this.lineTo(points[i], points[i + 1]);
 			}
-			return this.closePath().stroke(b).fill(true).restore();
+			return this.closePath().stroke(b).fill(bg).restore();
 		},
 		lines : function(p, w, c, last) {
 			if (p.length < 4)

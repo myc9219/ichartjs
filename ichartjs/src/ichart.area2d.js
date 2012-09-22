@@ -27,9 +27,7 @@
 			/**
 			 * must apply the area's config before 
 			 */
-			this.push('segment_style.area',true);
-			this.push('segment_style.area_opacity',this.get('area_opacity'));
-			
+			this.push('segment.area',true);
 			iChart.Area2D.superclass.doConfig.call(this);
 			
 			

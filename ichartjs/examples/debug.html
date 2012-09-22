@@ -54,40 +54,49 @@
 		}
 	</style>
 	<script type="text/javascript">
-	$(function(){
-		var data = [
-		        	{name : 'Chrome',value : 8.26,color:'#76a871'},
-		        	{name : 'Firefox',value : 4.06,color:'#9f7961'},
-		        	{name : 'Maxthon',value : 2.78,color:'#a56f8f'},
-		        	{name : 'Other',value : 3.79,color:'#bd355e'},
-					{name : '360 Browser',value : 26.55,color:'#cbab4f'},
-					{name : 'IE',value : 52.20,color:'#a5c2d5'},
-		        	{name : 'Safari',value : 2.35,color:'#db9034'}
-	        	];
-    	
-		new iChart.Pie3D({
-			render : 'canvasDiv',
-			data: data,
-			title : '2012年7月份中国浏览器市场占有率Top6',
-			footnote : 'Data from StatCounter',
-			legend : {
-				enable : true,
-				align : 'center',
-				valign : 'bottom',
-				row:1,
-				column:'max',
-				border:{
-					enable : false
-				}
-			},
-			showpercent:true,
-			yHeight:60,
-			decimalsnum:2,
-			radius:180,
-			width : 800,
-			height : 500
-		}).draw();
-	});
+	var data = [
+	         	{
+	         		name : '北京',
+	         		value:[2,12,14,20,28,32,34,36,33,24,14,4],
+	         		color:'#c0abf1'
+	         	}
+         ];	
+         
+		var data_labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+		
+		$(function(){
+			new iChart.Area2D({
+					render : 'canvasDiv',
+					data: data,
+					title : 'Average Temperature Of 2012',
+					width : 800,
+					height : 400,
+					legend : {
+						enable : true
+					},
+					tip:{
+						enable : true
+					},
+					listeners:{
+						parseTipText:function(d,t,i){
+							return data_labels[i]+"平均温度:"+t+"℃";
+						}
+					},
+					coordinate:{
+						scale:[{
+							 position:'left',	
+							 start_scale:0,
+							 end_scale:40,
+							 scale_space:5,
+							 listeners:{
+								parseText:function(t,x,y){
+									return {text:t+"℃"}
+								}
+							}
+						}]
+					}
+				}).draw();
+		});
 		
 	</script>
 	</head>
