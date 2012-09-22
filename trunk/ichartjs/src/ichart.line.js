@@ -64,7 +64,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 * @cfg {Object} the option for linesegment.
 			 * For details see <link>iChart.LineSegment</link>
 			 */
-			segment_style : {},
+			segment : {},
 			/**
 			 * {Object} the option for legend.
 			 */
@@ -114,20 +114,20 @@ iChart.Line = iChart.extend(iChart.Chart, {
 
 		if (_.get('proportional_spacing'))
 			_.push('label_spacing', _.get('coordinate.valid_width') / (_.get('maxItemSize') - 1));
-
-		_.push('segment_style.originx', _.get('originx') + _.get('line_start'));
+		
+		_.push('segment.originx', _.get('originx') + _.get('line_start'));
 
 		/**
 		 * y also has line_start and line end
 		 */
-		_.push('segment_style.originy', _.get('originy') + _.get('coordinate.height'));
+		_.push('segment.originy', _.get('originy') + _.get('coordinate.height'));
 
-		_.push('segment_style.width', _.get('coordinate.valid_width'));
-		_.push('segment_style.height', _.get('coordinate.valid_height'));
+		_.push('segment.width', _.get('coordinate.valid_width'));
+		_.push('segment.height', _.get('coordinate.valid_height'));
 
-		_.push('segment_style.limit_y', !s);
+		_.push('segment.limit_y', !s);
 
-		_.pushIf('segment_style.keep_with_coordinate', s);
+		_.pushIf('segment.keep_with_coordinate', s);
 
 		
 		if(_.get('crosshair.enable')){
@@ -146,8 +146,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		/**
 		 * quick config to all linesegment
 		 */
-		iChart.applyIf(_.get('segment_style'), iChart.clone(_.get('communal_option'), _.options));
-		
+		iChart.applyIf(_.get('segment'), iChart.clone(_.get('communal_option').concat('area_opacity'), _.options));
 	}
 
 });// @end

@@ -6663,7 +6663,7 @@ $.Line = $.extend($.Chart, {
 			 * @cfg {Object} the option for linesegment.
 			 * For details see <link>$.LineSegment</link>
 			 */
-			segment_style : {},
+			segment : {},
 			/**
 			 * {Object} the option for legend.
 			 */
@@ -6714,19 +6714,19 @@ $.Line = $.extend($.Chart, {
 		if (_.get('proportional_spacing'))
 			_.push('label_spacing', _.get('coordinate.valid_width') / (_.get('maxItemSize') - 1));
 
-		_.push('segment_style.originx', _.get('originx') + _.get('line_start'));
+		_.push('segment.originx', _.get('originx') + _.get('line_start'));
 
 		/**
 		 * y also has line_start and line end
 		 */
-		_.push('segment_style.originy', _.get('originy') + _.get('coordinate.height'));
+		_.push('segment.originy', _.get('originy') + _.get('coordinate.height'));
 
-		_.push('segment_style.width', _.get('coordinate.valid_width'));
-		_.push('segment_style.height', _.get('coordinate.valid_height'));
+		_.push('segment.width', _.get('coordinate.valid_width'));
+		_.push('segment.height', _.get('coordinate.valid_height'));
 
-		_.push('segment_style.limit_y', !s);
+		_.push('segment.limit_y', !s);
 
-		_.pushIf('segment_style.keep_with_coordinate', s);
+		_.pushIf('segment.keep_with_coordinate', s);
 
 		
 		if(_.get('crosshair.enable')){
@@ -6745,7 +6745,7 @@ $.Line = $.extend($.Chart, {
 		/**
 		 * quick config to all linesegment
 		 */
-		$.applyIf(_.get('segment_style'), $.clone(_.get('communal_option'), _.options));
+		$.applyIf(_.get('segment'), $.clone(_.get('communal_option'), _.options));
 		
 	}
 
@@ -6809,14 +6809,14 @@ $.Line = $.extend($.Chart, {
 				H=_.get('coordinate.valid_height'),
 				sp=_.get('label_spacing'),
 				points,x,y,
-				ox=_.get('segment_style.originx'),
-				oy=_.get('segment_style.originy'),
+				ox=_.get('segment.originx'),
+				oy=_.get('segment.originy'),
 				p;
 			
-			_.push('segment_style.tip.showType','follow');
-			_.push('segment_style.coordinate',_.coo);
-			_.push('segment_style.tipInvokeHeap',_.tipInvokeHeap);
-			_.push('segment_style.point_space',sp);
+			_.push('segment.tip.showType','follow');
+			_.push('segment.coordinate',_.coo);
+			_.push('segment.tipInvokeHeap',_.tipInvokeHeap);
+			_.push('segment.point_space',sp);
 			
 			_.data.each(function(d,i){
 				points = [];
@@ -6830,11 +6830,11 @@ $.Line = $.extend($.Chart, {
 					points.push(p);
 				},_);	
 				
-				_.push('segment_style.points',points);
-				_.push('segment_style.brushsize',d.linewidth||1);
-				_.push('segment_style.background_color',d.color);
+				_.push('segment.points',points);
+				_.push('segment.brushsize',d.linewidth||1);
+				_.push('segment.background_color',d.color);
 				
-				_.lines.push(new $.LineSegment(_.get('segment_style'),_));
+				_.lines.push(new $.LineSegment(_.get('segment'),_));
 			},this);
 			_.components.push(_.lines);
 			
@@ -6870,8 +6870,8 @@ $.Line = $.extend($.Chart, {
 			/**
 			 * must apply the area's config before 
 			 */
-			this.push('segment_style.area',true);
-			this.push('segment_style.area_opacity',this.get('area_opacity'));
+			this.push('segment.area',true);
+			this.push('segment.area_opacity',this.get('area_opacity'));
 			
 			$.Area2D.superclass.doConfig.call(this);
 			

@@ -1,6 +1,6 @@
 //expect next
 1.return the postion of component's important item*
-2.背景渐变*
+2.继续压缩代码*
 3.将有5个以上的push方法修改为set*
 4.整合文件，抽象出核心包，将必引入包整合到一起。
 5.考虑插件式开发架构接口设计
