@@ -605,10 +605,6 @@
 			distanceP2P : function(x1, y1, x2, y2) {
 				return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 			},
-			/**
-			 * the angle of two line that two point and x-axis positive direction,anticlockwise atanToAngle:function(ox,oy,x,y){ if(ox==x){ if(y>oy)return 90; return 270; } var quadrant = _.quadrant(ox,oy,x,y); var angle = _.radian2Angle(atan(abs((oy-y)/(ox-x))));
-			 * if(quadrant==1){ angle = 180 - angle; }else if(quadrant==2){ angle = 180 + angle; }else if(quadrant==3){ angle = 360 - angle; } return angle; },
-			 */
 			atan2Radian : function(ox, oy, x, y) {
 				if (ox == x) {
 					if (y > oy)
@@ -651,7 +647,9 @@
 				}
 			},
 			quadrantd : function(a) {
-				return ceil(2 * (a % (pi * 2)) / pi);
+				if(a==0)return 0;
+				if(a % pi2==0)return 3;
+				return ceil(2 * (a % pi2) / pi)-1;
 			},
 			upTo : function(u, v) {
 				return v > u ? u : v;

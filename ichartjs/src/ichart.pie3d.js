@@ -48,28 +48,37 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 			_.doParse(d, i);
 		}, _);
 
-	_.components.push(_.sectors);
+	
+	var layer = [],L=[],PI = Math.PI,PI2=PI*2,a = PI/2,b = PI*1.5,c = _.get('counterclockwise'),
+	abs = function(n,f){
+		n = Math.abs(n-f);
+		return n>PI?PI2-n:n;
+	},t='startAngle',d='endAngle';
+	
 	
 	_.proxy = new iChart.Custom({
-			z_index:_.get('z_index'),
+			z_index:_.get('z_index')+1,
 			drawFn : function() {
 				this.drawSector();
 				/**
 				 * draw the labels
 				 */
 				if (_.get('label.enable')) {
-					_.sectors.each(function(s, i) {
-						s.label.draw();
-					}, _);
+					L=[];
+					_.sectors.each(function(s) {
+						if(s.expanded){
+							L.push(s.label);
+						}else{
+							s.label.draw();
+						}
+					});
+					L.each(function(l) {
+						l.draw();
+					});
+					
 				}
 			}
 	});
-	
-	var layer = [],PI = Math.PI,PI2=PI*2,a = PI/2,b = PI*1.5,c = _.get('counterclockwise'),
-		abs = function(n,f){
-			n = Math.abs(n-f);
-			return n>PI?PI2-n:n;
-		},t='startAngle',d='endAngle';
 	
 	_.proxy.drawSector = function(){
 		/**
@@ -85,34 +94,37 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		 * sort layer
 		 */
 		_.sectors.each(function(f, i) {
+			f.sPaint = false;
 			s = f.get(t);e = f.get(d),fc = $.dark(f.get('background_color'));
 			if(c ? (s < a || s > b) : (s > a && s < b)){
-				layer.push({g:s,x:f.x,y:f.y,a:f.a,b:f.b,color:fc,h:f.h});
+				layer.push({g:s,x:f.x,y:f.y,a:f.a,b:f.b,color:fc,h:f.h,F:f});
 			}
 			if(c ? (e > a && e < b) : (e < a || e > b)){
-				layer.push({g:e,x:f.x,y:f.y,a:f.a,b:f.b,color:fc,h:f.h});
+				layer.push({g:e,x:f.x,y:f.y,a:f.a,b:f.b,color:fc,h:f.h,F:f});
 			}
 		}, _);
+		
 		/**
 		 * realtime sort
 		 */
-		layer.sor(function(p, q){return abs(p.g,b) - abs(q.g,b)});
+		layer.sor(function(p, q){return ((abs(p.g,b) - abs(q.g,b))>0)});
+		
 		/**
 		 * paint inside layer
 		 */
 		layer.each(function(f, i) {
-			_.T.sector3D.layerDraw.call(_.T, f.x, f.y, f.a, f.b, c, f.h, f.g, f.color);
+			_.T.sector3D.layerDraw.call(_.T, f.x, f.y, f.a+0.5, f.b+0.5, c, f.h, f.g, f.color);
+			if(!f.F.sPaint){
+				_.T.sector3D.sPaint.call(_.T, f.F.x, f.F.y, f.F.a, f.F.b, f.F.get(t), f.F.get(d), false, f.F.h, f.color);
+				f.F.sPaint = true;
+			}
 		}, _);
-		
-		/**
-		 * realtime sort outside layer
-		 */
-		_.sectors.sor(function(p, q){return abs(q.get(t),a)-abs(p.get(t),a)});
 		
 		/**
 		 * paint outside layer
 		 */
 		_.sectors.each(function(s, i) {
+			if(!s.sPaint)
 			_.T.sector3D.sPaint.call(_.T, s.x, s.y, s.a, s.b, s.get(t), s.get(d), false, s.h, s.get('f_color'));
 		}, _);
 		
@@ -123,6 +135,8 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 			_.T.ellipse(s.x, s.y, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, false, true);
 		}, _);
 	}
+	
+	_.components.push(_.sectors);
 	_.components.push(_.proxy);
 }
 });// @end

@@ -54,64 +54,40 @@
 		}
 	</style>
 	<script type="text/javascript">
-		hex2Rgb = function(hex) {
-			hex = hex.replace(/#/g, "").replace(/^(\w)(\w)(\w)$/, "$1$1$2$2$3$3");
-			return 'rgb(' + parseInt(hex.substring(0, 2), 16) + ',' + parseInt(hex.substring(2, 4), 16) + ',' + parseInt(hex.substring(4, 6), 16) + ')';
-		}
-		$(function(){
-			var data = [
-			        	{name : 'IE',value : 35.75,color:'rgb(157,74,74)'},
-			        	{name : 'Chrome',value : 29.84,color:'#5d7f97'},
-			        	{name : 'Firefox',value : 24.88,color:'#97b3bc'},
-			        	{name : 'Safari',value : 6.77,color:'#a5aaaa'},
-			        	{name : 'Opera',value : 2.02,color:'#778088'},
-			        	{name : 'Other',value : 0.73,color:'#6f83a5'}
-		        	];
-			var chart = new iChart.Pie2D({
-				render : 'canvasDiv',
-				data: data,
-				title :{
-					text: 'Top 5 Browsers from 1 to 29 Feb 2012',
-					gradient:true,
-					gradient_mode:'LinearGradientUpDown',
-					background_color:'#5d7f97',
-				},
-				legend : {
-					enable : true
-				},
-				color_factor:0.2,
-				/**
-				 * @cfg {String} Specifies the gradient mode of background.(defaults to 'LinearGradientUpDown')
-				 * @Option 'LinearGradientUpDown'
-				 * @Option 'LinearGradientDownUp'
-				 * @Option 'LinearGradientLeftRight'
-				 * @Option 'LinearGradientRightLeft'
-				 * @Option 'RadialGradientOutIn'
-				 * @Option 'RadialGradientInOut'
-				 */
-				gradient_mode:'LinearGradientDownUp',
-				coordinate : {
-					//background_color:'rgba(205,205,205,0.4)'
-					background_color:null,
-					gradient:true,
-					gradient_mode:'LinearGradientDownUp'
-				},
-				sector : {
-					gradient:true,
-					color_factor:0.2,
-					gradient_mode:'RadialGradientInOut',
-					shadow:true
-				},
-				background_color:'#CDCDCD',
-				gradient:true,
-				showpercent:true,
-				decimalsnum:2,
-				width : 800,
-				height : 440,
-				radius:140
-			});
-			chart.draw();
-		});
+	$(function(){
+		var data = [
+		        	{name : 'Chrome',value : 8.26,color:'#76a871'},
+		        	{name : 'Firefox',value : 4.06,color:'#9f7961'},
+		        	{name : 'Maxthon',value : 2.78,color:'#a56f8f'},
+		        	{name : 'Other',value : 3.79,color:'#bd355e'},
+					{name : '360 Browser',value : 26.55,color:'#cbab4f'},
+					{name : 'IE',value : 52.20,color:'#a5c2d5'},
+		        	{name : 'Safari',value : 2.35,color:'#db9034'}
+	        	];
+    	
+		new iChart.Pie3D({
+			render : 'canvasDiv',
+			data: data,
+			title : '2012年7月份中国浏览器市场占有率Top6',
+			footnote : 'Data from StatCounter',
+			legend : {
+				enable : true,
+				align : 'center',
+				valign : 'bottom',
+				row:1,
+				column:'max',
+				border:{
+					enable : false
+				}
+			},
+			showpercent:true,
+			yHeight:60,
+			decimalsnum:2,
+			radius:180,
+			width : 800,
+			height : 500
+		}).draw();
+	});
 		
 	</script>
 	</head>
