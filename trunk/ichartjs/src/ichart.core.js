@@ -2,11 +2,7 @@
  * ichartjs Library v1.0 http://www.ichartjs.com/
  * 
  * @author wanghe
- * @Copyright 2012 
- * wanghetommy@gmail.com 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * @Copyright 2012 wanghetommy@gmail.com Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 ;
 (function(window) {
@@ -804,57 +800,74 @@
 				/**
 				 * Fix event for mise
 				 */
-			if (typeof (e) == 'undefined') {
-				e = window.event;
-			}
-
-			/**
-			 * Fix target property, if necessary
-			 */
-			if (!e.target) {
-				e.target = e.srcElement || document;
-			}
-
-			/**
-			 * Calculate pageX/Y if missing and clientX/Y available
-			 */
-			if (e.pageX == null && e.clientX != null) {
-				var doc = document.documentElement, body = document.body;
-				e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
-				e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
-			}
-
-			/**
-			 * This is mainly for FF which doesn't provide offsetX
-			 */
-			if (typeof (e.offsetX) == 'undefined' && typeof (e.offsetY) == 'undefined') {
+				if (typeof (e) == 'undefined') {
+					e = window.event;
+				}
+				
+				var E = {
+						target:e.target,
+						pageX : e.pageX,
+						pageY : e.pageY,
+						clientX : e.clientX,
+						clientY : e.clientY,
+						offsetX : e.offsetX,
+						offsetY : e.offsetY,
+						preventDefault:e.preventDefault,
+						stopPropagation:e.stopPropagation
+					};
+				
 				/**
-				 * Browser not with offsetX and offsetY
+				 * Fix target property, if necessary
 				 */
-				if (typeof (e.offsetX) != 'number') {
-					var x = 0, y = 0, obj = e.target;
-					while (obj != document.body && obj) {
-						x += obj.offsetLeft;
-						y += obj.offsetTop;
-						obj = obj.offsetParent;
+				if (!e.target) {
+					E.target = e.srcElement || document;
+				}
+				
+				if(e.touches){
+					E.pageX = e.touches[0].pageX;
+					E.pageY = e.touches[0].pageY;
+				}
+				
+				/**
+				 * Calculate pageX/Y if missing and clientX/Y available
+				 */
+				if (E.pageX == null && e.clientX != null) {
+					var doc = document.documentElement, body = document.body;
+					E.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+					E.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
+				}
+				
+				/**
+				 * This is mainly for FF which doesn't provide offsetX
+				 */
+				if (typeof (e.offsetX) == 'undefined' && typeof (e.offsetY) == 'undefined') {
+					/**
+					 * Browser not with offsetX and offsetY
+					 */
+					if (typeof (e.offsetX) != 'number') {
+						var x = 0, y = 0, obj = e.target;
+						while (obj != document.body && obj) {
+							x += obj.offsetLeft;
+							y += obj.offsetTop;
+							obj = obj.offsetParent;
+						}
+						E.offsetX = E.pageX - x;
+						E.offsetY = E.pageY - y;
 					}
-					e.offsetX = e.pageX - x;
-					e.offsetY = e.pageY - y;
 				}
-			}
-
-			e.x = e.offsetX;
-			e.y = e.offsetY;
-
-			/**
-			 * Any browser that doesn't implement stopPropagation() (MSIE)
-			 */
-			if (!e.stopPropagation) {
-				e.stopPropagation = function() {
-					window.event.cancelBubble = true;
+				
+				E.x = E.offsetX;
+				E.y = E.offsetY;
+				/**
+				 * Any browser that doesn't implement stopPropagation() (MSIE)
+				 */
+				if (!E.stopPropagation) {
+					E.stopPropagation = function() {
+						window.event.cancelBubble = true;
+					}
 				}
-			}
-			return e;
+				
+				return E;
 		}
 		};
 		return _;

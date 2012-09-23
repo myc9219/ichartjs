@@ -2,11 +2,7 @@
  * ichartjs Library v1.0 http://www.ichartjs.com/
  * 
  * @author wanghe
- * @Copyright 2012 
- * wanghetommy@gmail.com 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * @Copyright 2012 wanghetommy@gmail.com Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 ;
 (function(window) {
@@ -804,57 +800,74 @@
 				/**
 				 * Fix event for mise
 				 */
-			if (typeof (e) == 'undefined') {
-				e = window.event;
-			}
-
-			/**
-			 * Fix target property, if necessary
-			 */
-			if (!e.target) {
-				e.target = e.srcElement || document;
-			}
-
-			/**
-			 * Calculate pageX/Y if missing and clientX/Y available
-			 */
-			if (e.pageX == null && e.clientX != null) {
-				var doc = document.documentElement, body = document.body;
-				e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
-				e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
-			}
-
-			/**
-			 * This is mainly for FF which doesn't provide offsetX
-			 */
-			if (typeof (e.offsetX) == 'undefined' && typeof (e.offsetY) == 'undefined') {
+				if (typeof (e) == 'undefined') {
+					e = window.event;
+				}
+				
+				var E = {
+						target:e.target,
+						pageX : e.pageX,
+						pageY : e.pageY,
+						clientX : e.clientX,
+						clientY : e.clientY,
+						offsetX : e.offsetX,
+						offsetY : e.offsetY,
+						preventDefault:e.preventDefault,
+						stopPropagation:e.stopPropagation
+					};
+				
 				/**
-				 * Browser not with offsetX and offsetY
+				 * Fix target property, if necessary
 				 */
-				if (typeof (e.offsetX) != 'number') {
-					var x = 0, y = 0, obj = e.target;
-					while (obj != document.body && obj) {
-						x += obj.offsetLeft;
-						y += obj.offsetTop;
-						obj = obj.offsetParent;
+				if (!e.target) {
+					E.target = e.srcElement || document;
+				}
+				
+				if(e.touches){
+					E.pageX = e.touches[0].pageX;
+					E.pageY = e.touches[0].pageY;
+				}
+				
+				/**
+				 * Calculate pageX/Y if missing and clientX/Y available
+				 */
+				if (E.pageX == null && e.clientX != null) {
+					var doc = document.documentElement, body = document.body;
+					E.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+					E.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
+				}
+				
+				/**
+				 * This is mainly for FF which doesn't provide offsetX
+				 */
+				if (typeof (e.offsetX) == 'undefined' && typeof (e.offsetY) == 'undefined') {
+					/**
+					 * Browser not with offsetX and offsetY
+					 */
+					if (typeof (e.offsetX) != 'number') {
+						var x = 0, y = 0, obj = e.target;
+						while (obj != document.body && obj) {
+							x += obj.offsetLeft;
+							y += obj.offsetTop;
+							obj = obj.offsetParent;
+						}
+						E.offsetX = E.pageX - x;
+						E.offsetY = E.pageY - y;
 					}
-					e.offsetX = e.pageX - x;
-					e.offsetY = e.pageY - y;
 				}
-			}
-
-			e.x = e.offsetX;
-			e.y = e.offsetY;
-
-			/**
-			 * Any browser that doesn't implement stopPropagation() (MSIE)
-			 */
-			if (!e.stopPropagation) {
-				e.stopPropagation = function() {
-					window.event.cancelBubble = true;
+				
+				E.x = E.offsetX;
+				E.y = E.offsetY;
+				/**
+				 * Any browser that doesn't implement stopPropagation() (MSIE)
+				 */
+				if (!E.stopPropagation) {
+					E.stopPropagation = function() {
+						window.event.cancelBubble = true;
+					}
 				}
-			}
-			return e;
+				
+				return E;
 		}
 		};
 		return _;
@@ -991,7 +1004,12 @@ $.Element = function(config) {
 	/**
 	 * the container of all events
 	 */
-	this.events = {};
+	this.events = {
+		'touchstart':[],
+		'touchmove':[],
+		'touchend':[]
+	};
+	
 	this.preventEvent = false;
 	this.initialization = false;
 	
@@ -1171,11 +1189,6 @@ $.Painter = $.extend($.Element, {
 		 * @paramter Object#param The additional parameter
 		 */
 		'click',
-		/**
-		 * @event Fires when this element is dblclick
-		 * @paramter $.Painter#this
-		 * @paramter EventObject#e The dblclick event object
-		 */
 		'dblclick',
 		/**
 		 * @event Fires when the mouse move on the element
@@ -1183,6 +1196,12 @@ $.Painter = $.extend($.Element, {
 		 * @paramter EventObject#e The mousemove event object
 		 */
 		'mousemove',
+		/**
+		 * @event Fires when the mouse down on the element
+		 * @paramter $.Painter#this
+		 * @paramter EventObject#e The mousedown event object
+		 */
+		'mousedown',
 		/**
 		 * @event Fires when the mouse hovers over the element
 		 * @paramter $.Painter#this
@@ -1205,7 +1224,8 @@ $.Painter = $.extend($.Element, {
 		 * @paramter $.Painter#this
 		 */
 		'draw');
-
+		
+		
 	},
 	afterConfiguration : function() {
 	},
@@ -1281,12 +1301,14 @@ $.Painter = $.extend($.Element, {
 		}
 		return r;
 	},
-	on : function(name, fn) {
-		if ($.isString(name) && $.isFunction(fn))
-			if (!this.events[name]) {
-				console.log(name);
-			}
-		this.events[name].push(fn);
+	on : function(n, fn) {
+		if($.isString(n)){
+			if (!this.events[n])
+				console.log(n);
+			this.events[n].push(fn);
+		}else if($.isArray(n)){
+			n.each(function(c){this.on(c, fn)},this);
+		}
 		return this;
 	},
 	doConfig : function() {
@@ -3383,7 +3405,7 @@ $.Label = $.extend($.Component, {
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
 
-			var _ = this._(), E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
+			var _ = this._(), E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO,events = $.isMobile?['touchstart','touchmove']:['click','mousemove'];
 
 			$.Assert.isArray(_.data);
 				
@@ -3409,32 +3431,31 @@ $.Label = $.extend($.Component, {
 					_[N.handler].apply(_, N.arguments);
 				}
 			});
-
-			['click', 'dblclick', 'mousemove'].each(function(it) {
+			
+			events.each(function(it) {
 				_.T.addEvent(it, function(e) {
 					if (_.processAnimation)
 						return;
+					if(e.touches&&e.touches.length!=1){
+						return;
+					}
+					e.preventDefault();
 					_.fireEvent(_, it, [_, $.Event.fix(e)]);
 				}, false);
 			});
-
-			_.on('click', function(_, e) {
-				/**
-				 * console.time('Test for click');
-				 */
-				_.components.eachAll(function(c) {
-					if (!c.preventEvent) {
-						var M = c.isMouseOver(e);
-						if (M.valid)
-							c.fireEvent(c, 'click', [c, e, M]);
+			
+			_.on(events[0], function(_, e) {
+				_.components.eachAll(function(C) {
+					if (!C.preventEvent) {
+						var M = C.isMouseOver(e);
+						if (M.valid){
+							C.fireEvent(C,'click', [C, e, M]);
+						}
 					}
 				});
-				/**
-				 * console.timeEnd('Test for click');
-				 */
 			});
-
-			_.on('mousemove', function(_, e) {
+			
+			_.on(events[1], function(_, e) {
 				O = AO = false;
 				_.components.eachAll(function(cot) {
 					if (!cot.preventEvent) {
@@ -3472,13 +3493,12 @@ $.Label = $.extend($.Component, {
 					_.T.css("cursor", "default");
 				}
 
-				// console.log(O+":"+E.mouseover);
-					if (!O && E.mouseover) {
-						E.mouseover = false;
-						_.fireEvent(_, 'mouseout', [e]);
-					}
-				});
-
+				if (!O && E.mouseover) {
+					E.mouseover = false;
+					_.fireEvent(_, 'mouseout', [e]);
+				}
+			});
+			
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
 
@@ -4998,12 +5018,12 @@ $.Sector = $.extend($.Component, {
 
 		_.on(_.get('bound_event'), function(_, e, r) {
 			// console.profile('Test for pop');
-				 console.time('Test for pop');
+				//console.time('Test for pop');
 				v.poped = true;
 				_.expanded = !_.expanded;
 				_.redraw();
 				v.poped = false;
-				 console.timeEnd('Test for pop');
+				 //console.timeEnd('Test for pop');
 				// console.profileEnd('Test for pop');
 			});
 		

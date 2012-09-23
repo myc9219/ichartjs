@@ -152,12 +152,12 @@ iChart.Sector = iChart.extend(iChart.Component, {
 
 		_.on(_.get('bound_event'), function(_, e, r) {
 			// console.profile('Test for pop');
-				 console.time('Test for pop');
+				//console.time('Test for pop');
 				v.poped = true;
 				_.expanded = !_.expanded;
 				_.redraw();
 				v.poped = false;
-				 console.timeEnd('Test for pop');
+				 //console.timeEnd('Test for pop');
 				// console.profileEnd('Test for pop');
 			});
 		
