@@ -1011,7 +1011,7 @@
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
 
-			var _ = this._(), E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
+			var _ = this._(), E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO,events = $.isMobile?['touchstart','touchmove']:['click','mousemove'];
 
 			$.Assert.isArray(_.data);
 				
@@ -1037,32 +1037,31 @@
 					_[N.handler].apply(_, N.arguments);
 				}
 			});
-
-			['click', 'dblclick', 'mousemove'].each(function(it) {
+			
+			events.each(function(it) {
 				_.T.addEvent(it, function(e) {
 					if (_.processAnimation)
 						return;
+					if(e.touches&&e.touches.length!=1){
+						return;
+					}
+					e.preventDefault();
 					_.fireEvent(_, it, [_, $.Event.fix(e)]);
 				}, false);
 			});
-
-			_.on('click', function(_, e) {
-				/**
-				 * console.time('Test for click');
-				 */
-				_.components.eachAll(function(c) {
-					if (!c.preventEvent) {
-						var M = c.isMouseOver(e);
-						if (M.valid)
-							c.fireEvent(c, 'click', [c, e, M]);
+			
+			_.on(events[0], function(_, e) {
+				_.components.eachAll(function(C) {
+					if (!C.preventEvent) {
+						var M = C.isMouseOver(e);
+						if (M.valid){
+							C.fireEvent(C,'click', [C, e, M]);
+						}
 					}
 				});
-				/**
-				 * console.timeEnd('Test for click');
-				 */
 			});
-
-			_.on('mousemove', function(_, e) {
+			
+			_.on(events[1], function(_, e) {
 				O = AO = false;
 				_.components.eachAll(function(cot) {
 					if (!cot.preventEvent) {
@@ -1100,13 +1099,12 @@
 					_.T.css("cursor", "default");
 				}
 
-				// console.log(O+":"+E.mouseover);
-					if (!O && E.mouseover) {
-						E.mouseover = false;
-						_.fireEvent(_, 'mouseout', [e]);
-					}
-				});
-
+				if (!O && E.mouseover) {
+					E.mouseover = false;
+					_.fireEvent(_, 'mouseout', [e]);
+				}
+			});
+			
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
 

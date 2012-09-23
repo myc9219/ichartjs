@@ -84,7 +84,12 @@ iChart.Element = function(config) {
 	/**
 	 * the container of all events
 	 */
-	this.events = {};
+	this.events = {
+		'touchstart':[],
+		'touchmove':[],
+		'touchend':[]
+	};
+	
 	this.preventEvent = false;
 	this.initialization = false;
 	

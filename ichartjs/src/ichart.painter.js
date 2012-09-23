@@ -114,11 +114,6 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		 * @paramter Object#param The additional parameter
 		 */
 		'click',
-		/**
-		 * @event Fires when this element is dblclick
-		 * @paramter iChart.Painter#this
-		 * @paramter EventObject#e The dblclick event object
-		 */
 		'dblclick',
 		/**
 		 * @event Fires when the mouse move on the element
@@ -126,6 +121,12 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		 * @paramter EventObject#e The mousemove event object
 		 */
 		'mousemove',
+		/**
+		 * @event Fires when the mouse down on the element
+		 * @paramter iChart.Painter#this
+		 * @paramter EventObject#e The mousedown event object
+		 */
+		'mousedown',
 		/**
 		 * @event Fires when the mouse hovers over the element
 		 * @paramter iChart.Painter#this
@@ -148,7 +149,8 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		 * @paramter iChart.Painter#this
 		 */
 		'draw');
-
+		
+		
 	},
 	afterConfiguration : function() {
 	},
@@ -224,12 +226,14 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		}
 		return r;
 	},
-	on : function(name, fn) {
-		if (iChart.isString(name) && iChart.isFunction(fn))
-			if (!this.events[name]) {
-				console.log(name);
-			}
-		this.events[name].push(fn);
+	on : function(n, fn) {
+		if(iChart.isString(n)){
+			if (!this.events[n])
+				console.log(n);
+			this.events[n].push(fn);
+		}else if(iChart.isArray(n)){
+			n.each(function(c){this.on(c, fn)},this);
+		}
 		return this;
 	},
 	doConfig : function() {
