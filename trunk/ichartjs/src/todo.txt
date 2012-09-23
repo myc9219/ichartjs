@@ -1,10 +1,10 @@
 //expect next
 1.return the postion of component's important item*
+1.1.移动客户端的事件问题*
 2.中文api同步
 3.教程同步
-4.整合文件，抽象出核心包，将必引入包整合到一起*
+4.整合文件，分组件的文件压缩到一起。
 5.考虑插件式开发架构接口设计
-6.考虑兼容?
 7.suport hsl,hsla model
 5.十字指针还是放到各自组件中,方便管理
 6.区域面积计算

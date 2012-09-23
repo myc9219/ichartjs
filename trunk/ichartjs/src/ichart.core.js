@@ -811,9 +811,7 @@
 						clientX : e.clientX,
 						clientY : e.clientY,
 						offsetX : e.offsetX,
-						offsetY : e.offsetY,
-						preventDefault:e.preventDefault,
-						stopPropagation:e.stopPropagation
+						offsetY : e.offsetY
 					};
 				
 				/**
@@ -861,8 +859,8 @@
 				/**
 				 * Any browser that doesn't implement stopPropagation() (MSIE)
 				 */
-				if (!E.stopPropagation) {
-					E.stopPropagation = function() {
+				if (!e.stopPropagation) {
+					e.stopPropagation = function() {
 						window.event.cancelBubble = true;
 					}
 				}
