@@ -126,14 +126,14 @@
 			
 			_.wrap.appendChild(_.dom);
 			
-			_.T.on('mouseover',function(e,m){
+			_.T.on('mouseover',function(c,e,m){
 				_.show(e,m);	
-			}).on('mouseout',function(e,m){
+			}).on('mouseout',function(c,e,m){
 				_.hidden(e);	
 			});
 			
 			if(_.get('showType')=='follow'){
-				_.T.on('mousemove',function(e,m){
+				_.T.on('mousemove',function(c,e,m){
 					if(_.T.variable.event.mouseover){
 						setTimeout(function(){
 							if(_.T.variable.event.mouseover)

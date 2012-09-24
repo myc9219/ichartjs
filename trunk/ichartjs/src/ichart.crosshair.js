@@ -113,11 +113,11 @@
 			
 			_.wrap.appendChild(_.dom);
 			
-			_.T.on('mouseover',function(e,m){
+			_.T.on('mouseover',function(c,e,m){
 				_.show(e,m);	
-			}).on('mouseout',function(e,m){
+			}).on('mouseout',function(c,e,m){
 				_.hidden(e,m);	
-			}).on('mousemove',function(e,m){
+			}).on('mousemove',function(c,e,m){
 				_.follow(e,m);
 			});
 			

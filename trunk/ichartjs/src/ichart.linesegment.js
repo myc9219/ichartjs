@@ -187,10 +187,10 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			/**
 			 * _ use for tip coincidence
 			 */
-			_.on('mouseover', function(e, m) {
+			_.on('mouseover', function(c,e, m) {
 				heap.push(_);
 				_.tipPosition = heap.length;
-			}).on('mouseout', function(e, m) {
+			}).on('mouseout', function(c,e, m) {
 				heap.pop();
 			});
 			_.push('tip.invokeOffsetDynamic', true);
