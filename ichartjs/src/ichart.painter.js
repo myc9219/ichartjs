@@ -114,19 +114,12 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		 * @paramter Object#param The additional parameter
 		 */
 		'click',
-		'dblclick',
 		/**
 		 * @event Fires when the mouse move on the element
 		 * @paramter iChart.Painter#this
 		 * @paramter EventObject#e The mousemove event object
 		 */
 		'mousemove',
-		/**
-		 * @event Fires when the mouse down on the element
-		 * @paramter iChart.Painter#this
-		 * @paramter EventObject#e The mousedown event object
-		 */
-		'mousedown',
 		/**
 		 * @event Fires when the mouse hovers over the element
 		 * @paramter iChart.Painter#this

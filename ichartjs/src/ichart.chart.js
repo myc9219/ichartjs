@@ -1011,7 +1011,7 @@
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
 
-			var _ = this._(), E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO,events = $.isMobile?['touchstart','touchmove']:['click','mousemove'];
+			var _ = this._(), E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
 
 			$.Assert.isArray(_.data);
 				
@@ -1038,6 +1038,8 @@
 				}
 			});
 			
+			var events = $.touch?['touchstart','touchmove']:['click','mousemove'];
+			
 			events.each(function(it) {
 				_.T.addEvent(it, function(e) {
 					if (_.processAnimation)
@@ -1045,7 +1047,7 @@
 					if(e.touches&&e.touches.length!=1){
 						return;
 					}
-					e.preventDefault();
+					//e.preventDefault();
 					_.fireEvent(_, it, [_, $.Event.fix(e)]);
 				}, false);
 			});
@@ -1055,10 +1057,15 @@
 					if (!C.preventEvent) {
 						var M = C.isMouseOver(e);
 						if (M.valid){
+							E.click = true;
 							C.fireEvent(C,'click', [C, e, M]);
 						}
 					}
 				});
+				if(E.click){
+					e.event.preventDefault();
+					E.click = false;
+				}
 			});
 			
 			_.on(events[1], function(_, e) {
@@ -1071,7 +1078,7 @@
 							AO = AO || cot.atomic;
 							if (!E.mouseover) {
 								E.mouseover = true;
-								_.fireEvent(_, 'mouseover', [e]);
+								_.fireEvent(_, 'mouseover', [cot,e, M]);
 							}
 
 							if (mCSS && AO) {
@@ -1080,29 +1087,32 @@
 
 							if (!cE.mouseover) {
 								cE.mouseover = true;
-								cot.fireEvent(cot, 'mouseover', [e, M]);
+								cot.fireEvent(cot, 'mouseover', [cot,e, M]);
 							}
-							cot.fireEvent(cot, 'mousemove', [e, M]);
+							cot.fireEvent(cot, 'mousemove', [cot,e, M]);
 							if(M.stop){
 								return false;
 							}
 						} else {
 							if (cE.mouseover) {
 								cE.mouseover = false;
-								cot.fireEvent(cot, 'mouseout', [e, M]);
+								cot.fireEvent(cot, 'mouseout', [cot,e, M]);
 							}
 						}
 					}
 				});
-
-				if (mCSS && !AO && E.mouseover) {
-					_.T.css("cursor", "default");
+				
+				if(E.mouseover){
+					e.event.preventDefault();
+					if (mCSS && !AO) {
+						_.T.css("cursor", "default");
+					}
+					if (!O && E.mouseover) {
+						E.mouseover = false;
+						_.fireEvent(_, 'mouseout', [_,e]);
+					}
 				}
-
-				if (!O && E.mouseover) {
-					E.mouseover = false;
-					_.fireEvent(_, 'mouseout', [e]);
-				}
+				
 			});
 			
 			_.push('r_originx', _.width - _.get('padding_right'));
