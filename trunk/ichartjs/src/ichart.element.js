@@ -85,9 +85,12 @@ iChart.Element = function(config) {
 	 * the container of all events
 	 */
 	this.events = {
+		'mouseup':[],
 		'touchstart':[],
 		'touchmove':[],
-		'touchend':[]
+		'touchend':[],
+		'mousedown':[],
+		'dblclick':[]
 	};
 	
 	this.preventEvent = false;

@@ -747,6 +747,7 @@
 			isIE : isIE,
 			isGecko : isGecko,
 			isMobile : isMobile,
+			touch: "ontouchend" in document,
 			FRAME : isMobile ? 30 : 60,
 			DefaultAnimationArithmetic : 'Cubic'
 		});
@@ -803,57 +804,52 @@
 				if (typeof (e) == 'undefined') {
 					e = window.event;
 				}
-				
 				var E = {
 						target:e.target,
 						pageX : e.pageX,
 						pageY : e.pageY,
-						clientX : e.clientX,
-						clientY : e.clientY,
 						offsetX : e.offsetX,
 						offsetY : e.offsetY,
-						preventDefault:e.preventDefault,
-						stopPropagation:e.stopPropagation
+						//time: new Date().getTime(),
+						event:e
 					};
-				
-				/**
-				 * Fix target property, if necessary
-				 */
-				if (!e.target) {
-					E.target = e.srcElement || document;
-				}
-				
-				if(e.touches){
-					E.pageX = e.touches[0].pageX;
-					E.pageY = e.touches[0].pageY;
-				}
-				
-				/**
-				 * Calculate pageX/Y if missing and clientX/Y available
-				 */
-				if (E.pageX == null && e.clientX != null) {
-					var doc = document.documentElement, body = document.body;
-					E.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
-					E.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
-				}
 				
 				/**
 				 * This is mainly for FF which doesn't provide offsetX
 				 */
-				if (typeof (e.offsetX) == 'undefined' && typeof (e.offsetY) == 'undefined') {
+				if (typeof (e.offsetX) == 'undefined') {
+					/**
+					 * Fix target property, if necessary
+					 */
+					if (!e.target) {
+						E.target = e.srcElement || document;
+					}
+					
+					if(e.touches){
+						E.pageX = e.touches[0].pageX;
+						E.pageY = e.touches[0].pageY;
+					}
+					
+					/**
+					 * Calculate pageX/Y if missing and clientX/Y available
+					 */
+					if (E.pageX == null && e.clientX != null) {
+						var doc = document.documentElement, body = document.body;
+						E.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+						E.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
+					}
+					
 					/**
 					 * Browser not with offsetX and offsetY
 					 */
-					if (typeof (e.offsetX) != 'number') {
-						var x = 0, y = 0, obj = e.target;
-						while (obj != document.body && obj) {
-							x += obj.offsetLeft;
-							y += obj.offsetTop;
-							obj = obj.offsetParent;
-						}
-						E.offsetX = E.pageX - x;
-						E.offsetY = E.pageY - y;
+					var x = 0, y = 0, obj = e.target;
+					while (obj != document.body && obj) {
+						x += obj.offsetLeft;
+						y += obj.offsetTop;
+						obj = obj.offsetParent;
 					}
+					E.offsetX = E.pageX - x;
+					E.offsetY = E.pageY - y;
 				}
 				
 				E.x = E.offsetX;
@@ -861,8 +857,8 @@
 				/**
 				 * Any browser that doesn't implement stopPropagation() (MSIE)
 				 */
-				if (!E.stopPropagation) {
-					E.stopPropagation = function() {
+				if (!e.stopPropagation) {
+					e.stopPropagation = function() {
 						window.event.cancelBubble = true;
 					}
 				}
@@ -1005,6 +1001,7 @@ $.Element = function(config) {
 	 * the container of all events
 	 */
 	this.events = {
+		'mouseup':[],
 		'touchstart':[],
 		'touchmove':[],
 		'touchend':[]
@@ -3405,7 +3402,7 @@ $.Label = $.extend($.Component, {
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
 
-			var _ = this._(), E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO,events = $.isMobile?['touchstart','touchmove']:['click','mousemove'];
+			var _ = this._(), E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
 
 			$.Assert.isArray(_.data);
 				
@@ -3432,6 +3429,8 @@ $.Label = $.extend($.Component, {
 				}
 			});
 			
+			var events = $.touch?['touchstart','touchmove']:['click','mousemove'];
+			
 			events.each(function(it) {
 				_.T.addEvent(it, function(e) {
 					if (_.processAnimation)
@@ -3449,10 +3448,15 @@ $.Label = $.extend($.Component, {
 					if (!C.preventEvent) {
 						var M = C.isMouseOver(e);
 						if (M.valid){
+							E.click = true;
 							C.fireEvent(C,'click', [C, e, M]);
 						}
 					}
 				});
+				if(E.click){
+					e.event.preventDefault();
+					E.click = false;
+				}
 			});
 			
 			_.on(events[1], function(_, e) {
@@ -3488,15 +3492,18 @@ $.Label = $.extend($.Component, {
 						}
 					}
 				});
-
-				if (mCSS && !AO && E.mouseover) {
-					_.T.css("cursor", "default");
+				
+				if(E.mouseover){
+					e.event.preventDefault();
+					if (mCSS && !AO) {
+						_.T.css("cursor", "default");
+					}
+					if (!O && E.mouseover) {
+						E.mouseover = false;
+						_.fireEvent(_, 'mouseout', [e]);
+					}
 				}
-
-				if (!O && E.mouseover) {
-					E.mouseover = false;
-					_.fireEvent(_, 'mouseout', [e]);
-				}
+				
 			});
 			
 			_.push('r_originx', _.width - _.get('padding_right'));
