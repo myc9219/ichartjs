@@ -150,7 +150,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 
 		v.poped = false;
 
-		_.on(_.get('bound_event'), function(_, e, r) {
+		_.on(_.get('bound_event'), function() {
 			// console.profile('Test for pop');
 				//console.time('Test for pop');
 				v.poped = true;
@@ -161,11 +161,11 @@ iChart.Sector = iChart.extend(iChart.Component, {
 				// console.profileEnd('Test for pop');
 			});
 		
-		_.on('mouseover',function(e){
+		_.on('mouseover',function(){
 			v.highlight = true;
 			_.redraw();
 			v.highlight = false;
-		}).on('mouseout',function(e){
+		}).on('mouseout',function(){
 			v.highlight = false;
 			_.redraw();
 		});

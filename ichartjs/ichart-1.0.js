@@ -1004,7 +1004,9 @@ $.Element = function(config) {
 		'mouseup':[],
 		'touchstart':[],
 		'touchmove':[],
-		'touchend':[]
+		'touchend':[],
+		'mousedown':[],
+		'dblclick':[]
 	};
 	
 	this.preventEvent = false;
@@ -1186,19 +1188,12 @@ $.Painter = $.extend($.Element, {
 		 * @paramter Object#param The additional parameter
 		 */
 		'click',
-		'dblclick',
 		/**
 		 * @event Fires when the mouse move on the element
 		 * @paramter $.Painter#this
 		 * @paramter EventObject#e The mousemove event object
 		 */
 		'mousemove',
-		/**
-		 * @event Fires when the mouse down on the element
-		 * @paramter $.Painter#this
-		 * @paramter EventObject#e The mousedown event object
-		 */
-		'mousedown',
 		/**
 		 * @event Fires when the mouse hovers over the element
 		 * @paramter $.Painter#this
@@ -1718,14 +1713,14 @@ $.Html = $.extend($.Element,{
 			
 			_.wrap.appendChild(_.dom);
 			
-			_.T.on('mouseover',function(e,m){
+			_.T.on('mouseover',function(c,e,m){
 				_.show(e,m);	
-			}).on('mouseout',function(e,m){
+			}).on('mouseout',function(c,e,m){
 				_.hidden(e);	
 			});
 			
 			if(_.get('showType')=='follow'){
-				_.T.on('mousemove',function(e,m){
+				_.T.on('mousemove',function(c,e,m){
 					if(_.T.variable.event.mouseover){
 						setTimeout(function(){
 							if(_.T.variable.event.mouseover)
@@ -1853,11 +1848,11 @@ $.Html = $.extend($.Element,{
 			
 			_.wrap.appendChild(_.dom);
 			
-			_.T.on('mouseover',function(e,m){
+			_.T.on('mouseover',function(c,e,m){
 				_.show(e,m);	
-			}).on('mouseout',function(e,m){
+			}).on('mouseout',function(c,e,m){
 				_.hidden(e,m);	
-			}).on('mousemove',function(e,m){
+			}).on('mousemove',function(c,e,m){
 				_.follow(e,m);
 			});
 			
@@ -3438,7 +3433,7 @@ $.Label = $.extend($.Component, {
 					if(e.touches&&e.touches.length!=1){
 						return;
 					}
-					e.preventDefault();
+					//e.preventDefault();
 					_.fireEvent(_, it, [_, $.Event.fix(e)]);
 				}, false);
 			});
@@ -3469,7 +3464,7 @@ $.Label = $.extend($.Component, {
 							AO = AO || cot.atomic;
 							if (!E.mouseover) {
 								E.mouseover = true;
-								_.fireEvent(_, 'mouseover', [e]);
+								_.fireEvent(_, 'mouseover', [cot,e, M]);
 							}
 
 							if (mCSS && AO) {
@@ -3478,16 +3473,16 @@ $.Label = $.extend($.Component, {
 
 							if (!cE.mouseover) {
 								cE.mouseover = true;
-								cot.fireEvent(cot, 'mouseover', [e, M]);
+								cot.fireEvent(cot, 'mouseover', [cot,e, M]);
 							}
-							cot.fireEvent(cot, 'mousemove', [e, M]);
+							cot.fireEvent(cot, 'mousemove', [cot,e, M]);
 							if(M.stop){
 								return false;
 							}
 						} else {
 							if (cE.mouseover) {
 								cE.mouseover = false;
-								cot.fireEvent(cot, 'mouseout', [e, M]);
+								cot.fireEvent(cot, 'mouseout', [cot,e, M]);
 							}
 						}
 					}
@@ -3500,7 +3495,7 @@ $.Label = $.extend($.Component, {
 					}
 					if (!O && E.mouseover) {
 						E.mouseover = false;
-						_.fireEvent(_, 'mouseout', [e]);
+						_.fireEvent(_, 'mouseout', [_,e]);
 					}
 				}
 				
@@ -4668,13 +4663,13 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			
 			v.highlight = false;
 			
-			_.on('mouseover',function(e){
+			_.on('mouseover',function(){
 				//console.time('mouseover');
 				v.highlight = true;
 				_.redraw();
 				v.highlight = false;
 				//console.timeEnd('mouseover');
-			}).on('mouseout',function(e){
+			}).on('mouseout',function(){
 				//console.time('mouseout');
 				v.highlight = false;
 				_.redraw();
@@ -5023,7 +5018,7 @@ $.Sector = $.extend($.Component, {
 
 		v.poped = false;
 
-		_.on(_.get('bound_event'), function(_, e, r) {
+		_.on(_.get('bound_event'), function() {
 			// console.profile('Test for pop');
 				//console.time('Test for pop');
 				v.poped = true;
@@ -5034,11 +5029,11 @@ $.Sector = $.extend($.Component, {
 				// console.profileEnd('Test for pop');
 			});
 		
-		_.on('mouseover',function(e){
+		_.on('mouseover',function(){
 			v.highlight = true;
 			_.redraw();
 			v.highlight = false;
-		}).on('mouseout',function(e){
+		}).on('mouseout',function(){
 			v.highlight = false;
 			_.redraw();
 		});
@@ -6560,10 +6555,10 @@ $.LineSegment = $.extend($.Component, {
 			/**
 			 * _ use for tip coincidence
 			 */
-			_.on('mouseover', function(e, m) {
+			_.on('mouseover', function(c,e, m) {
 				heap.push(_);
 				_.tipPosition = heap.length;
-			}).on('mouseout', function(e, m) {
+			}).on('mouseout', function(c,e, m) {
 				heap.pop();
 			});
 			_.push('tip.invokeOffsetDynamic', true);

@@ -108,13 +108,13 @@
 			
 			v.highlight = false;
 			
-			_.on('mouseover',function(e){
+			_.on('mouseover',function(){
 				//console.time('mouseover');
 				v.highlight = true;
 				_.redraw();
 				v.highlight = false;
 				//console.timeEnd('mouseover');
-			}).on('mouseout',function(e){
+			}).on('mouseout',function(){
 				//console.time('mouseout');
 				v.highlight = false;
 				_.redraw();
