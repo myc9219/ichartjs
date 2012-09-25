@@ -40,7 +40,7 @@
 		},
 		drawValue:function(){
 			if(this.get('value')!='')
-			this.T.text(this.get('value'),this.centerX,this.topCenterY + this.get('value_space'),false,this.get('color'),'center','top',this.get('fontStyle'));
+			this.T.text(this.get('value'),this.get('centerx'),this.topCenterY + this.get('value_space'),false,this.get('color'),'center','top',this.get('fontStyle'));
 		},
 		drawRectangle:function(){
 			this.T.cube(
@@ -59,7 +59,7 @@
 			);
 		},
 		isEventValid:function(e){
-			return {valid:!this.preventEvent&&e.x>this.x&&e.x<(this.x+this.get('width'))&&e.y<this.y+this.get('height')&&e.y>this.y};
+			return {valid:e.x>this.x&&e.x<(this.x+this.get('width'))&&e.y<this.y+this.get('height')&&e.y>this.y};
 		},
 		tipInvoke:function(){
 			var _ = this._();

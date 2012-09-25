@@ -146,28 +146,24 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		
 	},
 	afterConfiguration : function() {
+		/**
+		 * register customize event
+		 */
+		if (iChart.isObject(this.get('listeners'))) {
+			for ( var e in this.get('listeners')) {
+				this.on(e, this.get('listeners')[e]);
+			}
+		}
+		
+		this.initialize();
+		/**
+		 * fire the initialize event,this probable use to unit test
+		 */
+		this.fireEvent(this, 'initialize', [this]);
 	},
 	registerEvent : function() {
 		for ( var i = 0; i < arguments.length; i++) {
 			this.events[arguments[i]] = [];
-		}
-	},
-	init : function() {
-		if (!this.initialization) {
-			/**
-			 * register event
-			 */
-			if (iChart.isObject(this.get('listeners'))) {
-				for ( var e in this.get('listeners')) {
-					this.on(e, this.get('listeners')[e]);
-				}
-			}
-
-			this.initialize();
-			/**
-			 * fire the initialize event,this probable use to unit test
-			 */
-			this.fireEvent(this, 'initialize', [this]);
 		}
 	},
 	is3D : function() {
@@ -186,25 +182,21 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	 * @return void
 	 */
 	draw : function(o) {
-		this.init();
-		this.draw = function(o) {
-			/**
-			 * fire the beforedraw event
-			 */
-			if (!this.fireEvent(this, 'beforedraw', [this])) {
-				return this;
-			}
-			/**
-			 * execute the commonDraw() that the subClass implement
-			 */
-			this.commonDraw(o);
-
-			/**
-			 * fire the draw event
-			 */
-			this.fireEvent(this, 'draw', [this]);
+		/**
+		 * fire the beforedraw event
+		 */
+		if (!this.fireEvent(this, 'beforedraw', [this])) {
+			return this;
 		}
-		this.draw(o);
+		/**
+		 * execute the commonDraw() that the subClass implement
+		 */
+		this.commonDraw(o);
+
+		/**
+		 * fire the draw event
+		 */
+		this.fireEvent(this, 'draw', [this]);
 	},
 	fireString : function(socpe, name, args, s) {
 		var t = this.fireEvent(socpe, name, args);

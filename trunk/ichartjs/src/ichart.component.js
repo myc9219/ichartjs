@@ -42,16 +42,10 @@
 			
 			
 	},
-	afterConfiguration:function(){
-		this.init();
-	},
 	initialize : function() {
-		if (!this.preventEvent)
-			/**
-			 * define abstract method
-			 */
+		if (!this.ignoreEvent)
 			iChart.DefineAbstract('isEventValid', this);
-	
+		
 		iChart.DefineAbstract('doDraw', this);
 	
 		this.doConfig();

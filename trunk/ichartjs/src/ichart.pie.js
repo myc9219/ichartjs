@@ -88,7 +88,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		 */
 		'parseLabelText');
 
-		this.sectors = [];
 	},
 	/**
 	 * @method Toggle sector bound or rebound by a specific index.
@@ -197,6 +196,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		
 		var _ = this._(),r = _.get('radius'), f = _.get('label.enable') ? 0.35 : 0.44;
 		
+		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
 
 		_.oA = iChart.angle2Radian(_.get('offsetAngle'));

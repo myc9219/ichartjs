@@ -67,7 +67,6 @@
 			
 		},
 		createQueue:function(style){
-			this.init();
 			style = style || {};
 			var LS = iChart.clone(this.get('segment'));
 				LS.brushsize = style.linewidth || 1;
