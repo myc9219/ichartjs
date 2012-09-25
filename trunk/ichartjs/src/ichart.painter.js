@@ -181,7 +181,8 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		}
 	},
 	/**
-	 * @method The commnd fire to draw the chart use configuration,this is a abstract method.Currently known,both <link>iChart.Chart</link> and <link>iChart.Component</link> implement this method.
+	 * @method The commnd fire to draw the chart use configuration,
+	 * this is a abstract method.Currently known,both <link>iChart.Chart</link> and <link>iChart.Component</link> implement this method.
 	 * @return void
 	 */
 	draw : function(o) {

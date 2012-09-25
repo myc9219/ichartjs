@@ -552,13 +552,13 @@
 				if (!H[M])
 					throw new Error("Cannot instantiate the type '" + H.type + "'.you must implements it with method '" + M + "'.");
 			},
-			getAnimationArithmetic : function(tf) {
+			getAA : function(tf) {
 				if (tf == 'linear')
 					return arithmetic.Linear;
 				if (tf == 'bounce')
 					return arithmetic.Bounce.easeOut;
 				if (tf == 'easeInOut' || tf == 'easeIn' || tf == 'easeOut')
-					return arithmetic[_.DefaultAnimationArithmetic][tf];
+					return arithmetic[_.DefaultAA][tf];
 				return arithmetic.Linear;
 			},
 			/**
@@ -749,7 +749,7 @@
 			isMobile : isMobile,
 			touch: "ontouchend" in document,
 			FRAME : isMobile ? 30 : 60,
-			DefaultAnimationArithmetic : 'Cubic'
+			DefaultAA : 'Cubic'
 		});
 		_.Assert = {
 			gtZero : function(v, n) {
@@ -825,9 +825,9 @@
 						E.target = e.srcElement || document;
 					}
 					
-					if(e.touches){
-						E.pageX = e.touches[0].pageX;
-						E.pageY = e.touches[0].pageY;
+					if(e.targetTouches){
+						E.pageX = e.targetTouches[0].pageX;
+						E.pageY = e.targetTouches[0].pageY;
 					}
 					
 					/**

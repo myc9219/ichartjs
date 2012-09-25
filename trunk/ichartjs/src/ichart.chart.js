@@ -1008,6 +1008,22 @@
 				_.initialization = true;
 			}
 		},
+		/**
+		 * @method return the main Drawing Area's dimension,return following property
+		 * @property x:the left-top coordinate-x
+		 * @property y:the left-top coordinate-y
+		 * @property width:the width of drawing area
+		 * @property height:the height of drawing area
+		 * @return object
+		 */
+		getDrawingArea:function(){
+			return {
+				x:this.get("l_originx"),
+				x:this.get("t_originy"),
+				width:this.get("client_width"),
+				height:this.get("client_height")
+			}
+		},
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
 
@@ -1029,7 +1045,7 @@
 			
 			_.applyGradient();
 			
-			_.animationArithmetic = $.getAnimationArithmetic(_.get('animation_timing_function'));
+			_.animationArithmetic = $.getAA(_.get('animation_timing_function'));
 
 			_.on('afterAnimation', function() {
 				var N = _.variable.animation.queue.shift();
@@ -1044,7 +1060,7 @@
 				_.T.addEvent(it, function(e) {
 					if (_.processAnimation)
 						return;
-					if(e.touches&&e.touches.length!=1){
+					if(e.targetTouches&&e.targetTouches.length!=1){
 						return;
 					}
 					//e.preventDefault();

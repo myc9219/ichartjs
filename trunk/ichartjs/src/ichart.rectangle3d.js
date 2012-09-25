@@ -62,11 +62,11 @@
 			return {valid:!this.preventEvent&&e.x>this.x&&e.x<(this.x+this.get('width'))&&e.y<this.y+this.get('height')&&e.y>this.y};
 		},
 		tipInvoke:function(){
-			var self = this;
+			var _ = this._();
 			return function(w,h){
 				return {
-					left:self.topCenterX - w/2,
-					top:self.topCenterY - h
+					left:_.topCenterX - w/2,
+					top:_.topCenterY - h
 				}
 			}
 		},
@@ -74,8 +74,6 @@
 			iChart.Rectangle3D.superclass.doConfig.call(this);
 			var _ = this._();
 			_.pushIf("zHeight",_.get('width'));
-			
-			_.centerX=_.x+_.get('width')/2;
 			
 			_.topCenterX=_.x+(_.get('width')+_.get('width')*_.get('xAngle_'))/2;
 			

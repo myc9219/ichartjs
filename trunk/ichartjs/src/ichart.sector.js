@@ -100,6 +100,24 @@ iChart.Sector = iChart.extend(iChart.Component, {
 	toggle : function() {
 		this.fireEvent(this, this.get('bound_event'), [this]);
 	},
+	/**
+	 * @method return the sector's dimension,return hold following property
+	 * @property x:the x-coordinate of the center of the sector
+	 * @property y:the y-coordinate of the center of the sector
+	 * @property startAngle:The starting angle, in radians (0 is at the 3 o'clock position of the arc's circle)
+	 * @property endAngle:the ending angle, in radians
+	 * @property middleAngle:the middle angle, in radians
+	 * @return object
+	 */
+	getDimension:function(){
+		return {
+			x:this.x,
+			x:this.y,
+			startAngle:this.get("startAngle"),
+			middleAngle:this.get("middleAngle"),
+			endAngle:this.get("endAngle")
+		}
+	},
 	doDraw : function(opts) {
 		this.drawSector();
 		if (this.label) {
