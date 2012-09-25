@@ -57,9 +57,9 @@
 			iChart.Rectangle2D.superclass.doConfig.call(this);
 			var _ = this,tipAlign = _.get('tipAlign'),valueAlign=_.get('valueAlign');
 			if(tipAlign=='left'||tipAlign=='right'){
-				_.tipY = function(w,h){return _.centerY - h/2;};
+				_.tipY = function(w,h){return _.get('centery') - h/2;};
 			}else{
-				_.tipX = function(w,h){return _.centerX -w/2;};
+				_.tipX = function(w,h){return _.get('centerx') -w/2;};
 			}
 			
 			if(tipAlign=='left'){
@@ -77,18 +77,18 @@
 			if(valueAlign=='left'){
 				_.push('textAlign','right');
 				_.push('value_x',_.x - _.get('value_space'));
-				_.push('value_y',_.centerY);
+				_.push('value_y',_.get('centery'));
 			}else if(valueAlign=='right'){
 				_.push('textAlign','left');
 				_.push('textBaseline','middle');
 				_.push('value_x',_.x + _.width + _.get('value_space'));
-				_.push('value_y',_.centerY);
+				_.push('value_y',_.get('centery'));
 			}else if(valueAlign=='bottom'){
-				_.push('value_x',_.centerX);
+				_.push('value_x',_.get('centerx'));
 				_.push('value_y',_.y  + _.height + _.get('value_space'));
 				_.push('textBaseline','top');
 			}else{
-				_.push('value_x',_.centerX);
+				_.push('value_x',_.get('centerx'));
 				_.push('value_y',_.y  - _.get('value_space'));
 				_.push('textBaseline','bottom');
 			}

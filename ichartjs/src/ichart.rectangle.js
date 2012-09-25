@@ -96,8 +96,8 @@
 			_.width = _.get('width');
 			_.height = _.get('height');
 			
-			_.centerX = _.x + _.width/2;
-			_.centerY = _.y + _.height/2;
+			_.push('centerx',_.x + _.width/2);
+			_.push('centery',_.y + _.height/2);
 			
 			if(_.get('tip.enable')){
 				if(_.get('tip.showType')!='follow'){

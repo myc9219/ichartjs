@@ -57,18 +57,29 @@
 		this.doConfig();
 		this.initialization = true;
 	},
+	/**
+	 * @method return the component's dimension,return hold following property
+	 * @property x:the left-top coordinate-x
+	 * @property y:the left-top coordinate-y
+	 * @property width:the width of component,note:available there applies box model
+	 * @property height:the height of component,note:available there applies box model
+	 * @return object
+	 */
+	getDimension:function(){
+		return {
+			x:this.x,
+			x:this.y,
+			width:this.get("width"),
+			height:this.get("height")
+		}
+	},
 	doConfig : function() {
 		iChart.Component.superclass.doConfig.call(this);
 		var _ = this._();
-		/**
-		 * originx
-		 */
-		_.x = _.get('originx')+_.get('offsetx');
-		/**
-		 * 
-		 * originy
-		 */
-		_.y = _.get('originy')+_.get('offsety');
+		
+		
+		_.x = _.push('originx',_.get('originx')+_.get('offsetx'));
+		_.y = _.push('originy',_.get('originy')+_.get('offsety'));
 		
 		/**
 		 * if have evaluate it

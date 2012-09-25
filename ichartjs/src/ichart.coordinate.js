@@ -853,7 +853,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 		_.T.cube3D(_.x + _.get('board_deep') * xa, _.y + h - _.get('board_deep') * ya, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('board_style'));
 
 		_.T.cube3D(_.x, _.y + h, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('wall_style'));
-
+		
 		_.gridlines.each(function(g) {
 			_.T.line(g.x1, g.y1, g.x1 + offx, g.y1 - offy, _.get('grid_line_width'), _.get('grid_color'));
 			_.T.line(g.x1 + offx, g.y1 - offy, g.x2 + offx, g.y2 - offy, _.get('grid_line_width'), _.get('grid_color'));
