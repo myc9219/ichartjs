@@ -93,7 +93,7 @@ iChart.Element = function(config) {
 		'dblclick':[]
 	};
 	
-	this.preventEvent = false;
+	this.ignoreEvent = false;
 	this.initialization = false;
 	
 	/**
@@ -110,7 +110,7 @@ iChart.Element = function(config) {
 	 * megre customize config
 	 */
 	this.set(config);
-
+	
 	this.afterConfiguration();
 }
 

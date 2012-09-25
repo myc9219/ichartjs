@@ -77,7 +77,7 @@
 			/**
 			 * indicate this component not need support event
 			 */
-			this.preventEvent = true;
+			this.ignoreEvent = true;
 		},
 		doDraw:function(opts){
 			if(this.get('box_feature'))

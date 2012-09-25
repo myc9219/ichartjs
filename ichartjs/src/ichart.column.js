@@ -42,9 +42,6 @@ iChart.Column = iChart.extend(iChart.Chart, {
 
 		this.registerEvent();
 
-		this.rectangles = [];
-		this.labels = [];
-		this.labels.ignore = true;
 	},
 	doAnimation : function(t, d) {
 		var _ = this._(), h;
@@ -70,6 +67,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		var t = (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
 		if (_.get('tip.enable'))
 			_.push('rectangle.tip.text', _.fireString(_, 'parseTipText', [d,d.value,i],d.name + ' '+t));
+		
 		_.set({
 			rectangle:{
 				id:id,
@@ -86,6 +84,10 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		iChart.Column.superclass.doConfig.call(this);
 		
 		var _ = this._(),c = 'colwidth',z = 'z_index';
+		
+		_.rectangles = [];
+		_.labels = [];
+			
 		/**
 		 * apply the coordinate feature
 		 */

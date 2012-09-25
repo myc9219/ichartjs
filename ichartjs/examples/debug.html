@@ -54,17 +54,16 @@
 		}
 	</style>
 	<script type="text/javascript">
-		$(function(){
-			var data = [
-			        	{name : 'IE',value : 35.75,color:'#a5c2d5'},
-			        	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
-			        	{name : 'Firefox',value : 24.88,color:'#76a871'},
-			        	{name : 'Safari',value : 6.77,color:'#9f7961'},
-			        	{name : 'Opera',value : 2.02,color:'#a56f8f'},
-			        	{name : 'Other',value : 0.73,color:'#6f83a5'}
-		        	];
-	    	
-			new iChart.Pie2D({
+	var data = [
+	        	{name : 'IE',value : 35.75,color:'#a5c2d5'},
+	        	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
+	        	{name : 'Firefox',value : 24.88,color:'#76a871'},
+	        	{name : 'Safari',value : 6.77,color:'#9f7961'},
+	        	{name : 'Opera',value : 2.02,color:'#a56f8f'},
+	        	{name : 'Other',value : 0.73,color:'#6f83a5'}
+        	],chart;
+	$(function(){
+			chart = new iChart.Column2D({
 				render : 'canvasDiv',
 				data: data,
 				title : 'Top 5 Browsers from 1 to 29 Feb 2012',
@@ -72,7 +71,9 @@
 				decimalsnum:2,
 				width : 800,
 				height : 400,
+				//animation:true,
 				coordinate:{
+					width:620,
 					scale:[{
 						 position:'left',	
 						 start_scale:0,
@@ -84,15 +85,33 @@
 							}
 						}
 					}]
+				},
+				rectangle:{
+					listeners:{
+						click:function(c,e,m){
+							alert(c.get('name')+' '+c.get('value'));
+						}
+					}
 				}
-			}).draw();
-	});
+			});
+
+			chart.draw();
+			
 		
+	});
+	function test(){
+		data.push({name : 'NEWS',value : 7,color:'#6e1aa5'});
+		chart.push('data',data);
+		chart.push('coordinate.height',220);
+		chart.setUp();
+		chart.draw();
+	}
 	</script>
 	</head>
 	<body>
 		<div><a href="../index.html">Home</a>&nbsp;Sample</div>
 		<br>
+		<input type="button" value="test" onclick="test()"/>
 		<div id='canvasDiv'></div>
 	</body>
 </html>

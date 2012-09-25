@@ -43,8 +43,6 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 
 		this.registerEvent();
 
-		this.rectangles = [];
-		this.labels = [];
 	},
 	doParse : function(_,d, i, id, x, y, w) {
 		var t = (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
@@ -83,6 +81,10 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		 */
 		iChart.Coordinate.coordinate.call(_);
 		
+		_.rectangles = [];
+		
+		_.labels = [];
+		
 		_.rectangles.zIndex = _.get(z);
 		
 		_.labels.zIndex = _.get(z) + 1;
@@ -109,6 +111,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		 * use option create a coordinate
 		 */
 		_.coo = iChart.Coordinate.coordinate_.call(_);
+		
 		_.components.push(_.coo);
 
 		/**

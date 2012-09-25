@@ -552,13 +552,13 @@
 				if (!H[M])
 					throw new Error("Cannot instantiate the type '" + H.type + "'.you must implements it with method '" + M + "'.");
 			},
-			getAnimationArithmetic : function(tf) {
+			getAA : function(tf) {
 				if (tf == 'linear')
 					return arithmetic.Linear;
 				if (tf == 'bounce')
 					return arithmetic.Bounce.easeOut;
 				if (tf == 'easeInOut' || tf == 'easeIn' || tf == 'easeOut')
-					return arithmetic[_.DefaultAnimationArithmetic][tf];
+					return arithmetic[_.DefaultAA][tf];
 				return arithmetic.Linear;
 			},
 			/**
@@ -749,7 +749,7 @@
 			isMobile : isMobile,
 			touch: "ontouchend" in document,
 			FRAME : isMobile ? 30 : 60,
-			DefaultAnimationArithmetic : 'Cubic'
+			DefaultAA : 'Cubic'
 		});
 		_.Assert = {
 			gtZero : function(v, n) {
@@ -825,9 +825,9 @@
 						E.target = e.srcElement || document;
 					}
 					
-					if(e.touches){
-						E.pageX = e.touches[0].pageX;
-						E.pageY = e.touches[0].pageY;
+					if(e.targetTouches){
+						E.pageX = e.targetTouches[0].pageX;
+						E.pageY = e.targetTouches[0].pageY;
 					}
 					
 					/**
@@ -1009,7 +1009,7 @@ $.Element = function(config) {
 		'dblclick':[]
 	};
 	
-	this.preventEvent = false;
+	this.ignoreEvent = false;
 	this.initialization = false;
 	
 	/**
@@ -1026,7 +1026,7 @@ $.Element = function(config) {
 	 * megre customize config
 	 */
 	this.set(config);
-
+	
 	this.afterConfiguration();
 }
 
@@ -1220,28 +1220,24 @@ $.Painter = $.extend($.Element, {
 		
 	},
 	afterConfiguration : function() {
+		/**
+		 * register customize event
+		 */
+		if ($.isObject(this.get('listeners'))) {
+			for ( var e in this.get('listeners')) {
+				this.on(e, this.get('listeners')[e]);
+			}
+		}
+		
+		this.initialize();
+		/**
+		 * fire the initialize event,this probable use to unit test
+		 */
+		this.fireEvent(this, 'initialize', [this]);
 	},
 	registerEvent : function() {
 		for ( var i = 0; i < arguments.length; i++) {
 			this.events[arguments[i]] = [];
-		}
-	},
-	init : function() {
-		if (!this.initialization) {
-			/**
-			 * register event
-			 */
-			if ($.isObject(this.get('listeners'))) {
-				for ( var e in this.get('listeners')) {
-					this.on(e, this.get('listeners')[e]);
-				}
-			}
-
-			this.initialize();
-			/**
-			 * fire the initialize event,this probable use to unit test
-			 */
-			this.fireEvent(this, 'initialize', [this]);
 		}
 	},
 	is3D : function() {
@@ -1255,29 +1251,26 @@ $.Painter = $.extend($.Element, {
 		}
 	},
 	/**
-	 * @method The commnd fire to draw the chart use configuration,this is a abstract method.Currently known,both <link>$.Chart</link> and <link>$.Component</link> implement this method.
+	 * @method The commnd fire to draw the chart use configuration,
+	 * this is a abstract method.Currently known,both <link>$.Chart</link> and <link>$.Component</link> implement this method.
 	 * @return void
 	 */
 	draw : function(o) {
-		this.init();
-		this.draw = function(o) {
-			/**
-			 * fire the beforedraw event
-			 */
-			if (!this.fireEvent(this, 'beforedraw', [this])) {
-				return this;
-			}
-			/**
-			 * execute the commonDraw() that the subClass implement
-			 */
-			this.commonDraw(o);
-
-			/**
-			 * fire the draw event
-			 */
-			this.fireEvent(this, 'draw', [this]);
+		/**
+		 * fire the beforedraw event
+		 */
+		if (!this.fireEvent(this, 'beforedraw', [this])) {
+			return this;
 		}
-		this.draw(o);
+		/**
+		 * execute the commonDraw() that the subClass implement
+		 */
+		this.commonDraw(o);
+
+		/**
+		 * fire the draw event
+		 */
+		this.fireEvent(this, 'draw', [this]);
 	},
 	fireString : function(socpe, name, args, s) {
 		var t = this.fireEvent(socpe, name, args);
@@ -1516,33 +1509,38 @@ $.Html = $.extend($.Element,{
 			
 			
 	},
-	afterConfiguration:function(){
-		this.init();
-	},
 	initialize : function() {
-		if (!this.preventEvent)
-			/**
-			 * define abstract method
-			 */
+		if (!this.ignoreEvent)
 			$.DefineAbstract('isEventValid', this);
-	
+		
 		$.DefineAbstract('doDraw', this);
 	
 		this.doConfig();
 		this.initialization = true;
 	},
+	/**
+	 * @method return the component's dimension,return hold following property
+	 * @property x:the left-top coordinate-x
+	 * @property y:the left-top coordinate-y
+	 * @property width:the width of component,note:available there applies box model
+	 * @property height:the height of component,note:available there applies box model
+	 * @return object
+	 */
+	getDimension:function(){
+		return {
+			x:this.x,
+			x:this.y,
+			width:this.get("width"),
+			height:this.get("height")
+		}
+	},
 	doConfig : function() {
 		$.Component.superclass.doConfig.call(this);
 		var _ = this._();
-		/**
-		 * originx
-		 */
-		_.x = _.get('originx')+_.get('offsetx');
-		/**
-		 * 
-		 * originy
-		 */
-		_.y = _.get('originy')+_.get('offsety');
+		
+		
+		_.x = _.push('originx',_.get('originx')+_.get('offsetx'));
+		_.y = _.push('originy',_.get('originy')+_.get('offsety'));
 		
 		/**
 		 * if have evaluate it
@@ -2360,7 +2358,7 @@ $.Label = $.extend($.Component, {
 			/**
 			 * indicate this component not need support event
 			 */
-			this.preventEvent = true;
+			this.ignoreEvent = true;
 		},
 		doDraw:function(opts){
 			if(this.get('box_feature'))
@@ -2427,6 +2425,7 @@ $.Label = $.extend($.Component, {
 	},
 	simple = function(c) {
 		var M=0,V=0,MI,ML=0,n='minValue',x='maxValue';
+		this.total = 0;
 		c.each(function(d,i){
 			V  = d.value;
 			if($.isArray(V)){
@@ -2467,12 +2466,12 @@ $.Label = $.extend($.Component, {
 		this.push('maxItemSize',ML);
 		this.push(n,MI);
 		this.push(x,M);
-		this.push('total',this.total);
 		
 	},
 	complex = function(c){
 		this.data_labels = this.get('data_labels');
 		var M=0,MI=0,V,d,L=this.data_labels.length;
+		this.columns = [];this.total = 0;
 		for(var i=0;i<L;i++){
 			var item = [];
 			for(var j=0;j<c.length;j++){
@@ -2497,7 +2496,6 @@ $.Label = $.extend($.Component, {
 		}
 		this.push('minValue',MI); 
 		this.push('maxValue',M);
-		this.push('total',this.total);
 	};
 	
 	/**
@@ -3111,9 +3109,13 @@ $.Label = $.extend($.Component, {
 				 */
 				align : 'center',
 				/**
-				 * @cfg {Boolean} If true mouse change to a pointer when a mouseover fired.(defaults to true)
+				 * @cfg {Boolean} If true mouse change to a pointer when a mouseover fired.only available when use PC.(defaults to true)
 				 */
 				default_mouseover_css : true,
+				/**
+				 * @cfg {Boolean} If true ignore the event touchmove.only available when support touchEvent.(defaults to false)
+				 */
+				turn_off_touchmove : false,
 				/**
 				 * @cfg {Boolean} Specifies as true to display with percent.(default to false)
 				 */
@@ -3251,12 +3253,13 @@ $.Label = $.extend($.Component, {
 			this.rendered = false;
 			this.animationed = false;
 			this.data = [];
-			this.components = [];
+			this.plugins = [];
 			this.total = 0;
 		},
 		plugin : function(c) {
 			c.inject(this);
 			this.components.push(c);
+			this.plugins(c);
 		},
 		toImageURL : function() {
 			return this.T.toImageURL();
@@ -3295,6 +3298,10 @@ $.Label = $.extend($.Component, {
 				});
 			}
 		},
+		runAnimation : function(t, d) {
+			this.fireEvent(this, 'beforeAnimation', [this]);
+			this.animation(this);
+		},
 		doAnimation : function(t, d) {
 			this.get('doAnimationFn').call(this, t, d);
 		},
@@ -3309,7 +3316,6 @@ $.Label = $.extend($.Component, {
 			/**
 			 * console.time('Test for draw');
 			 */
-
 			if (!this.redraw) {
 				this.doSort();
 				if (this.title) {
@@ -3324,12 +3330,12 @@ $.Label = $.extend($.Component, {
 				this.T.box(0, 0, this.width, this.height, this.get('border'), this.get('f_color'),0,true);
 			}
 			this.redraw = true;
-
+			
 			if (!this.animationed && this.get('animation')) {
-				this.fireEvent(this, 'beforeAnimation', [this]);
-				this.animation(this);
+				this.runAnimation();
 				return;
 			}
+			
 			this.segmentRect();
 
 			this.components.eachAll(function(c, i) {
@@ -3342,43 +3348,47 @@ $.Label = $.extend($.Component, {
 			 */
 
 		},
-		create : function(shell) {
+		create : function(_,shell) {
 			/**
 			 * default should to calculate the size of warp?
 			 */
-			this.width = this.pushIf('width', 400);
-			this.height = this.pushIf('height', 300);
+			_.width = _.pushIf('width', 400);
+			_.height = _.pushIf('height', 300);
 
-			var style = "width:" + this.width + "px;height:" + this.height + "px;padding:0px;overflow:hidden;position:relative;";
+			var style = "width:" + _.width + "px;height:" + _.height + "px;padding:0px;overflow:hidden;position:relative;";
 
-			var id = $.iGather(this.type);
-			this.shellid = $.iGather(this.type + "-shell");
-			var html = "<div id='" + this.shellid + "' style='" + style + "'>" + "<canvas id= '" + id + "'  width='" + this.width + "' height=" + this.height + "'>" + "<p>Your browser does not support the canvas element</p>" + "</canvas>" + "</div>";
+			var id = $.iGather(_.type);
+			_.shellid = $.iGather(_.type + "-shell");
+			var html = "<div id='" + _.shellid + "' style='" + style + "'>" + "<canvas id= '" + id + "'  width='" + _.width + "' height=" + _.height + "'>" + "<p>Your browser does not support the canvas element</p>" + "</canvas>" + "</div>";
 			/**
 			 * also use appendChild()
 			 */
 			shell.innerHTML = html;
 
-			this.element = document.getElementById(id);
-			this.shell = document.getElementById(this.shellid);
+			_.element = document.getElementById(id);
+			_.shell = document.getElementById(_.shellid);
 			/**
 			 * the base canvas wrap for draw
 			 */
-			this.T = this.target = new Cans(this.element);
+			_.T = _.target = new Cans(_.element);
 
-			this.rendered = true;
+			_.rendered = true;
 		},
 		render : function(id) {
 			this.push('render', id);
+		},
+		setUp:function(){
+			this.initialization = false;
+			this.initialize();
 		},
 		initialize : function() {
 			var _ = this._(),d = _.get('data');
 			if (!_.rendered) {
 				var r = _.get('render');
 				if (typeof r == "string" && document.getElementById(r))
-					_.create(document.getElementById(r));
+					_.create(_,document.getElementById(r));
 				else if (typeof r == 'object')
-					_.create(r);
+					_.create(_,r);
 			}
 			
 			if (d.length > 0 && _.rendered && !_.initialization) {
@@ -3387,60 +3397,48 @@ $.Label = $.extend($.Component, {
 				}else if(_.dataType=='complex'){
 					complex.call(_,d);
 				}
-				
 				_.data = d;
-				
 				_.doConfig();
 				_.initialization = true;
 			}
 		},
-		doConfig : function() {
-			$.Chart.superclass.doConfig.call(this);
-
-			var _ = this._(), E = _.variable.event, mCSS = _.get('default_mouseover_css'), O, AO;
-
-			$.Assert.isArray(_.data);
-				
-			_.T.strokeStyle(true,_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
-
-			_.processAnimation = _.get('animation');
-
-			_.duration = ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
-
-			_.variable.animation = {
-				type : 0,
-				time : 0,
-				queue : []
-			};
+		/**
+		 * @method return the main Drawing Area's dimension,return following property
+		 * @property x:the left-top coordinate-x
+		 * @property y:the left-top coordinate-y
+		 * @property width:the width of drawing area
+		 * @property height:the height of drawing area
+		 * @return object
+		 */
+		getDrawingArea:function(){
+			return {
+				x:this.get("l_originx"),
+				x:this.get("t_originy"),
+				width:this.get("client_width"),
+				height:this.get("client_height")
+			}
+		},
+		/**
+		 * this method only invoked once
+		 */
+		oneWay:function(_){
 			
-			_.applyGradient();
-			
-			_.animationArithmetic = $.getAnimationArithmetic(_.get('animation_timing_function'));
-
-			_.on('afterAnimation', function() {
-				var N = _.variable.animation.queue.shift();
-				if (N) {
-					_[N.handler].apply(_, N.arguments);
-				}
-			});
-			
-			var events = $.touch?['touchstart','touchmove']:['click','mousemove'];
+			var E = _.variable.event, mCSS = !$.touch&&_.get('default_mouseover_css'), O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
 			
 			events.each(function(it) {
 				_.T.addEvent(it, function(e) {
 					if (_.processAnimation)
 						return;
-					if(e.touches&&e.touches.length!=1){
+					if(e.targetTouches&&e.targetTouches.length!=1){
 						return;
 					}
-					//e.preventDefault();
 					_.fireEvent(_, it, [_, $.Event.fix(e)]);
 				}, false);
 			});
 			
 			_.on(events[0], function(_, e) {
 				_.components.eachAll(function(C) {
-					if (!C.preventEvent) {
+					if (!C.ignoreEvent) {
 						var M = C.isMouseOver(e);
 						if (M.valid){
 							E.click = true;
@@ -3454,10 +3452,11 @@ $.Label = $.extend($.Component, {
 				}
 			});
 			
+			if(!$.touch||!_.get('turn_off_touchmove'))
 			_.on(events[1], function(_, e) {
 				O = AO = false;
 				_.components.eachAll(function(cot) {
-					if (!cot.preventEvent) {
+					if (!cot.ignoreEvent) {
 						var cE = cot.variable.event, M = cot.isMouseOver(e);
 						if (M.valid) {
 							O = true;
@@ -3466,11 +3465,11 @@ $.Label = $.extend($.Component, {
 								E.mouseover = true;
 								_.fireEvent(_, 'mouseover', [cot,e, M]);
 							}
-
+							
 							if (mCSS && AO) {
 								_.T.css("cursor", "pointer");
 							}
-
+							
 							if (!cE.mouseover) {
 								cE.mouseover = true;
 								cot.fireEvent(cot, 'mouseover', [cot,e, M]);
@@ -3498,8 +3497,49 @@ $.Label = $.extend($.Component, {
 						_.fireEvent(_, 'mouseout', [_,e]);
 					}
 				}
-				
 			});
+			_.oneWay = $.emptyFn;
+		},
+		doConfig : function() {
+			$.Chart.superclass.doConfig.call(this);
+
+			var _ = this._();
+			
+			
+			$.Assert.isArray(_.data);
+				
+			_.T.strokeStyle(true,_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
+
+			_.processAnimation = _.get('animation');
+
+			_.duration = ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
+
+			_.variable.animation = {
+				type : 0,
+				time : 0,
+				queue : []
+			};
+			
+			_.components = [];
+			
+			_.plugins.each(function(o){
+				_.components.push(o);
+			});
+			
+			_.applyGradient();
+			
+			_.animationArithmetic = $.getAA(_.get('animation_timing_function'));
+			
+			/**
+			_.on('afterAnimation', function() {
+				var N = _.variable.animation.queue.shift();
+				if (N) {
+					_[N.handler].apply(_, N.arguments);
+				}
+			});
+			*/
+			
+			_.oneWay(_);
 			
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
@@ -4481,7 +4521,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		_.T.cube3D(_.x + _.get('board_deep') * xa, _.y + h - _.get('board_deep') * ya, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('board_style'));
 
 		_.T.cube3D(_.x, _.y + h, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('wall_style'));
-
+		
 		_.gridlines.each(function(g) {
 			_.T.line(g.x1, g.y1, g.x1 + offx, g.y1 - offy, _.get('grid_line_width'), _.get('grid_color'));
 			_.T.line(g.x1 + offx, g.y1 - offy, g.x2 + offx, g.y2 - offy, _.get('grid_line_width'), _.get('grid_color'));
@@ -4651,8 +4691,8 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			_.width = _.get('width');
 			_.height = _.get('height');
 			
-			_.centerX = _.x + _.width/2;
-			_.centerY = _.y + _.height/2;
+			_.push('centerx',_.x + _.width/2);
+			_.push('centery',_.y + _.height/2);
 			
 			if(_.get('tip.enable')){
 				if(_.get('tip.showType')!='follow'){
@@ -4741,9 +4781,9 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			$.Rectangle2D.superclass.doConfig.call(this);
 			var _ = this,tipAlign = _.get('tipAlign'),valueAlign=_.get('valueAlign');
 			if(tipAlign=='left'||tipAlign=='right'){
-				_.tipY = function(w,h){return _.centerY - h/2;};
+				_.tipY = function(w,h){return _.get('centery') - h/2;};
 			}else{
-				_.tipX = function(w,h){return _.centerX -w/2;};
+				_.tipX = function(w,h){return _.get('centerx') -w/2;};
 			}
 			
 			if(tipAlign=='left'){
@@ -4761,18 +4801,18 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			if(valueAlign=='left'){
 				_.push('textAlign','right');
 				_.push('value_x',_.x - _.get('value_space'));
-				_.push('value_y',_.centerY);
+				_.push('value_y',_.get('centery'));
 			}else if(valueAlign=='right'){
 				_.push('textAlign','left');
 				_.push('textBaseline','middle');
 				_.push('value_x',_.x + _.width + _.get('value_space'));
-				_.push('value_y',_.centerY);
+				_.push('value_y',_.get('centery'));
 			}else if(valueAlign=='bottom'){
-				_.push('value_x',_.centerX);
+				_.push('value_x',_.get('centerx'));
 				_.push('value_y',_.y  + _.height + _.get('value_space'));
 				_.push('textBaseline','top');
 			}else{
-				_.push('value_x',_.centerX);
+				_.push('value_x',_.get('centerx'));
 				_.push('value_y',_.y  - _.get('value_space'));
 				_.push('textBaseline','bottom');
 			}
@@ -4823,7 +4863,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		},
 		drawValue:function(){
 			if(this.get('value')!='')
-			this.T.text(this.get('value'),this.centerX,this.topCenterY + this.get('value_space'),false,this.get('color'),'center','top',this.get('fontStyle'));
+			this.T.text(this.get('value'),this.get('centerx'),this.topCenterY + this.get('value_space'),false,this.get('color'),'center','top',this.get('fontStyle'));
 		},
 		drawRectangle:function(){
 			this.T.cube(
@@ -4842,14 +4882,14 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			);
 		},
 		isEventValid:function(e){
-			return {valid:!this.preventEvent&&e.x>this.x&&e.x<(this.x+this.get('width'))&&e.y<this.y+this.get('height')&&e.y>this.y};
+			return {valid:e.x>this.x&&e.x<(this.x+this.get('width'))&&e.y<this.y+this.get('height')&&e.y>this.y};
 		},
 		tipInvoke:function(){
-			var self = this;
+			var _ = this._();
 			return function(w,h){
 				return {
-					left:self.topCenterX - w/2,
-					top:self.topCenterY - h
+					left:_.topCenterX - w/2,
+					top:_.topCenterY - h
 				}
 			}
 		},
@@ -4857,8 +4897,6 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			$.Rectangle3D.superclass.doConfig.call(this);
 			var _ = this._();
 			_.pushIf("zHeight",_.get('width'));
-			
-			_.centerX=_.x+_.get('width')/2;
 			
 			_.topCenterX=_.x+(_.get('width')+_.get('width')*_.get('xAngle_'))/2;
 			
@@ -4967,6 +5005,24 @@ $.Sector = $.extend($.Component, {
 	},
 	toggle : function() {
 		this.fireEvent(this, this.get('bound_event'), [this]);
+	},
+	/**
+	 * @method return the sector's dimension,return hold following property
+	 * @property x:the x-coordinate of the center of the sector
+	 * @property y:the y-coordinate of the center of the sector
+	 * @property startAngle:The starting angle, in radians (0 is at the 3 o'clock position of the arc's circle)
+	 * @property endAngle:the ending angle, in radians
+	 * @property middleAngle:the middle angle, in radians
+	 * @return object
+	 */
+	getDimension:function(){
+		return {
+			x:this.x,
+			x:this.y,
+			startAngle:this.get("startAngle"),
+			middleAngle:this.get("middleAngle"),
+			endAngle:this.get("endAngle")
+		}
 	},
 	doDraw : function(opts) {
 		this.drawSector();
@@ -5387,7 +5443,6 @@ $.Pie = $.extend($.Chart, {
 		 */
 		'parseLabelText');
 
-		this.sectors = [];
 	},
 	/**
 	 * @method Toggle sector bound or rebound by a specific index.
@@ -5496,6 +5551,7 @@ $.Pie = $.extend($.Chart, {
 		
 		var _ = this._(),r = _.get('radius'), f = _.get('label.enable') ? 0.35 : 0.44;
 		
+		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
 
 		_.oA = $.angle2Radian(_.get('offsetAngle'));
@@ -5822,9 +5878,6 @@ $.Column = $.extend($.Chart, {
 
 		this.registerEvent();
 
-		this.rectangles = [];
-		this.labels = [];
-		this.labels.ignore = true;
 	},
 	doAnimation : function(t, d) {
 		var _ = this._(), h;
@@ -5850,6 +5903,7 @@ $.Column = $.extend($.Chart, {
 		var t = (_.get('showpercent') ? $.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
 		if (_.get('tip.enable'))
 			_.push('rectangle.tip.text', _.fireString(_, 'parseTipText', [d,d.value,i],d.name + ' '+t));
+		
 		_.set({
 			rectangle:{
 				id:id,
@@ -5866,6 +5920,10 @@ $.Column = $.extend($.Chart, {
 		$.Column.superclass.doConfig.call(this);
 		
 		var _ = this._(),c = 'colwidth',z = 'z_index';
+		
+		_.rectangles = [];
+		_.labels = [];
+			
 		/**
 		 * apply the coordinate feature
 		 */
@@ -6156,8 +6214,6 @@ $.Bar = $.extend($.Chart, {
 
 		this.registerEvent();
 
-		this.rectangles = [];
-		this.labels = [];
 	},
 	doParse : function(_,d, i, id, x, y, w) {
 		var t = (_.get('showpercent') ? $.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
@@ -6196,6 +6252,10 @@ $.Bar = $.extend($.Chart, {
 		 */
 		$.Coordinate.coordinate.call(_);
 		
+		_.rectangles = [];
+		
+		_.labels = [];
+		
 		_.rectangles.zIndex = _.get(z);
 		
 		_.labels.zIndex = _.get(z) + 1;
@@ -6222,6 +6282,7 @@ $.Bar = $.extend($.Chart, {
 		 * use option create a coordinate
 		 */
 		_.coo = $.Coordinate.coordinate_.call(_);
+		
 		_.components.push(_.coo);
 
 		/**
@@ -6706,7 +6767,6 @@ $.Line = $.extend($.Chart, {
 		 */
 		'parsePoint');
 
-		this.lines = [];
 	},
 	/**
 	 * @method Returns the coordinate of this element.
@@ -6723,7 +6783,8 @@ $.Line = $.extend($.Chart, {
 		 * apply the coordinate feature
 		 */
 		$.Coordinate.coordinate.call(_);
-
+		
+		_.lines = [];
 		
 		_.lines.zIndex = _.get('z_index');
 		_.push('line_start', (_.get('coordinate.width') - _.get('coordinate.valid_width')) / 2);
