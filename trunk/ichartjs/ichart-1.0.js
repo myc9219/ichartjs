@@ -334,7 +334,7 @@
 			if (parseInt(v) == 0) {
 				return pF((v / f + "").substring(0, (v + "").length + 1));
 			}
-			return Math.ceil(v / f);
+			return ceil(v / f);
 		}, colors = {
 			navy : 'rgb(0,0,128)',
 			olive : 'rgb(128,128,0)',
@@ -449,11 +449,11 @@
 				v = h[2];
 				h = h[0];
 			}
-			var r, g, b, hi, f;
-			hi = floor(h / 60) % 6;
-			f = h / 60 - hi;
-			p = v * (1 - s);
-			q = v * (1 - s * f);
+			var r, g, b,
+			hi = floor(h / 60) % 6,
+			f = h / 60 - hi,
+			p = v * (1 - s),
+			q = v * (1 - s * f),
 			t = v * (1 - s * (1 - f));
 			switch (hi) {
 				case 0 :
@@ -505,16 +505,11 @@
 			}
 		},
 		/**
-		 * 变色龙
-		 * 
-		 * @param {Boolean}
-		 *            d true为变深,false为变浅
-		 * @param {Object}
-		 *            rgb
-		 * @param {Number}
-		 *            iv 明度(0-1)
-		 * @param {Number}
-		 *            is 纯度(0-1)
+		 * @method anole,make color darker or lighter
+		 * @param {Boolean} d true:dark,false:light
+		 * @param {Object} rgb:color
+		 * @param {Number} iv 明度(0-1)
+		 * @param {Number} is 纯度(0-1)
 		 */
 		anole = function(d, rgb, iv, is) {
 			if (!rgb)
@@ -696,8 +691,8 @@
 					y : y * cos(x)
 				}
 			},
-			iGather : function(P) {
-				return (P || 'ichartjs') + '-' + new Date().getTime().toString();
+			iGather : function(k) {
+				return (k || 'ichartjs') + '-' + ceil(Math.random()*10000)+new Date().getTime().toString().substring(4);
 			},
 			toPercent : function(v, d) {
 				return (v * 100).toFixed(d) + '%';
@@ -779,12 +774,14 @@
 		/**
 		 * shim layer with setTimeout fallback
 		 */
-		window.requestAnimFrame = (function() {
-			return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback) {
+		_.requestAnimFrame = (function() {
+			var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback) {
 				window.setTimeout(callback, 1000 / 60);
 			};
+			return function(f){raf(f)}
 		})();
-
+		
+		
 		/**
 		 * defined Event
 		 */
@@ -1026,7 +1023,6 @@ $.Element = function(config) {
 	 * megre customize config
 	 */
 	this.set(config);
-	
 	this.afterConfiguration();
 }
 
@@ -1049,13 +1045,13 @@ $.Element.prototype = {
 	 * average write speed about 0.013ms
 	 */
 	push : function(name, value) {
-		var A = name.split("."), V = this.options;
-		for (i = 0; i < A.length - 1; i++) {
+		var A = name.split("."),L=A.length - 1,V = this.options;
+		for (var i = 0; i < L; i++) {
 			if (!V[A[i]])
 				V[A[i]] = {};
 			V = V[A[i]];
 		}
-		V[A[A.length - 1]] = value;
+		V[A[L]] = value;
 		return value;
 	},
 	/**
@@ -1063,7 +1059,7 @@ $.Element.prototype = {
 	 */
 	get : function(name) {
 		var A = name.split("."), V = this.options[A[0]];
-		for (i = 1; i < A.length; i++) {
+		for (var i = 1; i < A.length; i++) {
 			if (!V)
 				return null;
 			V = V[A[i]];
@@ -1228,8 +1224,8 @@ $.Painter = $.extend($.Element, {
 				this.on(e, this.get('listeners')[e]);
 			}
 		}
-		
 		this.initialize();
+		
 		/**
 		 * fire the initialize event,this probable use to unit test
 		 */
@@ -1265,7 +1261,7 @@ $.Painter = $.extend($.Element, {
 		/**
 		 * execute the commonDraw() that the subClass implement
 		 */
-		this.commonDraw(o);
+		this.commonDraw(this,o);
 
 		/**
 		 * fire the draw event
@@ -1297,6 +1293,7 @@ $.Painter = $.extend($.Element, {
 		return this;
 	},
 	doConfig : function() {
+		
 		var _ = this._(), p = $.parsePadding(_.get('padding')), b = _.get('border.enable'), b = b ? $.parsePadding(_.get('border.width')) : [0, 0, 0, 0], bg = _.get('background_color'), f = _.get('color_factor');
 		
 		_.set({
@@ -1325,7 +1322,6 @@ $.Painter = $.extend($.Element, {
 		}
 		
 		_.push('fontStyle', $.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
-		
 		_.push('f_color', bg);
 		_.push('f_color_', bg);
 		_.push("light_color", $.light(bg, f));
@@ -2389,7 +2385,6 @@ $.Label = $.extend($.Component, {
 		return w == 1 ? (floor(c) + 0.5) : Math.round(c);
 	}, getCurvePoint = function(seg, point, i, smo) {
 		var x = point.x, y = point.y, lp = seg[i - 1], np = seg[i + 1], lcx, lcy, rcx, rcy;
-		// find out control points
 		if (i < seg.length - 1) {
 			var lastY = lp.y, nextY = np.y, c;
 			lcx = (smo * x + lp.x) / (smo + 1);
@@ -2503,7 +2498,7 @@ $.Label = $.extend($.Component, {
 	 */
 	function Cans(c) {
 		if (typeof c === "string")
-			c = document.getElementById(c);
+			c = $(c);
 		if (!c || !c['tagName'] || c['tagName'].toLowerCase() != 'canvas')
 			throw new Error("there not a canvas element");
 
@@ -2514,6 +2509,9 @@ $.Label = $.extend($.Component, {
 	}
 
 	Cans.prototype = {
+		getContext:function(){
+			return this.c;
+		},		
 		css : function(a, s) {
 			if ($.isDefined(s))
 				this.canvas.style[a] = s;
@@ -3195,9 +3193,9 @@ $.Label = $.extend($.Component, {
 				 */
 				animation : false,
 				/**
-				 * @inner {Function} the custom funtion for animation
+				 * @Function {Function} the custom funtion for animation.(default to null)
 				 */
-				doAnimationFn : $.emptyFn,
+				doAnimation : null,
 				/**
 				 * @cfg {String} (default to 'ease-in-out') Available value are:
 				 * @Option 'easeIn'
@@ -3250,16 +3248,12 @@ $.Label = $.extend($.Component, {
 			'afterAnimation', 'animating');
 
 			this.T = null;
-			this.rendered = false;
+			this.RENDERED = false;
 			this.animationed = false;
 			this.data = [];
 			this.plugins = [];
+			this.oneways = [];
 			this.total = 0;
-		},
-		plugin : function(c) {
-			c.inject(this);
-			this.components.push(c);
-			this.plugins(c);
 		},
 		toImageURL : function() {
 			return this.T.toImageURL();
@@ -3275,6 +3269,7 @@ $.Label = $.extend($.Component, {
 			 * clear the part of canvas
 			 */
 			_.segmentRect();
+			
 			/**
 			 * doAnimation of implement
 			 */
@@ -3285,11 +3280,11 @@ $.Label = $.extend($.Component, {
 			_.resetCanvas();
 			if (_.variable.animation.time < _.duration) {
 				_.variable.animation.time++;
-				requestAnimFrame(function() {
+				$.requestAnimFrame(function() {
 					_.animation(_);
 				});
 			} else {
-				requestAnimFrame(function() {
+				$.requestAnimFrame(function() {
 					_.variable.animation.time = 0;
 					_.animationed = true;
 					_.draw();
@@ -3298,100 +3293,155 @@ $.Label = $.extend($.Component, {
 				});
 			}
 		},
-		runAnimation : function(t, d) {
+		runAnimation : function() {
 			this.fireEvent(this, 'beforeAnimation', [this]);
 			this.animation(this);
-		},
-		doAnimation : function(t, d) {
-			this.get('doAnimationFn').call(this, t, d);
 		},
 		doSort:function(){
 			this.components.sor(function(p, q){return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
-		commonDraw : function() {
-			$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
-			$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
-			$.Assert.gtZero(this.data.length, this.type + '\'s data is empty.');
+		commonDraw : function(_) {
+			$.Assert.isTrue(_.RENDERED, _.type + ' has not rendered.');
+			$.Assert.isTrue(_.initialization, _.type + ' has initialize failed.');
+			$.Assert.gtZero(_.data.length, _.type + '\'s data is empty.');
 			
 			/**
 			 * console.time('Test for draw');
 			 */
-			if (!this.redraw) {
-				this.doSort();
-				if (this.title) {
-					this.title.draw();
-				}
-				if (this.subtitle) {
-					this.subtitle.draw();
-				}
-				if (this.footnote) {
-					this.footnote.draw();
-				}
-				this.T.box(0, 0, this.width, this.height, this.get('border'), this.get('f_color'),0,true);
+			if (!_.redraw) {
+				_.doSort();
+				_.oneways.eachAll(function(o) {o.draw()});
 			}
-			this.redraw = true;
+			_.redraw = true;
 			
-			if (!this.animationed && this.get('animation')) {
-				this.runAnimation();
+			if (!_.animationed && _.get('animation')) {
+				_.runAnimation();
 				return;
 			}
 			
-			this.segmentRect();
+			_.segmentRect();
 
-			this.components.eachAll(function(c, i) {
+			_.components.eachAll(function(c) {
 				c.draw();
-			}, this);
-
-			this.resetCanvas();
+			});
+			
+			_.resetCanvas();
 			/**
 			 * console.timeEnd('Test for draw');
 			 */
 
 		},
-		create : function(_,shell) {
-			/**
-			 * default should to calculate the size of warp?
-			 */
-			_.width = _.pushIf('width', 400);
-			_.height = _.pushIf('height', 300);
-
-			var style = "width:" + _.width + "px;height:" + _.height + "px;padding:0px;overflow:hidden;position:relative;";
-
-			var id = $.iGather(_.type);
-			_.shellid = $.iGather(_.type + "-shell");
-			var html = "<div id='" + _.shellid + "' style='" + style + "'>" + "<canvas id= '" + id + "'  width='" + _.width + "' height=" + _.height + "'>" + "<p>Your browser does not support the canvas element</p>" + "</canvas>" + "</div>";
-			/**
-			 * also use appendChild()
-			 */
-			shell.innerHTML = html;
-
-			_.element = document.getElementById(id);
-			_.shell = document.getElementById(_.shellid);
-			/**
-			 * the base canvas wrap for draw
-			 */
-			_.T = _.target = new Cans(_.element);
-
-			_.rendered = true;
+		/**
+		 * @method register the customize component
+		 * @paramter <link>$.Text</link>#component 
+		 * @return void
+		 */
+		plugin : function(c) {
+			c.inject(this);
+			this.components.push(c);
+			this.plugins(c);
 		},
-		render : function(id) {
-			this.push('render', id);
+		/**
+		 * @method return the title,return undefined if unavailable
+		 * @return <link>$.Text</link>#the title object
+		 */
+		getTitle:function(){
+			return this.title;
 		},
+		/**
+		 * @method return the subtitle,return undefined if unavailable
+		 * @return <link>$.Text</link>#the subtitle object
+		 */
+		getSubTitle:function(){
+			return this.subtitle;
+		},
+		/**
+		 * @method return the footnote,return undefined if unavailable
+		 * @return <link>$.Text</link>#the footnote object
+		 */
+		getFootNote:function(){
+			return this.footnote;
+		},
+		/**
+		 * @method return the main Drawing Area's dimension,return following property:
+		 * x:the left-top coordinate-x
+		 * y:the left-top coordinate-y
+		 * width:the width of drawing area
+		 * height:the height of drawing area
+		 * @return Object#contains dimension info
+		 */
+		getDrawingArea:function(){
+			return {
+				x:this.get("l_originx"),
+				x:this.get("t_originy"),
+				width:this.get("client_width"),
+				height:this.get("client_height")
+			}
+		},
+		/**
+		 * @method set up the chart by latest configruation
+		 * @return void
+		 */
 		setUp:function(){
+			this.redraw = false;
+			this.T.clearRect();
 			this.initialization = false;
 			this.initialize();
 		},
+		create : function(_,shell) {
+			/**
+			 * did default should to calculate the size of warp?
+			 */
+			_.width = _.pushIf('width', 400);
+			_.height = _.pushIf('height', 300);
+			_.canvasid = $.iGather(_.type);
+			_.shellid = "shell-"+_.canvasid;
+			
+			var H = [];
+			H.push("<div id='");
+			H.push(_.shellid);
+			H.push("' style='width:");
+			H.push(_.width);
+			H.push("px;height:");
+			H.push(_.height);
+			H.push("px;padding:0px;margin:0px;overflow:hidden;position:relative;'>");
+			H.push("<canvas id= '");
+			H.push(_.canvasid);
+			H.push("'  width='");
+			H.push(_.width);
+			H.push("' height='");
+			H.push(_.height);
+			H.push("'><p>Your browser does not support the canvas element</p></canvas></div>");
+			/**
+			 * also use appendChild()
+			 */
+			shell.innerHTML = H.join("");
+			
+			_.shell = $(_.shellid);
+			/**
+			 * the base canvas wrap for draw
+			 */
+			_.T = _.target = new Cans(_.canvasid);
+			
+			_.RENDERED = true;
+		},
 		initialize : function() {
+			
 			var _ = this._(),d = _.get('data');
-			if (!_.rendered) {
+			/**
+			 * create dom
+			 */
+			if (!_.RENDERED) {
 				var r = _.get('render');
-				if (typeof r == "string" && document.getElementById(r))
-					_.create(_,document.getElementById(r));
+				if (typeof r == "string" && $(r))
+					_.create(_,$(r));
 				else if (typeof r == 'object')
 					_.create(_,r);
 			}
-			
-			if (d.length > 0 && _.rendered && !_.initialization) {
+			/**
+			 * set up
+			 */
+			if (d.length > 0 && _.RENDERED && !_.initialization) {
 				if(_.dataType=='simple'){
 					simple.call(_,d);
 				}else if(_.dataType=='complex'){
@@ -3400,22 +3450,6 @@ $.Label = $.extend($.Component, {
 				_.data = d;
 				_.doConfig();
 				_.initialization = true;
-			}
-		},
-		/**
-		 * @method return the main Drawing Area's dimension,return following property
-		 * @property x:the left-top coordinate-x
-		 * @property y:the left-top coordinate-y
-		 * @property width:the width of drawing area
-		 * @property height:the height of drawing area
-		 * @return object
-		 */
-		getDrawingArea:function(){
-			return {
-				x:this.get("l_originx"),
-				x:this.get("t_originy"),
-				width:this.get("client_width"),
-				height:this.get("client_height")
 			}
 		},
 		/**
@@ -3501,19 +3535,21 @@ $.Label = $.extend($.Component, {
 			_.oneWay = $.emptyFn;
 		},
 		doConfig : function() {
-			$.Chart.superclass.doConfig.call(this);
-
-			var _ = this._();
 			
+			$.Chart.superclass.doConfig.call(this);
+			
+			var _ = this._();
 			
 			$.Assert.isArray(_.data);
 				
 			_.T.strokeStyle(true,_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');
-
+			
 			_.duration = ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
-
+			if($.isFunction(_.get('doAnimation'))){
+				_.doAnimation = _.get('doAnimation');
+			}
 			_.variable.animation = {
 				type : 0,
 				time : 0,
@@ -3521,7 +3557,20 @@ $.Label = $.extend($.Component, {
 			};
 			
 			_.components = [];
+			_.oneways = [];
 			
+			/**
+			 * push the background in it
+			 */
+			_.oneways.push(new $.Custom({
+				drawFn:function(){
+					_.T.box(0, 0, _.width, _.height, _.get('border'), _.get('f_color'),0,true);
+				}
+			}));
+			
+			/**
+			 * make sure hold the customize plugin 
+			 */
 			_.plugins.each(function(o){
 				_.components.push(o);
 			});
@@ -3570,11 +3619,13 @@ $.Label = $.extend($.Component, {
 				_.push('title.originy', _.get('padding_top'));
 				_.push('title.width', w);
 				_.title = new $.Text(_.get('title'), _);
+				_.oneways.push(_.title);
 				if (st) {
 					_.push('subtitle.originx', l);
 					_.push('subtitle.originy', _.get('title.originy') + _.get('title.height'));
 					_.push('subtitle.width', w);
 					_.subtitle = new $.Text(_.get('subtitle'), _);
+					_.oneways.push(_.subtitle);
 				}
 			}
 
@@ -3586,6 +3637,7 @@ $.Label = $.extend($.Component, {
 				_.push('footnote.originy', _.get('b_originy'));
 				_.push('footnote.width', w);
 				_.footnote = new $.Text(_.get('footnote'), _);
+				_.oneways.push(_.footnote);
 			}
 
 			h = _.push('client_height', (_.get('height') - _.get('vpadding') - H));
@@ -5423,14 +5475,14 @@ $.Pie = $.extend($.Chart, {
 		this.registerEvent(
 		/**
 		 * @event Fires when this element' sector bounded
-		 * @paramter $.Sector2d#sector
+		 * @paramter <link>$.Sector2d</link>#sector
 		 * @paramter string#name
 		 * @paramter int#index
 		 */
 		'bound',
 		/**
 		 * @event Fires when this element' sector rebounded
-		 * @paramter $.Sector2d#sector
+		 * @paramter <link>$.Sector2d</link>#sector
 		 * @paramter string#name
 		 * @paramter int#index
 		 */

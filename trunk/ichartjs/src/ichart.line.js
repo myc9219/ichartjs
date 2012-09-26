@@ -49,11 +49,11 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 */
 			data_labels : [],
 			/**
-			 * @cfg {Number} the distance of column's bottom and text.(default to 6)
+			 * @inner {Number} the distance of column's bottom and text.(default to 6)
 			 */
 			label_space : 6,
 			/**
-			 * @cfg {Boolean} if the point are proportional space.(default to true)
+			 * @inner {Boolean} if the point are proportional space.(default to true)
 			 */
 			proportional_spacing : true,
 			/**

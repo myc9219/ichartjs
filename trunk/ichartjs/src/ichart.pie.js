@@ -34,7 +34,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			counterclockwise : false,
 			/**
-			 * @cfg {Boolean} 当与其他label有位置冲突时自动浮动其位置.(default to true).
+			 * @cfg {Boolean} when label's position in conflict.auto layout.(default to true).
 			 */
 			intellectLayout : true,
 			/**
