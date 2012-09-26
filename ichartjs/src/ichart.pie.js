@@ -68,14 +68,14 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		this.registerEvent(
 		/**
 		 * @event Fires when this element' sector bounded
-		 * @paramter iChart.Sector2d#sector
+		 * @paramter <link>iChart.Sector2d</link>#sector
 		 * @paramter string#name
 		 * @paramter int#index
 		 */
 		'bound',
 		/**
 		 * @event Fires when this element' sector rebounded
-		 * @paramter iChart.Sector2d#sector
+		 * @paramter <link>iChart.Sector2d</link>#sector
 		 * @paramter string#name
 		 * @paramter int#index
 		 */

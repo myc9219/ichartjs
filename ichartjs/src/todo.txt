@@ -1,6 +1,6 @@
 //expect next
 1.return the postion of component's important item*
-1.1.增加属性oneway表示只渲染一次。用于在非绘图区的自定义组件
+1.1.增加测试用例
 2.中文api同步
 3.教程同步
 4.整合文件，分组件的文件压缩到一起。
