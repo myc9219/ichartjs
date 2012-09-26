@@ -53,7 +53,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			 */
 			color_factor : 0.15,
 			/**
-			 * @cfg {String} ('2d','3d')
+			 * @inner {String} ('2d','3d')
 			 */
 			style : '',
 			/**

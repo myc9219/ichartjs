@@ -34,6 +34,9 @@
 				 * @Option center
 				 */
 				textAlign:'center',
+				/**
+				 * @cfg {String} Here,specify as false to make background transparent.(default to null)
+				 */
 				background_color : 0,
 				/**
 				 * @cfg {String} Specifies the textBaseline of html5.(default to 'top')
@@ -48,6 +51,7 @@
 				textBaseline:'top',
 				/**
 				 * @cfg {Object} Here,specify as false by default
+				 * @see <link>iChart.Element#border</link>
 				 */
 				border : {
 					enable : false

@@ -40,11 +40,11 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			 */
 			end_scale : undefined,
 			/**
-			 * @inner {Number} Specifies the chart's minimal value
+			 * @cfg {Number} Specifies the chart's minimal value
 			 */
 			min_scale : undefined,
 			/**
-			 * @inner {Number} Specifies the chart's maximal value
+			 * @cfg {Number} Specifies the chart's maximal value
 			 */
 			max_scale : undefined,
 			/**
@@ -85,10 +85,6 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			 * @cfg {Array} the customize labels
 			 */
 			labels : [],
-			/**
-			 * @cfg {Boolean} True to Indicate the grid is accord with scale
-			 */
-			scale2grid : true,
 			/**
 			 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 16)
 			 */
@@ -500,7 +496,9 @@ iChart.Coordinate2D = iChart
 							 * @cfg {Number} Required,Specifies the height of this coordinate.(default to undefined)
 							 */
 							height : undefined,
-
+							/**
+							 * @cfg {Number}Override the default as -1 to make sure it at the bottom.(default to -1)
+							 */	
 							z_index : -1,
 							/**
 							 * @cfg {Object} Specifies style for axis of this coordinate. Available property are:
