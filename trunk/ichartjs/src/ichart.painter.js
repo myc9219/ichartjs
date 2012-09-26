@@ -191,7 +191,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		/**
 		 * execute the commonDraw() that the subClass implement
 		 */
-		this.commonDraw(o);
+		this.commonDraw(this,o);
 
 		/**
 		 * fire the draw event

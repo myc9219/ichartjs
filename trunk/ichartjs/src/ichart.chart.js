@@ -872,12 +872,8 @@
 			this.animationed = false;
 			this.data = [];
 			this.plugins = [];
+			this.oneways = [];
 			this.total = 0;
-		},
-		plugin : function(c) {
-			c.inject(this);
-			this.components.push(c);
-			this.plugins(c);
 		},
 		toImageURL : function() {
 			return this.T.toImageURL();
@@ -924,45 +920,93 @@
 		doSort:function(){
 			this.components.sor(function(p, q){return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
-		commonDraw : function() {
-			$.Assert.isTrue(this.RENDERED, this.type + ' has not rendered.');
-			$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
-			$.Assert.gtZero(this.data.length, this.type + '\'s data is empty.');
+		commonDraw : function(_) {
+			$.Assert.isTrue(_.RENDERED, _.type + ' has not rendered.');
+			$.Assert.isTrue(_.initialization, _.type + ' has initialize failed.');
+			$.Assert.gtZero(_.data.length, _.type + '\'s data is empty.');
 			
 			/**
 			 * console.time('Test for draw');
 			 */
-			if (!this.redraw) {
-				this.doSort();
-				if (this.title) {
-					this.title.draw();
-				}
-				if (this.subtitle) {
-					this.subtitle.draw();
-				}
-				if (this.footnote) {
-					this.footnote.draw();
-				}
-				this.T.box(0, 0, this.width, this.height, this.get('border'), this.get('f_color'),0,true);
+			if (!_.redraw) {
+				_.doSort();
+				_.oneways.eachAll(function(o) {o.draw()});
 			}
-			this.redraw = true;
+			_.redraw = true;
 			
-			if (!this.animationed && this.get('animation')) {
-				this.runAnimation();
+			if (!_.animationed && _.get('animation')) {
+				_.runAnimation();
 				return;
 			}
 			
-			this.segmentRect();
+			_.segmentRect();
 
-			this.components.eachAll(function(c, i) {
+			_.components.eachAll(function(c) {
 				c.draw();
-			}, this);
-
-			this.resetCanvas();
+			});
+			
+			_.resetCanvas();
 			/**
 			 * console.timeEnd('Test for draw');
 			 */
 
+		},
+		/**
+		 * @method register the customize component
+		 * @paramter <link>iChart.Text</link>#component 
+		 * @return void
+		 */
+		plugin : function(c) {
+			c.inject(this);
+			this.components.push(c);
+			this.plugins(c);
+		},
+		/**
+		 * @method return the title,return undefined if unavailable
+		 * @return <link>iChart.Text</link>#the title object
+		 */
+		getTitle:function(){
+			return this.title;
+		},
+		/**
+		 * @method return the subtitle,return undefined if unavailable
+		 * @return <link>iChart.Text</link>#the subtitle object
+		 */
+		getSubTitle:function(){
+			return this.subtitle;
+		},
+		/**
+		 * @method return the footnote,return undefined if unavailable
+		 * @return <link>iChart.Text</link>#the footnote object
+		 */
+		getFootNote:function(){
+			return this.footnote;
+		},
+		/**
+		 * @method return the main Drawing Area's dimension,return following property:
+		 * x:the left-top coordinate-x
+		 * y:the left-top coordinate-y
+		 * width:the width of drawing area
+		 * height:the height of drawing area
+		 * @return Object#contains dimension info
+		 */
+		getDrawingArea:function(){
+			return {
+				x:this.get("l_originx"),
+				x:this.get("t_originy"),
+				width:this.get("client_width"),
+				height:this.get("client_height")
+			}
+		},
+		/**
+		 * @method set up the chart by latest configruation
+		 * @return void
+		 */
+		setUp:function(){
+			this.redraw = false;
+			this.T.clearRect();
+			this.initialization = false;
+			this.initialize();
 		},
 		create : function(_,shell) {
 			/**
@@ -1001,15 +1045,12 @@
 			
 			_.RENDERED = true;
 		},
-		setUp:function(){
-			this.redraw = false;
-			this.T.clearRect();
-			this.initialization = false;
-			this.initialize();
-		},
 		initialize : function() {
 			
 			var _ = this._(),d = _.get('data');
+			/**
+			 * create dom
+			 */
 			if (!_.RENDERED) {
 				var r = _.get('render');
 				if (typeof r == "string" && $(r))
@@ -1017,7 +1058,9 @@
 				else if (typeof r == 'object')
 					_.create(_,r);
 			}
-			
+			/**
+			 * set up
+			 */
 			if (d.length > 0 && _.RENDERED && !_.initialization) {
 				if(_.dataType=='simple'){
 					simple.call(_,d);
@@ -1027,22 +1070,6 @@
 				_.data = d;
 				_.doConfig();
 				_.initialization = true;
-			}
-		},
-		/**
-		 * @method return the main Drawing Area's dimension,return following property
-		 * @property x:the left-top coordinate-x
-		 * @property y:the left-top coordinate-y
-		 * @property width:the width of drawing area
-		 * @property height:the height of drawing area
-		 * @return object
-		 */
-		getDrawingArea:function(){
-			return {
-				x:this.get("l_originx"),
-				x:this.get("t_originy"),
-				width:this.get("client_width"),
-				height:this.get("client_height")
 			}
 		},
 		/**
@@ -1150,7 +1177,20 @@
 			};
 			
 			_.components = [];
+			_.oneways = [];
 			
+			/**
+			 * push the background in it
+			 */
+			_.oneways.push(new iChart.Custom({
+				drawFn:function(){
+					_.T.box(0, 0, _.width, _.height, _.get('border'), _.get('f_color'),0,true);
+				}
+			}));
+			
+			/**
+			 * make sure hold the customize plugin 
+			 */
 			_.plugins.each(function(o){
 				_.components.push(o);
 			});
@@ -1199,11 +1239,13 @@
 				_.push('title.originy', _.get('padding_top'));
 				_.push('title.width', w);
 				_.title = new $.Text(_.get('title'), _);
+				_.oneways.push(_.title);
 				if (st) {
 					_.push('subtitle.originx', l);
 					_.push('subtitle.originy', _.get('title.originy') + _.get('title.height'));
 					_.push('subtitle.width', w);
 					_.subtitle = new $.Text(_.get('subtitle'), _);
+					_.oneways.push(_.subtitle);
 				}
 			}
 
@@ -1215,6 +1257,7 @@
 				_.push('footnote.originy', _.get('b_originy'));
 				_.push('footnote.width', w);
 				_.footnote = new $.Text(_.get('footnote'), _);
+				_.oneways.push(_.footnote);
 			}
 
 			h = _.push('client_height', (_.get('height') - _.get('vpadding') - H));
