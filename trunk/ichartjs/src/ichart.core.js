@@ -334,7 +334,7 @@
 			if (parseInt(v) == 0) {
 				return pF((v / f + "").substring(0, (v + "").length + 1));
 			}
-			return Math.ceil(v / f);
+			return ceil(v / f);
 		}, colors = {
 			navy : 'rgb(0,0,128)',
 			olive : 'rgb(128,128,0)',
@@ -449,11 +449,11 @@
 				v = h[2];
 				h = h[0];
 			}
-			var r, g, b, hi, f;
-			hi = floor(h / 60) % 6;
-			f = h / 60 - hi;
-			p = v * (1 - s);
-			q = v * (1 - s * f);
+			var r, g, b,
+			hi = floor(h / 60) % 6,
+			f = h / 60 - hi,
+			p = v * (1 - s),
+			q = v * (1 - s * f),
 			t = v * (1 - s * (1 - f));
 			switch (hi) {
 				case 0 :
@@ -505,16 +505,11 @@
 			}
 		},
 		/**
-		 * 变色龙
-		 * 
-		 * @param {Boolean}
-		 *            d true为变深,false为变浅
-		 * @param {Object}
-		 *            rgb
-		 * @param {Number}
-		 *            iv 明度(0-1)
-		 * @param {Number}
-		 *            is 纯度(0-1)
+		 * @method anole,make color darker or lighter
+		 * @param {Boolean} d true:dark,false:light
+		 * @param {Object} rgb:color
+		 * @param {Number} iv 明度(0-1)
+		 * @param {Number} is 纯度(0-1)
 		 */
 		anole = function(d, rgb, iv, is) {
 			if (!rgb)
@@ -696,8 +691,8 @@
 					y : y * cos(x)
 				}
 			},
-			iGather : function(P) {
-				return (P || 'ichartjs') + '-' + new Date().getTime().toString();
+			iGather : function(k) {
+				return (k || 'ichartjs') + '-' + ceil(Math.random()*10000)+new Date().getTime().toString().substring(4);
 			},
 			toPercent : function(v, d) {
 				return (v * 100).toFixed(d) + '%';
@@ -779,12 +774,14 @@
 		/**
 		 * shim layer with setTimeout fallback
 		 */
-		window.requestAnimFrame = (function() {
-			return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback) {
+		_.requestAnimFrame = (function() {
+			var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback) {
 				window.setTimeout(callback, 1000 / 60);
 			};
+			return function(f){raf(f)}
 		})();
-
+		
+		
 		/**
 		 * defined Event
 		 */

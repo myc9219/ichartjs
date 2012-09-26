@@ -7,35 +7,69 @@
 		
 		
         var canvas = document.createElement("canvas");
-        var ctx = canvas.getContext("2d");
+        var context = canvas.getContext("2d");
+        var ctx = context;
         canvas.width = 550, canvas.height = 400,canvas.style.border = "solid 1px black";
         document.body.appendChild(canvas);
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "#f96";
-        ctx.moveTo(0,60.5);
-        ctx.lineTo(550,60.5);
-        ctx.moveTo(200.5,0);
-        ctx.lineTo(200.5,400);
-        ctx.stroke();
         
-        ctx.lineWidth = 40;
-        ctx.strokeStyle = "green";
-        ctx.beginPath();
-        ctx.moveTo(0,60);
-        ctx.lineTo(200,60);
-        ctx.closePath();
-        ctx.stroke();
+        function drawScreen() {
+        	context.fillStyle = "black";
+        	context.fillRect(0, 0, 260, 260);
 
-        ctx.lineWidth = 30;
-        ctx.strokeStyle = "green";
-        ctx.beginPath();
-        ctx.moveTo(0,60);
-        ctx.lineTo(200,60);
-        ctx.closePath();
-        ctx.stroke();
+        	context.save();
+        	//clip the canvas to a 50×50 square starting at 0,0
+        	context.rect(0, 0, 100, 100);
+        	context.clip();
+        	//red circle
+        	context.beginPath();
+        	context.strokeStyle = "red"; 
+        	context.lineWidth = 5;
+        	context.arc(100, 100, 100, (Math.PI/180)*0, (Math.PI/180)*360, false);
+        	//full circle
+        	context.stroke();
+        	context.closePath();
+        	context.restore();
+        	
+        	//reclip to the entire canvas
+        	context.rect(0, 0, 20,20);
+        	context.clip();
+        	//draw a blue line that is not clipped
+        	context.beginPath();
+        	context.fillStyle = "blue"; //need list of available colors
+        	context.lineWidth = 5;
+        	context.rect(10, 10, 200, 200);
+        	//context.arc(200, 200, 50, (Math.PI/180)*0, (Math.PI/180)*360, false);
+        	//full circle
+        	context.fill();
+        	context.closePath();
+        }
+     // Draw a rectangle
+     	drawScreen();
 
+     	/*
+        ctx.rect(50,20,200,120);
+        ctx.stroke();
+        // Draw red rectangle
+        ctx.fillStyle="red";
+        ctx.fillRect(0,0,150,100);
+        */
+        </script> 
         
-        ctx.strokeRect(200,60, 100, 100);
+
+        <span>With clip():</span>
+        <canvas id="myCanvas2" width="300" height="150" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas tag.</canvas>
+	
+        <script>
+        var c=document.getElementById("myCanvas2");
+        var ctx=c.getContext("2d");
+        // Clip a rectangular area
+        ctx.rect(50,20,200,120);
+        ctx.stroke();
+        ctx.clip();
+        // Draw red rectangle after clip()
+        ctx.fillStyle="red";
+        ctx.fillRect(0,0,150,100);
         
 </script>
 </body>

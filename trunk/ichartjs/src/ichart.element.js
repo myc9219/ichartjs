@@ -110,7 +110,6 @@ iChart.Element = function(config) {
 	 * megre customize config
 	 */
 	this.set(config);
-	
 	this.afterConfiguration();
 }
 
@@ -133,13 +132,13 @@ iChart.Element.prototype = {
 	 * average write speed about 0.013ms
 	 */
 	push : function(name, value) {
-		var A = name.split("."), V = this.options;
-		for (i = 0; i < A.length - 1; i++) {
+		var A = name.split("."),L=A.length - 1,V = this.options;
+		for (var i = 0; i < L; i++) {
 			if (!V[A[i]])
 				V[A[i]] = {};
 			V = V[A[i]];
 		}
-		V[A[A.length - 1]] = value;
+		V[A[L]] = value;
 		return value;
 	},
 	/**
@@ -147,7 +146,7 @@ iChart.Element.prototype = {
 	 */
 	get : function(name) {
 		var A = name.split("."), V = this.options[A[0]];
-		for (i = 1; i < A.length; i++) {
+		for (var i = 1; i < A.length; i++) {
 			if (!V)
 				return null;
 			V = V[A[i]];

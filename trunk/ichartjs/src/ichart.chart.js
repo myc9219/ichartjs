@@ -5,7 +5,6 @@
 		return w == 1 ? (floor(c) + 0.5) : Math.round(c);
 	}, getCurvePoint = function(seg, point, i, smo) {
 		var x = point.x, y = point.y, lp = seg[i - 1], np = seg[i + 1], lcx, lcy, rcx, rcy;
-		// find out control points
 		if (i < seg.length - 1) {
 			var lastY = lp.y, nextY = np.y, c;
 			lcx = (smo * x + lp.x) / (smo + 1);
@@ -119,7 +118,7 @@
 	 */
 	function Cans(c) {
 		if (typeof c === "string")
-			c = document.getElementById(c);
+			c = $(c);
 		if (!c || !c['tagName'] || c['tagName'].toLowerCase() != 'canvas')
 			throw new Error("there not a canvas element");
 
@@ -130,6 +129,9 @@
 	}
 
 	Cans.prototype = {
+		getContext:function(){
+			return this.c;
+		},		
 		css : function(a, s) {
 			if ($.isDefined(s))
 				this.canvas.style[a] = s;
@@ -811,9 +813,9 @@
 				 */
 				animation : false,
 				/**
-				 * @inner {Function} the custom funtion for animation
+				 * @Function {Function} the custom funtion for animation.(default to null)
 				 */
-				doAnimationFn : $.emptyFn,
+				doAnimation : null,
 				/**
 				 * @cfg {String} (default to 'ease-in-out') Available value are:
 				 * @Option 'easeIn'
@@ -866,7 +868,7 @@
 			'afterAnimation', 'animating');
 
 			this.T = null;
-			this.rendered = false;
+			this.RENDERED = false;
 			this.animationed = false;
 			this.data = [];
 			this.plugins = [];
@@ -891,6 +893,7 @@
 			 * clear the part of canvas
 			 */
 			_.segmentRect();
+			
 			/**
 			 * doAnimation of implement
 			 */
@@ -901,11 +904,11 @@
 			_.resetCanvas();
 			if (_.variable.animation.time < _.duration) {
 				_.variable.animation.time++;
-				requestAnimFrame(function() {
+				$.requestAnimFrame(function() {
 					_.animation(_);
 				});
 			} else {
-				requestAnimFrame(function() {
+				$.requestAnimFrame(function() {
 					_.variable.animation.time = 0;
 					_.animationed = true;
 					_.draw();
@@ -914,18 +917,15 @@
 				});
 			}
 		},
-		runAnimation : function(t, d) {
+		runAnimation : function() {
 			this.fireEvent(this, 'beforeAnimation', [this]);
 			this.animation(this);
-		},
-		doAnimation : function(t, d) {
-			this.get('doAnimationFn').call(this, t, d);
 		},
 		doSort:function(){
 			this.components.sor(function(p, q){return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
 		commonDraw : function() {
-			$.Assert.isTrue(this.rendered, this.type + ' has not rendered.');
+			$.Assert.isTrue(this.RENDERED, this.type + ' has not rendered.');
 			$.Assert.isTrue(this.initialization, this.type + ' has initialize failed.');
 			$.Assert.gtZero(this.data.length, this.type + '\'s data is empty.');
 			
@@ -966,48 +966,59 @@
 		},
 		create : function(_,shell) {
 			/**
-			 * default should to calculate the size of warp?
+			 * did default should to calculate the size of warp?
 			 */
 			_.width = _.pushIf('width', 400);
 			_.height = _.pushIf('height', 300);
-
-			var style = "width:" + _.width + "px;height:" + _.height + "px;padding:0px;overflow:hidden;position:relative;";
-
-			var id = $.iGather(_.type);
-			_.shellid = $.iGather(_.type + "-shell");
-			var html = "<div id='" + _.shellid + "' style='" + style + "'>" + "<canvas id= '" + id + "'  width='" + _.width + "' height=" + _.height + "'>" + "<p>Your browser does not support the canvas element</p>" + "</canvas>" + "</div>";
+			_.canvasid = $.iGather(_.type);
+			_.shellid = "shell-"+_.canvasid;
+			
+			var H = [];
+			H.push("<div id='");
+			H.push(_.shellid);
+			H.push("' style='width:");
+			H.push(_.width);
+			H.push("px;height:");
+			H.push(_.height);
+			H.push("px;padding:0px;margin:0px;overflow:hidden;position:relative;'>");
+			H.push("<canvas id= '");
+			H.push(_.canvasid);
+			H.push("'  width='");
+			H.push(_.width);
+			H.push("' height='");
+			H.push(_.height);
+			H.push("'><p>Your browser does not support the canvas element</p></canvas></div>");
 			/**
 			 * also use appendChild()
 			 */
-			shell.innerHTML = html;
-
-			_.element = document.getElementById(id);
-			_.shell = document.getElementById(_.shellid);
+			shell.innerHTML = H.join("");
+			
+			_.shell = $(_.shellid);
 			/**
 			 * the base canvas wrap for draw
 			 */
-			_.T = _.target = new Cans(_.element);
-
-			_.rendered = true;
-		},
-		render : function(id) {
-			this.push('render', id);
+			_.T = _.target = new Cans(_.canvasid);
+			
+			_.RENDERED = true;
 		},
 		setUp:function(){
+			this.redraw = false;
+			this.T.clearRect();
 			this.initialization = false;
 			this.initialize();
 		},
 		initialize : function() {
+			
 			var _ = this._(),d = _.get('data');
-			if (!_.rendered) {
+			if (!_.RENDERED) {
 				var r = _.get('render');
-				if (typeof r == "string" && document.getElementById(r))
-					_.create(_,document.getElementById(r));
+				if (typeof r == "string" && $(r))
+					_.create(_,$(r));
 				else if (typeof r == 'object')
 					_.create(_,r);
 			}
 			
-			if (d.length > 0 && _.rendered && !_.initialization) {
+			if (d.length > 0 && _.RENDERED && !_.initialization) {
 				if(_.dataType=='simple'){
 					simple.call(_,d);
 				}else if(_.dataType=='complex'){
@@ -1117,19 +1128,21 @@
 			_.oneWay = $.emptyFn;
 		},
 		doConfig : function() {
-			$.Chart.superclass.doConfig.call(this);
-
-			var _ = this._();
 			
+			$.Chart.superclass.doConfig.call(this);
+			
+			var _ = this._();
 			
 			$.Assert.isArray(_.data);
 				
 			_.T.strokeStyle(true,_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');
-
+			
 			_.duration = ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
-
+			if($.isFunction(_.get('doAnimation'))){
+				_.doAnimation = _.get('doAnimation');
+			}
 			_.variable.animation = {
 				type : 0,
 				time : 0,

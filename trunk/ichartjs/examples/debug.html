@@ -103,6 +103,8 @@
 		data.push({name : 'NEWS',value : 7,color:'#6e1aa5'});
 		chart.push('data',data);
 		chart.push('coordinate.height',220);
+		chart.push('title.text','All Test Passed');
+		chart.push('footnote.text','test');
 		chart.setUp();
 		chart.draw();
 	}
@@ -112,6 +114,6 @@
 		<div><a href="../index.html">Home</a>&nbsp;Sample</div>
 		<br>
 		<input type="button" value="test" onclick="test()"/>
-		<div id='canvasDiv'></div>
+		<div id='canvasDiv' style='height:600px;'></div>
 	</body>
 </html>

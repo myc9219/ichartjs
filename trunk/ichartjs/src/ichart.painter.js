@@ -154,8 +154,8 @@ iChart.Painter = iChart.extend(iChart.Element, {
 				this.on(e, this.get('listeners')[e]);
 			}
 		}
-		
 		this.initialize();
+		
 		/**
 		 * fire the initialize event,this probable use to unit test
 		 */
@@ -223,6 +223,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		return this;
 	},
 	doConfig : function() {
+		
 		var _ = this._(), p = iChart.parsePadding(_.get('padding')), b = _.get('border.enable'), b = b ? iChart.parsePadding(_.get('border.width')) : [0, 0, 0, 0], bg = _.get('background_color'), f = _.get('color_factor');
 		
 		_.set({
@@ -251,7 +252,6 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		}
 		
 		_.push('fontStyle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
-		
 		_.push('f_color', bg);
 		_.push('f_color_', bg);
 		_.push("light_color", iChart.light(bg, f));
