@@ -79,11 +79,12 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 */
 			mini_label_threshold_angle:15,
 			/**
-			 * @cfg {Object} Specifies the config of label.when mini_label is a object,there will as a <link>iChart.Text</link>.(default to {})
+			 * @cfg {<link>iChart.Text</link>} Specifies the config of label.when mini_label is a object,there will as a <link>iChart.Text</link>.(default to false)
+			 * note:set false to make minilabel disabled.
 			 */
 			mini_label:false,
 			/**
-			 * @cfg {Object} Specifies the config of label.when mini_label is unavailable,there will as a <link>iChart.Label</link>.(default to {})
+			 * @cfg {<link>iChart.Label</link>} Specifies the config of label.when mini_label is unavailable,there will as a <link>iChart.Label</link>.
 			 * note:set false to make label disabled.
 			 */
 			label : {}

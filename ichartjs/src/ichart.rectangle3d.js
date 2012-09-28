@@ -40,7 +40,7 @@
 		},
 		drawValue:function(){
 			if(this.get('value')!='')
-			this.T.text(this.get('value'),this.get('centerx'),this.topCenterY + this.get('value_space'),false,this.get('color'),'center','top',this.get('fontStyle'));
+			this.T.text(this.get('value'),this.topCenterX,this.topCenterY - this.get('value_space'),false,this.get('color'),'center','bottom',this.get('fontStyle'));
 		},
 		drawRectangle:function(){
 			this.T.cube(
@@ -76,7 +76,6 @@
 			_.pushIf("zHeight",_.get('width'));
 			
 			_.topCenterX=_.x+(_.get('width')+_.get('width')*_.get('xAngle_'))/2;
-			
 			_.topCenterY=_.y-_.get('width')*_.get('yAngle_')/2;
 			
 		}

@@ -1,5 +1,5 @@
 /**
- * @overview this component use for abc
+ * @overview the column2d componment
  * @component#@chart#iChart.Column2D
  * @extend#iChart.Column
  */
@@ -25,22 +25,20 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 		
 		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
-			_.doParse(_,d, i, i, _.x + _.get('hispace') + i * gw, _.y + H - h - bs, h);
-			
-			d.reference = new iChart.Rectangle2D(_.get('rectangle'), _);
-			_.rectangles.push(d.reference);
-			
-			_.labels.push(new iChart.Text({
+			_.doParse(_,d, i, {
 				id : i,
-				text : d.name,
-				originx : _.x + _.get('hispace') + gw * i + h2,
-				originy : _.y + H + _.get('text_space')
-			}, _));
-
+				originx :_.x + _.get('hispace') + i * gw,
+				originy : _.y + H - h - bs,
+				height : h
+			});
+			_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), _));
+			_.doLabel(i, d.name, _.x + _.get('hispace') + gw * i + h2, _.y + H + _.get('text_space'));
 		}, _);
 
-		_.components.push(_.labels);
-		_.components.push(_.rectangles);
+		
 	}
 
-});// @end
+});
+/**
+ *@end 
+ */

@@ -27,7 +27,7 @@
 			/**
 			 * must apply the area's config before 
 			 */
-			this.push('segment.area',true);
+			this.push('sub_option.area',true);
 			iChart.Area2D.superclass.doConfig.call(this);
 			
 			

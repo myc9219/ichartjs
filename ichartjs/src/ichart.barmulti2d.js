@@ -45,30 +45,21 @@
 				 */
 				var S = _.coo.getScale(_.get('scaleAlign')),
 					gw = L*bh+_.get(s),
-					h2 = _.get(b)/2,
-					w;
-				_.push('rectangle.height',bh);
+					h2 = _.get(b)/2;
+				
+				_.push('sub_option.height',bh);
+				
 				_.columns.each(function(column, i) {
 					column.item.each(function(d, j) {
-						w = (d.value - S.start) * W / S.distance;
-						_.doParse(_,d, j, i+'-'+j, _.x + _.get('hispace')+j*bh+i*gw,_.y + _.get(s)+j*bh+i*gw, w);
-						d.reference = new iChart.Rectangle2D(_.get('rectangle'), _);
-						_.rectangles.push(d.reference);
+						_.doParse(_,d, j,{
+							id : i+'-'+j,
+							originy : _.y + _.get(s)+j*bh+i*gw,
+							width : (d.value - S.start) * W / S.distance
+						});
+						_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), _));
 					}, _);
-					
-					_.labels.push(new iChart.Text({
-						id:i,
-						text:column.name,
-						textAlign:'right',
-						textBaseline:'middle',
-						originx:_.x - _.get('text_space'),
-		 				originy:_.y + _.get(s)*0.5+(i+0.5)*gw
-					},_));
-					
+					_.doLabel(i, column.name, _.x - _.get('text_space'), _.y + _.get(s)*0.5+(i+0.5)*gw);
 				}, _);
-				
-				_.components.push(_.labels);
-				_.components.push(_.rectangles);
 			}
 			
 	});//@end

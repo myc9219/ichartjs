@@ -23,7 +23,7 @@ iChart.Donut2D = iChart.extend(iChart.Pie, {
 		});
 	},
 	doSector:function(){
-		return  new iChart.Sector2D(this.get('sector'), this);
+		return  new iChart.Sector2D(this.get('sub_option'), this);
 	},
 	doConfig : function() {
 		iChart.Donut2D.superclass.doConfig.call(this);
@@ -32,14 +32,14 @@ iChart.Donut2D = iChart.extend(iChart.Pie, {
 		/**
 		 * quick config to all rectangle
 		 */
-		_.push('sector.radius',r)
+		_.push('sub_option.radius',r)
 		if(_.get(d)>0){
 			if(_.get(d)<1){
 				_.push(d,Math.floor(r*_.get(d)));
 			}else if(_.get(d)>=r){
 				_.push(d,0);
 			}
-			_.push('sector.donutwidth',_.get(d));
+			_.push('sub_option.donutwidth',_.get(d));
 		}
 		
 		

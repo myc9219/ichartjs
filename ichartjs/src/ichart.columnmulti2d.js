@@ -23,7 +23,7 @@
 		},
 		doRectangle : function(d, i, id, x, y, h) {
 			this.doParse(d, i, id, x, y, h);
-			d.reference = new iChart.Rectangle2D(this.get('rectangle'), this);
+			d.reference = new iChart.Rectangle2D(this.get('sub_option'), this);
 			this.rectangles.push(d.reference);
 		},
 		doConfig:function(){
@@ -52,25 +52,22 @@
 			/**
 			 * quick config to all rectangle
 			 */
-			_.push('rectangle.width',bw);
+			_.push('sub_option.width',bw);
 			
 			_.columns.each(function(column, i) {
 				
 				column.item.each(function(d, j) {
 					h = (d.value - S.start) * H / S.distance;
-					_.doParse(_,d, j, i+'-'+j, _.x + _.get('hispace')+j*bw+i*gw, _.y + H - h - bs, h);
-					d.reference = new iChart.Rectangle2D(_.get('rectangle'), this);
-					_.rectangles.push(d.reference);
-					
+					_.doParse(_,d, j,{
+						id : i+'-'+j,
+						originx : _.x + _.get('hispace')+j*bw+i*gw,
+						originy : _.y + H - h - bs,
+						height : h
+					});
+					_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), this));
 				}, _);
 				
-				_.labels.push(new iChart.Text({
-					id:i,
-					text:column.name,
-					originx:_.x +_.get('hispace')*0.5+(i+0.5)*gw,
-	 				originy:_.get('originy')+H+_.get('text_space')
-				},_));
-				
+				_.doLabel(i, column.name, _.x +_.get('hispace')*0.5+(i+0.5)*gw,_.y + H +_.get('text_space'));
 			}, _);
 			
 			_.components.push(_.labels);

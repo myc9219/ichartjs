@@ -1,5 +1,5 @@
 /**
- * @overview this component use for abc
+ * @overview this class is abstract,use for config bar
  * @component#iChart.Bar
  * @extend#iChart.Chart
  */
@@ -14,10 +14,9 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		iChart.Bar.superclass.configure.call(this);
 
 		this.type = 'bar';
-		this.dataType = 'simple';
 		this.set({
 			/**
-			 * @cfg {Object} Specifies the option for coordinate.For details see <link>iChart.Coordinate2D</link>
+			 * @cfg {<link>iChart.Coordinate2D</link>} the option for coordinate.
 			 */
 			coordinate : {
 				alternate_direction : 'h'
@@ -36,30 +35,43 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 			 */
 			scaleAlign : 'bottom',
 			/**
-			 * @cfg {Object} option of rectangle.see <link>iChart.Rectangle</link>
+			 * @cfg {<link>iChart.Rectangle</link>} Specifies option of rectangle.
 			 */
-			rectangle : {}
+			rectangle : {},
+			/**
+			 * @cfg {<link>iChart.Text</link>} Specifies option of label at bottom.
+			 */
+			label:{}
 		});
 
 		this.registerEvent();
 
 	},
-	doParse : function(_,d, i, id, x, y, w) {
+	/**
+	 * @method Returns the coordinate of this element.
+	 * @return iChart.Coordinate2D
+	 */
+	getCoordinate:function(){
+		return this.coo;
+	},
+	doLabel:function(id,text,x, y){
+		this.labels.push(new iChart.Text(iChart.apply(this.get('label'),{
+			id : id,
+			text : text,
+			textAlign:'right',
+			textBaseline:'middle',
+			originx : x,
+			originy : y
+		}), this));
+	},
+	doParse : function(_,d, i, o) {
 		var t = (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
 		
-		if (_.get('tip.enable'))
-			_.push('rectangle.tip.text', _.fireString(_, 'parseTipText', [d, d.value, i], d.name + ' ' + t));
+		_.doActing(_,d,o);
 		
-		_.set({
-			rectangle:{
-				id:id,
-				name:d.name,
-				value:t,
-				background_color:d.color,
-				originy:y,
-				width:w
-			}
-		});	
+		if (_.get('tip.enable'))
+			_.push('sub_option.tip.text', _.fireString(_, 'parseTipText', [d,d.value, i], d.name + ' ' + t));
+		
 	},
 	doAnimation : function(t, d) {
 		this.coo.draw();
@@ -82,12 +94,12 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		iChart.Coordinate.coordinate.call(_);
 		
 		_.rectangles = [];
-		
 		_.labels = [];
-		
 		_.rectangles.zIndex = _.get(z);
-		
 		_.labels.zIndex = _.get(z) + 1;
+		_.components.push(_.labels);
+		_.components.push(_.rectangles);
+		
 
 		if (_.dataType == 'simple') {
 
@@ -113,19 +125,14 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		_.coo = iChart.Coordinate.coordinate_.call(_);
 		
 		_.components.push(_.coo);
-
-		/**
-		 * Quick config to all rectangle
-		 */
-		iChart.applyIf(_.get('rectangle'), iChart.clone(_.get('communal_option'), _.options));
 		
 		/**
 		 * quick config to all rectangle
 		 */
-		_.push('rectangle.height', bh);
-		_.push('rectangle.valueAlign', 'right');
-		_.push('rectangle.tipAlign', 'right');
-		_.push('rectangle.originx', _.x + _.coo.get('brushsize'));
+		_.push('sub_option.height', bh);
+		_.push('sub_option.valueAlign', 'right');
+		_.push('sub_option.tipAlign', 'right');
+		_.push('sub_option.originx', _.x + _.coo.get('brushsize'));
 
 	}
 

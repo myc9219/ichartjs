@@ -68,7 +68,7 @@
 		},
 		createQueue:function(style){
 			style = style || {};
-			var LS = iChart.clone(this.get('segment'));
+			var LS = iChart.clone(this.get('sub_option'));
 				LS.brushsize = style.linewidth || 1;
 				LS.background_color = style.color || '#BDBDBD';
 			var L = new iChart.LineSegment(LS, this);
@@ -114,15 +114,15 @@
 			
 			_.push('label_spacing',_.get('coordinate.valid_width')/(_.get('queue_size')-1));
 			
-			if (!_.get('segment.tip')) {
-				_.push('segment.tip', _.get('tip'));
+			if (!_.get('sub_option.tip')) {
+				_.push('sub_option.tip', _.get('tip'));
 			} else {
-				_.push('segment.tip.wrap', _.get('tip.wrap'));
+				_.push('sub_option.tip.wrap', _.get('tip.wrap'));
 			}
 
-			_.push('segment.tip.showType','follow');
-			_.push('segment.coordinate',_.coo);
-			_.push('segment.keep_with_coordinate',true);
+			_.push('sub_option.tip.showType','follow');
+			_.push('sub_option.coordinate',_.coo);
+			_.push('sub_option.keep_with_coordinate',true);
 			
 			//get the max/min scale of this coordinate for calculated the height
 			_.S = _.coo.getScale(_.get('scaleAlign'));

@@ -1,5 +1,5 @@
 /**
- * @overview this component use for abc
+ * @overview this class is abstract,use for config column
  * @component#iChart.Column
  * @extend#iChart.Chart
  */
@@ -14,10 +14,10 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		iChart.Column.superclass.configure.call(this);
 
 		this.type = 'column';
-		this.dataType = 'simple';
+		
 		this.set({
 			/**
-			 * @cfg {Object} the option for coordinate. see <link>iChart.Coordinate2D</link>
+			 * @cfg {<link>iChart.Coordinate2D</link>} the option for coordinate.
 			 */
 			coordinate : {},
 			/**
@@ -35,9 +35,13 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			 */
 			scaleAlign : 'left',
 			/**
-			 * @cfg {Object} option of rectangle.see <link>iChart.Rectangle</link>
+			 * @cfg {<link>iChart.Rectangle</link>} Specifies option of rectangle.
 			 */
-			rectangle : {}
+			sub_option : {},
+			/**
+			 * @cfg {<link>iChart.Text</link>} Specifies option of label at bottom.
+			 */
+			label:{}
 		});
 
 		this.registerEvent();
@@ -63,22 +67,22 @@ iChart.Column = iChart.extend(iChart.Chart, {
 	getCoordinate:function(){
 		return this.coo;
 	},
-	doParse : function(_,d, i, id, x, y, h) {
+	doLabel:function(id,text,x, y){
+		this.labels.push(new iChart.Text(iChart.apply(this.get('label'),{
+			id : id,
+			text : text,
+			originx : x,
+			originy : y
+		}), this));
+	},
+	doParse : function(_,d, i, o) {
 		var t = (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
-		if (_.get('tip.enable'))
-			_.push('rectangle.tip.text', _.fireString(_, 'parseTipText', [d,d.value,i],d.name + ' '+t));
 		
-		_.set({
-			rectangle:{
-				id:id,
-				name:d.name,
-				value:t,
-				background_color:d.color,
-				originx:x,
-				originy:y,
-				height:h
-			}
-		});	
+		_.doActing(_,d,o);
+		
+		if (_.get('tip.enable'))
+			_.push('sub_option.tip.text', _.fireString(_, 'parseTipText', [d,d.value,i],d.name + ' '+t));
+		
 	},
 	doConfig : function() {
 		iChart.Column.superclass.doConfig.call(this);
@@ -87,7 +91,10 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		
 		_.rectangles = [];
 		_.labels = [];
-			
+		
+		_.components.push(_.labels);
+		_.components.push(_.rectangles);
+		
 		/**
 		 * apply the coordinate feature
 		 */
@@ -100,11 +107,9 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		
 		if (_.dataType == 'simple') {
 			var L = _.data.length, W = _.get('coordinate.width'), hw = _.pushIf(c, W / (L * 2 + 1));
-
 			if (hw * L > W) {
 				hw = _.push(c, W / (L * 2 + 1));
 			}
-			
 			/**
 			 * the space of two column
 			 */
@@ -123,12 +128,10 @@ iChart.Column = iChart.extend(iChart.Chart, {
 
 		_.components.push(_.coo);
 		
-		/**
-		 * quick config to all rectangle
-		 */
-		iChart.applyIf(_.get('rectangle'), iChart.clone(_.get('communal_option'), _.options));
-		
-		_.push('rectangle.width', _.get(c));
+		_.push('sub_option.width', _.get(c));
 	}
 
-});// @end
+});
+/**
+ * @end
+ */
