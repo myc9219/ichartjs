@@ -25,6 +25,10 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 */
 			name:'',
 			/**
+			 * @cfg {Boolean} True will not darw.(default to false)
+			 */
+			ignored: false,
+			/**
 			 * @inner {Boolean} True to make sector counterclockwise.(default to false)
 			 */
 			counterclockwise : false,
@@ -45,7 +49,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 */
 			totalAngle : 0,
 			/**
-			 * @cfg {String} the event's name trigger pie bound(default to 'click').
+			 * @inner {String} the event's name trigger pie bound(default to 'click').
 			 */
 			bound_event : 'click',
 			/**
@@ -57,11 +61,11 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 */
 			donutwidth : 0,
 			/**
-			 * @cfg {Boolean} If true means just one piece could bound at same time.(default to false)
+			 * @inner {Boolean} If true means just one piece could bound at same time.(default to false)
 			 */
 			mutex : false,
 			/**
-			 * @cfg {Number} Specifies the offset when bounded.Normally,this will given by chart.(default to undefined)
+			 * @inner {Number} Specifies the offset when bounded.Normally,this will given by chart.(default to undefined)
 			 */
 			increment : undefined,
 			/**
@@ -71,12 +75,18 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 */
 			gradient_mode:'RadialGradientOutIn',
 			/**
-			 * @cfg {Object} Specifies the config of label.For details see <link>iChart.Label</link>
-			 * Note:this has a extra property named 'enable',indicate whether label available(default to true)
+			 * @cfg {Number} Specifies the threshold value in angle that applies mini_label.(default to 15)
 			 */
-			label : {
-				enable : true
-			}
+			mini_label_threshold_angle:15,
+			/**
+			 * @cfg {Object} Specifies the config of label.when mini_label is a object,there will as a <link>iChart.Text</link>.(default to {})
+			 */
+			mini_label:false,
+			/**
+			 * @cfg {Object} Specifies the config of label.when mini_label is unavailable,there will as a <link>iChart.Label</link>.(default to {})
+			 * note:set false to make label disabled.
+			 */
+			label : {}
 		});
 
 		/**
@@ -84,7 +94,12 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		 */
 		this.atomic = true;
 
-		this.registerEvent('changed');
+		this.registerEvent('changed',
+				/**
+				 * @event Fires when parse this label's data.Return value will override existing. Only valid when label is available
+				 * @paramter iChart.Sector#sector the sector object
+				 */
+				'parseText');
 
 		this.label = null;
 		this.tip = null;
@@ -101,7 +116,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		this.fireEvent(this, this.get('bound_event'), [this]);
 	},
 	/**
-	 * @method return the sector's dimension,return hold following property
+	 * @method get the sector's dimension,return hold following property
 	 * @property x:the x-coordinate of the center of the sector
 	 * @property y:the y-coordinate of the center of the sector
 	 * @property startAngle:The starting angle, in radians (0 is at the 3 o'clock position of the arc's circle)
@@ -119,44 +134,55 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		}
 	},
 	doDraw : function(opts) {
-		this.drawSector();
-		if (this.label) {
-			/**
-			 * draw the labels
-			 */
-			this.label.draw();
+		if(!this.get('ignored')){
+			this.drawSector();
+			if(this.label) {
+				this.label.draw();
+			}
 		}
 	},
-	labelInvoke:function(f){
-		var A = this.get('middleAngle'),l=this.label;
-		x = this.get('inc_x')*f,
-		y = -this.get('inc_y')*f;
-		
-		l.push('originx',l.get('originx')+x);
-		l.push('originy',l.get('originy')+y);
-		l.push('labelx',l.get('labelx')+x);
-		l.push('labely',l.get('labely')+y);
-		var p =[];
-		l.get('line_potins').each(function(v, i){
-			p.push(i%2==0?(v+x):(v+y));
-		},l);
-		l.push('line_potins',p);
+	doText:function(_,x,y){
+		_.push('label.originx',x);
+		_.push('label.originy',y);
+		_.push('label.textBaseline','middle');
+		_.label = new iChart.Text(_.get('label'),_);
+	},
+	doLabel:function(_,x,y,Q,p,x0,y0){
+		_.push('label.originx',x);
+		_.push('label.originy',y);
+		_.push('label.quadrantd',Q);
+		_.push('label.line_potins',p);
+		_.push('label.labelx',x0);
+		_.push('label.labely',y0);
+		_.label = new iChart.Label(_.get('label'),_);
+	},
+	isLabel:function(){
+		return this.get('label')&&!this.get('mini_label');
 	},
 	doConfig : function() {
 		iChart.Sector.superclass.doConfig.call(this);
 
-		var _ = this._(),v = _.variable.event;
+		var _ = this._(),v = _.variable.event,f = _.get('label');
 
 		_.push('totalAngle', _.get('endAngle') - _.get('startAngle'));
-
-
-		if(_.get('label.enable')){
+		
+		if(f){
+			if(_.get('mini_label')){
+				if((_.get('mini_label_threshold_angle')*Math.PI/180)>_.get('totalAngle')){
+					_.push('mini_label',false);
+				}else{
+					_.push('label',_.get('mini_label'));
+				}
+			}
+			_.push('label.text', _.fireString(_, 'parseText', [_],_.get('label.text')));
+			
 			_.pushIf('label.border.color',_.get('border.color'));
 			/**
 			 * make the label's color in accord with sector
 			 */
-			_.push('label.scolor', _.get('f_color'));
+			_.push('label.scolor', _.get('background_color'));
 		}
+		
 		_.variable.event.status = _.expanded = _.get('expand');
 
 		if (_.get('tip.enable')) {
@@ -194,8 +220,8 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			_.y = _.get('originy');
 			if (v.status != _.expanded) {
 				_.fireEvent(_, 'changed', [_, _.expanded]);
-				if(_.get('label.enable'))
-				_.labelInvoke((_.expanded?1:-1));
+				if(f)
+				_.label.doLayout(_.get('inc_x')*(_.expanded?1:-1),-_.get('inc_y')*(_.expanded?1:-1));
 			}
 			v.status = _.expanded;
 			if (_.expanded) {

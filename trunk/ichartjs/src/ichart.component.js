@@ -43,9 +43,7 @@
 			
 	},
 	initialize : function() {
-		if (!this.ignoreEvent)
-			iChart.DefineAbstract('isEventValid', this);
-		
+		iChart.DefineAbstract('isEventValid', this);
 		iChart.DefineAbstract('doDraw', this);
 	
 		this.doConfig();

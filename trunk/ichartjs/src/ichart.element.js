@@ -93,7 +93,6 @@ iChart.Element = function(config) {
 		'dblclick':[]
 	};
 	
-	this.ignoreEvent = false;
 	this.initialization = false;
 	
 	/**

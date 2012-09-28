@@ -556,7 +556,7 @@
 			return this.closePath().stroke(b).fill(bg).restore();
 		},
 		lines : function(p, w, c, last) {
-			if (p.length < 4)
+			if (p.length < 4||!w)
 				return this;
 			this.save().gCo(last).beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0]), fd(w, p[1]));
 			for ( var i = 2; i < p.length - 1; i += 2) {
@@ -569,7 +569,7 @@
 			return this;
 		},
 		lineArray : function(p, w, c, smooth, smo) {
-			if (p.length < 2)
+			if (p.length < 2||!w)
 				return this;
 			this.strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
 			if (smooth) {
@@ -1092,12 +1092,10 @@
 			
 			_.on(events[0], function(_, e) {
 				_.components.eachAll(function(C) {
-					if (!C.ignoreEvent) {
-						var M = C.isMouseOver(e);
-						if (M.valid){
-							E.click = true;
-							C.fireEvent(C,'click', [C, e, M]);
-						}
+					var M = C.isMouseOver(e);
+					if (M.valid){
+						E.click = true;
+						C.fireEvent(C,'click', [C, e, M]);
 					}
 				});
 				if(E.click){
@@ -1110,7 +1108,6 @@
 			_.on(events[1], function(_, e) {
 				O = AO = false;
 				_.components.eachAll(function(cot) {
-					if (!cot.ignoreEvent) {
 						var cE = cot.variable.event, M = cot.isMouseOver(e);
 						if (M.valid) {
 							O = true;
@@ -1138,7 +1135,6 @@
 								cot.fireEvent(cot, 'mouseout', [cot,e, M]);
 							}
 						}
-					}
 				});
 				
 				if(E.mouseover){

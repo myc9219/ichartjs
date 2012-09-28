@@ -13,7 +13,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 		/**
 		 * indicate the legend's type
 		 */
-		this.type = 'legend';
+		this.type = 'label';
 
 		this.set({
 			/**
@@ -83,6 +83,15 @@ iChart.Label = iChart.extend(iChart.Component, {
 		this.labelx = (Q>=1&&Q<=2)?(this.get('labelx') - this.get('width')):this.get('labelx');
         this.labely = Q>=2?(this.get('labely') - this.get('height')):this.get('labely');
 	},
+	doLayout:function(x,y){
+		var _ = this._();
+		_.push('labelx',_.get('labelx')+x);
+		_.push('labely',_.get('labely')+y);
+		_.get('line_potins').each(function(p){
+			p.x +=x;
+			p.y +=y;
+		},_);
+	},
 	doDraw : function() {
 		var _ = this._();
 		
@@ -92,8 +101,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 		x = _.labelx + _.get('padding_left'),
 		y = _.labely +_.get('padding_top');
 		
-		_.T.lines(p,_.get('line_thickness'), _.get('border.color'),_.get('line_globalComposite'));
-		
+		_.T.lineArray(p,_.get('line_thickness'), _.get('border.color'));
 		_.T.box(_.labelx, _.labely, _.get('width'), _.get('height'), _.get('border'), _.get('f_color'), false, _.get('shadow'), _.get('shadow_color'), _.get('shadow_blur'), _.get('shadow_offsetx'), _.get('shadow_offsety'));
 		
 		_.T.textStyle('left', 'top', _.get('fontStyle'));

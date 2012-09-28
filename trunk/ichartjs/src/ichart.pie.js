@@ -38,9 +38,9 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			intellectLayout : true,
 			/**
-			 * @cfg {Number} Specifies the distance in pixels when two label is incompatible with each other.(default 8),
+			 * @cfg {Number} Specifies the distance in pixels when two label is incompatible with each other.(default 6),
 			 */
-			layout_distance : 8,
+			layout_distance : 6,
 			/**
 			 * @inner {Boolean} if it has animate when a piece popd (default to false)
 			 */
@@ -54,15 +54,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			increment : undefined,
 			/**
-			 * @cfg {Object} Specifies the config of label.For details see <link>iChart.Label</link> Note:this has a extra property named 'enable',indicate whether label available(default to true)
-			 */
-			label : {
-				enable : true
-			},
-			/**
 			 * @cfg {Object} option of sector.Note,Pie2d depend on Sector2d and pie3d depend on Sector3d.For details see <link>iChart.Sector</link>
 			 */
-			sector : {}
+			sector : {
+				label : {}
+			}
 		});
 
 		this.registerEvent(
@@ -79,14 +75,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		 * @paramter string#name
 		 * @paramter int#index
 		 */
-		'rebound',
-		/**
-		 * @event Fires when parse this label's data.Return value will override existing. Only valid when label is available
-		 * @paramter Object#data this label's data item
-		 * @paramter string#text the current tip's text
-		 * @paramter int#i the index of data
-		 */
-		'parseLabelText');
+		'rebound');
 
 	},
 	/**
@@ -121,9 +110,8 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		return this.sectors;
 	},
 	doAnimation : function(t, d) {
-		var s, si = 0, cs = this.oA;
-		this.data.each(function(D, i) {
-			s = D.reference;
+		var si = 0, cs = this.oA;
+		this.sectors.each(function(s, i) {
 			si = this.animationArithmetic(t, 0, s.get('totalAngle'), d);
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
@@ -131,6 +119,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			if (!this.is3D())
 				s.drawSector();
 		}, this);
+		
 		if (this.is3D()) {
 			this.proxy.drawSector();
 		}
@@ -138,63 +127,51 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	localizer : function(la) {
 		var d = this.get('layout_distance');
 		/**
-		 * the code not optimization,need to enhance so that the label can fit the continar
+		 * Did the code optimal?,did need to enhance so that the label can fit the continar?
 		 */
 		this.sectors.each(function(s, i) {
+			if(!s.isLabel())return;
 			var l = s.label, x = l.labelx, y = l.labely;
-			if ((la.labely <= y && (y - la.labely) < la.get('height')) || (la.labely > y && (la.labely - y) < l.get('height'))) {
+			if ((la.labely <= y && (y - la.labely-1) < la.get('height')) || (la.labely > y && (la.labely - y-1) < l.get('height'))) {
 				if ((la.labelx < x && (x - la.labelx) < la.get('width')) || (la.labelx > x && (la.labelx - x) < l.get('width'))) {
-					var q = la.get('quadrantd');
-					if ((q == 1 || q == 2)) {
-						/**
-						 * console.log('upper..'+la.get('text')+'==='+l.get('text'));
-						 */
-						la.push('labely', la.get('labely') - la.get('height') + y - la.labely - d);
-						la.push('line_potins', la.get('line_potins').concat(la.get('labelx'), la.get('labely')));
-					} else {
-						/**
-						 * console.log('lower..'+la.get('text')+'==='+l.get('text'));
-						 */
-						la.push('labely', la.get('labely') + l.get('height') - la.labely + y + d);
-						la.push('line_potins', la.get('line_potins').concat(la.get('labelx'), la.get('labely')));
-					}
+					la.push('labely', (la.get('labely')+ y - la.labely) + (la.get('height')  + d)*((la.get('quadrantd') == 2)?-1:1));
+					la.push('line_potins', la.get('line_potins').concat({x:la.get('labelx'),y:la.get('labely')}));
 					la.localizer();
 				}
 			}
 		}, this);
 	},
 	doParse : function(d, i) {
-		var _ = this, t = d.name + (_.get('showpercent') ? ' ' + iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
-		if (_.get('label.enable')) {
-			_.push('sector.label.text', _.fireString(_, 'parseLabelText', [d, i], t));
+		var _ = this._(), t = d.name + (_.get('showpercent') ? ' ' + iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
+		
+		if(_.get('sector_')){
+			_.push('sector',iChart.clone(_.get('sector_'),true));
+		}else{
+			_.push('sector_',iChart.clone(_.get('sector'),true));
 		}
-		if (_.get('tip.enable'))
+		
+		iChart.merge(_.get('sector'),d);
+		
+		if (_.get('sector.tip.enable'))
 			_.push('sector.tip.text', _.fireString(_, 'parseTipText', [d, i], t));
-
+		
 		_.push('sector.id', i);
-		_.push('sector.value', d.value);
-		_.push('sector.name', d.name);
+		_.push('sector.label.text', t);
 		_.push('sector.listeners.changed', function(se, st, i) {
 			_.fireEvent(_, st ? 'bound' : 'rebound', [_, se.get('name')]);
 		});
-		_.push('sector.startAngle', d.startAngle);
-		_.push('sector.middleAngle', d.middleAngle);
-		_.push('sector.endAngle', d.endAngle);
-		_.push('sector.background_color', d.color);
-
-		d.reference = this.doSector(d);
-
-		this.sectors.push(d.reference);
-
-		if (this.get('label.enable') && this.get('intellectLayout')) {
-			this.localizer(d.reference.label);
+		
+		var s = this.doSector(d);
+		if (s.isLabel() && this.get('intellectLayout')) {
+			this.localizer(s.label);
 		}
+		this.sectors.push(s);
 	},
 	doConfig : function() {
 		iChart.Pie.superclass.doConfig.call(this);
 		iChart.Assert.gtZero(this.total, 'this.total');
 		
-		var _ = this._(),r = _.get('radius'), f = _.get('label.enable') ? 0.35 : 0.44;
+		var _ = this._(),r = _.get('radius'), f = _.get('sector.label') ? 0.35 : 0.44;
 		
 		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
@@ -243,7 +220,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		}
 		_.push('originy', _.get('centery') + _.get('offsety'));
 
-		iChart.apply(_.get('sector'), iChart.clone(_.get('communal_option').concat(['originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'mutex', 'increment', 'label']), _.options));
+		iChart.apply(_.get('sector'), iChart.clone(_.get('communal_option').concat(['originx', 'originy', 'bound_event','mutex','increment']), _.options));
 		
 	}
 });

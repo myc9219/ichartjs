@@ -54,7 +54,7 @@
 					this.get('counterclockwise'));
 		},
 		isEventValid:function(e){
-			if(this.get('label.enable')){
+			if(this.isLabel()){
 				if(this.label.isEventValid(e).valid)
 					return {valid:true};
 			}
@@ -102,33 +102,25 @@
 				}
 				return t;
 			},
-			
-			inc = _.get('increment');
+			L = _.get('increment');
 			
 			_.sA = toAngle.call(_,_.get('startAngle'));
 			_.eA = toAngle.call(_,_.get('endAngle'));
 			_.mA = toAngle.call(_,mA);
 			
-			_.push('inc_x',inc * Math.cos(2 * Math.PI -_.mA));
-			_.push('inc_y',inc * Math.sin(2 * Math.PI - _.mA));
+			_.push('inc_x',L * Math.cos(2 * Math.PI -_.mA));
+			_.push('inc_y',L * Math.sin(2 * Math.PI - _.mA));
 			
-			if(_.get('label.enable')){
-				_.pushIf('label.linelength',iChart.lowTo(10,_.a/8));
-				_.Z = _.get('label.linelength')/_.a+1;
-				var Q  = iChart.quadrantd(mA),
-				P = _.p2p(_.x,_.y,mA,_.Z),
-				P2 = _.p2p(_.x,_.y,mA,1);
-				
-				_.push('label.originx',P2.x);
-				_.push('label.originy',P2.y);
-				_.push('label.quadrantd',Q);
-				
-				_.push('label.line_potins',[P2.x,P2.y,P.x,P.y]);
-				_.push('label.line_globalComposite',(ccw&&mA<Math.PI)||(!ccw&&mA>Math.PI));
-				_.push('label.labelx',P.x);
-				_.push('label.labely',P.y);
-				
-				_.label = new iChart.Label(_.get('label'),_);
+			if(_.get('label')){
+				if(_.get('mini_label')){
+					var P3 = _.p2p(_.x,_.y,mA,0.5);
+					_.doText(_,P3.x,P3.y);
+				}else{
+					var Q  = iChart.quadrantd(mA),
+						P = _.p2p(_.x,_.y,mA,L/_.a+1),
+						P2 = _.p2p(_.x,_.y,mA,1);
+					_.doLabel(_,P2.x,P2.y,Q,[{x:P2.x,y:P2.y},{x:P.x,y:P.y}],P.x,P.y);
+				}
 			}
 		}
 });//@end
