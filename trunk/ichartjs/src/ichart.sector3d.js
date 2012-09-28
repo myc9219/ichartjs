@@ -54,15 +54,17 @@
 					this.get('counterclockwise'));
 		},
 		isEventValid:function(e){
-			if(this.isLabel()){
-				if(this.label.isEventValid(e).valid)
+			if(!this.get('ignored')){
+				if(this.isLabel()){
+					if(this.label.isEventValid(e).valid)
+						return {valid:true};
+				}
+				if(!iChart.inEllipse(e.x - this.x,e.y-this.y,this.a,this.b)){
+					return {valid:false};
+				}
+				if(iChart.angleInRange(this.sA,this.eA,(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.x,e.y)))){
 					return {valid:true};
-			}
-			if(!iChart.inEllipse(e.x - this.x,e.y-this.y,this.a,this.b)){
-				return {valid:false};
-			}
-			if(iChart.angleInRange(this.sA,this.eA,(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.x,e.y)))){
-				return {valid:true};
+				}
 			}
 			return {valid:false};
 		},

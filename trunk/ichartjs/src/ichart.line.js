@@ -15,8 +15,6 @@ iChart.Line = iChart.extend(iChart.Chart, {
 
 		this.type = 'line';
 
-		this.dataType = 'simple';
-
 		this.set({
 			/**
 			 * @cfg {Object} the option for coordinate
@@ -107,28 +105,24 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		iChart.Coordinate.coordinate.call(_);
 		
 		_.lines = [];
-		
 		_.lines.zIndex = _.get('z_index');
+		_.components.push(_.lines);
 		_.push('line_start', (_.get('coordinate.width') - _.get('coordinate.valid_width')) / 2);
 		_.push('line_end', _.get('coordinate.width') - _.get('line_start'));
 
 		if (_.get('proportional_spacing'))
 			_.push('label_spacing', _.get('coordinate.valid_width') / (_.get('maxItemSize') - 1));
 		
-		_.push('segment.originx', _.get('originx') + _.get('line_start'));
-
+		_.push('sub_option.originx', _.get('originx') + _.get('line_start'));
 		/**
 		 * y also has line_start and line end
 		 */
-		_.push('segment.originy', _.get('originy') + _.get('coordinate.height'));
-
-		_.push('segment.width', _.get('coordinate.valid_width'));
-		_.push('segment.height', _.get('coordinate.valid_height'));
-
-		_.push('segment.limit_y', !s);
-
-		_.pushIf('segment.keep_with_coordinate', s);
-
+		_.push('sub_option.originy', _.get('originy') + _.get('coordinate.height'));
+		_.push('sub_option.width', _.get('coordinate.valid_width'));
+		_.push('sub_option.height', _.get('coordinate.valid_height'));
+		_.push('sub_option.limit_y', !s);
+		_.pushIf('sub_option.keep_with_coordinate', s);
+		
 		
 		if(_.get('crosshair.enable')){
 			_.push('coordinate.crosshair', _.get('crosshair'));
@@ -146,7 +140,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		/**
 		 * quick config to all linesegment
 		 */
-		iChart.applyIf(_.get('segment'), iChart.clone(_.get('communal_option').concat('area_opacity'), _.options));
+		iChart.applyIf(_.get('sub_option'), iChart.clone(['area_opacity'], _.options));
 	}
 
 });// @end

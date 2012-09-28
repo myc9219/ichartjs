@@ -38,16 +38,17 @@
 					this.get('shadow'),
 					this.get('counterclockwise'));
 		},
-		
 		isEventValid:function(e){
-			if(this.label&&this.label.isEventValid(e).valid)
-				return {valid:true};
-			var r = iChart.distanceP2P(this.x,this.y,e.x,e.y),b=this.get('donutwidth');	
-			if(this.r<r||(b&&(this.r-b)>r)){
-				return {valid:false};
-			}
-			if(iChart.angleInRange(this.get('startAngle'),this.get('endAngle'),(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.x,e.y)))){
-				return {valid:true};
+			if(!this.get('ignored')){
+				if(this.label&&this.label.isEventValid(e).valid)
+					return {valid:true};
+				var r = iChart.distanceP2P(this.x,this.y,e.x,e.y),b=this.get('donutwidth');	
+				if(this.r<r||(b&&(this.r-b)>r)){
+					return {valid:false};
+				}
+				if(iChart.angleInRange(this.get('startAngle'),this.get('endAngle'),(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.x,e.y)))){
+					return {valid:true};
+				}
 			}
 			return {valid:false};
 		},

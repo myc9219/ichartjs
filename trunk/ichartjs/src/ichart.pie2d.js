@@ -17,19 +17,19 @@ iChart.Pie2D = iChart.extend(iChart.Pie, {
 
 	},
 	doSector:function(){
-		return  new iChart.Sector2D(this.get('sector'), this);
+		return  new iChart.Sector2D(this.get('sub_option'), this);
 	},
 	doConfig : function() {
 		iChart.Pie2D.superclass.doConfig.call(this);
 		/**
 		 * quick config to all rectangle
 		 */
-		this.push('sector.radius',this.r)
+		this.push('sub_option.radius',this.r)
 		
 		this.data.each(function(d,i){
 			this.doParse(d,i);
 		},this);
 		
-		this.components.push(this.sectors);
+		
 	}
 });//@end

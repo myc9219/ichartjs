@@ -55,16 +55,17 @@
 	</style>
 	<script type="text/javascript">
 	var data = [
-	        	{name : 'Other',value : 0.73,background_color:'#6f83a5',ignored:true},
-	        	{name : 'Safari',value : 6.77,background_color:'#9f7961',ignored:true},
-	        	{name : 'Opera',value : 2.02,background_color:'#a56f8f',ignored:true},
-	        	{name : 'Firefox',value : 24.88,background_color:'#76a871'},
+	        	{name : 'Other',value : 0.73,color:'red',background_color:'#6f83a5',ignored:false},
+	        	{name : 'Safari',value : 6.77,color:'#9f7961',ignored:false},
+	        	{name : 'Opera',value : 2.02,background_color:'#a56f8f',ignored:false},
+	        	{name : 'Firefox',value : 24.88,background_color:'#76a871',shadow:true},
 	        	{name : 'IE',value : 35.75,background_color:'#a5c2d5'},
 	        	{name : 'Chrome',value : 29.84,background_color:'#cbab4f'}
         	],chart;
 	
 	$(function(){
-			chart = new iChart.Donut2D({
+		//multi的labels的设置,tip的放置
+			chart = new iChart.Column2D({
 				render : 'canvasDiv',
 				data: data,
 				title : 'Top 5 Browsers from 1 to 29 Feb 2012',
@@ -88,6 +89,10 @@
 						}
 					}]
 				},
+				label:{
+					fontsize:14,
+					color:'red'
+				},
 				sector:{
 					//label:{text_with_sign_color:true},
 					mini_label:{color:'#FEFEFE',fontsize:14},
@@ -104,8 +109,13 @@
 			
 		
 	});
+
+	function color(){
+		return '#'+('00000'+(Math.random()*0x1000000<<0).toString(16)).slice(-6);
+	}
+	
 	function test(){
-		data.push({name : 'NEWS',value : 7,color:'#6e1aa5'});
+		data.push({name : 'NEWS',value : 7,color:color()});
 		chart.push('data',data);
 		chart.push('coordinate.height',220);
 		chart.push('title.text','All Test Passed');

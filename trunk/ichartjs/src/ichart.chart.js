@@ -700,6 +700,10 @@
 			 * indicate the element's type
 			 */
 			this.type = 'chart';
+			/**
+			 * indicate the data structure
+			 */
+			this.dataType = 'simple';
 
 			this.set({
 				render : '',
@@ -853,7 +857,8 @@
 			/**
 			 * @event Fires when parse this tip's data.Return value will override existing. Only valid when tip is available
 			 * @paramter Object#data this tip's data item
-			 * @paramter int#i the index of data
+			 * @paramter int#value the value of item
+			 * @paramter int#i the index of item
 			 */
 			'parseTipText',
 			/**
@@ -953,7 +958,7 @@
 		},
 		/**
 		 * @method register the customize component
-		 * @paramter <link>iChart.Text</link>#component 
+		 * @paramter <link>iChart.Custom</link>#component 
 		 * @return void
 		 */
 		plugin : function(c) {
@@ -1150,6 +1155,25 @@
 			});
 			_.oneWay = $.emptyFn;
 		},
+		doActing:function(_,d,o){
+			var f=!!_.get('communal_acting');
+			/**
+			 * store or restore the option
+			 */
+			_.push(f?'sub_option':'communal_acting',iChart.clone(_.get(f?'communal_acting':'sub_option'),true));
+			/**
+			 * merge the option
+			 */
+			iChart.merge(_.get('sub_option'),d);
+			/**
+			 * prevent there no property background_color,use coloe instead
+			 */
+			_.pushIf('sub_option.background_color', d.color);
+			/**
+			 * merge specific option
+			 */
+			iChart.merge(_.get('sub_option'),o);
+		},
 		doConfig : function() {
 			
 			$.Chart.superclass.doConfig.call(this);
@@ -1161,6 +1185,11 @@
 			_.T.strokeStyle(true,_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');
+			
+			/**
+			 * for store the option of each item in chart
+			 */
+			_.push('communal_acting',0);
 			
 			_.duration = ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
 			if($.isFunction(_.get('doAnimation'))){
@@ -1265,8 +1294,10 @@
 			_.push('centerx', l + w / 2);
 			_.push('centery', t + h / 2);
 			
-			_.push('communal_option',['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip']);
-			
+			/**
+			 * clone config to sub_option
+			 */
+			iChart.applyIf(_.get('sub_option'), iChart.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip'], _.options));
 			
 			/**
 			 * legend

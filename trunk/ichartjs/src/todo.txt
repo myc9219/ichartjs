@@ -1,6 +1,7 @@
 //expect next
 1.return the postion of component's important item*
 1.1.增加测试用例
+1.2.代码还有压缩的余地，将公共函数提取出来
 2.中文api同步
 3.教程同步
 4.Pie2d的isEventValid

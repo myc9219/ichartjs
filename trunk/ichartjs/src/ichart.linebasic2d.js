@@ -55,14 +55,14 @@
 				H=_.get('coordinate.valid_height'),
 				sp=_.get('label_spacing'),
 				points,x,y,
-				ox=_.get('segment.originx'),
-				oy=_.get('segment.originy'),
+				ox=_.get('sub_option.originx'),
+				oy=_.get('sub_option.originy'),
 				p;
 			
-			_.push('segment.tip.showType','follow');
-			_.push('segment.coordinate',_.coo);
-			_.push('segment.tipInvokeHeap',_.tipInvokeHeap);
-			_.push('segment.point_space',sp);
+			_.push('sub_option.tip.showType','follow');
+			_.push('sub_option.coordinate',_.coo);
+			_.push('sub_option.tipInvokeHeap',_.tipInvokeHeap);
+			_.push('sub_option.point_space',sp);
 			
 			_.data.each(function(d,i){
 				points = [];
@@ -76,13 +76,13 @@
 					points.push(p);
 				},_);	
 				
-				_.push('segment.points',points);
-				_.push('segment.brushsize',d.linewidth||1);
-				_.push('segment.background_color',d.color);
+				_.push('sub_option.points',points);
+				_.push('sub_option.brushsize',d.linewidth||1);
+				_.push('sub_option.background_color',d.background_color || d.color);
 				
-				_.lines.push(new iChart.LineSegment(_.get('segment'),_));
+				_.lines.push(new iChart.LineSegment(_.get('sub_option'),_));
 			},this);
-			_.components.push(_.lines);
+			
 			
 		}
 		

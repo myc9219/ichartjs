@@ -14,7 +14,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		iChart.Pie.superclass.configure.call(this);
 
 		this.type = 'pie';
-		this.dataType = 'simple';
 
 		this.set({
 			/**
@@ -54,9 +53,9 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			increment : undefined,
 			/**
-			 * @cfg {Object} option of sector.Note,Pie2d depend on Sector2d and pie3d depend on Sector3d.For details see <link>iChart.Sector</link>
+			 * @cfg {<link>iChart.Sector</link>} option of sector.Note,Pie2d depend on Sector2d and pie3d depend on Sector3d.For details see <link>iChart.Sector</link>
 			 */
-			sector : {
+			sub_option : {
 				label : {}
 			}
 		});
@@ -144,20 +143,15 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	doParse : function(d, i) {
 		var _ = this._(), t = d.name + (_.get('showpercent') ? ' ' + iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
 		
-		if(_.get('sector_')){
-			_.push('sector',iChart.clone(_.get('sector_'),true));
-		}else{
-			_.push('sector_',iChart.clone(_.get('sector'),true));
-		}
+		_.doActing(_,d);
 		
-		iChart.merge(_.get('sector'),d);
+		if (_.get('sub_option.tip.enable'))
+			_.push('sub_option.tip.text', _.fireString(_, 'parseTipText', [d,d.value, i], t));
 		
-		if (_.get('sector.tip.enable'))
-			_.push('sector.tip.text', _.fireString(_, 'parseTipText', [d, i], t));
+		_.push('sub_option.id', i);
+		_.push('sub_option.label.text', t);
 		
-		_.push('sector.id', i);
-		_.push('sector.label.text', t);
-		_.push('sector.listeners.changed', function(se, st, i) {
+		_.push('sub_option.listeners.changed', function(se, st, i) {
 			_.fireEvent(_, st ? 'bound' : 'rebound', [_, se.get('name')]);
 		});
 		
@@ -171,11 +165,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		iChart.Pie.superclass.doConfig.call(this);
 		iChart.Assert.gtZero(this.total, 'this.total');
 		
-		var _ = this._(),r = _.get('radius'), f = _.get('sector.label') ? 0.35 : 0.44;
+		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44;
 		
 		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
-
+		_.components.push(_.sectors);
 		_.oA = iChart.angle2Radian(_.get('offsetAngle'));
 		
 		//If 3D,let it bigger
@@ -219,8 +213,8 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			_.push('originx', _.get('centerx') + _.get('offsetx'));
 		}
 		_.push('originy', _.get('centery') + _.get('offsety'));
-
-		iChart.apply(_.get('sector'), iChart.clone(_.get('communal_option').concat(['originx', 'originy', 'bound_event','mutex','increment']), _.options));
+		
+		iChart.apply(_.get('sub_option'),iChart.clone(['originx', 'originy', 'bound_event','mutex','increment'], _.options));
 		
 	}
 });

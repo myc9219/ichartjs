@@ -29,8 +29,8 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 
 	},
 	doSector : function(d) {
-		this.push('sector.cylinder_height', (d.cylinder_height ? d.cylinder_height * Math.cos(iChart.angle2Radian(this.get('zRotate'))) : this.get('cylinder_height')));
-		var s = new iChart.Sector3D(this.get('sector'), this);
+		this.push('sub_option.cylinder_height', (d.cylinder_height ? d.cylinder_height * Math.cos(iChart.angle2Radian(this.get('zRotate'))) : this.get('cylinder_height')));
+		var s = new iChart.Sector3D(this.get('sub_option'), this);
 		s.proxy = true;
 		return s;
 	},
@@ -39,97 +39,119 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		var _ = this, z = _.get('zRotate');
 		_.push('zRotate', iChart.between(0, 90, 90 - z));
 		_.push('cylinder_height', _.get('yHeight') * Math.cos(iChart.angle2Radian(z)));
-		_.push('sector.semi_major_axis', _.r);
-		_.push('sector.semi_minor_axis', _.r * z / 90);
-		_.push('sector.semi_major_axis', _.r);
-		_.push('sector.originy',_.get('originy')-_.get('yHeight')/2);
-		
+		_.push('sub_option.semi_major_axis', _.r);
+		_.push('sub_option.semi_minor_axis', _.r * z / 90);
+		_.push('sub_option.semi_major_axis', _.r);
+		_.push('sub_option.originy', _.get('originy') - _.get('yHeight') / 2);
+
 		_.data.each(function(d, i) {
 			_.doParse(d, i);
 		}, _);
 
-	
-	var layer = [],L=[],PI = Math.PI,PI2=PI*2,a = PI/2,b = PI*1.5,c = _.get('counterclockwise'),
-	abs = function(n,f){
-		n = Math.abs(n-f);
-		return n>PI?PI2-n:n;
-	},t='startAngle',d='endAngle';
-	
-	
-	_.proxy = new iChart.Custom({
-			z_index:_.get('z_index')+1,
+		var layer = [], L = [], PI = Math.PI, PI2 = PI * 2, a = PI / 2, b = PI * 1.5, c = _.get('counterclockwise'), abs = function(n, f) {
+			n = Math.abs(n - f);
+			return n > PI ? PI2 - n : n;
+		}, t = 'startAngle', d = 'endAngle';
+
+		_.proxy = new iChart.Custom({
+			z_index : _.get('z_index') + 1,
 			drawFn : function() {
 				this.drawSector();
-				L=[];
+				L = [];
 				_.sectors.each(function(s) {
-					if(s.get('label')){
-						if(s.expanded)
+					if (s.get('label')) {
+						if (s.expanded)
 							L.push(s.label);
 						else
 							s.label.draw();
 					}
 				});
-				L.each(function(l) {l.draw()});
+				L.each(function(l) {
+					l.draw()
+				});
 			}
-	});
-	
-	_.proxy.drawSector = function(){
-		/**
-		 * paint bottom layer
-		 */
-		_.sectors.each(function(s, i) {
-			_.T.ellipse(s.x, s.y + s.h, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), s.get('shadow'), c, true);
-		}, _);
-		
-		layer = [];
-		var s,e;
-		/**
-		 * sort layer
-		 */
-		_.sectors.each(function(f, i) {
-			f.sPaint = false;
-			s = f.get(t);e = f.get(d),fc = $.dark(f.get('background_color'));
-			if(c ? (s < a || s > b) : (s > a && s < b)){
-				layer.push({g:s,x:f.x,y:f.y,a:f.a,b:f.b,color:fc,h:f.h,F:f});
-			}
-			if(c ? (e > a && e < b) : (e < a || e > b)){
-				layer.push({g:e,x:f.x,y:f.y,a:f.a,b:f.b,color:fc,h:f.h,F:f});
-			}
-		}, _);
-		
-		/**
-		 * realtime sort
-		 */
-		layer.sor(function(p, q){return ((abs(p.g,b) - abs(q.g,b))>0)});
-		
-		/**
-		 * paint inside layer
-		 */
-		layer.each(function(f, i) {
-			_.T.sector3D.layerDraw.call(_.T, f.x, f.y, f.a+0.5, f.b+0.5, c, f.h, f.g, f.color);
-			if(!f.F.sPaint){
-				_.T.sector3D.sPaint.call(_.T, f.F.x, f.F.y, f.F.a, f.F.b, f.F.get(t), f.F.get(d), false, f.F.h, f.color);
-				f.F.sPaint = true;
-			}
-		}, _);
-		
-		/**
-		 * paint outside layer
-		 */
-		_.sectors.each(function(s, i) {
-			if(!s.sPaint)
-			_.T.sector3D.sPaint.call(_.T, s.x, s.y, s.a, s.b, s.get(t), s.get(d), false, s.h, s.get('f_color'));
-		}, _);
-		
-		/**
-		 * paint top layer
-		 */
-		_.sectors.each(function(s, i) {
-			_.T.ellipse(s.x, s.y, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, false, true);
-		}, _);
+		});
+
+		_.proxy.drawSector = function() {
+			/**
+			 * paint bottom layer
+			 */
+			_.sectors.each(function(s, i) {
+				_.T.ellipse(s.x, s.y + s.h, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), s.get('shadow'), c, true);
+			}, _);
+
+			layer = [];
+			var s, e;
+			/**
+			 * sort layer
+			 */
+			_.sectors.each(function(f, i) {
+				f.sPaint = false;
+				s = f.get(t);
+				e = f.get(d), fc = $.dark(f.get('background_color'));
+				if (c ? (s < a || s > b) : (s > a && s < b)) {
+					layer.push({
+						g : s,
+						x : f.x,
+						y : f.y,
+						a : f.a,
+						b : f.b,
+						color : fc,
+						h : f.h,
+						F : f
+					});
+				}
+				if (c ? (e > a && e < b) : (e < a || e > b)) {
+					layer.push({
+						g : e,
+						x : f.x,
+						y : f.y,
+						a : f.a,
+						b : f.b,
+						color : fc,
+						h : f.h,
+						F : f
+					});
+				}
+			}, _);
+
+			/**
+			 * realtime sort
+			 */
+			layer.sor(function(p, q) {
+				return ((abs(p.g, b) - abs(q.g, b)) > 0)
+			});
+
+			/**
+			 * paint inside layer
+			 */
+			layer.each(function(f, i) {
+				_.T.sector3D.layerDraw.call(_.T, f.x, f.y, f.a + 0.5, f.b + 0.5, c, f.h, f.g, f.color);
+				if (!f.F.sPaint) {
+					_.T.sector3D.sPaint.call(_.T, f.F.x, f.F.y, f.F.a, f.F.b, f.F.get(t), f.F.get(d), false, f.F.h, f.color);
+					f.F.sPaint = true;
+				}
+			}, _);
+
+			/**
+			 * paint outside layer
+			 */
+			_.sectors.each(function(s, i) {
+				if (!s.sPaint)
+					_.T.sector3D.sPaint.call(_.T, s.x, s.y, s.a, s.b, s.get(t), s.get(d), false, s.h, s.get('f_color'));
+			}, _);
+
+			/**
+			 * paint top layer
+			 */
+			_.sectors.each(function(s, i) {
+				_.T.ellipse(s.x, s.y, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, false, true);
+			}, _);
+		}
+
+		_.components.push(_.proxy);
 	}
-	
-	_.components.push(_.sectors);
-	_.components.push(_.proxy);
-}
-});// @end
+});
+/**
+ * @end
+ */

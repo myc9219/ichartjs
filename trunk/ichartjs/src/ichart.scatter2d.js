@@ -35,9 +35,9 @@
 			this.coo = new iChart.Coordinate2D(this.get('coordinate'),this);
 			
 			this.components.push(this.coo);
-			this.push('segment.coordinate',this.coo);
-			this.push('segment.tip.showType','follow');
-			this.push('segment.tipInvokeHeap',this.tipInvokeHeap);
+			this.push('sub_option.coordinate',this.coo);
+			this.push('sub_option.tip.showType','follow');
+			this.push('sub_option.tipInvokeHeap',this.tipInvokeHeap);
 			
 			//get the max/min scale of this coordinate for calculated the height
 			var S = this.coo.getScale(this.get('scaleAlign')),
@@ -46,8 +46,8 @@
 				H=this.get('coordinate.valid_height'),
 				sp=this.get('label_spacing'),
 				points,x,y,
-				ox=this.get('segment.originx'),
-				oy=this.get('segment.originy'),
+				ox=this.get('sub_option.originx'),
+				oy=this.get('sub_option.originy'),
 				p;
 			
 			this.data.each(function(d,i){
@@ -59,13 +59,13 @@
 					iChart.merge(p,this.fireEvent(this,'parsePoint',[d,v,x,y,j]));
 					points.push(p);
 				},this);	
-				this.push('segment.points',points);
-				this.push('segment.brushsize',d.linewidth||1);
-				this.push('segment.sign',d.sign);
-				this.push('segment.background_color',d.color);
+				this.push('sub_option.points',points);
+				this.push('sub_option.brushsize',d.linewidth||1);
+				this.push('sub_option.sign',d.sign);
+				this.push('sub_option.background_color',d.color);
 				
 				
-				this.lines.push(new iChart.Points(this.get('segment'),this));
+				this.lines.push(new iChart.Points(this.get('sub_option'),this));
 				
 			},this);
 			
