@@ -76,26 +76,19 @@
 			
 			_.pushIf('increment',iChart.lowTo(5,_.r/10));
 			
-			var A = _.get('middleAngle'),inc = _.get('increment');
-			_.push('inc_x',inc * Math.cos(2 * Math.PI -A));
-			_.push('inc_y',inc * Math.sin(2 * Math.PI - A));
+			var A = _.get('middleAngle'),L = _.get('increment');
+			_.push('inc_x',L * Math.cos(2 * Math.PI -A));
+			_.push('inc_y',L * Math.sin(2 * Math.PI - A));
 			
-			if(_.get('label.enable')){
-				_.pushIf('label.linelength',iChart.lowTo(10,_.r/8));
-				Q  = iChart.quadrantd(A),
-				
-				P2 = iChart.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
-				
-				_.push('label.originx',P2.x);
-				_.push('label.originy',P2.y);
-				_.push('label.quadrantd',Q);
-				
-				var P = iChart.p2Point(_.x,_.y,A,_.r + _.get('label.linelength'));
-				_.push('label.line_potins',[P2.x,P2.y,P.x,P.y]);
-				_.push('label.labelx',P.x);
-				_.push('label.labely',P.y);
-				
-				_.label = new iChart.Label(_.get('label'),_);
+			if(_.get('label')){
+				var P2 = iChart.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
+				if(_.get('mini_label')){
+					_.doText(_,P2.x,P2.y);
+				}else{
+					var Q  = iChart.quadrantd(A),
+						P = iChart.p2Point(_.x,_.y,A,_.r + L);
+					_.doLabel(_,P2.x,P2.y,Q,[{x:P2.x,y:P2.y},{x:P.x,y:P.y}],P.x,P.y);
+				}
 			}
 		}
 });//@end

@@ -29,7 +29,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 
 	},
 	doSector : function(d) {
-		this.push('sector.cylinder_height', (d.height ? d.height * Math.cos(iChart.angle2Radian(this.get('zRotate'))) : this.get('cylinder_height')));
+		this.push('sector.cylinder_height', (d.cylinder_height ? d.cylinder_height * Math.cos(iChart.angle2Radian(this.get('zRotate'))) : this.get('cylinder_height')));
 		var s = new iChart.Sector3D(this.get('sector'), this);
 		s.proxy = true;
 		return s;
@@ -60,23 +60,16 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 			z_index:_.get('z_index')+1,
 			drawFn : function() {
 				this.drawSector();
-				/**
-				 * draw the labels
-				 */
-				if (_.get('label.enable')) {
-					L=[];
-					_.sectors.each(function(s) {
-						if(s.expanded){
+				L=[];
+				_.sectors.each(function(s) {
+					if(s.get('label')){
+						if(s.expanded)
 							L.push(s.label);
-						}else{
+						else
 							s.label.draw();
-						}
-					});
-					L.each(function(l) {
-						l.draw();
-					});
-					
-				}
+					}
+				});
+				L.each(function(l) {l.draw()});
 			}
 	});
 	

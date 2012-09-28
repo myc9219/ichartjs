@@ -78,16 +78,20 @@
 			
 			this.registerEvent();
 			
-			/**
-			 * indicate this component not need support event
-			 */
-			this.ignoreEvent = true;
 		},
 		doDraw:function(opts){
 			if(this.get('box_feature'))
 			this.T.box(this.x,this.y,this.get('width'),this.get('height'),this.get('border'),this.get('f_color'));
 			if(this.get('text')!='')
 			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'),0,0,this.get('shadow'));
+		},
+		isEventValid:function(){
+			return {valid:false};
+		},
+		doLayout:function(x,y){
+			var _ = this._();
+			_.push('textx',_.get('textx')+x);
+			_.push('texty',_.get('texty')+y);
 		},
 		doConfig:function(){
 			iChart.Text.superclass.doConfig.call(this);
