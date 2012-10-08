@@ -356,10 +356,11 @@
 			return this.c.createRadialGradient(xs, ys, rs, xe, ye, re);
 		},
 		text : function(t, x, y, max, color, align, line, font, mode, h,sw) {
+			if(t=='')return this;
 			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw).restore();
 		},
 		fillText : function(t, x, y, max, color, mode, h,sw) {
-			t = t + "";
+			t = t.toString();
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
