@@ -38,10 +38,6 @@
 			});
 			
 		},
-		drawValue:function(){
-			if(this.get('value')!='')
-			this.T.text(this.get('value'),this.topCenterX,this.topCenterY - this.get('value_space'),false,this.get('color'),'center','bottom',this.get('fontStyle'));
-		},
 		drawRectangle:function(){
 			this.T.cube(
 				this.get('originx'),
@@ -77,6 +73,11 @@
 			
 			_.topCenterX=_.x+(_.get('width')+_.get('width')*_.get('xAngle_'))/2;
 			_.topCenterY=_.y-_.get('width')*_.get('yAngle_')/2;
+			
+			if(_.get('valueAlign')=='top'){
+				_.push('value_x',_.topCenterX);
+				_.push('value_y',_.topCenterY);
+			}
 			
 		}
 });//@end

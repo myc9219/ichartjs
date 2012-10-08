@@ -55,60 +55,46 @@
 	</style>
 	<script type="text/javascript">
 	var data = [
-	        	{name : 'Other',value : 0.73,color:'red',background_color:'#6f83a5',ignored:false},
-	        	{name : 'Safari',value : 6.77,color:'#9f7961',ignored:false},
-	        	{name : 'Opera',value : 2.02,background_color:'#a56f8f',ignored:false},
-	        	{name : 'Firefox',value : 24.88,background_color:'#76a871',shadow:true},
-	        	{name : 'IE',value : 35.75,background_color:'#a5c2d5'},
-	        	{name : 'Chrome',value : 29.84,background_color:'#cbab4f'}
-        	],chart;
-	
-	$(function(){
-		//multi的labels的设置,tip的放置
-			chart = new iChart.Column2D({
-				render : 'canvasDiv',
-				data: data,
-				title : 'Top 5 Browsers from 1 to 29 Feb 2012',
-				showpercent:true,
-				decimalsnum:2,
-				width : 800,
-				height : 400,
-				//animation:true,
-				//legend:{enable:true},
-				coordinate:{
-					width:620,
-					scale:[{
-						 position:'left',	
-						 start_scale:0,
-						 end_scale:40,
-						 scale_space:8,
-						 listeners:{
-							parseText:function(t,x,y){
-								return {text:t+"%"}
-							}
+	         	{
+	         		name : 'DPS01A',
+	         		value:[45,52,54,74,90,84],
+	         		color:'#1f7e92',
+	         		linewidth:1
+	         	},
+	         	{
+	         		name : 'DPS01B',
+	         		value:[60,80,105,125,108,120],
+	         		color:'#2b7f39',
+	         		linewidth:1
+	         	}
+	         ];
+		$(function(){
+			//multi的labels的设置,tip的放置
+			new iChart.ColumnMulti2D({
+					render : 'canvasDiv',
+					data: data,
+					data_labels:["一月","二月","三月","四月","五月","六月"],
+					title : 'DPS01A型号比DPS01B型号的产品更受用户喜欢',
+					subtitle : '2012上半年DPS01A型号与DPS01B型号的鼠标销售比较,单位:万台',
+					footnote : '数据来源：销售中心',
+					footnote_align:'left',
+					width : 800,
+					height : 440,
+					background_color : '#eff8ff',
+					legend:{
+						enable:true,
+						background_color : '#eff8ff',
+						border : {
+							enable : false
 						}
-					}]
-				},
-				label:{
-					fontsize:14,
-					color:'red'
-				},
-				sector:{
-					//label:{text_with_sign_color:true},
-					mini_label:{color:'#FEFEFE',fontsize:14},
-					label:{fontsize:12},
-					listeners:{
-						parseText:function(s,i){
-							return s.get('value')+'%';
-						}
+					},
+					coordinate:{
+						background_color : '#eff8ff',
+						width:600,
+						height:300
 					}
-				}
-			});
-
-			chart.draw();
-			
-		
-	});
+			}).draw();
+		});
 
 	function color(){
 		return '#'+('00000'+(Math.random()*0x1000000<<0).toString(16)).slice(-6);

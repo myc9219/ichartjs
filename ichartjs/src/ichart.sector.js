@@ -1,5 +1,5 @@
 /**
- * @overview this component use for abc
+ * @overview this component use for config sector,this is a abstract class.
  * @component#iChart.Sector
  * @extend#iChart.Component
  */
@@ -19,15 +19,15 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			/**
 			 * @cfg {String} Specifies the value of this element,Normally,this will given by chart.(default to '')
 			 */
-			value:'',
+			value : '',
 			/**
 			 * @cfg {String} Specifies the name of this element,Normally,this will given by chart.(default to '')
 			 */
-			name:'',
+			name : '',
 			/**
 			 * @cfg {Boolean} True will not darw.(default to false)
 			 */
-			ignored: false,
+			ignored : false,
 			/**
 			 * @inner {Boolean} True to make sector counterclockwise.(default to false)
 			 */
@@ -73,19 +73,17 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			 * @Option 'RadialGradientOutIn'
 			 * @Option 'RadialGradientInOut'
 			 */
-			gradient_mode:'RadialGradientOutIn',
+			gradient_mode : 'RadialGradientOutIn',
 			/**
 			 * @cfg {Number} Specifies the threshold value in angle that applies mini_label.(default to 15)
 			 */
-			mini_label_threshold_angle:15,
+			mini_label_threshold_angle : 15,
 			/**
-			 * @cfg {<link>iChart.Text</link>} Specifies the config of label.when mini_label is a object,there will as a <link>iChart.Text</link>.(default to false)
-			 * note:set false to make minilabel disabled.
+			 * @cfg {<link>iChart.Text</link>} Specifies the config of label.when mini_label is a object,there will as a <link>iChart.Text</link>.(default to false) note:set false to make minilabel disabled.
 			 */
-			mini_label:false,
+			mini_label : false,
 			/**
-			 * @cfg {<link>iChart.Label</link>} Specifies the config of label.when mini_label is unavailable,there will as a <link>iChart.Label</link>.
-			 * note:set false to make label disabled.
+			 * @cfg {<link>iChart.Label</link>} Specifies the config of label.when mini_label is unavailable,there will as a <link>iChart.Label</link>. note:set false to make label disabled.
 			 */
 			label : {}
 		});
@@ -96,11 +94,11 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		this.atomic = true;
 
 		this.registerEvent('changed',
-				/**
-				 * @event Fires when parse this label's data.Return value will override existing. Only valid when label is available
-				 * @paramter iChart.Sector#sector the sector object
-				 */
-				'parseText');
+		/**
+		 * @event Fires when parse this label's data.Return value will override existing. Only valid when label is available
+		 * @paramter <link>iChart.Sector</link>#sector the sector object
+		 */
+		'parseText');
 
 		this.label = null;
 		this.tip = null;
@@ -125,65 +123,66 @@ iChart.Sector = iChart.extend(iChart.Component, {
 	 * @property middleAngle:the middle angle, in radians
 	 * @return object
 	 */
-	getDimension:function(){
+	getDimension : function() {
 		return {
-			x:this.x,
-			x:this.y,
-			startAngle:this.get("startAngle"),
-			middleAngle:this.get("middleAngle"),
-			endAngle:this.get("endAngle")
+			x : this.x,
+			x : this.y,
+			startAngle : this.get("startAngle"),
+			middleAngle : this.get("middleAngle"),
+			endAngle : this.get("endAngle")
 		}
 	},
 	doDraw : function(opts) {
-		if(!this.get('ignored')){
+		if (!this.get('ignored')) {
 			this.drawSector();
-			if(this.label) {
+			if (this.label) {
 				this.label.draw();
 			}
 		}
 	},
-	doText:function(_,x,y){
-		_.push('label.originx',x);
-		_.push('label.originy',y);
-		_.push('label.textBaseline','middle');
-		_.label = new iChart.Text(_.get('label'),_);
+	doText : function(_, x, y) {
+		_.push('label.originx', x);
+		_.push('label.originy', y);
+		_.push('label.textBaseline', 'middle');
+		_.label = new iChart.Text(_.get('label'), _);
 	},
-	doLabel:function(_,x,y,Q,p,x0,y0){
-		_.push('label.originx',x);
-		_.push('label.originy',y);
-		_.push('label.quadrantd',Q);
-		_.push('label.line_potins',p);
-		_.push('label.labelx',x0);
-		_.push('label.labely',y0);
-		_.label = new iChart.Label(_.get('label'),_);
+	doLabel : function(_, x, y, Q, p, x0, y0) {
+		_.push('label.originx', x);
+		_.push('label.originy', y);
+		_.push('label.quadrantd', Q);
+		_.push('label.line_potins', p);
+		_.push('label.labelx', x0);
+		_.push('label.labely', y0);
+		_.label = new iChart.Label(_.get('label'), _);
 	},
-	isLabel:function(){
-		return this.get('label')&&!this.get('mini_label');
+	isLabel : function() {
+		return this.get('label') && !this.get('mini_label');
 	},
 	doConfig : function() {
 		iChart.Sector.superclass.doConfig.call(this);
 
-		var _ = this._(),v = _.variable.event,f = _.get('label');
+		var _ = this._(), v = _.variable.event, f = _.get('label');
 
 		_.push('totalAngle', _.get('endAngle') - _.get('startAngle'));
-		
-		if(f){
-			if(_.get('mini_label')){
-				if((_.get('mini_label_threshold_angle')*Math.PI/180)>_.get('totalAngle')){
-					_.push('mini_label',false);
-				}else{
-					_.push('label',_.get('mini_label'));
+
+		if (f) {
+			if (_.get('mini_label')) {
+				if ((_.get('mini_label_threshold_angle') * Math.PI / 180) > _.get('totalAngle')) {
+					_.push('mini_label', false);
+				} else {
+					iChart.apply(_.get('label'),_.get('mini_label'));
 				}
 			}
-			_.push('label.text', _.fireString(_, 'parseText', [_],_.get('label.text')));
 			
-			_.pushIf('label.border.color',_.get('border.color'));
+			_.push('label.text', _.fireString(_, 'parseText', [_], _.get('label.text')));
+
+			_.pushIf('label.border.color', _.get('border.color'));
 			/**
 			 * make the label's color in accord with sector
 			 */
 			_.push('label.scolor', _.get('background_color'));
 		}
-		
+
 		_.variable.event.status = _.expanded = _.get('expand');
 
 		if (_.get('tip.enable')) {
@@ -194,35 +193,34 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		}
 
 		v.poped = false;
-
-		_.on(_.get('bound_event'), function() {
-			// console.profile('Test for pop');
-				//console.time('Test for pop');
-				v.poped = true;
-				_.expanded = !_.expanded;
-				_.redraw();
-				v.poped = false;
-				 //console.timeEnd('Test for pop');
-				// console.profileEnd('Test for pop');
-			});
 		
-		_.on('mouseover',function(){
+		/**
+		 *need test profile/time
+		 */
+		_.on(_.get('bound_event'), function() {
+			v.poped = true;
+			_.expanded = !_.expanded;
+			_.redraw();
+			v.poped = false;
+		});
+
+		_.on('mouseover', function() {
 			v.highlight = true;
 			_.redraw();
 			v.highlight = false;
-		}).on('mouseout',function(){
+		}).on('mouseout', function() {
 			v.highlight = false;
 			_.redraw();
 		});
-		
+
 		_.on('beforedraw', function() {
-			_.push('f_color',v.highlight?_.get('light_color'):_.get('f_color_'));
+			_.push('f_color', v.highlight ? _.get('light_color') : _.get('f_color_'));
 			_.x = _.get('originx');
 			_.y = _.get('originy');
 			if (v.status != _.expanded) {
 				_.fireEvent(_, 'changed', [_, _.expanded]);
-				if(f)
-				_.label.doLayout(_.get('inc_x')*(_.expanded?1:-1),-_.get('inc_y')*(_.expanded?1:-1));
+				if (f)
+					_.label.doLayout(_.get('inc_x') * (_.expanded ? 1 : -1), -_.get('inc_y') * (_.expanded ? 1 : -1));
 			}
 			v.status = _.expanded;
 			if (_.expanded) {
@@ -237,4 +235,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		});
 
 	}
-});// @end
+});
+/**
+ * @end
+ */

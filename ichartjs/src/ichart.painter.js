@@ -215,7 +215,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	on : function(n, fn) {
 		if(iChart.isString(n)){
 			if (!this.events[n])
-				console.log(n);
+				throw new Error('['+this.type+"] invalid event:'" + n + "'");
 			this.events[n].push(fn);
 		}else if(iChart.isArray(n)){
 			n.each(function(c){this.on(c, fn)},this);

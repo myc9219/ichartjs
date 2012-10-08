@@ -566,6 +566,9 @@
 				if (_.isFunction(t))
 					t.plugin(m, f);
 			},
+			isLR:function(g){
+				return g=='left' || g=='right';
+			},
 			parsePadding : function(s, d) {
 				if (_.isNumber(s))
 					return new Array(s, s, s, s);

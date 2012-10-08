@@ -1006,7 +1006,6 @@ $.Element = function(config) {
 		'dblclick':[]
 	};
 	
-	this.ignoreEvent = false;
 	this.initialization = false;
 	
 	/**
@@ -1123,7 +1122,7 @@ $.Painter = $.extend($.Element, {
 			 */
 			color_factor : 0.15,
 			/**
-			 * @cfg {String} ('2d','3d')
+			 * @inner {String} ('2d','3d')
 			 */
 			style : '',
 			/**
@@ -1506,9 +1505,7 @@ $.Html = $.extend($.Element,{
 			
 	},
 	initialize : function() {
-		if (!this.ignoreEvent)
-			$.DefineAbstract('isEventValid', this);
-		
+		$.DefineAbstract('isEventValid', this);
 		$.DefineAbstract('doDraw', this);
 	
 		this.doConfig();
@@ -2160,7 +2157,7 @@ $.Label = $.extend($.Component, {
 		/**
 		 * indicate the legend's type
 		 */
-		this.type = 'legend';
+		this.type = 'label';
 
 		this.set({
 			/**
@@ -2230,6 +2227,15 @@ $.Label = $.extend($.Component, {
 		this.labelx = (Q>=1&&Q<=2)?(this.get('labelx') - this.get('width')):this.get('labelx');
         this.labely = Q>=2?(this.get('labely') - this.get('height')):this.get('labely');
 	},
+	doLayout:function(x,y){
+		var _ = this._();
+		_.push('labelx',_.get('labelx')+x);
+		_.push('labely',_.get('labely')+y);
+		_.get('line_potins').each(function(p){
+			p.x +=x;
+			p.y +=y;
+		},_);
+	},
 	doDraw : function() {
 		var _ = this._();
 		
@@ -2239,8 +2245,7 @@ $.Label = $.extend($.Component, {
 		x = _.labelx + _.get('padding_left'),
 		y = _.labely +_.get('padding_top');
 		
-		_.T.lines(p,_.get('line_thickness'), _.get('border.color'),_.get('line_globalComposite'));
-		
+		_.T.lineArray(p,_.get('line_thickness'), _.get('border.color'));
 		_.T.box(_.labelx, _.labely, _.get('width'), _.get('height'), _.get('border'), _.get('f_color'), false, _.get('shadow'), _.get('shadow_color'), _.get('shadow_blur'), _.get('shadow_offsetx'), _.get('shadow_offsety'));
 		
 		_.T.textStyle('left', 'top', _.get('fontStyle'));
@@ -2311,6 +2316,9 @@ $.Label = $.extend($.Component, {
 				 * @Option center
 				 */
 				textAlign:'center',
+				/**
+				 * @cfg {String} Here,specify as false to make background transparent.(default to null)
+				 */
 				background_color : 0,
 				/**
 				 * @cfg {String} Specifies the textBaseline of html5.(default to 'top')
@@ -2325,6 +2333,7 @@ $.Label = $.extend($.Component, {
 				textBaseline:'top',
 				/**
 				 * @cfg {Object} Here,specify as false by default
+				 * @see <link>$.Element#border</link>
 				 */
 				border : {
 					enable : false
@@ -2351,16 +2360,20 @@ $.Label = $.extend($.Component, {
 			
 			this.registerEvent();
 			
-			/**
-			 * indicate this component not need support event
-			 */
-			this.ignoreEvent = true;
 		},
 		doDraw:function(opts){
 			if(this.get('box_feature'))
 			this.T.box(this.x,this.y,this.get('width'),this.get('height'),this.get('border'),this.get('f_color'));
 			if(this.get('text')!='')
 			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'),0,0,this.get('shadow'));
+		},
+		isEventValid:function(){
+			return {valid:false};
+		},
+		doLayout:function(x,y){
+			var _ = this._();
+			_.push('textx',_.get('textx')+x);
+			_.push('texty',_.get('texty')+y);
 		},
 		doConfig:function(){
 			$.Text.superclass.doConfig.call(this);
@@ -2936,7 +2949,7 @@ $.Label = $.extend($.Component, {
 			return this.closePath().stroke(b).fill(bg).restore();
 		},
 		lines : function(p, w, c, last) {
-			if (p.length < 4)
+			if (p.length < 4||!w)
 				return this;
 			this.save().gCo(last).beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0]), fd(w, p[1]));
 			for ( var i = 2; i < p.length - 1; i += 2) {
@@ -2949,7 +2962,7 @@ $.Label = $.extend($.Component, {
 			return this;
 		},
 		lineArray : function(p, w, c, smooth, smo) {
-			if (p.length < 2)
+			if (p.length < 2||!w)
 				return this;
 			this.strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
 			if (smooth) {
@@ -3080,6 +3093,10 @@ $.Label = $.extend($.Component, {
 			 * indicate the element's type
 			 */
 			this.type = 'chart';
+			/**
+			 * indicate the data structure
+			 */
+			this.dataType = 'simple';
 
 			this.set({
 				render : '',
@@ -3233,7 +3250,8 @@ $.Label = $.extend($.Component, {
 			/**
 			 * @event Fires when parse this tip's data.Return value will override existing. Only valid when tip is available
 			 * @paramter Object#data this tip's data item
-			 * @paramter int#i the index of data
+			 * @paramter int#value the value of item
+			 * @paramter int#i the index of item
 			 */
 			'parseTipText',
 			/**
@@ -3333,7 +3351,7 @@ $.Label = $.extend($.Component, {
 		},
 		/**
 		 * @method register the customize component
-		 * @paramter <link>$.Text</link>#component 
+		 * @paramter <link>$.Custom</link>#component 
 		 * @return void
 		 */
 		plugin : function(c) {
@@ -3472,12 +3490,10 @@ $.Label = $.extend($.Component, {
 			
 			_.on(events[0], function(_, e) {
 				_.components.eachAll(function(C) {
-					if (!C.ignoreEvent) {
-						var M = C.isMouseOver(e);
-						if (M.valid){
-							E.click = true;
-							C.fireEvent(C,'click', [C, e, M]);
-						}
+					var M = C.isMouseOver(e);
+					if (M.valid){
+						E.click = true;
+						C.fireEvent(C,'click', [C, e, M]);
 					}
 				});
 				if(E.click){
@@ -3490,7 +3506,6 @@ $.Label = $.extend($.Component, {
 			_.on(events[1], function(_, e) {
 				O = AO = false;
 				_.components.eachAll(function(cot) {
-					if (!cot.ignoreEvent) {
 						var cE = cot.variable.event, M = cot.isMouseOver(e);
 						if (M.valid) {
 							O = true;
@@ -3518,7 +3533,6 @@ $.Label = $.extend($.Component, {
 								cot.fireEvent(cot, 'mouseout', [cot,e, M]);
 							}
 						}
-					}
 				});
 				
 				if(E.mouseover){
@@ -3534,6 +3548,25 @@ $.Label = $.extend($.Component, {
 			});
 			_.oneWay = $.emptyFn;
 		},
+		doActing:function(_,d,o){
+			var f=!!_.get('communal_acting');
+			/**
+			 * store or restore the option
+			 */
+			_.push(f?'sub_option':'communal_acting',$.clone(_.get(f?'communal_acting':'sub_option'),true));
+			/**
+			 * merge the option
+			 */
+			$.merge(_.get('sub_option'),d);
+			/**
+			 * prevent there no property background_color,use coloe instead
+			 */
+			_.pushIf('sub_option.background_color', d.color);
+			/**
+			 * merge specific option
+			 */
+			$.merge(_.get('sub_option'),o);
+		},
 		doConfig : function() {
 			
 			$.Chart.superclass.doConfig.call(this);
@@ -3545,6 +3578,11 @@ $.Label = $.extend($.Component, {
 			_.T.strokeStyle(true,_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');
+			
+			/**
+			 * for store the option of each item in chart
+			 */
+			_.push('communal_acting',0);
 			
 			_.duration = ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
 			if($.isFunction(_.get('doAnimation'))){
@@ -3649,8 +3687,10 @@ $.Label = $.extend($.Component, {
 			_.push('centerx', l + w / 2);
 			_.push('centery', t + h / 2);
 			
-			_.push('communal_option',['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip']);
-			
+			/**
+			 * clone config to sub_option
+			 */
+			$.applyIf(_.get('sub_option'), $.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip'], _.options));
 			
 			/**
 			 * legend
@@ -3760,11 +3800,11 @@ $.Scale = $.extend($.Component, {
 			 */
 			end_scale : undefined,
 			/**
-			 * @inner {Number} Specifies the chart's minimal value
+			 * @cfg {Number} Specifies the chart's minimal value
 			 */
 			min_scale : undefined,
 			/**
-			 * @inner {Number} Specifies the chart's maximal value
+			 * @cfg {Number} Specifies the chart's maximal value
 			 */
 			max_scale : undefined,
 			/**
@@ -3805,10 +3845,6 @@ $.Scale = $.extend($.Component, {
 			 * @cfg {Array} the customize labels
 			 */
 			labels : [],
-			/**
-			 * @cfg {Boolean} True to Indicate the grid is accord with scale
-			 */
-			scale2grid : true,
 			/**
 			 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 16)
 			 */
@@ -4220,7 +4256,9 @@ $.Coordinate2D = $
 							 * @cfg {Number} Required,Specifies the height of this coordinate.(default to undefined)
 							 */
 							height : undefined,
-
+							/**
+							 * @cfg {Number}Override the default as -1 to make sure it at the bottom.(default to -1)
+							 */	
 							z_index : -1,
 							/**
 							 * @cfg {Object} Specifies style for axis of this coordinate. Available property are:
@@ -4915,7 +4953,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		},
 		drawValue:function(){
 			if(this.get('value')!='')
-			this.T.text(this.get('value'),this.get('centerx'),this.topCenterY + this.get('value_space'),false,this.get('color'),'center','top',this.get('fontStyle'));
+			this.T.text(this.get('value'),this.topCenterX,this.topCenterY - this.get('value_space'),false,this.get('color'),'center','bottom',this.get('fontStyle'));
 		},
 		drawRectangle:function(){
 			this.T.cube(
@@ -4951,7 +4989,6 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			_.pushIf("zHeight",_.get('width'));
 			
 			_.topCenterX=_.x+(_.get('width')+_.get('width')*_.get('xAngle_'))/2;
-			
 			_.topCenterY=_.y-_.get('width')*_.get('yAngle_')/2;
 			
 		}
@@ -4983,6 +5020,10 @@ $.Sector = $.extend($.Component, {
 			 */
 			name:'',
 			/**
+			 * @cfg {Boolean} True will not darw.(default to false)
+			 */
+			ignored: false,
+			/**
 			 * @inner {Boolean} True to make sector counterclockwise.(default to false)
 			 */
 			counterclockwise : false,
@@ -5003,7 +5044,7 @@ $.Sector = $.extend($.Component, {
 			 */
 			totalAngle : 0,
 			/**
-			 * @cfg {String} the event's name trigger pie bound(default to 'click').
+			 * @inner {String} the event's name trigger pie bound(default to 'click').
 			 */
 			bound_event : 'click',
 			/**
@@ -5015,11 +5056,11 @@ $.Sector = $.extend($.Component, {
 			 */
 			donutwidth : 0,
 			/**
-			 * @cfg {Boolean} If true means just one piece could bound at same time.(default to false)
+			 * @inner {Boolean} If true means just one piece could bound at same time.(default to false)
 			 */
 			mutex : false,
 			/**
-			 * @cfg {Number} Specifies the offset when bounded.Normally,this will given by chart.(default to undefined)
+			 * @inner {Number} Specifies the offset when bounded.Normally,this will given by chart.(default to undefined)
 			 */
 			increment : undefined,
 			/**
@@ -5029,12 +5070,19 @@ $.Sector = $.extend($.Component, {
 			 */
 			gradient_mode:'RadialGradientOutIn',
 			/**
-			 * @cfg {Object} Specifies the config of label.For details see <link>$.Label</link>
-			 * Note:this has a extra property named 'enable',indicate whether label available(default to true)
+			 * @cfg {Number} Specifies the threshold value in angle that applies mini_label.(default to 15)
 			 */
-			label : {
-				enable : true
-			}
+			mini_label_threshold_angle:15,
+			/**
+			 * @cfg {<link>$.Text</link>} Specifies the config of label.when mini_label is a object,there will as a <link>$.Text</link>.(default to false)
+			 * note:set false to make minilabel disabled.
+			 */
+			mini_label:false,
+			/**
+			 * @cfg {<link>$.Label</link>} Specifies the config of label.when mini_label is unavailable,there will as a <link>$.Label</link>.
+			 * note:set false to make label disabled.
+			 */
+			label : {}
 		});
 
 		/**
@@ -5042,7 +5090,12 @@ $.Sector = $.extend($.Component, {
 		 */
 		this.atomic = true;
 
-		this.registerEvent('changed');
+		this.registerEvent('changed',
+				/**
+				 * @event Fires when parse this label's data.Return value will override existing. Only valid when label is available
+				 * @paramter $.Sector#sector the sector object
+				 */
+				'parseText');
 
 		this.label = null;
 		this.tip = null;
@@ -5059,7 +5112,7 @@ $.Sector = $.extend($.Component, {
 		this.fireEvent(this, this.get('bound_event'), [this]);
 	},
 	/**
-	 * @method return the sector's dimension,return hold following property
+	 * @method get the sector's dimension,return hold following property
 	 * @property x:the x-coordinate of the center of the sector
 	 * @property y:the y-coordinate of the center of the sector
 	 * @property startAngle:The starting angle, in radians (0 is at the 3 o'clock position of the arc's circle)
@@ -5077,44 +5130,55 @@ $.Sector = $.extend($.Component, {
 		}
 	},
 	doDraw : function(opts) {
-		this.drawSector();
-		if (this.label) {
-			/**
-			 * draw the labels
-			 */
-			this.label.draw();
+		if(!this.get('ignored')){
+			this.drawSector();
+			if(this.label) {
+				this.label.draw();
+			}
 		}
 	},
-	labelInvoke:function(f){
-		var A = this.get('middleAngle'),l=this.label;
-		x = this.get('inc_x')*f,
-		y = -this.get('inc_y')*f;
-		
-		l.push('originx',l.get('originx')+x);
-		l.push('originy',l.get('originy')+y);
-		l.push('labelx',l.get('labelx')+x);
-		l.push('labely',l.get('labely')+y);
-		var p =[];
-		l.get('line_potins').each(function(v, i){
-			p.push(i%2==0?(v+x):(v+y));
-		},l);
-		l.push('line_potins',p);
+	doText:function(_,x,y){
+		_.push('label.originx',x);
+		_.push('label.originy',y);
+		_.push('label.textBaseline','middle');
+		_.label = new $.Text(_.get('label'),_);
+	},
+	doLabel:function(_,x,y,Q,p,x0,y0){
+		_.push('label.originx',x);
+		_.push('label.originy',y);
+		_.push('label.quadrantd',Q);
+		_.push('label.line_potins',p);
+		_.push('label.labelx',x0);
+		_.push('label.labely',y0);
+		_.label = new $.Label(_.get('label'),_);
+	},
+	isLabel:function(){
+		return this.get('label')&&!this.get('mini_label');
 	},
 	doConfig : function() {
 		$.Sector.superclass.doConfig.call(this);
 
-		var _ = this._(),v = _.variable.event;
+		var _ = this._(),v = _.variable.event,f = _.get('label');
 
 		_.push('totalAngle', _.get('endAngle') - _.get('startAngle'));
-
-
-		if(_.get('label.enable')){
+		
+		if(f){
+			if(_.get('mini_label')){
+				if((_.get('mini_label_threshold_angle')*Math.PI/180)>_.get('totalAngle')){
+					_.push('mini_label',false);
+				}else{
+					_.push('label',_.get('mini_label'));
+				}
+			}
+			_.push('label.text', _.fireString(_, 'parseText', [_],_.get('label.text')));
+			
 			_.pushIf('label.border.color',_.get('border.color'));
 			/**
 			 * make the label's color in accord with sector
 			 */
-			_.push('label.scolor', _.get('f_color'));
+			_.push('label.scolor', _.get('background_color'));
 		}
+		
 		_.variable.event.status = _.expanded = _.get('expand');
 
 		if (_.get('tip.enable')) {
@@ -5152,8 +5216,8 @@ $.Sector = $.extend($.Component, {
 			_.y = _.get('originy');
 			if (v.status != _.expanded) {
 				_.fireEvent(_, 'changed', [_, _.expanded]);
-				if(_.get('label.enable'))
-				_.labelInvoke((_.expanded?1:-1));
+				if(f)
+				_.label.doLayout(_.get('inc_x')*(_.expanded?1:-1),-_.get('inc_y')*(_.expanded?1:-1));
 			}
 			v.status = _.expanded;
 			if (_.expanded) {
@@ -5210,16 +5274,17 @@ $.Sector = $.extend($.Component, {
 					this.get('shadow'),
 					this.get('counterclockwise'));
 		},
-		
 		isEventValid:function(e){
-			if(this.label&&this.label.isEventValid(e).valid)
-				return {valid:true};
-			var r = $.distanceP2P(this.x,this.y,e.x,e.y),b=this.get('donutwidth');	
-			if(this.r<r||(b&&(this.r-b)>r)){
-				return {valid:false};
-			}
-			if($.angleInRange(this.get('startAngle'),this.get('endAngle'),(2*Math.PI - $.atan2Radian(this.x,this.y,e.x,e.y)))){
-				return {valid:true};
+			if(!this.get('ignored')){
+				if(this.label&&this.label.isEventValid(e).valid)
+					return {valid:true};
+				var r = $.distanceP2P(this.x,this.y,e.x,e.y),b=this.get('donutwidth');	
+				if(this.r<r||(b&&(this.r-b)>r)){
+					return {valid:false};
+				}
+				if($.angleInRange(this.get('startAngle'),this.get('endAngle'),(2*Math.PI - $.atan2Radian(this.x,this.y,e.x,e.y)))){
+					return {valid:true};
+				}
 			}
 			return {valid:false};
 		},
@@ -5248,26 +5313,19 @@ $.Sector = $.extend($.Component, {
 			
 			_.pushIf('increment',$.lowTo(5,_.r/10));
 			
-			var A = _.get('middleAngle'),inc = _.get('increment');
-			_.push('inc_x',inc * Math.cos(2 * Math.PI -A));
-			_.push('inc_y',inc * Math.sin(2 * Math.PI - A));
+			var A = _.get('middleAngle'),L = _.get('increment');
+			_.push('inc_x',L * Math.cos(2 * Math.PI -A));
+			_.push('inc_y',L * Math.sin(2 * Math.PI - A));
 			
-			if(_.get('label.enable')){
-				_.pushIf('label.linelength',$.lowTo(10,_.r/8));
-				Q  = $.quadrantd(A),
-				
-				P2 = $.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
-				
-				_.push('label.originx',P2.x);
-				_.push('label.originy',P2.y);
-				_.push('label.quadrantd',Q);
-				
-				var P = $.p2Point(_.x,_.y,A,_.r + _.get('label.linelength'));
-				_.push('label.line_potins',[P2.x,P2.y,P.x,P.y]);
-				_.push('label.labelx',P.x);
-				_.push('label.labely',P.y);
-				
-				_.label = new $.Label(_.get('label'),_);
+			if(_.get('label')){
+				var P2 = $.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
+				if(_.get('mini_label')){
+					_.doText(_,P2.x,P2.y);
+				}else{
+					var Q  = $.quadrantd(A),
+						P = $.p2Point(_.x,_.y,A,_.r + L);
+					_.doLabel(_,P2.x,P2.y,Q,[{x:P2.x,y:P2.y},{x:P.x,y:P.y}],P.x,P.y);
+				}
 			}
 		}
 });
@@ -5327,15 +5385,17 @@ $.Sector = $.extend($.Component, {
 					this.get('counterclockwise'));
 		},
 		isEventValid:function(e){
-			if(this.get('label.enable')){
-				if(this.label.isEventValid(e).valid)
+			if(!this.get('ignored')){
+				if(this.isLabel()){
+					if(this.label.isEventValid(e).valid)
+						return {valid:true};
+				}
+				if(!$.inEllipse(e.x - this.x,e.y-this.y,this.a,this.b)){
+					return {valid:false};
+				}
+				if($.angleInRange(this.sA,this.eA,(2*Math.PI - $.atan2Radian(this.x,this.y,e.x,e.y)))){
 					return {valid:true};
-			}
-			if(!$.inEllipse(e.x - this.x,e.y-this.y,this.a,this.b)){
-				return {valid:false};
-			}
-			if($.angleInRange(this.sA,this.eA,(2*Math.PI - $.atan2Radian(this.x,this.y,e.x,e.y)))){
-				return {valid:true};
+				}
 			}
 			return {valid:false};
 		},
@@ -5375,33 +5435,25 @@ $.Sector = $.extend($.Component, {
 				}
 				return t;
 			},
-			
-			inc = _.get('increment');
+			L = _.get('increment');
 			
 			_.sA = toAngle.call(_,_.get('startAngle'));
 			_.eA = toAngle.call(_,_.get('endAngle'));
 			_.mA = toAngle.call(_,mA);
 			
-			_.push('inc_x',inc * Math.cos(2 * Math.PI -_.mA));
-			_.push('inc_y',inc * Math.sin(2 * Math.PI - _.mA));
+			_.push('inc_x',L * Math.cos(2 * Math.PI -_.mA));
+			_.push('inc_y',L * Math.sin(2 * Math.PI - _.mA));
 			
-			if(_.get('label.enable')){
-				_.pushIf('label.linelength',$.lowTo(10,_.a/8));
-				_.Z = _.get('label.linelength')/_.a+1;
-				var Q  = $.quadrantd(mA),
-				P = _.p2p(_.x,_.y,mA,_.Z),
-				P2 = _.p2p(_.x,_.y,mA,1);
-				
-				_.push('label.originx',P2.x);
-				_.push('label.originy',P2.y);
-				_.push('label.quadrantd',Q);
-				
-				_.push('label.line_potins',[P2.x,P2.y,P.x,P.y]);
-				_.push('label.line_globalComposite',(ccw&&mA<Math.PI)||(!ccw&&mA>Math.PI));
-				_.push('label.labelx',P.x);
-				_.push('label.labely',P.y);
-				
-				_.label = new $.Label(_.get('label'),_);
+			if(_.get('label')){
+				if(_.get('mini_label')){
+					var P3 = _.p2p(_.x,_.y,mA,0.5);
+					_.doText(_,P3.x,P3.y);
+				}else{
+					var Q  = $.quadrantd(mA),
+						P = _.p2p(_.x,_.y,mA,L/_.a+1),
+						P2 = _.p2p(_.x,_.y,mA,1);
+					_.doLabel(_,P2.x,P2.y,Q,[{x:P2.x,y:P2.y},{x:P.x,y:P.y}],P.x,P.y);
+				}
 			}
 		}
 });
@@ -5421,7 +5473,6 @@ $.Pie = $.extend($.Chart, {
 		$.Pie.superclass.configure.call(this);
 
 		this.type = 'pie';
-		this.dataType = 'simple';
 
 		this.set({
 			/**
@@ -5441,13 +5492,13 @@ $.Pie = $.extend($.Chart, {
 			 */
 			counterclockwise : false,
 			/**
-			 * @cfg {Boolean} 当与其他label有位置冲突时自动浮动其位置.(default to true).
+			 * @cfg {Boolean} when label's position in conflict.auto layout.(default to true).
 			 */
 			intellectLayout : true,
 			/**
-			 * @cfg {Number} Specifies the distance in pixels when two label is incompatible with each other.(default 8),
+			 * @cfg {Number} Specifies the distance in pixels when two label is incompatible with each other.(default 6),
 			 */
-			layout_distance : 8,
+			layout_distance : 6,
 			/**
 			 * @inner {Boolean} if it has animate when a piece popd (default to false)
 			 */
@@ -5461,15 +5512,11 @@ $.Pie = $.extend($.Chart, {
 			 */
 			increment : undefined,
 			/**
-			 * @cfg {Object} Specifies the config of label.For details see <link>$.Label</link> Note:this has a extra property named 'enable',indicate whether label available(default to true)
+			 * @cfg {<link>$.Sector</link>} option of sector.Note,Pie2d depend on Sector2d and pie3d depend on Sector3d.For details see <link>$.Sector</link>
 			 */
-			label : {
-				enable : true
-			},
-			/**
-			 * @cfg {Object} option of sector.Note,Pie2d depend on Sector2d and pie3d depend on Sector3d.For details see <link>$.Sector</link>
-			 */
-			sector : {}
+			sub_option : {
+				label : {}
+			}
 		});
 
 		this.registerEvent(
@@ -5486,14 +5533,7 @@ $.Pie = $.extend($.Chart, {
 		 * @paramter string#name
 		 * @paramter int#index
 		 */
-		'rebound',
-		/**
-		 * @event Fires when parse this label's data.Return value will override existing. Only valid when label is available
-		 * @paramter Object#data this label's data item
-		 * @paramter string#text the current tip's text
-		 * @paramter int#i the index of data
-		 */
-		'parseLabelText');
+		'rebound');
 
 	},
 	/**
@@ -5528,9 +5568,8 @@ $.Pie = $.extend($.Chart, {
 		return this.sectors;
 	},
 	doAnimation : function(t, d) {
-		var s, si = 0, cs = this.oA;
-		this.data.each(function(D, i) {
-			s = D.reference;
+		var si = 0, cs = this.oA;
+		this.sectors.each(function(s, i) {
 			si = this.animationArithmetic(t, 0, s.get('totalAngle'), d);
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
@@ -5538,6 +5577,7 @@ $.Pie = $.extend($.Chart, {
 			if (!this.is3D())
 				s.drawSector();
 		}, this);
+		
 		if (this.is3D()) {
 			this.proxy.drawSector();
 		}
@@ -5545,67 +5585,50 @@ $.Pie = $.extend($.Chart, {
 	localizer : function(la) {
 		var d = this.get('layout_distance');
 		/**
-		 * the code not optimization,need to enhance so that the label can fit the continar
+		 * Did the code optimal?,did need to enhance so that the label can fit the continar?
 		 */
 		this.sectors.each(function(s, i) {
+			if(!s.isLabel())return;
 			var l = s.label, x = l.labelx, y = l.labely;
-			if ((la.labely <= y && (y - la.labely) < la.get('height')) || (la.labely > y && (la.labely - y) < l.get('height'))) {
+			if ((la.labely <= y && (y - la.labely-1) < la.get('height')) || (la.labely > y && (la.labely - y-1) < l.get('height'))) {
 				if ((la.labelx < x && (x - la.labelx) < la.get('width')) || (la.labelx > x && (la.labelx - x) < l.get('width'))) {
-					var q = la.get('quadrantd');
-					if ((q == 1 || q == 2)) {
-						/**
-						 * console.log('upper..'+la.get('text')+'==='+l.get('text'));
-						 */
-						la.push('labely', la.get('labely') - la.get('height') + y - la.labely - d);
-						la.push('line_potins', la.get('line_potins').concat(la.get('labelx'), la.get('labely')));
-					} else {
-						/**
-						 * console.log('lower..'+la.get('text')+'==='+l.get('text'));
-						 */
-						la.push('labely', la.get('labely') + l.get('height') - la.labely + y + d);
-						la.push('line_potins', la.get('line_potins').concat(la.get('labelx'), la.get('labely')));
-					}
+					la.push('labely', (la.get('labely')+ y - la.labely) + (la.get('height')  + d)*((la.get('quadrantd') == 2)?-1:1));
+					la.push('line_potins', la.get('line_potins').concat({x:la.get('labelx'),y:la.get('labely')}));
 					la.localizer();
 				}
 			}
 		}, this);
 	},
 	doParse : function(d, i) {
-		var _ = this, t = d.name + (_.get('showpercent') ? ' ' + $.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
-		if (_.get('label.enable')) {
-			_.push('sector.label.text', _.fireString(_, 'parseLabelText', [d, i], t));
-		}
-		if (_.get('tip.enable'))
-			_.push('sector.tip.text', _.fireString(_, 'parseTipText', [d, i], t));
-
-		_.push('sector.id', i);
-		_.push('sector.value', d.value);
-		_.push('sector.name', d.name);
-		_.push('sector.listeners.changed', function(se, st, i) {
+		var _ = this._(), t = d.name + (_.get('showpercent') ? ' ' + $.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
+		
+		_.doActing(_,d);
+		
+		if (_.get('sub_option.tip.enable'))
+			_.push('sub_option.tip.text', _.fireString(_, 'parseTipText', [d,d.value, i], t));
+		
+		_.push('sub_option.id', i);
+		_.push('sub_option.label.text', t);
+		
+		_.push('sub_option.listeners.changed', function(se, st, i) {
 			_.fireEvent(_, st ? 'bound' : 'rebound', [_, se.get('name')]);
 		});
-		_.push('sector.startAngle', d.startAngle);
-		_.push('sector.middleAngle', d.middleAngle);
-		_.push('sector.endAngle', d.endAngle);
-		_.push('sector.background_color', d.color);
-
-		d.reference = this.doSector(d);
-
-		this.sectors.push(d.reference);
-
-		if (this.get('label.enable') && this.get('intellectLayout')) {
-			this.localizer(d.reference.label);
+		
+		var s = this.doSector(d);
+		if (s.isLabel() && this.get('intellectLayout')) {
+			this.localizer(s.label);
 		}
+		this.sectors.push(s);
 	},
 	doConfig : function() {
 		$.Pie.superclass.doConfig.call(this);
 		$.Assert.gtZero(this.total, 'this.total');
 		
-		var _ = this._(),r = _.get('radius'), f = _.get('label.enable') ? 0.35 : 0.44;
+		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44;
 		
 		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
-
+		_.components.push(_.sectors);
 		_.oA = $.angle2Radian(_.get('offsetAngle'));
 		
 		//If 3D,let it bigger
@@ -5649,8 +5672,8 @@ $.Pie = $.extend($.Chart, {
 			_.push('originx', _.get('centerx') + _.get('offsetx'));
 		}
 		_.push('originy', _.get('centery') + _.get('offsety'));
-
-		$.apply(_.get('sector'), $.clone(_.get('communal_option').concat(['originx', 'originy', 'bound_event', 'customize_layout', 'counterclockwise', 'mutex', 'increment', 'label']), _.options));
+		
+		$.apply(_.get('sub_option'),$.clone(['originx', 'originy', 'bound_event','mutex','increment'], _.options));
 		
 	}
 });
@@ -5675,20 +5698,20 @@ $.Pie2D = $.extend($.Pie, {
 
 	},
 	doSector:function(){
-		return  new $.Sector2D(this.get('sector'), this);
+		return  new $.Sector2D(this.get('sub_option'), this);
 	},
 	doConfig : function() {
 		$.Pie2D.superclass.doConfig.call(this);
 		/**
 		 * quick config to all rectangle
 		 */
-		this.push('sector.radius',this.r)
+		this.push('sub_option.radius',this.r)
 		
 		this.data.each(function(d,i){
 			this.doParse(d,i);
 		},this);
 		
-		this.components.push(this.sectors);
+		
 	}
 });
 /**
@@ -5722,8 +5745,8 @@ $.Pie3D = $.extend($.Pie, {
 
 	},
 	doSector : function(d) {
-		this.push('sector.cylinder_height', (d.height ? d.height * Math.cos($.angle2Radian(this.get('zRotate'))) : this.get('cylinder_height')));
-		var s = new $.Sector3D(this.get('sector'), this);
+		this.push('sub_option.cylinder_height', (d.cylinder_height ? d.cylinder_height * Math.cos($.angle2Radian(this.get('zRotate'))) : this.get('cylinder_height')));
+		var s = new $.Sector3D(this.get('sub_option'), this);
 		s.proxy = true;
 		return s;
 	},
@@ -5732,107 +5755,122 @@ $.Pie3D = $.extend($.Pie, {
 		var _ = this, z = _.get('zRotate');
 		_.push('zRotate', $.between(0, 90, 90 - z));
 		_.push('cylinder_height', _.get('yHeight') * Math.cos($.angle2Radian(z)));
-		_.push('sector.semi_major_axis', _.r);
-		_.push('sector.semi_minor_axis', _.r * z / 90);
-		_.push('sector.semi_major_axis', _.r);
-		_.push('sector.originy',_.get('originy')-_.get('yHeight')/2);
-		
+		_.push('sub_option.semi_major_axis', _.r);
+		_.push('sub_option.semi_minor_axis', _.r * z / 90);
+		_.push('sub_option.semi_major_axis', _.r);
+		_.push('sub_option.originy', _.get('originy') - _.get('yHeight') / 2);
+
 		_.data.each(function(d, i) {
 			_.doParse(d, i);
 		}, _);
 
-	
-	var layer = [],L=[],PI = Math.PI,PI2=PI*2,a = PI/2,b = PI*1.5,c = _.get('counterclockwise'),
-	abs = function(n,f){
-		n = Math.abs(n-f);
-		return n>PI?PI2-n:n;
-	},t='startAngle',d='endAngle';
-	
-	
-	_.proxy = new $.Custom({
-			z_index:_.get('z_index')+1,
+		var layer = [], L = [], PI = Math.PI, PI2 = PI * 2, a = PI / 2, b = PI * 1.5, c = _.get('counterclockwise'), abs = function(n, f) {
+			n = Math.abs(n - f);
+			return n > PI ? PI2 - n : n;
+		}, t = 'startAngle', d = 'endAngle';
+
+		_.proxy = new $.Custom({
+			z_index : _.get('z_index') + 1,
 			drawFn : function() {
 				this.drawSector();
-				/**
-				 * draw the labels
-				 */
-				if (_.get('label.enable')) {
-					L=[];
-					_.sectors.each(function(s) {
-						if(s.expanded){
+				L = [];
+				_.sectors.each(function(s) {
+					if (s.get('label')) {
+						if (s.expanded)
 							L.push(s.label);
-						}else{
+						else
 							s.label.draw();
-						}
+					}
+				});
+				L.each(function(l) {
+					l.draw()
+				});
+			}
+		});
+
+		_.proxy.drawSector = function() {
+			/**
+			 * paint bottom layer
+			 */
+			_.sectors.each(function(s, i) {
+				_.T.ellipse(s.x, s.y + s.h, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), s.get('shadow'), c, true);
+			}, _);
+
+			layer = [];
+			var s, e;
+			/**
+			 * sort layer
+			 */
+			_.sectors.each(function(f, i) {
+				f.sPaint = false;
+				s = f.get(t);
+				e = f.get(d), fc = $.dark(f.get('background_color'));
+				if (c ? (s < a || s > b) : (s > a && s < b)) {
+					layer.push({
+						g : s,
+						x : f.x,
+						y : f.y,
+						a : f.a,
+						b : f.b,
+						color : fc,
+						h : f.h,
+						F : f
 					});
-					L.each(function(l) {
-						l.draw();
-					});
-					
 				}
-			}
-	});
-	
-	_.proxy.drawSector = function(){
-		/**
-		 * paint bottom layer
-		 */
-		_.sectors.each(function(s, i) {
-			_.T.ellipse(s.x, s.y + s.h, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), s.get('shadow'), c, true);
-		}, _);
-		
-		layer = [];
-		var s,e;
-		/**
-		 * sort layer
-		 */
-		_.sectors.each(function(f, i) {
-			f.sPaint = false;
-			s = f.get(t);e = f.get(d),fc = $.dark(f.get('background_color'));
-			if(c ? (s < a || s > b) : (s > a && s < b)){
-				layer.push({g:s,x:f.x,y:f.y,a:f.a,b:f.b,color:fc,h:f.h,F:f});
-			}
-			if(c ? (e > a && e < b) : (e < a || e > b)){
-				layer.push({g:e,x:f.x,y:f.y,a:f.a,b:f.b,color:fc,h:f.h,F:f});
-			}
-		}, _);
-		
-		/**
-		 * realtime sort
-		 */
-		layer.sor(function(p, q){return ((abs(p.g,b) - abs(q.g,b))>0)});
-		
-		/**
-		 * paint inside layer
-		 */
-		layer.each(function(f, i) {
-			_.T.sector3D.layerDraw.call(_.T, f.x, f.y, f.a+0.5, f.b+0.5, c, f.h, f.g, f.color);
-			if(!f.F.sPaint){
-				_.T.sector3D.sPaint.call(_.T, f.F.x, f.F.y, f.F.a, f.F.b, f.F.get(t), f.F.get(d), false, f.F.h, f.color);
-				f.F.sPaint = true;
-			}
-		}, _);
-		
-		/**
-		 * paint outside layer
-		 */
-		_.sectors.each(function(s, i) {
-			if(!s.sPaint)
-			_.T.sector3D.sPaint.call(_.T, s.x, s.y, s.a, s.b, s.get(t), s.get(d), false, s.h, s.get('f_color'));
-		}, _);
-		
-		/**
-		 * paint top layer
-		 */
-		_.sectors.each(function(s, i) {
-			_.T.ellipse(s.x, s.y, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, false, true);
-		}, _);
+				if (c ? (e > a && e < b) : (e < a || e > b)) {
+					layer.push({
+						g : e,
+						x : f.x,
+						y : f.y,
+						a : f.a,
+						b : f.b,
+						color : fc,
+						h : f.h,
+						F : f
+					});
+				}
+			}, _);
+
+			/**
+			 * realtime sort
+			 */
+			layer.sor(function(p, q) {
+				return ((abs(p.g, b) - abs(q.g, b)) > 0)
+			});
+
+			/**
+			 * paint inside layer
+			 */
+			layer.each(function(f, i) {
+				_.T.sector3D.layerDraw.call(_.T, f.x, f.y, f.a + 0.5, f.b + 0.5, c, f.h, f.g, f.color);
+				if (!f.F.sPaint) {
+					_.T.sector3D.sPaint.call(_.T, f.F.x, f.F.y, f.F.a, f.F.b, f.F.get(t), f.F.get(d), false, f.F.h, f.color);
+					f.F.sPaint = true;
+				}
+			}, _);
+
+			/**
+			 * paint outside layer
+			 */
+			_.sectors.each(function(s, i) {
+				if (!s.sPaint)
+					_.T.sector3D.sPaint.call(_.T, s.x, s.y, s.a, s.b, s.get(t), s.get(d), false, s.h, s.get('f_color'));
+			}, _);
+
+			/**
+			 * paint top layer
+			 */
+			_.sectors.each(function(s, i) {
+				_.T.ellipse(s.x, s.y, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, false, true);
+			}, _);
+		}
+
+		_.components.push(_.proxy);
 	}
-	
-	_.components.push(_.sectors);
-	_.components.push(_.proxy);
-}
-});// @end
+});
+/**
+ * @end
+ */
 
 /**
  * @overview this component use for show a donut chart
@@ -5859,7 +5897,7 @@ $.Donut2D = $.extend($.Pie, {
 		});
 	},
 	doSector:function(){
-		return  new $.Sector2D(this.get('sector'), this);
+		return  new $.Sector2D(this.get('sub_option'), this);
 	},
 	doConfig : function() {
 		$.Donut2D.superclass.doConfig.call(this);
@@ -5868,14 +5906,14 @@ $.Donut2D = $.extend($.Pie, {
 		/**
 		 * quick config to all rectangle
 		 */
-		_.push('sector.radius',r)
+		_.push('sub_option.radius',r)
 		if(_.get(d)>0){
 			if(_.get(d)<1){
 				_.push(d,Math.floor(r*_.get(d)));
 			}else if(_.get(d)>=r){
 				_.push(d,0);
 			}
-			_.push('sector.donutwidth',_.get(d));
+			_.push('sub_option.donutwidth',_.get(d));
 		}
 		
 		
@@ -5887,7 +5925,7 @@ $.Donut2D = $.extend($.Pie, {
 	}
 });
 /**
- * @overview this component use for abc
+ * @overview this class is abstract,use for config column
  * @component#$.Column
  * @extend#$.Chart
  */
@@ -5902,10 +5940,10 @@ $.Column = $.extend($.Chart, {
 		$.Column.superclass.configure.call(this);
 
 		this.type = 'column';
-		this.dataType = 'simple';
+		
 		this.set({
 			/**
-			 * @cfg {Object} the option for coordinate. see <link>$.Coordinate2D</link>
+			 * @cfg {<link>$.Coordinate2D</link>} the option for coordinate.
 			 */
 			coordinate : {},
 			/**
@@ -5923,9 +5961,13 @@ $.Column = $.extend($.Chart, {
 			 */
 			scaleAlign : 'left',
 			/**
-			 * @cfg {Object} option of rectangle.see <link>$.Rectangle</link>
+			 * @cfg {<link>$.Rectangle</link>} Specifies option of rectangle.
 			 */
-			rectangle : {}
+			sub_option : {},
+			/**
+			 * @cfg {<link>$.Text</link>} Specifies option of label at bottom.
+			 */
+			label:{}
 		});
 
 		this.registerEvent();
@@ -5951,22 +5993,22 @@ $.Column = $.extend($.Chart, {
 	getCoordinate:function(){
 		return this.coo;
 	},
-	doParse : function(_,d, i, id, x, y, h) {
+	doLabel:function(id,text,x, y){
+		this.labels.push(new $.Text($.apply(this.get('label'),{
+			id : id,
+			text : text,
+			originx : x,
+			originy : y
+		}), this));
+	},
+	doParse : function(_,d, i, o) {
 		var t = (_.get('showpercent') ? $.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
-		if (_.get('tip.enable'))
-			_.push('rectangle.tip.text', _.fireString(_, 'parseTipText', [d,d.value,i],d.name + ' '+t));
 		
-		_.set({
-			rectangle:{
-				id:id,
-				name:d.name,
-				value:t,
-				background_color:d.color,
-				originx:x,
-				originy:y,
-				height:h
-			}
-		});	
+		_.doActing(_,d,o);
+		
+		if (_.get('tip.enable'))
+			_.push('sub_option.tip.text', _.fireString(_, 'parseTipText', [d,d.value,i],d.name + ' '+t));
+		
 	},
 	doConfig : function() {
 		$.Column.superclass.doConfig.call(this);
@@ -5975,7 +6017,10 @@ $.Column = $.extend($.Chart, {
 		
 		_.rectangles = [];
 		_.labels = [];
-			
+		
+		_.components.push(_.labels);
+		_.components.push(_.rectangles);
+		
 		/**
 		 * apply the coordinate feature
 		 */
@@ -5988,11 +6033,9 @@ $.Column = $.extend($.Chart, {
 		
 		if (_.dataType == 'simple') {
 			var L = _.data.length, W = _.get('coordinate.width'), hw = _.pushIf(c, W / (L * 2 + 1));
-
 			if (hw * L > W) {
 				hw = _.push(c, W / (L * 2 + 1));
 			}
-			
 			/**
 			 * the space of two column
 			 */
@@ -6011,18 +6054,15 @@ $.Column = $.extend($.Chart, {
 
 		_.components.push(_.coo);
 		
-		/**
-		 * quick config to all rectangle
-		 */
-		$.applyIf(_.get('rectangle'), $.clone(_.get('communal_option'), _.options));
-		
-		_.push('rectangle.width', _.get(c));
+		_.push('sub_option.width', _.get(c));
 	}
 
-});// @end
-
+});
 /**
- * @overview this component use for abc
+ * @end
+ */
+/**
+ * @overview the column2d componment
  * @component#@chart#$.Column2D
  * @extend#$.Column
  */
@@ -6048,100 +6088,94 @@ $.Column2D = $.extend($.Column, {
 		
 		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
-			_.doParse(_,d, i, i, _.x + _.get('hispace') + i * gw, _.y + H - h - bs, h);
-			
-			d.reference = new $.Rectangle2D(_.get('rectangle'), _);
-			_.rectangles.push(d.reference);
-			
-			_.labels.push(new $.Text({
+			_.doParse(_,d, i, {
 				id : i,
-				text : d.name,
-				originx : _.x + _.get('hispace') + gw * i + h2,
-				originy : _.y + H + _.get('text_space')
-			}, _));
-
+				originx :_.x + _.get('hispace') + i * gw,
+				originy : _.y + H - h - bs,
+				height : h
+			});
+			_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
+			_.doLabel(i, d.name, _.x + _.get('hispace') + gw * i + h2, _.y + H + _.get('text_space'));
 		}, _);
 
-		_.components.push(_.labels);
-		_.components.push(_.rectangles);
+		
 	}
 
-});// @end
-
-	/**
-	 * @overview this component use for abc
-	 * @component#@chart#$.Column3D
-	 * @extend#$.Column
-	 */
-	$.Column3D = $.extend($.Column,{
-		/**
-		 * initialize the context for the Column3D 
-		 */
-		configure:function(){
-			/**
-			 * invoked the super class's  configuration
-			 */
-			$.Column3D.superclass.configure.call(this);
-			
-			this.type = 'column3d';
-			this.dimension = $._3D;
-			
-			this.set({
-				/**
-				 * @cfg {Number(0~90)} Three-dimensional rotation X in degree(angle).(default to 60)
-				 */
-				xAngle:60,
-				/**
-				 * @cfg {Number(0~90)} Three-dimensional rotation Y in degree(angle).(default to 20)
-				 */
-				yAngle:20,
-				/**
-				 * @cfg {Number} Three-dimensional z-axis deep factor.frame of reference is width.(default to 1)
-				 */
-				zScale:1,
-				/**
-				 * @cfg {Number(1~)} Three-dimensional z-axis deep factor of pedestal.frame of reference is width.(default to 1.4)
-				 */
-				bottom_scale:1.4
-			});
-		},
-		doConfig:function(){
-			$.Column3D.superclass.doConfig.call(this);
-			
-			//get the max/min scale of this coordinate for calculated the height
-			var _ = this._(),S = _.coo.getScale(_.get('scaleAlign')),
-				zh = _.get('zHeight')*(_.get('bottom_scale')-1)/2*_.get('yAngle_'),
-				h2 = _.get('colwidth')/2,
-				gw = _.get('colwidth')+_.get('hispace'),
-				H = _.coo.get('height'),h;
-			
-			/**
-			 * quick config to all rectangle
-			 */
-			_.push('rectangle.xAngle_',_.get('xAngle_'));
-			_.push('rectangle.yAngle_',_.get('yAngle_'));
-			
-			_.data.each(function(d, i) {
-				h = (d.value - S.start) * H / S.distance;
-				
-				_.doParse(_,d, i, i, _.x + _.get('hispace') + i * gw, _.y +(H-h)-zh, h);
-				d.reference = new $.Rectangle3D(_.get('rectangle'), _);
-				_.rectangles.push(d.reference);
-				
-				_.labels.push(new $.Text({
-					id : i,
-					text : d.name,
-					originx : _.x + _.get('hispace') + gw * i + h2,
-					originy : _.y + H + _.get('text_space')
-				}, _));
-				
-			}, _);
-			
-			_.components.push(_.labels);
-			_.components.push(_.rectangles);
-		}
-		
 });
+/**
+ *@end 
+ */
+/**
+ * @overview this component use for abc
+ * @component#@chart#$.Column3D
+ * @extend#$.Column
+ */
+$.Column3D = $.extend($.Column, {
+	/**
+	 * initialize the context for the Column3D
+	 */
+	configure : function() {
+		/**
+		 * invoked the super class's configuration
+		 */
+		$.Column3D.superclass.configure.call(this);
+
+		this.type = 'column3d';
+		this.dimension = $._3D;
+
+		this.set({
+			/**
+			 * @cfg {Number(0~90)} Three-dimensional rotation X in degree(angle).(default to 60)
+			 */
+			xAngle : 60,
+			/**
+			 * @cfg {Number(0~90)} Three-dimensional rotation Y in degree(angle).(default to 20)
+			 */
+			yAngle : 20,
+			/**
+			 * @cfg {Number} Three-dimensional z-axis deep factor.frame of reference is width.(default to 1)
+			 */
+			zScale : 1,
+			/**
+			 * @cfg {Number(1~)} Three-dimensional z-axis deep factor of pedestal.frame of reference is width.(default to 1.4)
+			 */
+			bottom_scale : 1.4
+		});
+	},
+	doConfig : function() {
+		$.Column3D.superclass.doConfig.call(this);
+
+		/**
+		 * get the max/min scale of this coordinate for calculated the height
+		 */
+		var _ = this._(), S = _.coo.getScale(_.get('scaleAlign')), zh = _.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_'), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), H = _.coo.get('height'), h;
+
+		/**
+		 * quick config to all rectangle
+		 */
+		_.push('sub_option.xAngle_', _.get('xAngle_'));
+		_.push('sub_option.yAngle_', _.get('yAngle_'));
+		
+		_.data.each(function(d, i) {
+			h = (d.value - S.start) * H / S.distance;
+			_.doParse(_, d, i, {
+				id : i,
+				originx :_.x + _.get('hispace') + i * gw,
+				originy : _.y + (H - h) - zh,
+				height : h
+			});
+			_.rectangles.push(new $.Rectangle3D(_.get('sub_option'), _));
+			_.doLabel(i, d.name, _.x + _.get('hispace') + gw * i + h2, _.y + H + _.get('text_space'));
+		}, _);
+
+		
+	}
+
+});
+/**
+ *@end 
+ */
+
 	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.ColumnMulti2D
@@ -6167,7 +6201,7 @@ $.Column2D = $.extend($.Column, {
 		},
 		doRectangle : function(d, i, id, x, y, h) {
 			this.doParse(d, i, id, x, y, h);
-			d.reference = new $.Rectangle2D(this.get('rectangle'), this);
+			d.reference = new $.Rectangle2D(this.get('sub_option'), this);
 			this.rectangles.push(d.reference);
 		},
 		doConfig:function(){
@@ -6196,25 +6230,22 @@ $.Column2D = $.extend($.Column, {
 			/**
 			 * quick config to all rectangle
 			 */
-			_.push('rectangle.width',bw);
+			_.push('sub_option.width',bw);
 			
 			_.columns.each(function(column, i) {
 				
 				column.item.each(function(d, j) {
 					h = (d.value - S.start) * H / S.distance;
-					_.doParse(_,d, j, i+'-'+j, _.x + _.get('hispace')+j*bw+i*gw, _.y + H - h - bs, h);
-					d.reference = new $.Rectangle2D(_.get('rectangle'), this);
-					_.rectangles.push(d.reference);
-					
+					_.doParse(_,d, j,{
+						id : i+'-'+j,
+						originx : _.x + _.get('hispace')+j*bw+i*gw,
+						originy : _.y + H - h - bs,
+						height : h
+					});
+					_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), this));
 				}, _);
 				
-				_.labels.push(new $.Text({
-					id:i,
-					text:column.name,
-					originx:_.x +_.get('hispace')*0.5+(i+0.5)*gw,
-	 				originy:_.get('originy')+H+_.get('text_space')
-				},_));
-				
+				_.doLabel(i, column.name, _.x +_.get('hispace')*0.5+(i+0.5)*gw,_.y + H +_.get('text_space'));
 			}, _);
 			
 			_.components.push(_.labels);
@@ -6222,7 +6253,7 @@ $.Column2D = $.extend($.Column, {
 		}
 });
 /**
- * @overview this component use for abc
+ * @overview this class is abstract,use for config bar
  * @component#$.Bar
  * @extend#$.Chart
  */
@@ -6237,10 +6268,9 @@ $.Bar = $.extend($.Chart, {
 		$.Bar.superclass.configure.call(this);
 
 		this.type = 'bar';
-		this.dataType = 'simple';
 		this.set({
 			/**
-			 * @cfg {Object} Specifies the option for coordinate.For details see <link>$.Coordinate2D</link>
+			 * @cfg {<link>$.Coordinate2D</link>} the option for coordinate.
 			 */
 			coordinate : {
 				alternate_direction : 'h'
@@ -6259,30 +6289,43 @@ $.Bar = $.extend($.Chart, {
 			 */
 			scaleAlign : 'bottom',
 			/**
-			 * @cfg {Object} option of rectangle.see <link>$.Rectangle</link>
+			 * @cfg {<link>$.Rectangle</link>} Specifies option of rectangle.
 			 */
-			rectangle : {}
+			rectangle : {},
+			/**
+			 * @cfg {<link>$.Text</link>} Specifies option of label at bottom.
+			 */
+			label:{}
 		});
 
 		this.registerEvent();
 
 	},
-	doParse : function(_,d, i, id, x, y, w) {
+	/**
+	 * @method Returns the coordinate of this element.
+	 * @return $.Coordinate2D
+	 */
+	getCoordinate:function(){
+		return this.coo;
+	},
+	doLabel:function(id,text,x, y){
+		this.labels.push(new $.Text($.apply(this.get('label'),{
+			id : id,
+			text : text,
+			textAlign:'right',
+			textBaseline:'middle',
+			originx : x,
+			originy : y
+		}), this));
+	},
+	doParse : function(_,d, i, o) {
 		var t = (_.get('showpercent') ? $.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
 		
-		if (_.get('tip.enable'))
-			_.push('rectangle.tip.text', _.fireString(_, 'parseTipText', [d, d.value, i], d.name + ' ' + t));
+		_.doActing(_,d,o);
 		
-		_.set({
-			rectangle:{
-				id:id,
-				name:d.name,
-				value:t,
-				background_color:d.color,
-				originy:y,
-				width:w
-			}
-		});	
+		if (_.get('tip.enable'))
+			_.push('sub_option.tip.text', _.fireString(_, 'parseTipText', [d,d.value, i], d.name + ' ' + t));
+		
 	},
 	doAnimation : function(t, d) {
 		this.coo.draw();
@@ -6305,12 +6348,12 @@ $.Bar = $.extend($.Chart, {
 		$.Coordinate.coordinate.call(_);
 		
 		_.rectangles = [];
-		
 		_.labels = [];
-		
 		_.rectangles.zIndex = _.get(z);
-		
 		_.labels.zIndex = _.get(z) + 1;
+		_.components.push(_.labels);
+		_.components.push(_.rectangles);
+		
 
 		if (_.dataType == 'simple') {
 
@@ -6336,75 +6379,62 @@ $.Bar = $.extend($.Chart, {
 		_.coo = $.Coordinate.coordinate_.call(_);
 		
 		_.components.push(_.coo);
-
-		/**
-		 * Quick config to all rectangle
-		 */
-		$.applyIf(_.get('rectangle'), $.clone(_.get('communal_option'), _.options));
 		
 		/**
 		 * quick config to all rectangle
 		 */
-		_.push('rectangle.height', bh);
-		_.push('rectangle.valueAlign', 'right');
-		_.push('rectangle.tipAlign', 'right');
-		_.push('rectangle.originx', _.x + _.coo.get('brushsize'));
+		_.push('sub_option.height', bh);
+		_.push('sub_option.valueAlign', 'right');
+		_.push('sub_option.tipAlign', 'right');
+		_.push('sub_option.originx', _.x + _.coo.get('brushsize'));
 
 	}
 
 });// @end
 
-	
+/**
+ * @overview the bar2d componment
+ * @component#@chart#$.Bar2D
+ * @extend#$.Bar
+ */
+$.Bar2D = $.extend($.Bar, {
 	/**
-	 * @overview this component use for abc
-	 * @component#@chart#$.Bar2D
-	 * @extend#$.Bar
+	 * initialize the context for the pie
 	 */
-	$.Bar2D = $.extend($.Bar,{
+	configure : function() {
 		/**
-		 * initialize the context for the pie
+		 * invoked the super class's configuration
 		 */
-		configure:function(){
-			/**
-			 * invoked the super class's  configuration
-			 */
-			$.Bar2D.superclass.configure.call(this);
-			
-			this.type = 'bar2d';
-			
-		},
-		doConfig:function(){
-			$.Bar2D.superclass.doConfig.call(this);
-			
-			/**
-			 * get the max/min scale of this coordinate for calculated the height
-			 */
-			var _ = this._(),
-				S = _.coo.getScale(_.get('scaleAlign')),
-				W = _.coo.get('width'),
-				h2 = _.get('barheight')/2,
-				gw = _.get('barheight')+_.get('barspace');
-			
-			_.data.each(function(d, i) {
-				_.doParse(_,d, i, i, 0, _.y+_.get('barspace')+i*gw, (d.value - S.start) * W / S.distance);
-				d.reference = new $.Rectangle2D(_.get('rectangle'), _);
-				_.rectangles.push(d.reference);
-				
-				_.labels.push(new $.Text({
-					id:i,
-					textAlign:'right',
-					textBaseline:'middle',
-					text:d.name,
-					originx:_.x - _.get('text_space'),
-	 				originy:_.y + _.get('barspace')+i*gw +h2
-				},_));
-			}, _);
-			
-			_.components.push(_.labels);
-			_.components.push(_.rectangles);
-		}
-		
+		$.Bar2D.superclass.configure.call(this);
+
+		this.type = 'bar2d';
+
+	},
+	doConfig : function() {
+		$.Bar2D.superclass.doConfig.call(this);
+
+		/**
+		 * get the max/min scale of this coordinate for calculated the height
+		 */
+		var _ = this._(), S = _.coo.getScale(_.get('scaleAlign')), W = _.coo.get('width'), h2 = _.get('barheight') / 2, gw = _.get('barheight') + _.get('barspace');
+
+		_.data.each(function(d, i) {
+			_.doParse(_, d, i,{
+				id : i,
+				originy : _.y + _.get('barspace') + i * gw,
+				width : (d.value - S.start) * W / S.distance
+			});
+			_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
+			_.doLabel(i, d.name, _.x - _.get('text_space'), _.y + _.get('barspace') + i * gw + h2);
+		}, _);
+
+	}
+
 });
+/**
+ * @end
+ */
+
 	/**
 	 * @overview this component use for abc
 	 * @component#@chart#$.BarMulti2D
@@ -6452,30 +6482,21 @@ $.Bar = $.extend($.Chart, {
 				 */
 				var S = _.coo.getScale(_.get('scaleAlign')),
 					gw = L*bh+_.get(s),
-					h2 = _.get(b)/2,
-					w;
-				_.push('rectangle.height',bh);
+					h2 = _.get(b)/2;
+				
+				_.push('sub_option.height',bh);
+				
 				_.columns.each(function(column, i) {
 					column.item.each(function(d, j) {
-						w = (d.value - S.start) * W / S.distance;
-						_.doParse(_,d, j, i+'-'+j, _.x + _.get('hispace')+j*bh+i*gw,_.y + _.get(s)+j*bh+i*gw, w);
-						d.reference = new $.Rectangle2D(_.get('rectangle'), _);
-						_.rectangles.push(d.reference);
+						_.doParse(_,d, j,{
+							id : i+'-'+j,
+							originy : _.y + _.get(s)+j*bh+i*gw,
+							width : (d.value - S.start) * W / S.distance
+						});
+						_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
 					}, _);
-					
-					_.labels.push(new $.Text({
-						id:i,
-						text:column.name,
-						textAlign:'right',
-						textBaseline:'middle',
-						originx:_.x - _.get('text_space'),
-		 				originy:_.y + _.get(s)*0.5+(i+0.5)*gw
-					},_));
-					
+					_.doLabel(i, column.name, _.x - _.get('text_space'), _.y + _.get(s)*0.5+(i+0.5)*gw);
 				}, _);
-				
-				_.components.push(_.labels);
-				_.components.push(_.rectangles);
 			}
 			
 	});
@@ -6745,8 +6766,6 @@ $.Line = $.extend($.Chart, {
 
 		this.type = 'line';
 
-		this.dataType = 'simple';
-
 		this.set({
 			/**
 			 * @cfg {Object} the option for coordinate
@@ -6779,11 +6798,11 @@ $.Line = $.extend($.Chart, {
 			 */
 			data_labels : [],
 			/**
-			 * @cfg {Number} the distance of column's bottom and text.(default to 6)
+			 * @inner {Number} the distance of column's bottom and text.(default to 6)
 			 */
 			label_space : 6,
 			/**
-			 * @cfg {Boolean} if the point are proportional space.(default to true)
+			 * @inner {Boolean} if the point are proportional space.(default to true)
 			 */
 			proportional_spacing : true,
 			/**
@@ -6837,28 +6856,24 @@ $.Line = $.extend($.Chart, {
 		$.Coordinate.coordinate.call(_);
 		
 		_.lines = [];
-		
 		_.lines.zIndex = _.get('z_index');
+		_.components.push(_.lines);
 		_.push('line_start', (_.get('coordinate.width') - _.get('coordinate.valid_width')) / 2);
 		_.push('line_end', _.get('coordinate.width') - _.get('line_start'));
 
 		if (_.get('proportional_spacing'))
 			_.push('label_spacing', _.get('coordinate.valid_width') / (_.get('maxItemSize') - 1));
 		
-		_.push('segment.originx', _.get('originx') + _.get('line_start'));
-
+		_.push('sub_option.originx', _.get('originx') + _.get('line_start'));
 		/**
 		 * y also has line_start and line end
 		 */
-		_.push('segment.originy', _.get('originy') + _.get('coordinate.height'));
-
-		_.push('segment.width', _.get('coordinate.valid_width'));
-		_.push('segment.height', _.get('coordinate.valid_height'));
-
-		_.push('segment.limit_y', !s);
-
-		_.pushIf('segment.keep_with_coordinate', s);
-
+		_.push('sub_option.originy', _.get('originy') + _.get('coordinate.height'));
+		_.push('sub_option.width', _.get('coordinate.valid_width'));
+		_.push('sub_option.height', _.get('coordinate.valid_height'));
+		_.push('sub_option.limit_y', !s);
+		_.pushIf('sub_option.keep_with_coordinate', s);
+		
 		
 		if(_.get('crosshair.enable')){
 			_.push('coordinate.crosshair', _.get('crosshair'));
@@ -6876,7 +6891,7 @@ $.Line = $.extend($.Chart, {
 		/**
 		 * quick config to all linesegment
 		 */
-		$.applyIf(_.get('segment'), $.clone(_.get('communal_option').concat('area_opacity'), _.options));
+		$.applyIf(_.get('sub_option'), $.clone(['area_opacity'], _.options));
 	}
 
 });// @end
@@ -6938,14 +6953,14 @@ $.Line = $.extend($.Chart, {
 				H=_.get('coordinate.valid_height'),
 				sp=_.get('label_spacing'),
 				points,x,y,
-				ox=_.get('segment.originx'),
-				oy=_.get('segment.originy'),
+				ox=_.get('sub_option.originx'),
+				oy=_.get('sub_option.originy'),
 				p;
 			
-			_.push('segment.tip.showType','follow');
-			_.push('segment.coordinate',_.coo);
-			_.push('segment.tipInvokeHeap',_.tipInvokeHeap);
-			_.push('segment.point_space',sp);
+			_.push('sub_option.tip.showType','follow');
+			_.push('sub_option.coordinate',_.coo);
+			_.push('sub_option.tipInvokeHeap',_.tipInvokeHeap);
+			_.push('sub_option.point_space',sp);
 			
 			_.data.each(function(d,i){
 				points = [];
@@ -6959,13 +6974,13 @@ $.Line = $.extend($.Chart, {
 					points.push(p);
 				},_);	
 				
-				_.push('segment.points',points);
-				_.push('segment.brushsize',d.linewidth||1);
-				_.push('segment.background_color',d.color);
+				_.push('sub_option.points',points);
+				_.push('sub_option.brushsize',d.linewidth||1);
+				_.push('sub_option.background_color',d.background_color || d.color);
 				
-				_.lines.push(new $.LineSegment(_.get('segment'),_));
+				_.lines.push(new $.LineSegment(_.get('sub_option'),_));
 			},this);
-			_.components.push(_.lines);
+			
 			
 		}
 		
@@ -6999,7 +7014,7 @@ $.Line = $.extend($.Chart, {
 			/**
 			 * must apply the area's config before 
 			 */
-			this.push('segment.area',true);
+			this.push('sub_option.area',true);
 			$.Area2D.superclass.doConfig.call(this);
 			
 			

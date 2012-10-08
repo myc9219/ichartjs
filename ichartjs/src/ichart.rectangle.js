@@ -77,12 +77,15 @@
 			
 			this.registerEvent(
 					/**
-					 * @event Fires when draw label's text.Return text will override existing text.
-					 * @paramter iChart.Rectangle#rect
+					 * @event Fires when parse this label's data.Return value will override existing.
+					 * @paramter <link>iChart.Rectangle</link>#rect
 					 * @paramter string#text the current label's text
 					 */
-					'drawText');
+					'parseText');
 			
+		},
+		drawValue:function(){
+			this.T.text(this.get('value'),this.get('value_x'),this.get('value_y'),false,this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
 		},
 		doDraw:function(opts){
 			this.drawRectangle();
@@ -91,13 +94,38 @@
 		doConfig:function(){
 			iChart.Rectangle.superclass.doConfig.call(this);
 			iChart.Assert.gtZero(this.get('width'),'width');
-			var _ = this._(),v = _.variable.event;
+			var _ = this._(),v = _.variable.event,vA=_.get('valueAlign');
 			
 			_.width = _.get('width');
 			_.height = _.get('height');
 			
-			_.push('centerx',_.x + _.width/2);
-			_.push('centery',_.y + _.height/2);
+			var x = _.push('centerx',_.x + _.width/2),
+				y = _.push('centery',_.y + _.height/2),
+				a = 'center',
+				b = 'middle',
+				s=_.get('value_space');
+			
+			_.push('value',_.fireString(_, 'parseText', [_, _.get('value')], _.get('value')));
+			
+			if(vA=='left'){
+				a = 'right';
+				x = _.x - s;
+			}else if(vA=='right'){
+				a = 'left';
+				x =_.x + _.width + s;
+			}else if(vA=='bottom'){
+				y = _.y  + _.height + s;
+				b = 'top';
+			}else{
+				y = _.y  - s;
+				b = 'bottom';
+			}
+			
+			_.push('textAlign',a);
+			_.push('textBaseline',b);
+			_.push('value_x',x);
+			_.push('value_y',y);
+			
 			
 			if(_.get('tip.enable')){
 				if(_.get('tip.showType')!='follow'){
