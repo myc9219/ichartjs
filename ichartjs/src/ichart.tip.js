@@ -1,5 +1,5 @@
  	/**
-	 * @overview this component use for abc
+	 * @overview the tip component.
 	 * @component#iChart.Tip
 	 * @extend#iChart.Element
 	 */
@@ -22,34 +22,34 @@
 				 */
 				 text:'',
 				 /**
-				 * @cfg {String} Specifies the tip's type.(default to 'follow') Available value are:
-				 * @Option follow
-				 * @Option fixed
-				 */
+					 * @cfg {String} Specifies the tip's type.(default to 'follow') Available value are:
+					 * @Option follow
+					 * @Option fixed
+					 */
 				 showType:'follow',
 				 /**
-				  * @cfg {Function} Specifies Function to calculate the position.(default to null)
-				  */
+					 * @cfg {Function} Specifies Function to calculate the position.(default to null)
+					 */
 				 invokeOffset:null,
 				 /**
-				 * @cfg {Number} Specifies the duration when fadeIn/fadeOut in millisecond.(default to 300)
-				 */
+					 * @cfg {Number} Specifies the duration when fadeIn/fadeOut in millisecond.(default to 300)
+					 */
 				 fade_duration:300,
 				 /**
-				 * @cfg {Number} Specifies the duration when move in millisecond.(default to 100)
-				 */
+					 * @cfg {Number} Specifies the duration when move in millisecond.(default to 100)
+					 */
 				 move_duration:100,
 				 /**
-				 * @cfg {Boolean} if calculate the position every time (default to false)
-				 */
+					 * @cfg {Boolean} if calculate the position every time (default to false)
+					 */
 				 invokeOffsetDynamic:false,
 				 /**
-				 * @cfg {String} Specifies the css of this Dom.
-				 */
+					 * @cfg {String} Specifies the css of this Dom.
+					 */
 				 style:'textAlign:left;padding:4px 5px;cursor:pointer;backgroundColor:rgba(239,239,239,.85);fontSize:12px;color:black;',
 				 /**
-				 * @cfg {Object} Override the default as enable = true,radius = 5
-				 */
+					 * @cfg {Object} Override the default as enable = true,radius = 5
+					 */
 				 border:{
 					enable:true,
 					radius : 5
@@ -142,6 +142,8 @@
 					}
 				});
 			}
-			
 		}
-});// @end
+});
+/**
+ * @end
+ */

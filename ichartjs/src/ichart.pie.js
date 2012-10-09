@@ -140,13 +140,10 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			}
 		}, this);
 	},
-	doParse : function(d, i) {
-		var _ = this._(), t = d.name + (_.get('showpercent') ? ' ' + iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
+	doParse : function(_,d, i) {
+		var t = d.name + ' ' +_.getPercent(d.value);
 		
-		_.doActing(_,d);
-		
-		if (_.get('sub_option.tip.enable'))
-			_.push('sub_option.tip.text', _.fireString(_, 'parseTipText', [d,d.value, i], t));
+		_.doActing(_,d,i,t);
 		
 		_.push('sub_option.id', i);
 		_.push('sub_option.label.text', t);

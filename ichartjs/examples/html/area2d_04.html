@@ -31,7 +31,7 @@
 			        	}
 			        ];
 	        
-			var data_labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+			var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 			
 			$(function(){
 				new iChart.Area2D({
@@ -49,7 +49,7 @@
 					},
 					listeners:{
 						parseTipText:function(d,t,i){
-							return d.name+data_labels[i]+"平均温度:"+t+"℃";
+							return d.name+labels[i]+"平均温度:"+t+"℃";
 						}
 					},
 					coordinate:{
@@ -70,7 +70,7 @@
 							 parseText:function(t,x,y){
 								return {textY:y+10}
 							 },
-							 labels:data_labels
+							 labels:labels
 						}]
 					}
 				}).draw();
@@ -116,7 +116,7 @@
    		color:'<span class='ichartjs_string'>#6f83a5</span>'
    	}
   ];
-<span class='ichartjs_keyword'>var</span> data_labels = ["<span class='ichartjs_string'>一月</span>","<span class='ichartjs_string'>二月</span>","<span class='ichartjs_string'>三月</span>","<span class='ichartjs_string'>四月</span>","<span class='ichartjs_string'>五月</span>","<span class='ichartjs_string'>六月</span>",
+<span class='ichartjs_keyword'>var</span> labels = ["<span class='ichartjs_string'>一月</span>","<span class='ichartjs_string'>二月</span>","<span class='ichartjs_string'>三月</span>","<span class='ichartjs_string'>四月</span>","<span class='ichartjs_string'>五月</span>","<span class='ichartjs_string'>六月</span>",
 			"<span class='ichartjs_string'>七月</span>","<span class='ichartjs_string'>八月</span>","<span class='ichartjs_string'>九月</span>","<span class='ichartjs_string'>十月</span>","<span class='ichartjs_string'>十一月</span>","<span class='ichartjs_string'>十二月</span>"];
 $(<span class='ichartjs_keyword'>function</span>(){	
 	<span class='ichartjs_keyword'>new</span> iChart.Area2D({
@@ -134,7 +134,7 @@ $(<span class='ichartjs_keyword'>function</span>(){
 		},
 		listeners:{
 			parseTipText:<span class='ichartjs_keyword'>function</span>(d,t,i){
-				<span class='ichartjs_keyword'>return</span> d.name+data_labels[i]+<span class='ichartjs_string'>份平均温度:</span>+t+"<span class='ichartjs_string'>℃</span>";
+				<span class='ichartjs_keyword'>return</span> d.name+labels[i]+<span class='ichartjs_string'>份平均温度:</span>+t+"<span class='ichartjs_string'>℃</span>";
 			}
 		},
 		coordinate:{
@@ -155,7 +155,7 @@ $(<span class='ichartjs_keyword'>function</span>(){
 				 parseText:<span class='ichartjs_keyword'>function</span>(t,x,y){
 					<span class='ichartjs_keyword'>return</span> {textY:y+10}
 				 },
-				 labels:data_labels
+				 labels:labels
 			}]
 		}
 	}).draw();

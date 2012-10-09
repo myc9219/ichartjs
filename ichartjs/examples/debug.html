@@ -68,34 +68,42 @@
 	         		linewidth:1
 	         	}
 	         ];
-		$(function(){
-			//multi的labels的设置,tip的放置
-			new iChart.ColumnMulti2D({
+
+	 var data1 = [
+	        	{name : 'IE',value : 35.75,color:'#a5c2d5'},
+	        	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
+	        	{name : 'Firefox',value : 24.88,color:'#76a871'},
+	        	{name : 'Safari',value : 6.77,color:'#9f7961'},
+	        	{name : 'Opera',value : 2.02,color:'#a56f8f'},
+	        	{name : 'Other',value : 0.73,color:'#6f83a5'}
+        	];
+	 var data2 = [
+		         	{
+		         		name : '北京',
+		         		value:[8,12,14,20,26,28,30,26,28,20,16,10],
+		         		color:'#1f7e92'
+		         	}
+	         ];	
+	 $(function(){
+			new iChart.LineBasic2D({
 					render : 'canvasDiv',
-					data: data,
-					data_labels:["一月","二月","三月","四月","五月","六月"],
-					title : 'DPS01A型号比DPS01B型号的产品更受用户喜欢',
-					subtitle : '2012上半年DPS01A型号与DPS01B型号的鼠标销售比较,单位:万台',
-					footnote : '数据来源：销售中心',
-					footnote_align:'left',
+					data: data2,
+					title : 'Average Temperature Of 2012',
 					width : 800,
-					height : 440,
-					background_color : '#eff8ff',
-					legend:{
-						enable:true,
-						background_color : '#eff8ff',
-						border : {
-							enable : false
+					height : 400,
+					tip:{
+						enable:true
+					},
+					showpercent:true,
+					listeners :{
+						parseTipText:function(d,v,i){
+							return v;
 						}
 					},
-					coordinate:{
-						background_color : '#eff8ff',
-						width:600,
-						height:300
-					}
-			}).draw();
+					labels:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]
+				}).draw();
 		});
-
+	
 	function color(){
 		return '#'+('00000'+(Math.random()*0x1000000<<0).toString(16)).slice(-6);
 	}
@@ -109,6 +117,7 @@
 		chart.setUp();
 		chart.draw();
 	}
+	
 	</script>
 	</head>
 	<body>

@@ -37,11 +37,11 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {<link>iChart.Rectangle</link>} Specifies option of rectangle.
 			 */
-			rectangle : {},
+			sub_option : {},
 			/**
 			 * @cfg {<link>iChart.Text</link>} Specifies option of label at bottom.
 			 */
-			label:{}
+			label : {}
 		});
 
 		this.registerEvent();
@@ -51,27 +51,21 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 	 * @method Returns the coordinate of this element.
 	 * @return iChart.Coordinate2D
 	 */
-	getCoordinate:function(){
+	getCoordinate : function() {
 		return this.coo;
 	},
-	doLabel:function(id,text,x, y){
-		this.labels.push(new iChart.Text(iChart.apply(this.get('label'),{
+	doLabel : function(id, text, x, y) {
+		this.labels.push(new iChart.Text(iChart.apply(this.get('label'), {
 			id : id,
 			text : text,
-			textAlign:'right',
-			textBaseline:'middle',
+			textAlign : 'right',
+			textBaseline : 'middle',
 			originx : x,
 			originy : y
 		}), this));
 	},
-	doParse : function(_,d, i, o) {
-		var t = (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
-		
-		_.doActing(_,d,o);
-		
-		if (_.get('tip.enable'))
-			_.push('sub_option.tip.text', _.fireString(_, 'parseTipText', [d,d.value, i], d.name + ' ' + t));
-		
+	doParse : function(_, d, i, o) {
+		_.doActing(_, d, o,i);
 	},
 	doAnimation : function(t, d) {
 		this.coo.draw();
@@ -86,20 +80,19 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 	},
 	doConfig : function() {
 		iChart.Bar.superclass.doConfig.call(this);
-		
-		var _ = this._(),b = 'barheight',z = 'z_index';
+
+		var _ = this._(), b = 'barheight', z = 'z_index';
 		/**
 		 * Apply the coordinate feature
 		 */
 		iChart.Coordinate.coordinate.call(_);
-		
+
 		_.rectangles = [];
 		_.labels = [];
 		_.rectangles.zIndex = _.get(z);
 		_.labels.zIndex = _.get(z) + 1;
 		_.components.push(_.labels);
 		_.components.push(_.rectangles);
-		
 
 		if (_.dataType == 'simple') {
 
@@ -123,9 +116,9 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		 * use option create a coordinate
 		 */
 		_.coo = iChart.Coordinate.coordinate_.call(_);
-		
+
 		_.components.push(_.coo);
-		
+
 		/**
 		 * quick config to all rectangle
 		 */
@@ -136,4 +129,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 
 	}
 
-});// @end
+});
+/**
+ * @end
+ */

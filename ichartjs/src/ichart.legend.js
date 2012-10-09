@@ -154,7 +154,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		},_ = this._();
 		if (e.x > this.x && e.x < (_.x + _.width) && e.y > _.y && e.y < (_.y + _.height)) {
 			_.data.each(function(d, i) {
-				if (e.x > d.x && e.x < (d.x + d.width + _.get('signwidth')) && e.y > d.y && e.y < (d.y + _.get('line_height'))) {
+				if (e.x > d.x && e.x < (d.x + d.width_ + _.get('signwidth')) && e.y > d.y && e.y < (d.y + _.get('line_height'))) {
 					r = {
 						valid : true,
 						index : i,
@@ -238,7 +238,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		_.data.each(function(d, i) {
 			iChart.merge(d, _.fireEvent(_, 'parse', [_, d.name, i]));
 			d.text = d.text || d.name;
-			d.width = _.T.measureText(d.text);
+			d.width_ = _.T.measureText(d.text);
 		}, _);
 
 		/**
@@ -248,7 +248,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			width = 0;
 			suffix = i;
 			while (suffix < L) {
-				width = Math.max(width, _.data[suffix].width);
+				width = Math.max(width, _.data[suffix].width_);
 				suffix += c;
 			}
 			_.columnwidth[i] = width;

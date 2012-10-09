@@ -74,8 +74,8 @@
 			M = this.get(x)<M?this.get(x):M;
 		}
 		
-		if($.isArray(this.get('data_labels'))){
-			ML = this.get('data_labels').length>ML?this.get('data_labels').length:ML;
+		if($.isArray(this.get('labels'))){
+			ML = this.get('labels').length>ML?this.get('labels').length:ML;
 		}
 		
 		this.push('maxItemSize',ML);
@@ -84,8 +84,8 @@
 		
 	},
 	complex = function(c){
-		this.data_labels = this.get('data_labels');
-		var M=0,MI=0,V,d,L=this.data_labels.length;
+		this.labels = this.get('labels');
+		var M=0,MI=0,V,d,L=this.labels.length;
 		this.columns = [];this.total = 0;
 		for(var i=0;i<L;i++){
 			var item = [];
@@ -105,7 +105,7 @@
 				});
 			}
 			this.columns.push({
-				name:this.data_labels[i],
+				name:this.labels[i],
 				item:item
 			});
 		}
@@ -924,7 +924,8 @@
 			this.animation(this);
 		},
 		doSort:function(){
-			this.components.sor(function(p, q){return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
+			this.components.sor(function(p, q){
+				return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
 		commonDraw : function(_) {
 			$.Assert.isTrue(_.RENDERED, _.type + ' has not rendered.');
@@ -944,6 +945,9 @@
 				_.runAnimation();
 				return;
 			}
+			_.components.each(function(c) {
+				//console.log(c.type+","+(c.zIndex||c.get('z_index')));
+			});
 			
 			_.segmentRect();
 
@@ -1156,7 +1160,10 @@
 			});
 			_.oneWay = $.emptyFn;
 		},
-		doActing:function(_,d,o){
+		getPercent:function(v){
+			return this.get('showpercent') ? iChart.toPercent(v / this.total, this.get('decimalsnum')) : v;
+		},
+		doActing:function(_,d,o,i,t){
 			var f=!!_.get('communal_acting');
 			/**
 			 * store or restore the option
@@ -1166,14 +1173,21 @@
 			 * merge the option
 			 */
 			iChart.merge(_.get('sub_option'),d);
-			/**
-			 * prevent there no property background_color,use coloe instead
-			 */
-			_.pushIf('sub_option.background_color', d.color);
+			
 			/**
 			 * merge specific option
 			 */
 			iChart.merge(_.get('sub_option'),o);
+			
+			/**
+			 * prevent there no property background_color,use coloe instead
+			 */
+			_.pushIf('sub_option.background_color', d.color);
+			
+			if (_.get('sub_option.tip.enable')){
+				_.push('sub_option.tip.text', _.fireString(_, 'parseTipText', [d,d.value,i],(t || (d.name + ' ' +_.getPercent(d.value)))));
+			}
+			
 		},
 		doConfig : function() {
 			
@@ -1299,7 +1313,7 @@
 			 * clone config to sub_option
 			 */
 			iChart.applyIf(_.get('sub_option'), iChart.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip'], _.options));
-			
+				
 			/**
 			 * legend
 			 */
@@ -1308,17 +1322,14 @@
 					maxwidth : w,
 					data : _.data
 				}, _.get('legend')), _);
-				
 				_.components.push(_.legend);
 			}
-			/**
-			 * tip's wrap
-			 */
-			if (_.get('tip.enable')) {
-				_.push('tip.wrap', _.shell);
-			}
-
+			_.push('sub_option.tip.wrap', _.shell);
+			
 		}
 	});
 })(iChart);
-// @end
+/**
+ * @end
+ */
+
