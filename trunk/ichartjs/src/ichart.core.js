@@ -894,9 +894,9 @@
 	};
 	
 	Array.prototype.sor = function(f) {
-		var _=this,L = _.length,T; 
-		for(var i = 0; i < L - 2; i++){
-			for (var j = L -1; j >=1;j--) {
+		var _=this,L = _.length-1,T; 
+		for(var i = 0; i < L; i++){
+			for (var j = L; j > i;j--) {
 			　　if (f?!f(_[j],_[j - 1]):(_[j] < _[j - 1])){ 
 				　　T = _[j]; 　　
 					_[j] = _[j - 1]; 　　

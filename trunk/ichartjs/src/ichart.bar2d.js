@@ -1,5 +1,5 @@
 /**
- * @overview the bar2d componment
+ * @overview this component will draw a bar2d chart.
  * @component#@chart#iChart.Bar2D
  * @extend#iChart.Bar
  */

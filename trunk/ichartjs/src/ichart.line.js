@@ -1,5 +1,5 @@
 /**
- * @overview this component use for abc
+ * @overview this class is abstract,use for config line
  * @component#iChart.Line
  * @extend#iChart.Chart
  */
@@ -20,13 +20,12 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 * @cfg {Object} the option for coordinate
 			 */
 			coordinate : {
-				axis:{
-					width:[0,0,2,2]
-			 	}
+				axis : {
+					width : [0, 0, 2, 2]
+				}
 			},
 			/**
-			 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>iChart.CrossHair</link>
-			 * Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
+			 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>iChart.CrossHair</link> Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
 			 */
 			crosshair : {
 				enable : false
@@ -45,7 +44,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {Array} the array of labels close to the axis
 			 */
-			data_labels : [],
+			labels : [],
 			/**
 			 * @inner {Number} the distance of column's bottom and text.(default to 6)
 			 */
@@ -59,10 +58,9 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 */
 			label_spacing : 0,
 			/**
-			 * @cfg {Object} the option for linesegment.
-			 * For details see <link>iChart.LineSegment</link>
+			 * @cfg {<link>iChart.LineSegment</link>} the option for linesegment.
 			 */
-			segment : {},
+			sub_option : {},
 			/**
 			 * {Object} the option for legend.
 			 */
@@ -92,27 +90,28 @@ iChart.Line = iChart.extend(iChart.Chart, {
 	 * @method Returns the coordinate of this element.
 	 * @return iChart.Coordinate2D
 	 */
-	getCoordinate:function(){
+	getCoordinate : function() {
 		return this.coo;
 	},
 	doConfig : function() {
 		iChart.Line.superclass.doConfig.call(this);
-		var _ = this._(),s=_.data.length == 1;
-		
+		var _ = this._(), s = _.data.length == 1;
+
 		/**
 		 * apply the coordinate feature
 		 */
 		iChart.Coordinate.coordinate.call(_);
-		
+
 		_.lines = [];
 		_.lines.zIndex = _.get('z_index');
 		_.components.push(_.lines);
+		
 		_.push('line_start', (_.get('coordinate.width') - _.get('coordinate.valid_width')) / 2);
 		_.push('line_end', _.get('coordinate.width') - _.get('line_start'));
 
 		if (_.get('proportional_spacing'))
 			_.push('label_spacing', _.get('coordinate.valid_width') / (_.get('maxItemSize') - 1));
-		
+
 		_.push('sub_option.originx', _.get('originx') + _.get('line_start'));
 		/**
 		 * y also has line_start and line end
@@ -122,25 +121,26 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		_.push('sub_option.height', _.get('coordinate.valid_height'));
 		_.push('sub_option.limit_y', !s);
 		_.pushIf('sub_option.keep_with_coordinate', s);
-		
-		
-		if(_.get('crosshair.enable')){
+
+		if (_.get('crosshair.enable')) {
 			_.push('coordinate.crosshair', _.get('crosshair'));
-			_.push('coordinate.crosshair.hcross',s);
+			_.push('coordinate.crosshair.hcross', s);
 			_.push('coordinate.crosshair.invokeOffset', function(e, m) {
 				var r = _.lines[0].isEventValid(e);
-					//console.log(r);
-					/**
-					 * TODO how fire muti line?
-					 */
-					return r.valid ? r : false;
-				});
+				/**
+				 * TODO how fire muti line?
+				 */
+				return r.valid ? r : false;
+			});
 		}
-		
+
 		/**
 		 * quick config to all linesegment
 		 */
 		iChart.applyIf(_.get('sub_option'), iChart.clone(['area_opacity'], _.options));
 	}
 
-});// @end
+});
+/**
+ * @end
+ */

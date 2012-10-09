@@ -1,5 +1,5 @@
 //expect next
-1.return the postion of component's important item*
+1.sub_option of line
 1.1.增加测试用例
 1.2.代码还有压缩的余地，将公共函数提取出来
 2.中文api同步
@@ -10,8 +10,6 @@
 5.十字指针还是放到各自组件中,方便管理
 6.区域面积计算
 7.barmuti2d鼠标移动鼠标样式-cause by the sequence of event invoking
-8.column里的label text的配置
-9.考虑将this.的属性全部去掉，以免设置属性不能同步*
 10.增加快捷的ajax请求?URL方式?
 11.官网完全利用HTML5+CSS3制作
 ///performance

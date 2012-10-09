@@ -76,13 +76,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		}), this));
 	},
 	doParse : function(_,d, i, o) {
-		var t = (_.get('showpercent') ? iChart.toPercent(d.value / _.total, _.get('decimalsnum')) : d.value);
-		
-		_.doActing(_,d,o);
-		
-		if (_.get('tip.enable'))
-			_.push('sub_option.tip.text', _.fireString(_, 'parseTipText', [d,d.value,i],d.name + ' '+t));
-		
+		_.doActing(_,d,o,i);
 	},
 	doConfig : function() {
 		iChart.Column.superclass.doConfig.call(this);

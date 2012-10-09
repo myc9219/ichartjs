@@ -21,14 +21,15 @@ iChart.Pie2D = iChart.extend(iChart.Pie, {
 	},
 	doConfig : function() {
 		iChart.Pie2D.superclass.doConfig.call(this);
+		var _ = this._();
 		/**
 		 * quick config to all rectangle
 		 */
-		this.push('sub_option.radius',this.r)
+		_.push('sub_option.radius',_.r)
 		
-		this.data.each(function(d,i){
-			this.doParse(d,i);
-		},this);
+		_.data.each(function(d,i){
+			_.doParse(_,d,i);
+		},_);
 		
 		
 	}

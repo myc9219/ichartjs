@@ -15,7 +15,7 @@
 		         		color:'#1f7e92'
 		         	}
 	         ];	
-			var data_labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+			var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 			$(function(){
 				new iChart.Area2D({
 						render : 'canvasDiv',
@@ -24,7 +24,7 @@
 						width : 800,
 						height : 400,
 						segment : {label:true},
-						data_labels:data_labels
+						labels:labels
 					}).draw();
 			});
 			</script>
@@ -51,7 +51,7 @@
    		color:'<span class='ichartjs_string'>#1f7e92</span>'
    	}
   ];
-<span class='ichartjs_keyword'>var</span> data_labels = ["<span class='ichartjs_string'>一月</span>","<span class='ichartjs_string'>二月</span>","<span class='ichartjs_string'>三月</span>","<span class='ichartjs_string'>四月</span>","<span class='ichartjs_string'>五月</span>","<span class='ichartjs_string'>六月</span>",
+<span class='ichartjs_keyword'>var</span> labels = ["<span class='ichartjs_string'>一月</span>","<span class='ichartjs_string'>二月</span>","<span class='ichartjs_string'>三月</span>","<span class='ichartjs_string'>四月</span>","<span class='ichartjs_string'>五月</span>","<span class='ichartjs_string'>六月</span>",
 			"<span class='ichartjs_string'>七月</span>","<span class='ichartjs_string'>八月</span>","<span class='ichartjs_string'>九月</span>","<span class='ichartjs_string'>十月</span>","<span class='ichartjs_string'>十一月</span>","<span class='ichartjs_string'>十二月</span>"];
 $(<span class='ichartjs_keyword'>function</span>(){	
 	<span class='ichartjs_keyword'>new</span> iChart.Area2D({
@@ -61,7 +61,7 @@ $(<span class='ichartjs_keyword'>function</span>(){
 		width : 800,
 		height : 400,
 		segment : {label:<span class='ichartjs_keyword'>true</span>},
-		data_labels:data_labels
+		labels:labels
 	}).draw();
 });
 </div>

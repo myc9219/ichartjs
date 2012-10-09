@@ -130,7 +130,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 				}
 			},_);
 		}
-
+		
 		if (_.get('shadow')) {
 			_.T.shadowOff();
 		}
@@ -182,7 +182,6 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		if (ry == 0) {
 			ry = _.push('event_range_y', Math.floor(_.get('point_size')/2));
 		}
-
 		if (_.get('tip.enable')) {
 			/**
 			 * _ use for tip coincidence

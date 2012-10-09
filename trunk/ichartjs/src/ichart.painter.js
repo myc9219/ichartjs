@@ -200,7 +200,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	},
 	fireString : function(socpe, name, args, s) {
 		var t = this.fireEvent(socpe, name, args);
-		return iChart.isString(t) ? t : s;
+		return iChart.isString(t) ? t : (t!==true&&iChart.isDefined(t)?t.toString():s);
 	},
 	fireEvent : function(socpe, name, args) {
 		var L = this.events[name].length;

@@ -36,7 +36,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 	},
 	doConfig : function() {
 		iChart.Pie3D.superclass.doConfig.call(this);
-		var _ = this, z = _.get('zRotate');
+		var _ = this._(), z = _.get('zRotate');
 		_.push('zRotate', iChart.between(0, 90, 90 - z));
 		_.push('cylinder_height', _.get('yHeight') * Math.cos(iChart.angle2Radian(z)));
 		_.push('sub_option.semi_major_axis', _.r);
@@ -45,7 +45,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		_.push('sub_option.originy', _.get('originy') - _.get('yHeight') / 2);
 
 		_.data.each(function(d, i) {
-			_.doParse(d, i);
+			_.doParse(_,d, i);
 		}, _);
 
 		var layer = [], L = [], PI = Math.PI, PI2 = PI * 2, a = PI / 2, b = PI * 1.5, c = _.get('counterclockwise'), abs = function(n, f) {

@@ -294,7 +294,7 @@ function test(){
 			title : {text: 'Test ColumnMulti2D'},
 			data: data2,
 			shadow:true,
-			data_labels:data_labels,
+			labels:labels,
 			align:'center',
 			coordinate:{
 				width:600,
@@ -324,7 +324,7 @@ function test(){
 			data: data3,
 			align:'center',
 			shadow:true,
-			data_labels:lineLabels,
+			labels:lineLabels,
 			listeners:{
 				parsePoint:function(v,x,y){
 					return {value:v+"℃"}
@@ -452,7 +452,7 @@ function test(){
 			render :canvas,
 			title : {text: 'Test BarMulti2D'},
 			data: data2,
-			data_labels:data_labels,
+			labels:labels,
 			coordinate:{
 				scale:{
 					 position:'bottom',	
