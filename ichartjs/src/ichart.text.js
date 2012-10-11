@@ -73,7 +73,11 @@
 				/**
 				 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 16).
 				 */
-				line_height : 16
+				line_height : 16,
+				/**
+				 * @cfg {Number} Specifies the angle that text writed.0 to horizontal,clockwise.(default to 0).
+				 */
+				rotate:0
 			});
 			
 			this.registerEvent();
@@ -83,7 +87,7 @@
 			if(this.get('box_feature'))
 			this.T.box(this.x,this.y,this.get('width'),this.get('height'),this.get('border'),this.get('f_color'));
 			if(this.get('text')!='')
-			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'),0,0,this.get('shadow'));
+			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'),0,0,this.get('shadow'),this.get('rotate'));
 		},
 		isEventValid:function(){
 			return {valid:false};
@@ -108,4 +112,7 @@
 			_.applyGradient();
 			
 		}
-});//@end
+});
+/**
+ * @end
+ */

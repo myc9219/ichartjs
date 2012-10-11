@@ -1,7 +1,7 @@
 ;
 (function($) {
 
-	var inc = Math.PI / 90, PI = Math.PI, ceil = Math.ceil, floor = Math.floor, PI2 = 2 * Math.PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
+	var PI = Math.PI, inc = PI / 90,inc2 = inc/2, ceil = Math.ceil, floor = Math.floor, PI2 = 2 * PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
 		return w == 1 ? (floor(c) + 0.5) : Math.round(c);
 	}, getCurvePoint = function(seg, point, i, smo) {
 		var x = point.x, y = point.y, lp = seg[i - 1], np = seg[i + 1], lcx, lcy, rcx, rcy;
@@ -355,23 +355,23 @@
 		createRadialGradient : function(xs, ys, rs, xe, ye, re) {
 			return this.c.createRadialGradient(xs, ys, rs, xe, ye, re);
 		},
-		text : function(t, x, y, max, color, align, line, font, mode, h,sw) {
+		text : function(t, x, y, max, color, align, line, font, mode, h,sw,ro) {
 			if(t=='')return this;
-			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw).restore();
+			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw,ro).restore();
 		},
-		fillText : function(t, x, y, max, color, mode, h,sw) {
+		fillText : function(t, x, y, max, color, mode, h,sw,ro) {
 			t = t.toString();
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
-			this.save().fillStyle(color).shadowOn(sw);
+			this.save().fillStyle(color).translate(x,y).rotate(inc2*ro).shadowOn(sw);
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			T.each(function(t) {
 				try {
 					if (max)
-						this.c.fillText(t, x, y, max);
+						this.c.fillText(t, 0,0, max);
 					else
-						this.c.fillText(t, x, y);
+						this.c.fillText(t, 0, 0);
 					y += h;
 				} catch (e) {
 					console.log(e.message + '[' + t + ',' + x + ',' + y + ']');
@@ -610,6 +610,10 @@
 		},
 		translate : function(x, y) {
 			this.c.translate(x, y);
+			return this;
+		},
+		rotate : function(r) {
+			this.c.rotate(r);
 			return this;
 		},
 		clearRect : function(x, y, w, h) {

@@ -67,7 +67,11 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			legend : {
 				sign : 'round-bar',
 				sign_size : 14
-			}
+			},
+			/**
+			 * @cfg {<link>iChart.Text</link>} Specifies option of label at bottom.
+			 */
+			label:{}
 		});
 
 		this.registerEvent(

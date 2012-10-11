@@ -134,4 +134,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 		
 
 	}
-});// @end
+});
+/**
+ * @end
+ */
