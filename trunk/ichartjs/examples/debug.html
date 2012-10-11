@@ -70,9 +70,15 @@
 	         ];
 
 	 var data1 = [
-	        	{name : 'IE',value : 35.75,color:'#a5c2d5'},
-	        	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
-	        	{name : 'Firefox',value : 24.88,color:'#76a871'},
+	        	{name : 'IE6',value : 35.75,color:'#a5c2d5'},
+	        	{name : 'IE7',value : 25,color:'#a5c2d5'},
+	        	{name : 'IE8',value : 15,color:'#a5c2d5'},
+	        	{name : 'Chrome19',value : 29.84,color:'#cbab4f'},
+	        	{name : 'Chrome20',value : 9,color:'#cbab4f'},
+	        	{name : 'Chrome21',value : 9,color:'#cbab4f'},
+	        	{name : 'Firefox8',value : 24,color:'#76a871'},
+	        	{name : 'Firefox9',value : 20,color:'#76a871'},
+	        	{name : 'Firefox10',value : 24.88,color:'#76a871'},
 	        	{name : 'Safari',value : 6.77,color:'#9f7961'},
 	        	{name : 'Opera',value : 2.02,color:'#a56f8f'},
 	        	{name : 'Other',value : 0.73,color:'#6f83a5'}
@@ -97,8 +103,16 @@
 					showpercent:true,
 					listeners :{
 						parseTipText:function(d,v,i){
-							return v;
+							return true;
 						}
+					},
+					coordinate : {
+						height:220
+					},
+					label:{
+						rotate:-90,
+						textAlign:'right',
+						textBaseline:'middle'
 					},
 					labels:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]
 				}).draw();

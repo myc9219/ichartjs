@@ -266,4 +266,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			_.push('yAngle_',P.y);
 		}
 	}
-});// @end
+});
+/**
+ * @end
+ */
