@@ -43,17 +43,7 @@
 <li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
 <li>param&nbsp;:&nbsp;Object&nbsp;&nbsp; 额外的参数</li>
 </ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>dblclick</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>双击时触发。<br/></div>
-<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
-<div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;Rectangle2D&nbsp;&nbsp;</li>
-<li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
-</ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>drawLabelText</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>解析标签数据项时触发。返回值将覆盖当前值。<br/></div>
-<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
-<div class='ichartjs_pl_10'><ul><li>rect&nbsp;:&nbsp;iChart.Rectangle&nbsp;&nbsp; 矩形对象</li>
-<li>text&nbsp;:&nbsp;string&nbsp;&nbsp; 当前文本</li>
-</ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_rectangle.html" target="main" >Rectangle</a></td></tr><tr class='ichartjs_even'><td>initialize</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>初始化完成之后触发。<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>initialize</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>初始化完成之后触发。<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;Rectangle2D&nbsp;&nbsp;</li>
 </ul></div></div>
@@ -72,13 +62,29 @@
 <div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;Rectangle2D&nbsp;&nbsp;</li>
 <li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
 </ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr></table></div><div class='ichartjs_p_5' id='methods' name='methods'><div class='ichartjs_title ichartjs_p_5'>方法</div><table class='ichartjs_table'><tr class='ichartjs_table_header'><th class='ichartjs_table_parameter'>名称</th><th class='ichartjs_table_description'>描述</th><th class='ichartjs_table_definedBy'>定义者</th></tr><tr class='ichartjs_even'><td>draw</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>绘图方法接口，这是一个抽象模板方法。实现此方法之后定义自己的行为。目前为止,<a href='ichart_chart.html'>iChart.Chart</a> 和 <a href='ichart_component.html'>iChart.Component</a> 实现了此方法.<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>parseText</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>解析标签数据项时触发。返回值将覆盖当前值。<br/></div>
+<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
+<div class='ichartjs_pl_10'><ul><li>rect&nbsp;:&nbsp;iChart.Rectangle&nbsp;&nbsp; 矩形对象</li>
+<li>text&nbsp;:&nbsp;string&nbsp;&nbsp; 当前文本</li>
+</ul></div></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_rectangle.html" target="main" >Rectangle</a></td></tr></table></div><div class='ichartjs_p_5' id='methods' name='methods'><div class='ichartjs_title ichartjs_p_5'>方法</div><table class='ichartjs_table'><tr class='ichartjs_table_header'><th class='ichartjs_table_parameter'>名称</th><th class='ichartjs_table_description'>描述</th><th class='ichartjs_table_definedBy'>定义者</th></tr><tr class='ichartjs_even'><td>draw</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>绘图方法接口，这是一个抽象模板方法。实现此方法之后定义自己的行为。目前为止,<a href='ichart_chart.html'>iChart.Chart</a> 和 <a href='ichart_component.html'>iChart.Component</a> 实现了此方法.<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>无<br/></li>
 </ul></div>
 <div class='ichartjs_stress'>返回值<br/></div>
 <div class='ichartjs_pl_10'>&nbsp;&nbsp;void</div>
 </div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr></table></div><div class='ichartjs_reference'><strong>参考:</strong><span class='ichartjs_reference_item'><a href="ichart_rectangle.html" target="main" >Rectangle</a></span></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>getDimension</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>获取当前组件的尺寸。返回对象包含以下属性：<br/>
+	 * @property x:左上方x轴坐标<br/>
+	 * @property y:左上方y轴坐标<br/>
+	 * @property width:宽度，单位:px。<br/>
+	 * @property height:高度，单位:px。<br/></div>
+<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
+<div class='ichartjs_pl_10'><ul><li>无<br/></li>
+</ul></div>
+<div class='ichartjs_stress'>返回值<br/></div>
+<div class='ichartjs_pl_10'>&nbsp;&nbsp;object</div>
+</div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_component.html" target="main" >Component</a></td></tr></table></div><div class='ichartjs_reference'><strong>参考:</strong><span class='ichartjs_reference_item'><a href="ichart_rectangle.html" target="main" >Rectangle</a></span></div>
 </body>
 </html>

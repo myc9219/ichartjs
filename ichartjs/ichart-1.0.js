@@ -1338,8 +1338,10 @@ $.Painter = $.extend($.Element, {
 			_.push('yAngle_',P.y);
 		}
 	}
-});// @end
-
+});
+/**
+ * @end
+ */
 
 /**
  * 
@@ -1461,56 +1463,55 @@ $.Html = $.extend($.Element,{
 		}
 	}
 });
+/**
+ * @end
+ */
+/**
+ * @overview this a abstract component of all concrete chart
+ * @component#$.Component
+ * @extend#$.Painter
+ */
+$.Component = $.extend($.Painter, {
+	configure : function(c) {
+		/**
+		 * invoked the super class's configuration
+		 */
+		$.Component.superclass.configure.apply(this, arguments);
 
+		/**
+		 * indicate the element's type
+		 */
+		this.type = 'component';
 
-	/**
-	 * @overview this component use for abc
-	 * @component#$.Component
-	 * @extend#$.Painter
-	 */
-	$.Component = $.extend($.Painter,{
-		configure : function(c) {
+		this.set({
 			/**
-			 * invoked the super class's configuration
+			 * @inner {Boolean} Specifies the config of Tip.For details see <link>$.Tip</link> Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 			 */
-			$.Component.superclass.configure.apply(this,arguments);
-	
-			/**
-			 * indicate the element's type
-			 */
-			this.type = 'component';
-	
-			this.set({
-				/**
-				 * @inner {Boolean} Specifies the config of Tip.For details see <link>$.Tip</link>
-				 * Note:this has a extra property named 'enable',indicate whether tip available(default to false)
-				 */
-				tip : {
-					enable : false,
-					border : {
-						width : 2
-					}
+			tip : {
+				enable : false,
+				border : {
+					width : 2
 				}
-			});
-			
-			/**
-			 * If this element can split or contain others.(default to false)
-			 */
-			this.atomic = false;
-			/**
-			 * If method draw be proxy.(default to false)
-			 */
-			this.proxy = false;
-			this.inject(c);
-			
-			this.final_parameter = {};
-			
-			
+			}
+		});
+
+		/**
+		 * If this element can split or contain others.(default to false)
+		 */
+		this.atomic = false;
+		/**
+		 * If method draw be proxy.(default to false)
+		 */
+		this.proxy = false;
+		this.inject(c);
+
+		this.final_parameter = {};
+
 	},
 	initialize : function() {
 		$.DefineAbstract('isEventValid', this);
 		$.DefineAbstract('doDraw', this);
-	
+
 		this.doConfig();
 		this.initialization = true;
 	},
@@ -1522,55 +1523,54 @@ $.Html = $.extend($.Element,{
 	 * @property height:the height of component,note:available there applies box model
 	 * @return object
 	 */
-	getDimension:function(){
+	getDimension : function() {
 		return {
-			x:this.x,
-			x:this.y,
-			width:this.get("width"),
-			height:this.get("height")
+			x : this.x,
+			x : this.y,
+			width : this.get("width"),
+			height : this.get("height")
 		}
 	},
 	doConfig : function() {
 		$.Component.superclass.doConfig.call(this);
 		var _ = this._();
-		
-		
-		_.x = _.push('originx',_.get('originx')+_.get('offsetx'));
-		_.y = _.push('originy',_.get('originy')+_.get('offsety'));
-		
+
+		_.x = _.push('originx', _.get('originx') + _.get('offsetx'));
+		_.y = _.push('originy', _.get('originy') + _.get('offsety'));
+
 		/**
 		 * if have evaluate it
 		 */
 		_.data = _.get('data');
-		
+
 		if (_.get('tip.enable')) {
 			/**
 			 * make tip's border in accord with sector
 			 */
 			_.pushIf('tip.border.color', _.get('f_color'));
-	
+
 			if (!$.isFunction(_.get('tip.invokeOffset')))
 				/**
 				 * indicate the tip must calculate position
 				 */
 				_.push('tip.invokeOffset', _.tipInvoke());
 		}
-	
+
 	},
 	isMouseOver : function(e) {
 		return this.isEventValid(e);
 	},
 	redraw : function() {
-		
+
 		this.container.draw();
 	},
 	commonDraw : function(opts) {
 		/**
 		 * execute the doDraw() that the subClass implement
 		 */
-		if(!this.proxy)
-		this.doDraw.call(this, opts);
-	
+		if (!this.proxy)
+			this.doDraw.call(this, opts);
+
 	},
 	inject : function(c) {
 		if (c) {
@@ -1578,7 +1578,11 @@ $.Html = $.extend($.Element,{
 			this.target = this.T = c.T;
 		}
 	}
-	});
+});
+/**
+ * @end
+ */
+
  	/**
 	 * @overview the tip component.
 	 * @component#$.Tip
@@ -1853,8 +1857,10 @@ $.Html = $.extend($.Element,{
 			});
 			
 		}
-});// @end
-
+});
+/**
+ * @end
+ */
 /**
  * @overview this component use for abc
  * @component#$.Legend
@@ -2283,7 +2289,10 @@ $.Label = $.extend($.Component, {
 		
 
 	}
-});// @end
+});
+/**
+ * @end
+ */
 
 	/**
 	 * @overview this component use for abc
@@ -2360,7 +2369,11 @@ $.Label = $.extend($.Component, {
 				/**
 				 * @cfg {Number} Specifies the lineheight when text display multiline.(default to 16).
 				 */
-				line_height : 16
+				line_height : 16,
+				/**
+				 * @cfg {Number} Specifies the angle that text writed.0 to horizontal,clockwise.(default to 0).
+				 */
+				rotate:0
 			});
 			
 			this.registerEvent();
@@ -2370,7 +2383,7 @@ $.Label = $.extend($.Component, {
 			if(this.get('box_feature'))
 			this.T.box(this.x,this.y,this.get('width'),this.get('height'),this.get('border'),this.get('f_color'));
 			if(this.get('text')!='')
-			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'),0,0,this.get('shadow'));
+			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'),0,0,this.get('shadow'),this.get('rotate'));
 		},
 		isEventValid:function(){
 			return {valid:false};
@@ -2396,10 +2409,13 @@ $.Label = $.extend($.Component, {
 			
 		}
 });
+/**
+ * @end
+ */
 ;
 (function($) {
 
-	var inc = Math.PI / 90, PI = Math.PI, ceil = Math.ceil, floor = Math.floor, PI2 = 2 * Math.PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
+	var PI = Math.PI, inc = PI / 90,inc2 = inc/2, ceil = Math.ceil, floor = Math.floor, PI2 = 2 * PI, max = Math.max, min = Math.min, sin = Math.sin, cos = Math.cos, fd = function(w, c) {
 		return w == 1 ? (floor(c) + 0.5) : Math.round(c);
 	}, getCurvePoint = function(seg, point, i, smo) {
 		var x = point.x, y = point.y, lp = seg[i - 1], np = seg[i + 1], lcx, lcy, rcx, rcy;
@@ -2753,23 +2769,23 @@ $.Label = $.extend($.Component, {
 		createRadialGradient : function(xs, ys, rs, xe, ye, re) {
 			return this.c.createRadialGradient(xs, ys, rs, xe, ye, re);
 		},
-		text : function(t, x, y, max, color, align, line, font, mode, h,sw) {
+		text : function(t, x, y, max, color, align, line, font, mode, h,sw,ro) {
 			if(t=='')return this;
-			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw).restore();
+			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw,ro).restore();
 		},
-		fillText : function(t, x, y, max, color, mode, h,sw) {
+		fillText : function(t, x, y, max, color, mode, h,sw,ro) {
 			t = t.toString();
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
-			this.save().fillStyle(color).shadowOn(sw);
+			this.save().fillStyle(color).translate(x,y).rotate(inc2*ro).shadowOn(sw);
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			T.each(function(t) {
 				try {
 					if (max)
-						this.c.fillText(t, x, y, max);
+						this.c.fillText(t, 0,0, max);
 					else
-						this.c.fillText(t, x, y);
+						this.c.fillText(t, 0, 0);
 					y += h;
 				} catch (e) {
 					console.log(e.message + '[' + t + ',' + x + ',' + y + ']');
@@ -3008,6 +3024,10 @@ $.Label = $.extend($.Component, {
 		},
 		translate : function(x, y) {
 			this.c.translate(x, y);
+			return this;
+		},
+		rotate : function(r) {
+			this.c.rotate(r);
 			return this;
 		},
 		clearRect : function(x, y, w, h) {
@@ -3297,7 +3317,7 @@ $.Label = $.extend($.Component, {
 			/**
 			 * doAnimation of implement
 			 */
-			_.doAnimation(_.variable.animation.time, _.duration);
+			_.doAnimation(_.variable.animation.time, _.duration,_);
 			/**
 			 * fill the background
 			 */
@@ -4857,6 +4877,9 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			});
 		}
 });
+/**
+ *@end
+ */	
 	/**
 	 * @overview this component use for abc
 	 * @component#$.Rectangle2D
@@ -5591,19 +5614,19 @@ $.Pie = $.extend($.Chart, {
 	getSectors : function() {
 		return this.sectors;
 	},
-	doAnimation : function(t, d) {
-		var si = 0, cs = this.oA;
-		this.sectors.each(function(s, i) {
-			si = this.animationArithmetic(t, 0, s.get('totalAngle'), d);
+	doAnimation : function(t, d,_) {
+		var si = 0, cs = _.oA;
+		_.sectors.each(function(s, i) {
+			si = _.animationArithmetic(t, 0, s.get('totalAngle'), d);
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
 			cs += si;
-			if (!this.is3D())
+			if (!_.is3D())
 				s.drawSector();
-		}, this);
+		});
 		
-		if (this.is3D()) {
-			this.proxy.drawSector();
+		if (_.is3D()) {
+			_.proxy.drawSector();
 		}
 	},
 	localizer : function(la) {
@@ -5995,8 +6018,8 @@ $.Column = $.extend($.Chart, {
 		this.registerEvent();
 
 	},
-	doAnimation : function(t, d) {
-		var _ = this._(), h;
+	doAnimation : function(t, d,_) {
+		var h;
 		_.coo.draw();
 		_.labels.each(function(l){
 			l.draw();
@@ -6334,16 +6357,15 @@ $.Bar = $.extend($.Chart, {
 	doParse : function(_, d, i, o) {
 		_.doActing(_, d, o,i);
 	},
-	doAnimation : function(t, d) {
-		this.coo.draw();
-		this.labels.each(function(l, i) {
+	doAnimation : function(t, d,_) {
+		_.coo.draw();
+		_.labels.each(function(l) {
 			l.draw();
-		}, this);
-
-		this.rectangles.each(function(r, i) {
-			r.push('width', Math.ceil(this.animationArithmetic(t, 0, r.width, d)));
+		});
+		_.rectangles.each(function(r) {
+			r.push('width', Math.ceil(_.animationArithmetic(t, 0, r.width, d)));
 			r.drawRectangle();
-		}, this);
+		});
 	},
 	doConfig : function() {
 		$.Bar.superclass.doConfig.call(this);
@@ -6826,7 +6848,11 @@ $.Line = $.extend($.Chart, {
 			legend : {
 				sign : 'round-bar',
 				sign_size : 14
-			}
+			},
+			/**
+			 * @cfg {<link>$.Text</link>} Specifies option of label at bottom.
+			 */
+			label:{}
 		});
 
 		this.registerEvent(
@@ -6892,7 +6918,25 @@ $.Line = $.extend($.Chart, {
 				return r.valid ? r : false;
 			});
 		}
-
+		
+		_.pushIf('coordinate.scale',[{
+			position : _.get('scaleAlign'),
+			max_scale : _.get('maxValue')
+		}, {
+			position : _.get('labelAlign'),
+			start_scale : 1,
+			scale : 1,
+			end_scale : _.get('maxItemSize'),
+			labels : _.get('labels')
+		}]);
+		
+		/**
+		 * use option create a coordinate
+		 */
+		_.coo = $.Coordinate.coordinate_.call(_);
+		
+		_.components.push(_.coo);
+		
 		/**
 		 * quick config to all linesegment
 		 */
@@ -6923,43 +6967,24 @@ $.LineBasic2D = $.extend($.Line, {
 
 		this.tipInvokeHeap = [];
 	},
-	doAnimation : function(t, d) {
-		var l, ps, p;
-		this.coo.draw();
-		for ( var i = 0; i < this.lines.length; i++) {
-			l = this.lines[i];
-			p = l.get('points');
-			for ( var j = 0; j < p.length; j++) {
-				p[j].y = l.y - Math.ceil(this.animationArithmetic(t, 0, l.y - p[j].y_, d));
-			}
+	doAnimation : function(t, d,_) {
+		_.coo.draw();
+		_.lines.each(function(l){
+			l.get('points').each(function(p){
+				p.y = l.y - Math.ceil(_.animationArithmetic(t, 0, l.y - p.y_, d));
+			});
 			l.drawSegment();
-		}
+		});
 	},
 	doConfig : function() {
 		$.LineBasic2D.superclass.doConfig.call(this);
 		var _ = this._();
-
-		_.coo = new $.Coordinate2D($.merge({
-			scale : [{
-				position : _.get('scaleAlign'),
-				max_scale : _.get('maxValue')
-			}, {
-				position : _.get('labelAlign'),
-				scaleEnable : false,
-				start_scale : 1,
-				scale : 1,
-				end_scale : _.get('maxItemSize'),
-				labels : _.get('labels')
-			}]
-		}, _.get('coordinate')), _);
-
-		_.components.push(_.coo);
-
+		
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
 		var S = _.coo.getScale(_.get('scaleAlign')), H = _.get('coordinate.valid_height'), sp = _.get('label_spacing'), points, x, y, ox = _.get('sub_option.originx'), oy = _.get('sub_option.originy'), p;
-
+		
 		_.push('sub_option.tip.showType', 'follow');
 		_.push('sub_option.coordinate', _.coo);
 		_.push('sub_option.tipInvokeHeap', _.tipInvokeHeap);

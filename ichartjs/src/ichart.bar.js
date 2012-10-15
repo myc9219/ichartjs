@@ -67,16 +67,15 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 	doParse : function(_, d, i, o) {
 		_.doActing(_, d, o,i);
 	},
-	doAnimation : function(t, d) {
-		this.coo.draw();
-		this.labels.each(function(l, i) {
+	doAnimation : function(t, d,_) {
+		_.coo.draw();
+		_.labels.each(function(l) {
 			l.draw();
-		}, this);
-
-		this.rectangles.each(function(r, i) {
-			r.push('width', Math.ceil(this.animationArithmetic(t, 0, r.width, d)));
+		});
+		_.rectangles.each(function(r) {
+			r.push('width', Math.ceil(_.animationArithmetic(t, 0, r.width, d)));
 			r.drawRectangle();
-		}, this);
+		});
 	},
 	doConfig : function() {
 		iChart.Bar.superclass.doConfig.call(this);

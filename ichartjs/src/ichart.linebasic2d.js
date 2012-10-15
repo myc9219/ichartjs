@@ -17,43 +17,24 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 
 		this.tipInvokeHeap = [];
 	},
-	doAnimation : function(t, d) {
-		var l, ps, p;
-		this.coo.draw();
-		for ( var i = 0; i < this.lines.length; i++) {
-			l = this.lines[i];
-			p = l.get('points');
-			for ( var j = 0; j < p.length; j++) {
-				p[j].y = l.y - Math.ceil(this.animationArithmetic(t, 0, l.y - p[j].y_, d));
-			}
+	doAnimation : function(t, d,_) {
+		_.coo.draw();
+		_.lines.each(function(l){
+			l.get('points').each(function(p){
+				p.y = l.y - Math.ceil(_.animationArithmetic(t, 0, l.y - p.y_, d));
+			});
 			l.drawSegment();
-		}
+		});
 	},
 	doConfig : function() {
 		iChart.LineBasic2D.superclass.doConfig.call(this);
 		var _ = this._();
-
-		_.coo = new iChart.Coordinate2D(iChart.merge({
-			scale : [{
-				position : _.get('scaleAlign'),
-				max_scale : _.get('maxValue')
-			}, {
-				position : _.get('labelAlign'),
-				scaleEnable : false,
-				start_scale : 1,
-				scale : 1,
-				end_scale : _.get('maxItemSize'),
-				labels : _.get('labels')
-			}]
-		}, _.get('coordinate')), _);
-
-		_.components.push(_.coo);
-
+		
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
 		var S = _.coo.getScale(_.get('scaleAlign')), H = _.get('coordinate.valid_height'), sp = _.get('label_spacing'), points, x, y, ox = _.get('sub_option.originx'), oy = _.get('sub_option.originy'), p;
-
+		
 		_.push('sub_option.tip.showType', 'follow');
 		_.push('sub_option.coordinate', _.coo);
 		_.push('sub_option.tipInvokeHeap', _.tipInvokeHeap);
