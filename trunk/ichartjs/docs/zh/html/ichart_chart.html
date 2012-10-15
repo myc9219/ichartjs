@@ -23,7 +23,7 @@
  可选值为：<br/>
  @Option 'left'<br/>
  @Option 'center'<br/>
- @Option 'right'<br/></td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_odd'><td id='ichart_link_animation'>animation</td><td>Boolean</td><td>是否启用过渡动画,false则跳过开机动画.(默认为false)<br/></td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_even'><td id='ichart_link_animation_timing_function'>animation_timing_function</td><td>String</td><td>启用动画的动作函数(默认为'ease-in-out')可选值有：<br/>
+ @Option 'right'<br/></td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_odd'><td id='ichart_link_animation'>animation</td><td>Boolean</td><td>是否启用过渡动画,false则跳过过渡动画.(默认为false)<br/></td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_even'><td id='ichart_link_animation_timing_function'>animation_timing_function</td><td>String</td><td>启用动画的动作函数(默认为'ease-in-out')可选值有：<br/>
  @Option 'easeIn'<br/>
  @Option 'easeOut'<br/>
  @Option 'easeInOut'<br/>
@@ -51,39 +51,29 @@
 <li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
 <li>param&nbsp;:&nbsp;Object&nbsp;&nbsp; 额外的参数</li>
 </ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>dblclick</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>双击时触发。<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>initialize</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>初始化完成之后触发。<br/></div>
+<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
+<div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;Chart&nbsp;&nbsp;</li>
+</ul></div></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>mousemove</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>鼠标移动时触发。<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;Chart&nbsp;&nbsp;</li>
 <li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
 </ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>initialize</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>初始化完成之后触发。<br/></div>
-<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
-<div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;Chart&nbsp;&nbsp;</li>
-</ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>mousemove</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>鼠标移动时触发。<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>mouseout</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>鼠标在离开时触发。<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;Chart&nbsp;&nbsp;</li>
 <li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
 </ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>mouseout</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>鼠标在离开时触发。<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>mouseover</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>鼠标在进入时触发。<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;Chart&nbsp;&nbsp;</li>
 <li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
 </ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>mouseover</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>鼠标在进入时触发。<br/></div>
-<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
-<div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;Chart&nbsp;&nbsp;</li>
-<li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
-</ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>parseData</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>解析数据源时触发。返回值会覆盖默认值。<br/></div>
-<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
-<div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;Chart&nbsp;&nbsp;</li>
-<li>data&nbsp;:&nbsp;Object&nbsp;&nbsp; 当前数据源项</li>
-<li>i&nbsp;:&nbsp;int&nbsp;&nbsp; 数据项索引</li>
-</ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_even'><td>parseTipText</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>解析提示框文本时触发。返回值会覆盖默认值。<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>parseTipText</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>解析提示框文本时触发。返回值会覆盖默认值。<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>data&nbsp;:&nbsp;Object&nbsp;&nbsp; 提示框数据项</li>
+<li>value&nbsp;:&nbsp;int&nbsp;&nbsp; 数据的值</li>
 <li>i&nbsp;:&nbsp;int&nbsp;&nbsp; 数据项索引</li>
 </ul></div></div>
 </td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr></table></div><div class='ichartjs_p_5' id='methods' name='methods'><div class='ichartjs_title ichartjs_p_5'>方法</div><table class='ichartjs_table'><tr class='ichartjs_table_header'><th class='ichartjs_table_parameter'>名称</th><th class='ichartjs_table_description'>描述</th><th class='ichartjs_table_definedBy'>定义者</th></tr><tr class='ichartjs_even'><td>draw</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>绘图方法接口，这是一个抽象模板方法。实现此方法之后定义自己的行为。目前为止,<a href='ichart_chart.html'>iChart.Chart</a> 和 <a href='ichart_component.html'>iChart.Component</a> 实现了此方法.<br/></div>
@@ -93,37 +83,51 @@
 <div class='ichartjs_stress'>返回值<br/></div>
 <div class='ichartjs_pl_10'>&nbsp;&nbsp;void</div>
 </div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>getDrawingArea</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>return the main Drawing Area's dimension,return following property<br/>
-		 * @property x:the left-top coordinate-x<br/>
-		 * @property y:the left-top coordinate-y<br/>
-		 * @property width:the width of drawing area<br/>
-		 * @property height:the height of drawing area<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>getDrawingArea</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>获取绘图区的尺寸。自定义的组件应该在绘图区进行绘制。返回对象包含以下属性：<br/>
+		 * @property x:左上方x轴坐标<br/>
+		 * @property y:左上方y轴坐标<br/>
+		 * @property width:绘图区宽度，单位:px。<br/>
+		 * @property height:绘图区高度，单位:px。<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>无<br/></li>
 </ul></div>
 <div class='ichartjs_stress'>返回值<br/></div>
 <div class='ichartjs_pl_10'>&nbsp;&nbsp;object</div>
 </div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_even'><td>getFootNote</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>return the footnote,return undefined if unavailable<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_even'><td>getFootNote</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>获取脚注对象，不可用时返回undefined<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>无<br/></li>
 </ul></div>
 <div class='ichartjs_stress'>返回值<br/></div>
 <div class='ichartjs_pl_10'>&nbsp;&nbsp;<a href='ichart_text.html'>iChart.Text</a></div>
 </div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_odd'><td>getSubTitle</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>return the subtitle,return undefined if unavailable<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_odd'><td>getSubTitle</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>获取副标题对象，不可用时返回undefined<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>无<br/></li>
 </ul></div>
 <div class='ichartjs_stress'>返回值<br/></div>
 <div class='ichartjs_pl_10'>&nbsp;&nbsp;<a href='ichart_text.html'>iChart.Text</a></div>
 </div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_even'><td>getTitle</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>return the title,return undefined if unavailable<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_even'><td>getTitle</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>获取主标题对象，不可用时返回undefined<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>无<br/></li>
 </ul></div>
 <div class='ichartjs_stress'>返回值<br/></div>
 <div class='ichartjs_pl_10'>&nbsp;&nbsp;<a href='ichart_text.html'>iChart.Text</a></div>
+</div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_odd'><td>plugin</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>注册自定义组件<br/></div>
+<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
+<div class='ichartjs_pl_10'><ul><li>无<br/></li>
+</ul></div>
+<div class='ichartjs_stress'>返回值<br/></div>
+<div class='ichartjs_pl_10'>&nbsp;&nbsp;void</div>
+</div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr><tr class='ichartjs_even'><td>setUp</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>根据最新属性重新装配图表组件。一般在更新图表时调用。<br/></div>
+<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
+<div class='ichartjs_pl_10'><ul><li>无<br/></li>
+</ul></div>
+<div class='ichartjs_stress'>返回值<br/></div>
+<div class='ichartjs_pl_10'>&nbsp;&nbsp;void</div>
 </div>
 </td><td class='ichartjs_right ichartjs_stress'><a href="ichart_chart.html" target="main" >Chart</a></td></tr></table></div><div class='ichartjs_reference'><strong>参考:</strong><span class='ichartjs_reference_item'><a href="ichart_painter.html" target="main" >Painter</a></span></div>
 </body>

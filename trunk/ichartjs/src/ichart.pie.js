@@ -108,19 +108,19 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	getSectors : function() {
 		return this.sectors;
 	},
-	doAnimation : function(t, d) {
-		var si = 0, cs = this.oA;
-		this.sectors.each(function(s, i) {
-			si = this.animationArithmetic(t, 0, s.get('totalAngle'), d);
+	doAnimation : function(t, d,_) {
+		var si = 0, cs = _.oA;
+		_.sectors.each(function(s, i) {
+			si = _.animationArithmetic(t, 0, s.get('totalAngle'), d);
 			s.push('startAngle', cs);
 			s.push('endAngle', cs + si);
 			cs += si;
-			if (!this.is3D())
+			if (!_.is3D())
 				s.drawSector();
-		}, this);
+		});
 		
-		if (this.is3D()) {
-			this.proxy.drawSector();
+		if (_.is3D()) {
+			_.proxy.drawSector();
 		}
 	},
 	localizer : function(la) {

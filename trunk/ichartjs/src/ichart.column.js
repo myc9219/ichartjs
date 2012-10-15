@@ -47,8 +47,8 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		this.registerEvent();
 
 	},
-	doAnimation : function(t, d) {
-		var _ = this._(), h;
+	doAnimation : function(t, d,_) {
+		var h;
 		_.coo.draw();
 		_.labels.each(function(l){
 			l.draw();

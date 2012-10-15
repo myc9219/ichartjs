@@ -903,7 +903,7 @@
 			/**
 			 * doAnimation of implement
 			 */
-			_.doAnimation(_.variable.animation.time, _.duration);
+			_.doAnimation(_.variable.animation.time, _.duration,_);
 			/**
 			 * fill the background
 			 */

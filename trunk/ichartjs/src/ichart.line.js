@@ -137,7 +137,25 @@ iChart.Line = iChart.extend(iChart.Chart, {
 				return r.valid ? r : false;
 			});
 		}
-
+		
+		_.pushIf('coordinate.scale',[{
+			position : _.get('scaleAlign'),
+			max_scale : _.get('maxValue')
+		}, {
+			position : _.get('labelAlign'),
+			start_scale : 1,
+			scale : 1,
+			end_scale : _.get('maxItemSize'),
+			labels : _.get('labels')
+		}]);
+		
+		/**
+		 * use option create a coordinate
+		 */
+		_.coo = iChart.Coordinate.coordinate_.call(_);
+		
+		_.components.push(_.coo);
+		
 		/**
 		 * quick config to all linesegment
 		 */

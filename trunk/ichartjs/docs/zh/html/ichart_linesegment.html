@@ -40,26 +40,21 @@
 <li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
 <li>param&nbsp;:&nbsp;Object&nbsp;&nbsp; 额外的参数</li>
 </ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>dblclick</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>双击时触发。<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>initialize</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>初始化完成之后触发。<br/></div>
+<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
+<div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;LineSegment&nbsp;&nbsp;</li>
+</ul></div></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>mousemove</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>鼠标移动时触发。<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;LineSegment&nbsp;&nbsp;</li>
 <li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
 </ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>initialize</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>初始化完成之后触发。<br/></div>
-<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
-<div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;LineSegment&nbsp;&nbsp;</li>
-</ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>mousemove</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>鼠标移动时触发。<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>mouseout</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>鼠标在离开时触发。<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;LineSegment&nbsp;&nbsp;</li>
 <li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
 </ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>mouseout</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>鼠标在离开时触发。<br/></div>
-<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
-<div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;LineSegment&nbsp;&nbsp;</li>
-<li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
-</ul></div></div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_even'><td>mouseover</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>鼠标在进入时触发。<br/></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>mouseover</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>鼠标在进入时触发。<br/></div>
 <div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
 <div class='ichartjs_pl_10'><ul><li>this&nbsp;:&nbsp;LineSegment&nbsp;&nbsp;</li>
 <li>e&nbsp;:&nbsp;EventObject&nbsp;&nbsp; 鼠标事件对象</li>
@@ -71,6 +66,17 @@
 <div class='ichartjs_stress'>返回值<br/></div>
 <div class='ichartjs_pl_10'>&nbsp;&nbsp;void</div>
 </div>
-</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr></table></div><div class='ichartjs_reference'><strong>参考:</strong><span class='ichartjs_reference_item'><a href="ichart_component.html" target="main" >Component</a></span></div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_painter.html" target="main" >Painter</a></td></tr><tr class='ichartjs_odd'><td>getDimension</td><td><div class='ichartjs_h_25 ichartjs_pl_10'>获取当前组件的尺寸。返回对象包含以下属性：<br/>
+	 * @property x:左上方x轴坐标<br/>
+	 * @property y:左上方y轴坐标<br/>
+	 * @property width:宽度，单位:px。<br/>
+	 * @property height:高度，单位:px。<br/></div>
+<div class='ichartjs_h_25 ichartjs_pl_10'><div class='ichartjs_stress'>参数<br/></div>
+<div class='ichartjs_pl_10'><ul><li>无<br/></li>
+</ul></div>
+<div class='ichartjs_stress'>返回值<br/></div>
+<div class='ichartjs_pl_10'>&nbsp;&nbsp;object</div>
+</div>
+</td><td class='ichartjs_right ichartjs_stress'><a href="ichart_component.html" target="main" >Component</a></td></tr></table></div><div class='ichartjs_reference'><strong>参考:</strong><span class='ichartjs_reference_item'><a href="ichart_component.html" target="main" >Component</a></span></div>
 </body>
 </html>

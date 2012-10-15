@@ -91,9 +91,9 @@
 		         	}
 	         ];	
 	 $(function(){
-			new iChart.LineBasic2D({
+			new iChart.Column2D({
 					render : 'canvasDiv',
-					data: data2,
+					data: data1,
 					title : 'Average Temperature Of 2012',
 					width : 800,
 					height : 400,
@@ -101,6 +101,7 @@
 						enable:true
 					},
 					showpercent:true,
+					animation:true,
 					listeners :{
 						parseTipText:function(d,v,i){
 							return true;
@@ -110,7 +111,7 @@
 						height:220
 					},
 					label:{
-						rotate:-90,
+						rotate:-45,
 						textAlign:'right',
 						textBaseline:'middle'
 					},
