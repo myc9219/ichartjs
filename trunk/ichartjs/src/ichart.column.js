@@ -67,13 +67,13 @@ iChart.Column = iChart.extend(iChart.Chart, {
 	getCoordinate:function(){
 		return this.coo;
 	},
-	doLabel:function(id,text,x, y){
-		this.labels.push(new iChart.Text(iChart.apply(this.get('label'),{
+	doLabel:function(_,id,text,x, y){
+		_.labels.push(new iChart.Text(iChart.apply(_.get('label'),{
 			id : id,
 			text : text,
 			originx : x,
 			originy : y
-		}), this));
+		}), _));
 	},
 	doParse : function(_,d, i, o) {
 		_.doActing(_,d,o,i);

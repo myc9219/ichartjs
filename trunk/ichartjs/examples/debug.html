@@ -91,9 +91,9 @@
 		         	}
 	         ];	
 	 $(function(){
-			new iChart.Column2D({
+			new iChart.LineBasic2D({
 					render : 'canvasDiv',
-					data: data1,
+					data: data2,
 					title : 'Average Temperature Of 2012',
 					width : 800,
 					height : 400,
@@ -101,17 +101,27 @@
 						enable:true
 					},
 					showpercent:true,
-					animation:true,
+					//animation:true,
 					listeners :{
 						parseTipText:function(d,v,i){
 							return true;
 						}
 					},
+					sub_option:{
+						listeners :{
+							//parseText:function(r,v){
+								//return "";
+							//}
+						}
+					},
 					coordinate : {
-						height:220
+						height:220,
+						text_space:10
 					},
 					label:{
 						rotate:-45,
+						fontsize:10,
+						color:'red',
 						textAlign:'right',
 						textBaseline:'middle'
 					},
@@ -139,6 +149,6 @@
 		<div><a href="../index.html">Home</a>&nbsp;Sample</div>
 		<br>
 		<input type="button" value="test" onclick="test()"/>
-		<div id='canvasDiv' style='height:600px;'></div>
+		<div id='canvasDiv' ></div>
 	</body>
 </html>

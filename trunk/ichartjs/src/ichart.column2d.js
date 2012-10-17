@@ -32,7 +32,7 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 				height : h
 			});
 			_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), _));
-			_.doLabel(i, d.name, _.x + _.get('hispace') + gw * i + h2, _.y + H + _.get('text_space'));
+			_.doLabel(_,i, d.name, _.x + _.get('hispace') + gw * i + h2, _.y + H + _.get('text_space'));
 		}, _);
 
 		

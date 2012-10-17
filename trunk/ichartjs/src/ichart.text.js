@@ -35,6 +35,10 @@
 				 */
 				textAlign:'center',
 				/**
+				 * @cfg {String} Specifies the color of text.(default to 'black')
+				 */
+				color:'black',
+				/**
 				 * @cfg {String} Here,specify as false to make background transparent.(default to null)
 				 */
 				background_color : 0,
