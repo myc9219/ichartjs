@@ -27,18 +27,6 @@ iChart.Element = function(config) {
 		 */
 		id : '',
 		/**
-		 * @cfg {Number} Specifies the font size of this element in pixels.(default to 12)
-		 */
-		fontsize : 12,
-		/**
-		 * @cfg {String} Specifies the font of this element.(default to 'Verdana')
-		 */
-		font : 'Verdana',
-		/**
-		 * @cfg {String} Specifies the font weight of this element.(default to 'normal')
-		 */
-		fontweight : 'normal',
-		/**
 		 * @cfg {Object} Specifies the border for this element.
 		 * Available property are:
 		 * @Option enable {boolean} If enable the border
@@ -152,4 +140,8 @@ iChart.Element.prototype = {
 		}
 		return V;
 	}
-}//@end
+}
+/**
+ * @end
+ */
+

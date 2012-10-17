@@ -74,10 +74,13 @@
 			_.topCenterX=_.x+(_.get('width')+_.get('width')*_.get('xAngle_'))/2;
 			_.topCenterY=_.y-_.get('width')*_.get('yAngle_')/2;
 			
-			if(_.get('valueAlign')=='top'){
-				_.push('value_x',_.topCenterX);
-				_.push('value_y',_.topCenterY);
+			if(_.get('valueAlign')=='top'&&_.label){
+				_.label.push('textx',_.topCenterX);
+				_.label.push('texty',_.topCenterY);
 			}
 			
 		}
-});//@end
+});
+/**
+ *@end
+ */	

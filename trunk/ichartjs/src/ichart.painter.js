@@ -251,7 +251,6 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			});
 		}
 		
-		_.push('fontStyle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
 		_.push('f_color', bg);
 		_.push('f_color_', bg);
 		_.push("light_color", iChart.light(bg, f));

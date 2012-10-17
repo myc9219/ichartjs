@@ -17,6 +17,18 @@ iChart.Component = iChart.extend(iChart.Painter, {
 
 		this.set({
 			/**
+			 * @cfg {Number} Specifies the font size of this element in pixels.(default to 12)
+			 */
+			fontsize : 12,
+			/**
+			 * @cfg {String} Specifies the font of this element.(default to 'Verdana')
+			 */
+			font : 'Verdana',
+			/**
+			 * @cfg {String} Specifies the font weight of this element.(default to 'normal')
+			 */
+			fontweight : 'normal',
+			/**
 			 * @inner {Boolean} Specifies the config of Tip.For details see <link>iChart.Tip</link> Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 			 */
 			tip : {
@@ -69,12 +81,14 @@ iChart.Component = iChart.extend(iChart.Painter, {
 
 		_.x = _.push('originx', _.get('originx') + _.get('offsetx'));
 		_.y = _.push('originy', _.get('originy') + _.get('offsety'));
-
+		
+		_.push('fontStyle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
+		
 		/**
 		 * if have evaluate it
 		 */
 		_.data = _.get('data');
-
+		
 		if (_.get('tip.enable')) {
 			/**
 			 * make tip's border in accord with sector

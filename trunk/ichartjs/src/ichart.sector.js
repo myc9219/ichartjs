@@ -150,7 +150,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		_.push('label.originx', x);
 		_.push('label.originy', y);
 		_.push('label.quadrantd', Q);
-		_.push('label.line_potins', p);
+		_.push('label.line_points', p);
 		_.push('label.labelx', x0);
 		_.push('label.labely', y0);
 		_.label = new iChart.Label(_.get('label'), _);

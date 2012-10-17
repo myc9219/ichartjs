@@ -90,6 +90,7 @@
 		         		color:'#1f7e92'
 		         	}
 	         ];	
+     
 	 $(function(){
 			new iChart.LineBasic2D({
 					render : 'canvasDiv',
@@ -109,9 +110,12 @@
 					},
 					sub_option:{
 						listeners :{
-							//parseText:function(r,v){
-								//return "";
-							//}
+							parseText:function(r,v){
+								return v+"-ABC";
+							}
+						},
+						label:{
+							fontsize:12
 						}
 					},
 					coordinate : {
