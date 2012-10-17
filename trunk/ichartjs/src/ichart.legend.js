@@ -110,10 +110,10 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		'drawCell');
 
 	},
-	isEventValid : function(e) {
+	isEventValid : function(e,_) {
 		var r = {
 			valid : false
-		},_ = this._();
+		};
 		if (e.x > this.x && e.x < (_.x + _.width) && e.y > _.y && e.y < (_.y + _.height)) {
 			_.data.each(function(d, i) {
 				if (e.x > d.x && e.x < (d.x + d.width_ + _.get('signwidth')) && e.y > d.y && e.y < (d.y + _.get('line_height'))) {
@@ -165,18 +165,18 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			suffix++;
 		}
 	},
-	doDraw : function() {
-		this.push('border.radius',5);
-		this.T.box(this.x, this.y, this.width, this.height, this.get('border'), this.get('f_color'), false, this.get('shadow'));
+	doDraw : function(_) {
+		//_.push('border.radius',5); ??
+		_.T.box(_.x, _.y, _.width, _.height, _.get('border'), _.get('f_color'), false, _.get('shadow'));
 
-		this.T.textStyle('left', 'middle', iChart.getFont(this.get('fontweight'), this.get('fontsize'), this.get('font')));
+		_.T.textStyle('left', 'middle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
 
-		var x = this.x + this.get('padding_left'), y = this.y + this.get('padding_top'), text, c = this.get('column'), r = this.get('row');
+		var x = _.x + _.get('padding_left'), y = _.y + _.get('padding_top'), text, c = _.get('column'), r = _.get('row');
 
 		for ( var i = 0; i < r; i++) {
-			this.drawRow(i * c, x, y);
-			y += this.get('line_height');
-			this.fireEvent(this, 'drawRaw', [this, i * c]);
+			_.drawRow(i * c, x, y);
+			y += _.get('line_height');
+			_.fireEvent(_, 'drawRaw', [_, i * c]);
 		}
 	},
 	doConfig : function() {
@@ -208,7 +208,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			}
 		}
 
-		var suffix = 0, maxwidth = w = _.get('width'), width = 0, wauto = (w == 'auto'), c = iChart.isNumber(_.get('column')), r = iChart.isNumber(_.get('row')), L = _.data.length, d, h;
+		var suffix = 0, maxwidth = w = _.get(_.W), width = 0, wauto = (w == 'auto'), c = iChart.isNumber(_.get('column')), r = iChart.isNumber(_.get('row')), L = _.data.length, d, h;
 		
 		if (!c && !r)
 			c = 1;
@@ -256,11 +256,11 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		}
 
 		if (wauto) {
-			w = _.push('width', maxwidth + _.get('hpadding') + _.get('signwidth') * c + (c - 1) * _.get('legend_space'));
+			w = _.push(_.W, maxwidth + _.get('hpadding') + _.get('signwidth') * c + (c - 1) * _.get('legend_space'));
 		}
 
 		if (w > _.get('maxwidth')) {
-			w = _.push('width', _.get('maxwidth'));
+			w = _.push(_.W, _.get('maxwidth'));
 		}
 
 		_.push('textwidth', w - _.get('hpadding') - _.get('signwidth'));

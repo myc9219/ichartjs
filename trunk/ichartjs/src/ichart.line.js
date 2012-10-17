@@ -130,7 +130,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			_.push('coordinate.crosshair', _.get('crosshair'));
 			_.push('coordinate.crosshair.hcross', s);
 			_.push('coordinate.crosshair.invokeOffset', function(e, m) {
-				var r = _.lines[0].isEventValid(e);
+				var r = _.lines[0].isEventValid(e,_.lines[0]);
 				/**
 				 * TODO how fire muti line?
 				 */

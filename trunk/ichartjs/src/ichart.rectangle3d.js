@@ -39,23 +39,24 @@
 			
 		},
 		drawRectangle:function(){
-			this.T.cube(
-				this.get('originx'),
-				this.get('originy'),
-				this.get('xAngle_'),
-				this.get('yAngle_'),
-				this.get('width'),
-				this.get('height'),
-				this.get('zHeight'),
-				this.get('f_color'),
-				this.get('border.enable'),
-				this.get('border.width'),
-				this.get('light_color'),
-				this.get('shadow')
+			var _ = this._();
+			_.T.cube(
+				_.get('originx'),
+				_.get('originy'),
+				_.get('xAngle_'),
+				_.get('yAngle_'),
+				_.get(_.W),
+				_.get('height'),
+				_.get('zHeight'),
+				_.get('f_color'),
+				_.get('border.enable'),
+				_.get('border.width'),
+				_.get('light_color'),
+				_.get('shadow')
 			);
 		},
-		isEventValid:function(e){
-			return {valid:e.x>this.x&&e.x<(this.x+this.get('width'))&&e.y<this.y+this.get('height')&&e.y>this.y};
+		isEventValid:function(e,_){
+			return {valid:e.x>_.x&&e.x<(_.x+_.get(_.W))&&e.y<_.y+_.get('height')&&e.y>_.y};
 		},
 		tipInvoke:function(){
 			var _ = this._();
@@ -69,10 +70,10 @@
 		doConfig:function(){
 			iChart.Rectangle3D.superclass.doConfig.call(this);
 			var _ = this._();
-			_.pushIf("zHeight",_.get('width'));
+			_.pushIf("zHeight",_.get(_.W));
 			
-			_.topCenterX=_.x+(_.get('width')+_.get('width')*_.get('xAngle_'))/2;
-			_.topCenterY=_.y-_.get('width')*_.get('yAngle_')/2;
+			_.topCenterX=_.x+(_.get(_.W)+_.get(_.W)*_.get('xAngle_'))/2;
+			_.topCenterY=_.y-_.get(_.W)*_.get('yAngle_')/2;
 			
 			if(_.get('valueAlign')=='top'&&_.label){
 				_.label.push('textx',_.topCenterX);

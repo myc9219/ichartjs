@@ -24,20 +24,21 @@
 			
 		},
 		drawRectangle:function(){
-			this.T.box(
-				this.get('originx'),
-				this.get('originy'),
-				this.get('width'),
-				this.get('height'),
-				this.get('border'),
-				this.get('f_color'),
-				this.get('shadow'));
+			var _ = this._();
+			_.T.box(
+				_.get('originx'),
+				_.get('originy'),
+				_.get(_.W),
+				_.get(_.H),
+				_.get('border'),
+				_.get('f_color'),
+				_.get('shadow'));
 		},
-		isEventValid:function(e){
-			return {valid:e.x>this.x&&e.x<(this.x+this.width)&&e.y<(this.y+this.height)&&e.y>(this.y)};
+		isEventValid:function(e,_){
+			return {valid:e.x>_.x&&e.x<(_.x+_.width)&&e.y<(_.y+_.height)&&e.y>(_.y)};
 		},
 		tipInvoke:function(){
-			var _ = this;
+			var _ = this._();
 			/**
 			 * base on event?
 			 */
@@ -50,7 +51,7 @@
 		},
 		doConfig:function(){
 			iChart.Rectangle2D.superclass.doConfig.call(this);
-			var _ = this,tipAlign = _.get('tipAlign');
+			var _ = this._(),tipAlign = _.get('tipAlign');
 			if(tipAlign=='left'||tipAlign=='right'){
 				_.tipY = function(w,h){return _.get('centery') - h/2;};
 			}else{

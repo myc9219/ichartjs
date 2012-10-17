@@ -81,17 +81,22 @@
 			
 			this.label = null;
 		},
-		doDraw:function(opts){
-			this.drawRectangle();
-			if(this.label)
-				this.label.draw();
+		doDraw:function(_){
+			_.drawRectangle();
+			if(_.label)
+				_.label.draw();
 		},
 		doConfig:function(){
 			iChart.Rectangle.superclass.doConfig.call(this);
-			iChart.Assert.gtZero(this.get('width'),'width');
 			var _ = this._(),v = _.variable.event,vA=_.get('valueAlign');
+			iChart.Assert.gtZero(_.get(_.W),_.W);
 			
-			_.width = _.get('width');
+			/**
+			 * mouseover light
+			 */
+			iChart.taylor.light(_,v);
+			
+			_.width = _.get(_.W);
 			_.height = _.get('height');
 			
 			var x = _.push('centerx',_.x + _.width/2),
@@ -134,22 +139,6 @@
 				}
 				_.tip = new iChart.Tip(_.get('tip'),_);
 			}
-			
-			v.highlight = false;
-			
-			_.on('mouseover',function(){
-				v.highlight = true;
-				_.redraw();
-				v.highlight = false;
-			}).on('mouseout',function(){
-				v.highlight = false;
-				_.redraw();
-			});
-			
-			_.on('beforedraw',function(){
-				_.push('f_color',v.highlight?_.get('light_color'):_.get('f_color_'));
-				return true;
-			});
 		}
 });
 /**

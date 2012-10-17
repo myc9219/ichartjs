@@ -29,12 +29,12 @@
 			this.registerEvent();
 			
 		},
-		doDraw:function(opts){
-			this.get('drawFn').call(this,opts);
+		doDraw:function(_){
+			_.get('drawFn').call(_,_);
 		},
-		isEventValid:function(e){
+		isEventValid:function(e,_){
 			if(iChart.isFunction(this.get('eventValid')))
-			return this.get('eventValid').call(this,e);
+			return this.get('eventValid').call(this,e,_);
 			return {valid:false};
 		},
 		doConfig:function(){

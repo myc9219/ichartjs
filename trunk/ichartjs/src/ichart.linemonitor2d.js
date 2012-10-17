@@ -88,7 +88,7 @@
 			if (_.get('coordinate.crosshair.enable')) {
 				_.push('coordinate.crosshair.hcross',_.data.length == 1);
 				_.push('coordinate.crosshair.invokeOffset',function(e, m) {
-						var r = _.lines[0].isEventValid(e);
+						var r = _.lines[0].isEventValid(e,_.lines[0]);
 						return r.valid ? r : false;
 				});
 			}

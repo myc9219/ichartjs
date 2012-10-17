@@ -90,12 +90,12 @@ iChart.Points = iChart.extend(iChart.Component, {
 			this.T.shadowOff();
 		}
 	},
-	doDraw : function(opts) {
-		this.drawSegment();
-		if (this.get('label')) {
-			var p = this.get('points');
+	doDraw : function(_) {
+		_.drawSegment();
+		if (_.get('label')) {
+			var p = _.get('points');
 			for ( var i = 0; i < p.length; i++) {
-				this.T.text(p[i].value, p[i].x, p[i].y - this.get('point_size') * 3 / 2, false, this.get('f_color'), 'center', 'bottom', this.get('fontStyle'));
+				_.T.text(p[i].value, p[i].x, p[i].y - _.get('point_size') * 3 / 2, false, _.get('f_color'), 'center', 'bottom', _.get('fontStyle'));
 			}
 		}
 	},
@@ -166,7 +166,7 @@ iChart.Points = iChart.extend(iChart.Component, {
 		 */
 		_.isEventValid = function(e) {
 			// console.time('mouseover');
-			if (c && !c.isEventValid(e).valid) {
+			if (c && !c.isEventValid(e,c).valid) {
 				return {
 					valid : false
 				};

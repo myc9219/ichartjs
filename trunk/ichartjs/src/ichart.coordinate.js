@@ -130,7 +130,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		'parseText');
 
 	},
-	isEventValid : function(e) {
+	isEventValid : function() {
 		return {
 			valid : false
 		};
@@ -138,8 +138,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 	/**
 	 * 按照从左自右,从上至下原则
 	 */
-	doDraw : function() {
-		var _ = this._();
+	doDraw : function(_) {
 		if (_.get('scale_enable'))
 			_.items.each(function(item) {
 				_.T.line(item.x0, item.y0, item.x1, item.y1, _.get('scale_size'), _.get('scale_color'), false);
@@ -517,14 +516,13 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			distance : 0
 		};
 	},
-	isEventValid : function(e) {
+	isEventValid : function(e,_) {
 		return {
-			valid : e.x > this.x && e.x < (this.x + this.get('width')) && e.y < this.y + this.get('height') && e.y > this.y
+			valid : e.x > _.x && e.x < (_.x + _.get(_.W)) && e.y < _.y + _.get('height') && e.y > _.y
 		};
 	},
-	doDraw : function(opts) {
-		var _ = this._();
-		_.T.box(_.x, _.y, _.get('width'), _.get('height'), 0, _.get('f_color'));
+	doDraw : function(_) {
+		_.T.box(_.x, _.y, _.get(_.W), _.get('height'), 0, _.get('f_color'));
 		if (_.get('alternate_color')) {
 			var x, y, f = false, axis = [0, 0, 0, 0], c = iChart.dark(_.get('background_color'), _.get('alternate_color_factor'));
 			if (_.get('axis.enable')) {
@@ -553,7 +551,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			_.T.line(g.x1, g.y1, g.x2, g.y2, glw, _.get('grid_color'));
 		});
 
-		_.T.box(_.x, _.y, _.get('width'), _.get('height'), _.get('axis'), false, _.get('shadow'));
+		_.T.box(_.x, _.y, _.get(_.W), _.get('height'), _.get('axis'), false, _.get('shadow'));
 
 		_.scale.each(function(s) {
 			s.draw()
@@ -564,7 +562,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 
 		var _ = this._();
 
-		iChart.Assert.isNumber(_.get('width'), 'width');
+		iChart.Assert.isNumber(_.get(_.W), _.W);
 		iChart.Assert.isNumber(_.get('height'), 'height');
 
 		/**
@@ -588,14 +586,14 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		if (_.get('crosshair.enable')) {
 			_.push('crosshair.wrap', _.container.shell);
 			_.push('crosshair.height', _.get('height'));
-			_.push('crosshair.width', _.get('width'));
+			_.push('crosshair.width', _.get(_.W));
 			_.push('crosshair.top', _.y);
 			_.push('crosshair.left', _.x);
 
 			_.crosshair = new iChart.CrossHair(_.get('crosshair'), _);
 		}
 
-		var jp, cg = !!(_.get('gridlinesVisible') && _.get('grids')), hg = cg && !!_.get('grids.horizontal'), vg = cg && !!_.get('grids.vertical'), h = _.get('height'), w = _.get('width'), vw = _.get('valid_width'), vh = _.get('valid_height'), k2g = _.get('gridlinesVisible')
+		var jp, cg = !!(_.get('gridlinesVisible') && _.get('grids')), hg = cg && !!_.get('grids.horizontal'), vg = cg && !!_.get('grids.vertical'), h = _.get('height'), w = _.get(_.W), vw = _.get('valid_width'), vh = _.get('valid_height'), k2g = _.get('gridlinesVisible')
 				&& _.get('scale2grid') && !(hg && vg), sw = (w - vw) / 2, sh = (h - vh) / 2, axis = _.get('axis.width');
 
 		if (!iChart.isArray(_.get('scale'))) {
@@ -824,8 +822,8 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 			}
 		});
 	},
-	doDraw : function(opts) {
-		var _ = this._(), w = _.get('width'), h = _.get('height'), xa = _.get('xAngle_'), ya = _.get('yAngle_'), zh = _.get('zHeight'), offx = xa * zh, offy = ya * zh;
+	doDraw : function(_) {
+		var w = _.get(_.W), h = _.get('height'), xa = _.get('xAngle_'), ya = _.get('yAngle_'), zh = _.get('zHeight'), offx = xa * zh, offy = ya * zh;
 		/**
 		 * bottom
 		 */
@@ -849,7 +847,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 	doConfig : function() {
 		iChart.Coordinate3D.superclass.doConfig.call(this);
 
-		var _ = this._(), ws = _.get('wall_style'), bg = _.get('background_color'), c = iChart.dark(bg, 0.1), c1 = _.get('dark_color'), h = _.get('height'), w = _.get('width');
+		var _ = this._(), ws = _.get('wall_style'), bg = _.get('background_color'), c = iChart.dark(bg, 0.1), c1 = _.get('dark_color'), h = _.get('height'), w = _.get(_.W);
 
 		if (ws.length < 3) {
 			ws = _.push('wall_style', [{

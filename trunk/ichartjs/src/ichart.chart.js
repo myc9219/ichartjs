@@ -92,6 +92,7 @@
 			for(var j=0;j<c.length;j++){
 				d = c[j];
 				V = d.value[i];
+				if(!V)continue;
 				V =  pF(V,V);
 				d.value[i] = V;
 				this.total+=V;
@@ -685,7 +686,26 @@
 			$.Event.addEvent(this.canvas, type, fn, useCapture);
 		}
 	}
-
+	
+	/**
+	 * the public method,inner use
+	 */
+	$.taylor = {
+		light:function(_,e){
+			e.highlight = false;
+			_.on('mouseover',function(){
+				e.highlight = true;
+				_.redraw();
+			}).on('mouseout',function(){
+				e.highlight = false;
+				_.redraw();
+			}).on('beforedraw',function(){
+				_.push('f_color',e.highlight?_.get('light_color'):_.get('f_color_'));
+				return true;
+			});
+		}	
+	}
+	
 	/**
 	 * @overview this component use for abc
 	 * @component#iChart.Chart
@@ -1026,7 +1046,7 @@
 			/**
 			 * did default should to calculate the size of warp?
 			 */
-			_.width = _.pushIf('width', 400);
+			_.width = _.pushIf(_.W, 400);
 			_.height = _.pushIf('height', 300);
 			_.canvasid = $.iGather(_.type);
 			_.shellid = "shell-"+_.canvasid;
@@ -1136,6 +1156,7 @@
 							}
 							
 							if (!cE.mouseover) {
+								//console.log(cot.type+"mouseover");
 								cE.mouseover = true;
 								cot.fireEvent(cot, 'mouseover', [cot,e, M]);
 							}
@@ -1145,6 +1166,7 @@
 							}
 						} else {
 							if (cE.mouseover) {
+								//console.log(cot.type+"mouseout");
 								cE.mouseover = false;
 								cot.fireEvent(cot, 'mouseout', [cot,e, M]);
 							}
@@ -1257,7 +1279,7 @@
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
 
-			var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.get('width') - _.get('hpadding'))), h;
+			var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.get(_.W) - _.get('hpadding'))), h;
 
 			if ($.isString(_.get('title'))) {
 				_.push('title', $.applyIf({
@@ -1308,7 +1330,7 @@
 
 			_.push('minDistance', min(w, h));
 			_.push('maxDistance', max(w, h));
-			_.push('minstr', w < h ? 'width' : 'height');
+			_.push('minstr', w < h ? _.W : 'height');
 
 			_.push('centerx', l + w / 2);
 			_.push('centery', t + h / 2);

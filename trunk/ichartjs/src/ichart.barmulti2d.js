@@ -26,7 +26,7 @@ iChart.BarMulti2D = iChart.extend(iChart.Bar, {
 	doConfig : function() {
 		iChart.BarMulti2D.superclass.doConfig.call(this);
 
-		var _ = this._(), L = _.data.length, KL = _.get('labels').length, W = _.coo.get('width'), H = _.coo.get('height'), b = 'barheight', s = 'barspace', total = KL * L,
+		var _ = this._(), L = _.data.length, KL = _.get('labels').length, W = _.coo.get(_.W), H = _.coo.get('height'), b = 'barheight', s = 'barspace', total = KL * L,
 		/**
 		 * bar's height
 		 */

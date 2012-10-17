@@ -83,11 +83,11 @@
 			this.registerEvent();
 			
 		},
-		doDraw:function(opts){
-			if(this.get('box_feature'))
-			this.T.box(this.x,this.y,this.get('width'),this.get('height'),this.get('border'),this.get('f_color'));
-			if(this.get('text')!='')
-			this.T.text(this.get('text'),this.get('textx'),this.get('texty'),this.get('width'),this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'),0,0,this.get('shadow'),this.get('rotate'));
+		doDraw:function(_){
+			if(_.get('box_feature'))
+			_.T.box(_.x,_.y,_.get(_.W),_.get('height'),_.get('border'),_.get('f_color'));
+			if(_.get('text')!='')
+			_.T.text(_.get('text'),_.get('textx'),_.get('texty'),_.get(_.W),_.get('color'),_.get('textAlign'),_.get('textBaseline'),_.get('fontStyle'),0,0,_.get('shadow'),_.get('rotate'));
 		},
 		isEventValid:function(){
 			return {valid:false};
@@ -99,7 +99,7 @@
 		},
 		doConfig:function(){
 			iChart.Text.superclass.doConfig.call(this);
-			var _ = this._(),x = _.x,y=_.y,w=_.get('width'),h=_.get('height'),a=_.get('textAlign');
+			var _ = this._(),x = _.x,y=_.y,w=_.get(_.W),h=_.get('height'),a=_.get('textAlign');
 			x+=(a=='center'?w/2:(a=='right'?w:0));
 			if(h){
 				y+=h/2;

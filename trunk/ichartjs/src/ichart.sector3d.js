@@ -53,16 +53,16 @@
 					this.get('shadow_offsety'),
 					this.get('counterclockwise'));
 		},
-		isEventValid:function(e){
-			if(!this.get('ignored')){
-				if(this.isLabel()){
-					if(this.label.isEventValid(e).valid)
+		isEventValid:function(e,_){
+			if(!_.get('ignored')){
+				if(_.isLabel()){
+					if(_.label.isEventValid(e,_.label).valid)
 						return {valid:true};
 				}
-				if(!iChart.inEllipse(e.x - this.x,e.y-this.y,this.a,this.b)){
+				if(!iChart.inEllipse(e.x - _.x,e.y-_.y,_.a,_.b)){
 					return {valid:false};
 				}
-				if(iChart.angleInRange(this.sA,this.eA,(2*Math.PI - iChart.atan2Radian(this.x,this.y,e.x,e.y)))){
+				if(iChart.angleInRange(_.sA,_.eA,(2*Math.PI - iChart.atan2Radian(_.x,_.y,e.x,e.y)))){
 					return {valid:true};
 				}
 			}
@@ -125,4 +125,7 @@
 				}
 			}
 		}
-});//@end
+});
+/**
+ *@end
+ */	
