@@ -1,5 +1,5 @@
 //expect next
-1.重新规划Scale代码
+1.LineSegment 增加parseText,以与其他统一
 1.1.增加测试用例
 1.2.代码还有压缩的余地，将公共函数提取出来
 2.中文api同步

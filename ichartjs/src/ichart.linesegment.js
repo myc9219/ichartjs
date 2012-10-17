@@ -93,8 +93,15 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			 */
 			event_range_y : 0
 		});
-
-		this.label = null;
+		
+		this.registerEvent(
+				/**
+				 * @event Fires when parse this label's data.Return value will override existing.
+				 * @paramter <link>iChart.LineSegment</link>#seg
+				 * @paramter string#text the current label's text
+				 */
+				'parseText');
+		
 		this.tip = null;
 		this.ignored_ = false;
 	},
@@ -171,6 +178,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		for ( var i = 0; i < p.length; i++) {
 			p[i].x_ = p[i].x;
 			p[i].y_ = p[i].y;
+			p[i].value = _.fireString(_, 'parseText', [_, p[i].value],p[i].value);
 			if(p[i].ignored)this.ignored_ = true;
 		}
 

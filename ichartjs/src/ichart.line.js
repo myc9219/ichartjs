@@ -146,8 +146,10 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			start_scale : 1,
 			scale : 1,
 			end_scale : _.get('maxItemSize'),
-			labels : _.get('labels')
+			labels : _.get('labels'),
+			label:_.get('label')
 		}]);
+		
 		
 		/**
 		 * use option create a coordinate

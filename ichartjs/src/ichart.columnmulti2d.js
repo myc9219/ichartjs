@@ -62,7 +62,7 @@ iChart.ColumnMulti2D = iChart.extend(iChart.Column, {
 				_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), this));
 			}, _);
 
-			_.doLabel(i, column.name, _.x + _.get('hispace') * 0.5 + (i + 0.5) * gw, _.y + H + _.get('text_space'));
+			_.doLabel(_,i, column.name, _.x + _.get('hispace') * 0.5 + (i + 0.5) * gw, _.y + H + _.get('text_space'));
 		}, _);
 
 	}
