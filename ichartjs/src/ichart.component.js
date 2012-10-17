@@ -104,18 +104,18 @@ iChart.Component = iChart.extend(iChart.Painter, {
 
 	},
 	isMouseOver : function(e) {
-		return this.isEventValid(e);
+		return this.isEventValid(e,this);
 	},
 	redraw : function() {
 
 		this.container.draw();
 	},
-	commonDraw : function(opts) {
+	commonDraw : function(_) {
 		/**
 		 * execute the doDraw() that the subClass implement
 		 */
-		if (!this.proxy)
-			this.doDraw.call(this, opts);
+		if (!_.proxy)
+			_.doDraw.call(_,_);
 
 	},
 	inject : function(c) {

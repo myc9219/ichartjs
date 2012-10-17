@@ -73,7 +73,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 			l.draw();
 		});
 		_.rectangles.each(function(r) {
-			r.push('width', Math.ceil(_.animationArithmetic(t, 0, r.width, d)));
+			r.push(_.W, Math.ceil(_.animationArithmetic(t, 0, r.width, d)));
 			r.drawRectangle();
 		});
 	},

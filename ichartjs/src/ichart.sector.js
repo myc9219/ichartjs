@@ -97,6 +97,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		/**
 		 * @event Fires when parse this label's data.Return value will override existing. Only valid when label is available
 		 * @paramter <link>iChart.Sector</link>#sector the sector object
+		 * @paramter string#text the current label's text
 		 */
 		'parseText');
 
@@ -132,11 +133,11 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			endAngle : this.get("endAngle")
 		}
 	},
-	doDraw : function(opts) {
-		if (!this.get('ignored')) {
-			this.drawSector();
-			if (this.label) {
-				this.label.draw();
+	doDraw : function(_) {
+		if (!_.get('ignored')) {
+			_.drawSector();
+			if (_.label) {
+				_.label.draw();
 			}
 		}
 	},
@@ -162,7 +163,11 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		iChart.Sector.superclass.doConfig.call(this);
 
 		var _ = this._(), v = _.variable.event, f = _.get('label');
-
+		/**
+		 * mouseover light
+		 */
+		iChart.taylor.light(_,v);
+		
 		_.push('totalAngle', _.get('endAngle') - _.get('startAngle'));
 
 		if (f) {
@@ -174,7 +179,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 				}
 			}
 			
-			_.push('label.text', _.fireString(_, 'parseText', [_], _.get('label.text')));
+			_.push('label.text', _.fireString(_, 'parseText', [_,_.get('label.text')], _.get('label.text')));
 
 			_.pushIf('label.border.color', _.get('border.color'));
 			/**
@@ -203,18 +208,8 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			_.redraw();
 			v.poped = false;
 		});
-
-		_.on('mouseover', function() {
-			v.highlight = true;
-			_.redraw();
-			v.highlight = false;
-		}).on('mouseout', function() {
-			v.highlight = false;
-			_.redraw();
-		});
-
+		
 		_.on('beforedraw', function() {
-			_.push('f_color', v.highlight ? _.get('light_color') : _.get('f_color_'));
 			_.x = _.get('originx');
 			_.y = _.get('originy');
 			if (v.status != _.expanded) {

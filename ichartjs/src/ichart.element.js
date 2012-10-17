@@ -5,23 +5,24 @@
  * @extend#Object
  */
 iChart.Element = function(config) {
+	var _ = this._();
 	/**
 	 * indicate the element's type
 	 */
-	this.type = 'element';
+	_.type = 'element';
 
 	/**
 	 * define abstract method
 	 */
-	iChart.DefineAbstract('configure', this);
-	iChart.DefineAbstract('afterConfiguration', this);
+	iChart.DefineAbstract('configure', _);
+	iChart.DefineAbstract('afterConfiguration', _);
 
 	/**
 	 * All of the configuration will in this property
 	 */
-	this.options = {};
+	_.options = {};
 
-	this.set({
+	_.set({
 		/**
 		 * @inner {String} The unique id of this element (defaults to an auto-assigned id).
 		 */
@@ -63,16 +64,25 @@ iChart.Element = function(config) {
 		 */
 		shadow_offsety : 0
 	});
-
+	/**
+	 * variable for short
+	 */
+	_.B = 'bottom';
+	_.H = 'height';
+	_.L = 'left';
+	_.R = 'right';
+	_.O = 'top';
+	_.W = 'width';
+	
 	/**
 	 * the running variable cache
 	 */
-	this.variable = {};
+	_.variable = {};
 	
 	/**
 	 * the container of all events
 	 */
-	this.events = {
+	_.events = {
 		'mouseup':[],
 		'touchstart':[],
 		'touchmove':[],
@@ -81,23 +91,23 @@ iChart.Element = function(config) {
 		'dblclick':[]
 	};
 	
-	this.initialization = false;
+	_.initialization = false;
 	
 	/**
 	 * inititalize configure
 	 */
-	this.configure.apply(this, Array.prototype.slice.call(arguments, 1));
+	_.configure.apply(_, Array.prototype.slice.call(arguments, 1));
 	
 	/**
 	 * clone the original config
 	 */
-	this.default_ = iChart.clone(this.options,true);
+	_.default_ = iChart.clone(_.options,true);
 	
 	/**
 	 * megre customize config
 	 */
-	this.set(config);
-	this.afterConfiguration();
+	_.set(config);
+	_.afterConfiguration();
 }
 
 iChart.Element.prototype = {
@@ -132,6 +142,9 @@ iChart.Element.prototype = {
 	 * average read speed about 0.005ms
 	 */
 	get : function(name) {
+		if(!name){
+			console.log(this.type);
+		}
 		var A = name.split("."), V = this.options[A[0]];
 		for (var i = 1; i < A.length; i++) {
 			if (!V)

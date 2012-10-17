@@ -171,8 +171,8 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	},
 	applyGradient:function(x,y,w,h){
 		if(this.get('gradient')){
-			this.push('f_color', this.T.gradient(x||this.x||0,y||this.y||0,w||this.get('width'),h||this.get('height'),[this.get('dark_color'), this.get('light_color')],this.get('gradient_mode')));
-			this.push('light_color', this.T.gradient(x||this.x||0,y||this.y||0,w||this.get('width'),h||this.get('height'),[this.get('background_color'), this.get('light_color')],this.get('gradient_mode')));
+			this.push('f_color', this.T.gradient(x||this.x||0,y||this.y||0,w||this.get(_.W),h||this.get('height'),[this.get('dark_color'), this.get('light_color')],this.get('gradient_mode')));
+			this.push('light_color', this.T.gradient(x||this.x||0,y||this.y||0,w||this.get(_.W),h||this.get('height'),[this.get('background_color'), this.get('light_color')],this.get('gradient_mode')));
 			this.push('f_color_',this.get('f_color'));
 		}
 	},
@@ -181,7 +181,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	 * this is a abstract method.Currently known,both <link>iChart.Chart</link> and <link>iChart.Component</link> implement this method.
 	 * @return void
 	 */
-	draw : function(o) {
+	draw : function() {
 		/**
 		 * fire the beforedraw event
 		 */
@@ -191,7 +191,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		/**
 		 * execute the commonDraw() that the subClass implement
 		 */
-		this.commonDraw(this,o);
+		this.commonDraw(this,this);
 
 		/**
 		 * fire the draw event

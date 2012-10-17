@@ -115,7 +115,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 				polygons.push(q.y);
 			});
 			
-			polygons.push(_.x + _.get('width'));
+			polygons.push(_.x + _.get(_.W));
 			polygons.push(_.y);
 			
 			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'), polygons);
@@ -142,15 +142,15 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			_.T.shadowOff();
 		}
 	},
-	doDraw : function(opts) {
-		this.drawSegment();
-		if (this.get('label')) {
-			this.labels.each(function(l){
+	doDraw : function(_) {
+		_.drawSegment();
+		if (_.get('label')) {
+			_.labels.each(function(l){
 				l.draw();
 			});
 		}
 	},
-	isEventValid : function(e) {
+	isEventValid : function() {
 		return {
 			valid : false
 		};
@@ -236,7 +236,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		 * override the default method
 		 */
 		_.isEventValid = function(e) {
-			if (c && !c.isEventValid(e).valid) {
+			if (c && !c.isEventValid(e,c).valid) {
 				return {
 					valid : false
 				};

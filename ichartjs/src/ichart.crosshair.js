@@ -95,7 +95,7 @@
 			_.horizontal = document.createElement("div");
 			_.vertical = document.createElement("div");
 			
-			_.horizontal.style.width= iChart.toPixel(_.get('width'));
+			_.horizontal.style.width= iChart.toPixel(_.get(_.W));
 			_.horizontal.style.height= iChart.toPixel(_.get('line_width'));
 			_.horizontal.style.backgroundColor = _.get('line_color');
 			_.horizontal.style.position="absolute";
