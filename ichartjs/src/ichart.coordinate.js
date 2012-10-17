@@ -140,16 +140,11 @@ iChart.Scale = iChart.extend(iChart.Component, {
 	 */
 	doDraw : function() {
 		var _ = this._();
-		/**
-		 * individuation text?
-		 */
-		_.T.textFont(_.get('fontStyle'));
-		
 		if (_.get('scale_enable'))
-		_.items.each(function(item) {
-			_.T.line(item.x0,item.y0,item.x1,item.y1, _.get('scale_size'), _.get('scale_color'), false);
-		});
-		
+			_.items.each(function(item) {
+				_.T.line(item.x0, item.y0, item.x1, item.y1, _.get('scale_size'), _.get('scale_color'), false);
+			});
+
 		_.labels.each(function(l) {
 			l.draw();
 		});
@@ -210,9 +205,8 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		 */
 		_.push('distanceOne', _.get('valid_distance') / _.number);
 
-		var text,x, y, x1 = 0, y1 = 0, x0 = 0, y0 = 0, tx = 0, ty = 0, w = _.get('scale_width'), w2 = w / 2, sa = _.get('scaleAlign'), ta = _.get('textAlign'), ts = _.get('text_space'), tbl = '';
+		var text, x, y, x1 = 0, y1 = 0, x0 = 0, y0 = 0, tx = 0, ty = 0, w = _.get('scale_width'), w2 = w / 2, sa = _.get('scaleAlign'), ta = _.get('textAlign'), ts = _.get('text_space'), tbl = '';
 
-		_.T.textFont(_.get('fontStyle'));
 		_.push('which', _.get('which').toLowerCase());
 		_.isH = _.get('which') == 'h';
 
@@ -252,7 +246,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 				tx = -ts;
 			}
 		}
-		
+
 		/**
 		 * 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
 		 */
@@ -260,30 +254,30 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			text = customL ? _.get('labels')[i] : (s_space * i + start_scale).toFixed(_.get('decimalsnum'));
 			x = _.isH ? _.get('valid_x') + i * _.get('distanceOne') : _.x;
 			y = _.isH ? _.y : _.get('valid_y') + _.get('distance') - i * _.get('distanceOne');
-			
+
 			_.items.push({
 				x : x,
 				y : y,
-				x0:x + x0,
-				y0:y + y0,
-				x1:x + x1,
-				y1:y + y1
+				x0 : x + x0,
+				y0 : y + y0,
+				x1 : x + x1,
+				y1 : y + y1
 			});
-				
+
 			/**
 			 * put the label into a Text?
 			 */
-			_.labels.push(new iChart.Text(iChart.merge({
-				textAlign : ta,
-				textBaseline : tbl
-			}, iChart.apply(_.get('label'), iChart.merge({
+			_.labels.push(new iChart.Text(iChart.applyIf(iChart.apply(_.get('label'), iChart.merge({
 				text : text,
 				x : x,
 				y : y,
 				originx : x + tx,
 				originy : y + ty
-			}, _.fireEvent(_, 'parseText', [text, x + tx, y + ty, i,_.number==i])))), _));
-			
+			}, _.fireEvent(_, 'parseText', [text, x + tx, y + ty, i, _.number == i]))), {
+				textAlign : ta,
+				textBaseline : tbl
+			}), _));
+
 			/**
 			 * maxwidth = Math.max(maxwidth, _.T.measureText(text));
 			 */

@@ -110,6 +110,23 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		'drawCell');
 
 	},
+	isEventValid : function(e) {
+		var r = {
+			valid : false
+		},_ = this._();
+		if (e.x > this.x && e.x < (_.x + _.width) && e.y > _.y && e.y < (_.y + _.height)) {
+			_.data.each(function(d, i) {
+				if (e.x > d.x && e.x < (d.x + d.width_ + _.get('signwidth')) && e.y > d.y && e.y < (d.y + _.get('line_height'))) {
+					r = {
+						valid : true,
+						index : i,
+						target : d
+					}
+				}
+			}, _);
+		}
+		return r;
+	},
 	drawCell : function(x, y, text, color,n) {
 		var s = this.get('sign_size'),f = this.getPlugin('sign');
 		if(!f||!f.call(this,this.T,n,x + s / 2,y + s / 2,s,color)){
@@ -147,23 +164,6 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			x += this.columnwidth[j] + this.get('signwidth') + this.get('legend_space');
 			suffix++;
 		}
-	},
-	isEventValid : function(e) {
-		var r = {
-			valid : false
-		},_ = this._();
-		if (e.x > this.x && e.x < (_.x + _.width) && e.y > _.y && e.y < (_.y + _.height)) {
-			_.data.each(function(d, i) {
-				if (e.x > d.x && e.x < (d.x + d.width_ + _.get('signwidth')) && e.y > d.y && e.y < (d.y + _.get('line_height'))) {
-					r = {
-						valid : true,
-						index : i,
-						target : d
-					}
-				}
-			}, _);
-		}
-		return r;
 	},
 	doDraw : function() {
 		this.push('border.radius',5);

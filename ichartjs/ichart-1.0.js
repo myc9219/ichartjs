@@ -943,18 +943,6 @@ $.Element = function(config) {
 		 */
 		id : '',
 		/**
-		 * @cfg {Number} Specifies the font size of this element in pixels.(default to 12)
-		 */
-		fontsize : 12,
-		/**
-		 * @cfg {String} Specifies the font of this element.(default to 'Verdana')
-		 */
-		font : 'Verdana',
-		/**
-		 * @cfg {String} Specifies the font weight of this element.(default to 'normal')
-		 */
-		fontweight : 'normal',
-		/**
 		 * @cfg {Object} Specifies the border for this element.
 		 * Available property are:
 		 * @Option enable {boolean} If enable the border
@@ -1069,6 +1057,10 @@ $.Element.prototype = {
 		return V;
 	}
 }
+/**
+ * @end
+ */
+
 
 /**
  * @overview The interface this class defined include draw and event,so the sub class has must capability to draw and aware of event. this class is a abstract class,so you should not try to initialize it.
@@ -1323,7 +1315,6 @@ $.Painter = $.extend($.Element, {
 			});
 		}
 		
-		_.push('fontStyle', $.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
 		_.push('f_color', bg);
 		_.push('f_color_', bg);
 		_.push("light_color", $.light(bg, f));
@@ -1485,6 +1476,18 @@ $.Component = $.extend($.Painter, {
 
 		this.set({
 			/**
+			 * @cfg {Number} Specifies the font size of this element in pixels.(default to 12)
+			 */
+			fontsize : 12,
+			/**
+			 * @cfg {String} Specifies the font of this element.(default to 'Verdana')
+			 */
+			font : 'Verdana',
+			/**
+			 * @cfg {String} Specifies the font weight of this element.(default to 'normal')
+			 */
+			fontweight : 'normal',
+			/**
 			 * @inner {Boolean} Specifies the config of Tip.For details see <link>$.Tip</link> Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 			 */
 			tip : {
@@ -1537,12 +1540,14 @@ $.Component = $.extend($.Painter, {
 
 		_.x = _.push('originx', _.get('originx') + _.get('offsetx'));
 		_.y = _.push('originy', _.get('originy') + _.get('offsety'));
-
+		
+		_.push('fontStyle', $.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
+		
 		/**
 		 * if have evaluate it
 		 */
 		_.data = _.get('data');
-
+		
 		if (_.get('tip.enable')) {
 			/**
 			 * make tip's border in accord with sector
@@ -1973,6 +1978,23 @@ $.Legend = $.extend($.Component, {
 		'drawCell');
 
 	},
+	isEventValid : function(e) {
+		var r = {
+			valid : false
+		},_ = this._();
+		if (e.x > this.x && e.x < (_.x + _.width) && e.y > _.y && e.y < (_.y + _.height)) {
+			_.data.each(function(d, i) {
+				if (e.x > d.x && e.x < (d.x + d.width_ + _.get('signwidth')) && e.y > d.y && e.y < (d.y + _.get('line_height'))) {
+					r = {
+						valid : true,
+						index : i,
+						target : d
+					}
+				}
+			}, _);
+		}
+		return r;
+	},
 	drawCell : function(x, y, text, color,n) {
 		var s = this.get('sign_size'),f = this.getPlugin('sign');
 		if(!f||!f.call(this,this.T,n,x + s / 2,y + s / 2,s,color)){
@@ -2010,23 +2032,6 @@ $.Legend = $.extend($.Component, {
 			x += this.columnwidth[j] + this.get('signwidth') + this.get('legend_space');
 			suffix++;
 		}
-	},
-	isEventValid : function(e) {
-		var r = {
-			valid : false
-		},_ = this._();
-		if (e.x > this.x && e.x < (_.x + _.width) && e.y > _.y && e.y < (_.y + _.height)) {
-			_.data.each(function(d, i) {
-				if (e.x > d.x && e.x < (d.x + d.width_ + _.get('signwidth')) && e.y > d.y && e.y < (d.y + _.get('line_height'))) {
-					r = {
-						valid : true,
-						index : i,
-						target : d
-					}
-				}
-			}, _);
-		}
-		return r;
 	},
 	doDraw : function() {
 		this.push('border.radius',5);
@@ -2242,7 +2247,7 @@ $.Label = $.extend($.Component, {
 		var _ = this._();
 		_.push('labelx',_.get('labelx')+x);
 		_.push('labely',_.get('labely')+y);
-		_.get('line_potins').each(function(p){
+		_.get('line_points').each(function(p){
 			p.x +=x;
 			p.y +=y;
 		},_);
@@ -2252,7 +2257,7 @@ $.Label = $.extend($.Component, {
 		
 		_.localizer();
 		
-		var p = _.get('line_potins'),ss = _.get('sign_size'),
+		var p = _.get('line_points'),ss = _.get('sign_size'),
 		x = _.labelx + _.get('padding_left'),
 		y = _.labely +_.get('padding_top');
 		
@@ -2275,7 +2280,8 @@ $.Label = $.extend($.Component, {
 	doConfig : function() {
 		$.Label.superclass.doConfig.call(this);
 		var _ = this._();
-		_.T.textFont($.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
+		
+		_.T.textFont(_.get('fontStyle'));
 		
 		if(_.get('fontsize')>_.get('line_height')){
 			_.push('line_height',_.get('fontsize'));
@@ -2330,10 +2336,6 @@ $.Label = $.extend($.Component, {
 				 * @Option center
 				 */
 				textAlign:'center',
-				/**
-				 * @cfg {String} Specifies the color of text.(default to 'black')
-				 */
-				color:'black',
 				/**
 				 * @cfg {String} Here,specify as false to make background transparent.(default to null)
 				 */
@@ -3941,16 +3943,11 @@ $.Scale = $.extend($.Component, {
 	 */
 	doDraw : function() {
 		var _ = this._();
-		/**
-		 * individuation text?
-		 */
-		_.T.textFont(_.get('fontStyle'));
-		
 		if (_.get('scale_enable'))
-		_.items.each(function(item) {
-			_.T.line(item.x0,item.y0,item.x1,item.y1, _.get('scale_size'), _.get('scale_color'), false);
-		});
-		
+			_.items.each(function(item) {
+				_.T.line(item.x0, item.y0, item.x1, item.y1, _.get('scale_size'), _.get('scale_color'), false);
+			});
+
 		_.labels.each(function(l) {
 			l.draw();
 		});
@@ -4011,9 +4008,8 @@ $.Scale = $.extend($.Component, {
 		 */
 		_.push('distanceOne', _.get('valid_distance') / _.number);
 
-		var text,x, y, x1 = 0, y1 = 0, x0 = 0, y0 = 0, tx = 0, ty = 0, w = _.get('scale_width'), w2 = w / 2, sa = _.get('scaleAlign'), ta = _.get('textAlign'), ts = _.get('text_space'), tbl = '';
+		var text, x, y, x1 = 0, y1 = 0, x0 = 0, y0 = 0, tx = 0, ty = 0, w = _.get('scale_width'), w2 = w / 2, sa = _.get('scaleAlign'), ta = _.get('textAlign'), ts = _.get('text_space'), tbl = '';
 
-		_.T.textFont(_.get('fontStyle'));
 		_.push('which', _.get('which').toLowerCase());
 		_.isH = _.get('which') == 'h';
 
@@ -4053,7 +4049,7 @@ $.Scale = $.extend($.Component, {
 				tx = -ts;
 			}
 		}
-		
+
 		/**
 		 * 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
 		 */
@@ -4061,30 +4057,30 @@ $.Scale = $.extend($.Component, {
 			text = customL ? _.get('labels')[i] : (s_space * i + start_scale).toFixed(_.get('decimalsnum'));
 			x = _.isH ? _.get('valid_x') + i * _.get('distanceOne') : _.x;
 			y = _.isH ? _.y : _.get('valid_y') + _.get('distance') - i * _.get('distanceOne');
-			
+
 			_.items.push({
 				x : x,
 				y : y,
-				x0:x + x0,
-				y0:y + y0,
-				x1:x + x1,
-				y1:y + y1
+				x0 : x + x0,
+				y0 : y + y0,
+				x1 : x + x1,
+				y1 : y + y1
 			});
-				
+
 			/**
 			 * put the label into a Text?
 			 */
-			_.labels.push(new $.Text($.merge({
-				textAlign : ta,
-				textBaseline : tbl
-			}, $.apply(_.get('label'), $.merge({
+			_.labels.push(new $.Text($.applyIf($.apply(_.get('label'), $.merge({
 				text : text,
 				x : x,
 				y : y,
 				originx : x + tx,
 				originy : y + ty
-			}, _.fireEvent(_, 'parseText', [text, x + tx, y + ty, i,_.number==i])))), _));
-			
+			}, _.fireEvent(_, 'parseText', [text, x + tx, y + ty, i, _.number == i]))), {
+				textAlign : ta,
+				textBaseline : tbl
+			}), _));
+
 			/**
 			 * maxwidth = Math.max(maxwidth, _.T.measureText(text));
 			 */
@@ -4750,6 +4746,10 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				 */
 				value:'',
 				/**
+				 * @cfg {<link>$.Text</link>} Specifies the config of label,set false to make label disabled.
+				 */
+				label : {},
+				/**
 				 * @cfg {String} Specifies the name of this element,Normally,this will given by chart.(default to '')
 				 */
 				name:'',
@@ -4769,14 +4769,6 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				 * @Option 'bottom'
 				 */
 				valueAlign:'top',
-				/**
-				 * @inner
-				 */
-				textAlign:'center',
-				/**
-				 * @inner
-				 */
-				textBaseline:'top',
 				/**
 				 * @cfg {Number} Override the default as 3
 				 */
@@ -4800,13 +4792,12 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 					 */
 					'parseText');
 			
-		},
-		drawValue:function(){
-			this.T.text(this.get('value'),this.get('value_x'),this.get('value_y'),false,this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
+			this.label = null;
 		},
 		doDraw:function(opts){
 			this.drawRectangle();
-			this.drawValue();
+			if(this.label)
+				this.label.draw();
 		},
 		doConfig:function(){
 			$.Rectangle.superclass.doConfig.call(this);
@@ -4838,11 +4829,17 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				b = 'bottom';
 			}
 			
-			_.push('textAlign',a);
-			_.push('textBaseline',b);
-			_.push('value_x',x);
-			_.push('value_y',y);
-			
+			if(_.get('label')){
+				_.push('label.originx', x);
+				_.push('label.originy', y);
+				_.push('label.text',_.get('value'));
+				$.applyIf(_.get('label'),{
+					textAlign : a,
+					textBaseline : b,
+					color:_.get('color')
+				});
+				_.label = new $.Text(_.get('label'), _);
+			}
 			
 			if(_.get('tip.enable')){
 				if(_.get('tip.showType')!='follow'){
@@ -4854,16 +4851,12 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			v.highlight = false;
 			
 			_.on('mouseover',function(){
-				//console.time('mouseover');
 				v.highlight = true;
 				_.redraw();
 				v.highlight = false;
-				//console.timeEnd('mouseover');
 			}).on('mouseout',function(){
-				//console.time('mouseout');
 				v.highlight = false;
 				_.redraw();
-				//console.timeEnd('mouseout');
 			});
 			
 			_.on('beforedraw',function(){
@@ -5028,13 +5021,16 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			_.topCenterX=_.x+(_.get('width')+_.get('width')*_.get('xAngle_'))/2;
 			_.topCenterY=_.y-_.get('width')*_.get('yAngle_')/2;
 			
-			if(_.get('valueAlign')=='top'){
-				_.push('value_x',_.topCenterX);
-				_.push('value_y',_.topCenterY);
+			if(_.get('valueAlign')=='top'&&_.label){
+				_.label.push('textx',_.topCenterX);
+				_.label.push('texty',_.topCenterY);
 			}
 			
 		}
 });
+/**
+ *@end
+ */	
 /**
  * @overview this component use for config sector,this is a abstract class.
  * @component#$.Sector
@@ -5187,7 +5183,7 @@ $.Sector = $.extend($.Component, {
 		_.push('label.originx', x);
 		_.push('label.originy', y);
 		_.push('label.quadrantd', Q);
-		_.push('label.line_potins', p);
+		_.push('label.line_points', p);
 		_.push('label.labelx', x0);
 		_.push('label.labely', y0);
 		_.label = new $.Label(_.get('label'), _);
@@ -5635,7 +5631,7 @@ $.Pie = $.extend($.Chart, {
 			if ((la.labely <= y && (y - la.labely-1) < la.get('height')) || (la.labely > y && (la.labely - y-1) < l.get('height'))) {
 				if ((la.labelx < x && (x - la.labelx) < la.get('width')) || (la.labelx > x && (la.labelx - x) < l.get('width'))) {
 					la.push('labely', (la.get('labely')+ y - la.labely) + (la.get('height')  + d)*((la.get('quadrantd') == 2)?-1:1));
-					la.push('line_potins', la.get('line_potins').concat({x:la.get('labelx'),y:la.get('labely')}));
+					la.push('line_points', la.get('line_points').concat({x:la.get('labelx'),y:la.get('labely')}));
 					la.localizer();
 				}
 			}
@@ -6551,9 +6547,9 @@ $.LineSegment = $.extend($.Component, {
 			 */
 			intersection : true,
 			/**
-			 * @cfg {Boolean} if the label displayed (default to false)
+			 * @cfg {<link>$.Text</link>} Specifies the config of label,set false to make label disabled.
 			 */
-			label : false,
+			label : {},
 			/**
 			 * @cfg {String} Specifies the shape of two line segment' point(default to 'round').Only applies when intersection is true Available value are:
 			 * @Option 'round'
@@ -6672,12 +6668,10 @@ $.LineSegment = $.extend($.Component, {
 	},
 	doDraw : function(opts) {
 		this.drawSegment();
-		if (this.get('intersection') && this.get('label')) {
-			this.get('points').each(function(q,i){
-				if(!q.ignored){
-					this.T.text(q.value, q.x, q.y - this.get('point_size') * 3 / 2, false, this.get('f_color'), 'center', 'bottom', this.get('fontStyle'));
-				}
-			},this);
+		if (this.get('label')) {
+			this.labels.each(function(l){
+				l.draw();
+			});
 		}
 	},
 	isEventValid : function(e) {
@@ -6701,15 +6695,27 @@ $.LineSegment = $.extend($.Component, {
 		$.LineSegment.superclass.doConfig.call(this);
 		$.Assert.gtZero(this.get('point_space'), 'point_space');
 
-		var _ = this, sp = this.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points');
-
-		for ( var i = 0; i < p.length; i++) {
-			p[i].x_ = p[i].x;
-			p[i].y_ = p[i].y;
-			p[i].value = _.fireString(_, 'parseText', [_, p[i].value],p[i].value);
-			if(p[i].ignored)this.ignored_ = true;
-		}
-
+		var _ = this._(),L = !!_.get('label'),ps = _.get('point_size') * 3 / 2,sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points');
+		
+		_.labels = [];
+		
+		p.each(function(q){
+			q.x_ = q.x;
+			q.y_ = q.y;
+			q.value = _.fireString(_, 'parseText', [_, q.value],q.value);
+			if(q.ignored)_.ignored_ = true;
+			if(!q.ignored&&L){
+				_.push('label.originx', q.x);
+				_.push('label.originy', q.y-ps);
+				_.push('label.text',q.value);
+				$.applyIf(_.get('label'),{
+					textBaseline : 'bottom',
+					color:_.get('f_color')
+				});
+				_.labels.push(new $.Text(_.get('label'), _))
+			}
+		});
+		
 		if (rx == 0) {
 			rx = _.push('event_range_x', Math.floor(sp / 2));
 		} else {
@@ -6718,6 +6724,8 @@ $.LineSegment = $.extend($.Component, {
 		if (ry == 0) {
 			ry = _.push('event_range_y', Math.floor(_.get('point_size')/2));
 		}
+		
+		
 		if (_.get('tip.enable')) {
 			/**
 			 * _ use for tip coincidence
@@ -6752,7 +6760,6 @@ $.LineSegment = $.extend($.Component, {
 		 * override the default method
 		 */
 		_.isEventValid = function(e) {
-			// console.time('mouseover');
 			if (c && !c.isEventValid(e).valid) {
 				return {
 					valid : false
@@ -6768,19 +6775,23 @@ $.LineSegment = $.extend($.Component, {
 						valid : k
 					};
 			}
-			// calculate the pointer's position will between which two point?this function can improve location speed
+			/**
+			 * calculate the pointer's position will between which two point?this function can improve location speed
+			 */
 			for ( var i = ii; i <= ii + 1; i++) {
 				if (valid(p[i], e.x, e.y))
 					return to(i);
 			}
-			// console.timeEnd('mouseover');
 			return {
 				valid : k
 			};
 		}
 
 	}
-});// @end
+});
+/**
+ *@end
+ */	
 
 /**
  * @overview this class is abstract,use for config line

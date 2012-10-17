@@ -33,6 +33,10 @@
 				 */
 				value:'',
 				/**
+				 * @cfg {<link>iChart.Text</link>} Specifies the config of label,set false to make label disabled.
+				 */
+				label : {},
+				/**
 				 * @cfg {String} Specifies the name of this element,Normally,this will given by chart.(default to '')
 				 */
 				name:'',
@@ -52,14 +56,6 @@
 				 * @Option 'bottom'
 				 */
 				valueAlign:'top',
-				/**
-				 * @inner
-				 */
-				textAlign:'center',
-				/**
-				 * @inner
-				 */
-				textBaseline:'top',
 				/**
 				 * @cfg {Number} Override the default as 3
 				 */
@@ -83,13 +79,12 @@
 					 */
 					'parseText');
 			
-		},
-		drawValue:function(){
-			this.T.text(this.get('value'),this.get('value_x'),this.get('value_y'),false,this.get('color'),this.get('textAlign'),this.get('textBaseline'),this.get('fontStyle'));
+			this.label = null;
 		},
 		doDraw:function(opts){
 			this.drawRectangle();
-			this.drawValue();
+			if(this.label)
+				this.label.draw();
 		},
 		doConfig:function(){
 			iChart.Rectangle.superclass.doConfig.call(this);
@@ -121,11 +116,17 @@
 				b = 'bottom';
 			}
 			
-			_.push('textAlign',a);
-			_.push('textBaseline',b);
-			_.push('value_x',x);
-			_.push('value_y',y);
-			
+			if(_.get('label')){
+				_.push('label.originx', x);
+				_.push('label.originy', y);
+				_.push('label.text',_.get('value'));
+				iChart.applyIf(_.get('label'),{
+					textAlign : a,
+					textBaseline : b,
+					color:_.get('color')
+				});
+				_.label = new iChart.Text(_.get('label'), _);
+			}
 			
 			if(_.get('tip.enable')){
 				if(_.get('tip.showType')!='follow'){
@@ -137,16 +138,12 @@
 			v.highlight = false;
 			
 			_.on('mouseover',function(){
-				//console.time('mouseover');
 				v.highlight = true;
 				_.redraw();
 				v.highlight = false;
-				//console.timeEnd('mouseover');
 			}).on('mouseout',function(){
-				//console.time('mouseout');
 				v.highlight = false;
 				_.redraw();
-				//console.timeEnd('mouseout');
 			});
 			
 			_.on('beforedraw',function(){

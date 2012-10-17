@@ -134,7 +134,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			if ((la.labely <= y && (y - la.labely-1) < la.get('height')) || (la.labely > y && (la.labely - y-1) < l.get('height'))) {
 				if ((la.labelx < x && (x - la.labelx) < la.get('width')) || (la.labelx > x && (la.labelx - x) < l.get('width'))) {
 					la.push('labely', (la.get('labely')+ y - la.labely) + (la.get('height')  + d)*((la.get('quadrantd') == 2)?-1:1));
-					la.push('line_potins', la.get('line_potins').concat({x:la.get('labelx'),y:la.get('labely')}));
+					la.push('line_points', la.get('line_points').concat({x:la.get('labelx'),y:la.get('labely')}));
 					la.localizer();
 				}
 			}

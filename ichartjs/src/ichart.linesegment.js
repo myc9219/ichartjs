@@ -23,9 +23,9 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			 */
 			intersection : true,
 			/**
-			 * @cfg {Boolean} if the label displayed (default to false)
+			 * @cfg {<link>iChart.Text</link>} Specifies the config of label,set false to make label disabled.
 			 */
-			label : false,
+			label : {},
 			/**
 			 * @cfg {String} Specifies the shape of two line segment' point(default to 'round').Only applies when intersection is true Available value are:
 			 * @Option 'round'
@@ -144,12 +144,10 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 	},
 	doDraw : function(opts) {
 		this.drawSegment();
-		if (this.get('intersection') && this.get('label')) {
-			this.get('points').each(function(q,i){
-				if(!q.ignored){
-					this.T.text(q.value, q.x, q.y - this.get('point_size') * 3 / 2, false, this.get('f_color'), 'center', 'bottom', this.get('fontStyle'));
-				}
-			},this);
+		if (this.get('label')) {
+			this.labels.each(function(l){
+				l.draw();
+			});
 		}
 	},
 	isEventValid : function(e) {
@@ -173,15 +171,27 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		iChart.LineSegment.superclass.doConfig.call(this);
 		iChart.Assert.gtZero(this.get('point_space'), 'point_space');
 
-		var _ = this, sp = this.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points');
-
-		for ( var i = 0; i < p.length; i++) {
-			p[i].x_ = p[i].x;
-			p[i].y_ = p[i].y;
-			p[i].value = _.fireString(_, 'parseText', [_, p[i].value],p[i].value);
-			if(p[i].ignored)this.ignored_ = true;
-		}
-
+		var _ = this._(),L = !!_.get('label'),ps = _.get('point_size') * 3 / 2,sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points');
+		
+		_.labels = [];
+		
+		p.each(function(q){
+			q.x_ = q.x;
+			q.y_ = q.y;
+			q.value = _.fireString(_, 'parseText', [_, q.value],q.value);
+			if(q.ignored)_.ignored_ = true;
+			if(!q.ignored&&L){
+				_.push('label.originx', q.x);
+				_.push('label.originy', q.y-ps);
+				_.push('label.text',q.value);
+				iChart.applyIf(_.get('label'),{
+					textBaseline : 'bottom',
+					color:_.get('f_color')
+				});
+				_.labels.push(new iChart.Text(_.get('label'), _))
+			}
+		});
+		
 		if (rx == 0) {
 			rx = _.push('event_range_x', Math.floor(sp / 2));
 		} else {
@@ -190,6 +200,8 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		if (ry == 0) {
 			ry = _.push('event_range_y', Math.floor(_.get('point_size')/2));
 		}
+		
+		
 		if (_.get('tip.enable')) {
 			/**
 			 * _ use for tip coincidence
@@ -224,7 +236,6 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		 * override the default method
 		 */
 		_.isEventValid = function(e) {
-			// console.time('mouseover');
 			if (c && !c.isEventValid(e).valid) {
 				return {
 					valid : false
@@ -240,16 +251,20 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 						valid : k
 					};
 			}
-			// calculate the pointer's position will between which two point?this function can improve location speed
+			/**
+			 * calculate the pointer's position will between which two point?this function can improve location speed
+			 */
 			for ( var i = ii; i <= ii + 1; i++) {
 				if (valid(p[i], e.x, e.y))
 					return to(i);
 			}
-			// console.timeEnd('mouseover');
 			return {
 				valid : k
 			};
 		}
 
 	}
-});// @end
+});
+/**
+ *@end
+ */	

@@ -87,7 +87,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 		var _ = this._();
 		_.push('labelx',_.get('labelx')+x);
 		_.push('labely',_.get('labely')+y);
-		_.get('line_potins').each(function(p){
+		_.get('line_points').each(function(p){
 			p.x +=x;
 			p.y +=y;
 		},_);
@@ -97,7 +97,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 		
 		_.localizer();
 		
-		var p = _.get('line_potins'),ss = _.get('sign_size'),
+		var p = _.get('line_points'),ss = _.get('sign_size'),
 		x = _.labelx + _.get('padding_left'),
 		y = _.labely +_.get('padding_top');
 		
@@ -120,7 +120,8 @@ iChart.Label = iChart.extend(iChart.Component, {
 	doConfig : function() {
 		iChart.Label.superclass.doConfig.call(this);
 		var _ = this._();
-		_.T.textFont(iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
+		
+		_.T.textFont(_.get('fontStyle'));
 		
 		if(_.get('fontsize')>_.get('line_height')){
 			_.push('line_height',_.get('fontsize'));
