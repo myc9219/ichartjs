@@ -973,6 +973,7 @@ $.Element = function(config) {
 		 */
 		shadow_offsety : 0
 	});
+	
 	/**
 	 * variable for short
 	 */
@@ -1089,10 +1090,6 @@ $.Painter = $.extend($.Element, {
 		$.DefineAbstract('initialize', this);
 
 		this.set({
-			/**
-			 * @cfg {Number} Specifies the default linewidth of the canvas's context in this element.(defaults to 1)
-			 */
-			brushsize : 1,
 			/**
 			 * @cfg {String} Specifies the default strokeStyle of the canvas's context in this element.(defaults to 'gray')
 			 */
@@ -3659,7 +3656,7 @@ $.Label = $.extend($.Component, {
 			
 			$.Assert.isArray(_.data);
 				
-			_.T.strokeStyle(true,_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
+			_.T.strokeStyle(true,0, _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');
 			
@@ -5386,6 +5383,9 @@ $.Sector = $.extend($.Component, {
 			}
 		}
 });
+/**
+ * @end
+ */
 	/**
 	 * @overview this component use for abc
 	 * @component#$.Sector3D
@@ -6427,7 +6427,7 @@ $.Bar = $.extend($.Chart, {
 		_.push('sub_option.height', bh);
 		_.push('sub_option.valueAlign', _.R);
 		_.push('sub_option.tipAlign', _.R);
-		_.push('sub_option.originx', _.x + _.coo.get('brushsize'));
+		_.push('sub_option.originx', _.x);
 
 	}
 
@@ -6564,6 +6564,10 @@ $.LineSegment = $.extend($.Component, {
 		this.type = 'linesegment';
 
 		this.set({
+			/**
+			 * @cfg {Number} Specifies the default linewidth of the canvas's context in this element.(defaults to 1)
+			 */
+			brushsize : 1,
 			/**
 			 * @cfg {Boolean} If true there show a point when Line-line intersection(default to true)
 			 */
@@ -6833,6 +6837,10 @@ $.Line = $.extend($.Chart, {
 		this.type = 'line';
 
 		this.set({
+			/**
+			 * @cfg {Number} Specifies the default linewidth of the canvas's context in this element.(defaults to 1)
+			 */
+			brushsize : 1,
 			/**
 			 * @cfg {Object} the option for coordinate
 			 */

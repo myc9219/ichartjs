@@ -17,6 +17,10 @@ iChart.Line = iChart.extend(iChart.Chart, {
 
 		this.set({
 			/**
+			 * @cfg {Number} Specifies the default linewidth of the canvas's context in this element.(defaults to 1)
+			 */
+			brushsize : 1,
+			/**
 			 * @cfg {Object} the option for coordinate
 			 */
 			coordinate : {

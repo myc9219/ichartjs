@@ -21,10 +21,6 @@ iChart.Painter = iChart.extend(iChart.Element, {
 
 		this.set({
 			/**
-			 * @cfg {Number} Specifies the default linewidth of the canvas's context in this element.(defaults to 1)
-			 */
-			brushsize : 1,
-			/**
 			 * @cfg {String} Specifies the default strokeStyle of the canvas's context in this element.(defaults to 'gray')
 			 */
 			strokeStyle : 'gray',
