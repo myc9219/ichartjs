@@ -144,9 +144,6 @@ iChart.Element.prototype = {
 	 * average read speed about 0.005ms
 	 */
 	get : function(name) {
-		if(!name){
-			console.log(this.type);
-		}
 		var A = name.split("."), V = this.options[A[0]];
 		for (var i = 1; i < A.length; i++) {
 			if (!V)

@@ -536,11 +536,11 @@
 				return w + " " + s + "px " + f;
 			},
 			/**
-			 * obtain the Dom Document
+			 * obtain the Dom Document*/
 			getDoc : function() {
 				var doc = window.contentWindow ? window.contentWindow.document : window.contentDocument ? window.contentDocument : window.document;
 				return doc;
-			},*/
+			},
 			/**
 			 * define the interface,the subclass must implement it
 			 */
@@ -873,6 +873,7 @@
 				break
 			}
 		};
+		return this;
 	};
 
 	Array.prototype.eachAll = function(f, s) {

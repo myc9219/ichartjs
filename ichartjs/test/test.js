@@ -53,7 +53,7 @@ function result(succ,type,costOrCause){
 //You Browser Scores  out of a total of 100
 function start(){
 	setTimeout(function(){
-		//try {
+		try {
 			if(unit.length==0){
 				str = [];
 				str.push("<div class='test_result'>Test completed.Total:");
@@ -87,9 +87,9 @@ function start(){
 			if(chart.get('title.text')!='Test')
 			result(true,chart.get('title.text') || chart.type,chart.RUN_TIME_COST);
 			
-		//} catch (e) {
-		//	result(false,chart.get('title.text') || chart.type,e.name+":"+e.message);
-		//}
+		} catch (e) {
+			result(false,chart.get('title.text') || chart.type,e.name+":"+e.message);
+		}
 		start();
 	},300)
 }
