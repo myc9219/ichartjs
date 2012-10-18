@@ -95,7 +95,7 @@ iChart.Points = iChart.extend(iChart.Component, {
 		if (_.get('label')) {
 			var p = _.get('points');
 			for ( var i = 0; i < p.length; i++) {
-				_.T.text(p[i].value, p[i].x, p[i].y - _.get('point_size') * 3 / 2, false, _.get('f_color'), 'center', 'bottom', _.get('fontStyle'));
+				_.T.text(p[i].value, p[i].x, p[i].y - _.get('point_size') * 3 / 2, false, _.get('f_color'), _.C, _.B, _.get('fontStyle'));
 			}
 		}
 	},

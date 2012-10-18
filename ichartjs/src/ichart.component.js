@@ -79,8 +79,8 @@ iChart.Component = iChart.extend(iChart.Painter, {
 		iChart.Component.superclass.doConfig.call(this);
 		var _ = this._();
 
-		_.x = _.push('originx', _.get('originx') + _.get('offsetx'));
-		_.y = _.push('originy', _.get('originy') + _.get('offsety'));
+		_.x = _.push(_.X, _.get(_.X) + _.get('offsetx'));
+		_.y = _.push(_.Y, _.get(_.Y) + _.get('offsety'));
 		
 		_.push('fontStyle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
 		

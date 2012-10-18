@@ -41,12 +41,12 @@
 		drawRectangle:function(){
 			var _ = this._();
 			_.T.cube(
-				_.get('originx'),
-				_.get('originy'),
+				_.get(_.X),
+				_.get(_.Y),
 				_.get('xAngle_'),
 				_.get('yAngle_'),
 				_.get(_.W),
-				_.get('height'),
+				_.get(_.H),
 				_.get('zHeight'),
 				_.get('f_color'),
 				_.get('border.enable'),
@@ -56,7 +56,7 @@
 			);
 		},
 		isEventValid:function(e,_){
-			return {valid:e.x>_.x&&e.x<(_.x+_.get(_.W))&&e.y<_.y+_.get('height')&&e.y>_.y};
+			return {valid:e.x>_.x&&e.x<(_.x+_.get(_.W))&&e.y<_.y+_.get(_.H)&&e.y>_.y};
 		},
 		tipInvoke:function(){
 			var _ = this._();
@@ -75,7 +75,7 @@
 			_.topCenterX=_.x+(_.get(_.W)+_.get(_.W)*_.get('xAngle_'))/2;
 			_.topCenterY=_.y-_.get(_.W)*_.get('yAngle_')/2;
 			
-			if(_.get('valueAlign')=='top'&&_.label){
+			if(_.get('valueAlign')==_.O&&_.label){
 				_.label.push('textx',_.topCenterX);
 				_.label.push('texty',_.topCenterY);
 			}

@@ -55,8 +55,8 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		});
 		_.rectangles.each(function(r){
 			h = Math.ceil(_.animationArithmetic(t, 0, r.height, d));
-			r.push('originy', r.y + (r.height - h));
-			r.push('height', h);
+			r.push(_.Y, r.y + (r.height - h));
+			r.push(_.H, h);
 			r.drawRectangle();
 		});
 	},

@@ -1047,7 +1047,7 @@
 			 * did default should to calculate the size of warp?
 			 */
 			_.width = _.pushIf(_.W, 400);
-			_.height = _.pushIf('height', 300);
+			_.height = _.pushIf(_.H, 300);
 			_.canvasid = $.iGather(_.type);
 			_.shellid = "shell-"+_.canvasid;
 			
@@ -1326,11 +1326,11 @@
 				_.oneways.push(_.footnote);
 			}
 
-			h = _.push('client_height', (_.get('height') - _.get('vpadding') - H));
+			h = _.push('client_height', (_.get(_.H) - _.get('vpadding') - H));
 
 			_.push('minDistance', min(w, h));
 			_.push('maxDistance', max(w, h));
-			_.push('minstr', w < h ? _.W : 'height');
+			_.push('minstr', w < h ? _.W : _.H);
 
 			_.push('centerx', l + w / 2);
 			_.push('centery', t + h / 2);
