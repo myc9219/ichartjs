@@ -84,9 +84,13 @@
 		
 	},
 	complex = function(c){
-		this.labels = this.get('labels');
-		var M=0,MI=0,V,d,L=this.labels.length;
-		this.columns = [];this.total = 0;
+		var _=this._(),M=0,MI=0,V,d,L;
+		_.labels = _.get('labels');
+		L =_.labels.length;
+		if(L==0){
+			L=c[0].value.length;for(var i=0;i<L;i++)_.labels.push("");
+		}
+		_.columns = [];_.total = 0;
 		for(var i=0;i<L;i++){
 			var item = [];
 			for(var j=0;j<c.length;j++){
@@ -95,7 +99,7 @@
 				if(!V)continue;
 				V =  pF(V,V);
 				d.value[i] = V;
-				this.total+=V;
+				_.total+=V;
 				M = V>M?V:M;
 				MI = V<MI?V:MI;
 				
@@ -105,13 +109,13 @@
 					color:d.color
 				});
 			}
-			this.columns.push({
-				name:this.labels[i],
+			_.columns.push({
+				name:_.labels[i],
 				item:item
 			});
 		}
-		this.push('minValue',MI); 
-		this.push('maxValue',M);
+		_.push('minValue',MI); 
+		_.push('maxValue',M);
 	};
 	
 	/**
@@ -1043,6 +1047,21 @@
 			this.initialize();
 		},
 		create : function(_,shell) {
+			/**
+			 * fit the window
+			 */
+			if(_.get('fit')){
+				var w = window.innerWidth;
+			    var h = window.innerHeight;
+			    var style = $.getDoc().body.style;
+			    style.padding = "0px";
+			    style.margin = "0px";
+			    style.overflow = "hidden";
+			    if(h>w)h = floor(w*0.6);
+			    _.push(_.W, w);
+			    _.push(_.H, h);
+			}
+			
 			/**
 			 * did default should to calculate the size of warp?
 			 */

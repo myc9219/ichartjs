@@ -4,7 +4,9 @@
 </head>
 <body style = "margin:0;padding:0">
 <script>
-		
+		function color(){
+			return '#'+('00000'+(Math.random()*0x1000000<<0).toString(16)).slice(-6);
+		}
 		
         var canvas = document.createElement("canvas");
         var context = canvas.getContext("2d");

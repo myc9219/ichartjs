@@ -50,7 +50,9 @@
         }
 
         setInterval(update, 1000/60)
-
+		function color(){
+			return '#'+('00000'+(Math.random()*0x1000000<<0).toString(16)).slice(-6);
+		}
         function Circle(x, y, name)
         {
                 this.x = x;

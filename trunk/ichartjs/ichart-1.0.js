@@ -536,11 +536,11 @@
 				return w + " " + s + "px " + f;
 			},
 			/**
-			 * obtain the Dom Document
+			 * obtain the Dom Document*/
 			getDoc : function() {
 				var doc = window.contentWindow ? window.contentWindow.document : window.contentDocument ? window.contentDocument : window.document;
 				return doc;
-			},*/
+			},
 			/**
 			 * define the interface,the subclass must implement it
 			 */
@@ -873,6 +873,7 @@
 				break
 			}
 		};
+		return this;
 	};
 
 	Array.prototype.eachAll = function(f, s) {
@@ -1052,9 +1053,6 @@ $.Element.prototype = {
 	 * average read speed about 0.005ms
 	 */
 	get : function(name) {
-		if(!name){
-			console.log(this.type);
-		}
 		var A = name.split("."), V = this.options[A[0]];
 		for (var i = 1; i < A.length; i++) {
 			if (!V)
@@ -2503,9 +2501,13 @@ $.Label = $.extend($.Component, {
 		
 	},
 	complex = function(c){
-		this.labels = this.get('labels');
-		var M=0,MI=0,V,d,L=this.labels.length;
-		this.columns = [];this.total = 0;
+		var _=this._(),M=0,MI=0,V,d,L;
+		_.labels = _.get('labels');
+		L =_.labels.length;
+		if(L==0){
+			L=c[0].value.length;for(var i=0;i<L;i++)_.labels.push("");
+		}
+		_.columns = [];_.total = 0;
 		for(var i=0;i<L;i++){
 			var item = [];
 			for(var j=0;j<c.length;j++){
@@ -2514,7 +2516,7 @@ $.Label = $.extend($.Component, {
 				if(!V)continue;
 				V =  pF(V,V);
 				d.value[i] = V;
-				this.total+=V;
+				_.total+=V;
 				M = V>M?V:M;
 				MI = V<MI?V:MI;
 				
@@ -2524,13 +2526,13 @@ $.Label = $.extend($.Component, {
 					color:d.color
 				});
 			}
-			this.columns.push({
-				name:this.labels[i],
+			_.columns.push({
+				name:_.labels[i],
 				item:item
 			});
 		}
-		this.push('minValue',MI); 
-		this.push('maxValue',M);
+		_.push('minValue',MI); 
+		_.push('maxValue',M);
 	};
 	
 	/**
@@ -3463,6 +3465,21 @@ $.Label = $.extend($.Component, {
 		},
 		create : function(_,shell) {
 			/**
+			 * fit the window
+			 */
+			if(_.get('fit')){
+				var w = window.innerWidth;
+			    var h = window.innerHeight;
+			    var style = $.getDoc().body.style;
+			    style.padding = "0px";
+			    style.margin = "0px";
+			    style.overflow = "hidden";
+			    if(h>w)h = floor(w*0.6);
+			    _.push(_.W, w);
+			    _.push(_.H, h);
+			}
+			
+			/**
 			 * did default should to calculate the size of warp?
 			 */
 			_.width = _.pushIf(_.W, 400);
@@ -3967,7 +3984,6 @@ $.Scale = $.extend($.Component, {
 			_.items.each(function(item) {
 				_.T.line(item.x0, item.y0, item.x1, item.y1, _.get('scale_size'), _.get('scale_color'), false);
 			});
-
 		_.labels.each(function(l) {
 			l.draw();
 		});
@@ -4355,12 +4371,8 @@ $.Coordinate2D = $.extend($.Component, {
 		}
 
 		var glw = _.get('grid_line_width'), v = _.get('alternate_direction') == 'v';
-
+		
 		_.gridlines.each(function(g) {
-			g.x1 = Math.round(g.x1);
-			g.y1 = Math.round(g.y1);
-			g.x2 = Math.round(g.x2);
-			g.y2 = Math.round(g.y2);
 			if (_.get('alternate_color')) {
 				if (f) {
 					if (v)
@@ -4372,9 +4384,10 @@ $.Coordinate2D = $.extend($.Component, {
 				y = g.y1;
 				f = !f;
 			}
+		}).each(function(g) {
 			_.T.line(g.x1, g.y1, g.x2, g.y2, glw, _.get('grid_color'));
 		});
-
+		
 		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), _.get('axis'), false, _.get('shadow'));
 
 		_.scale.each(function(s) {
@@ -6123,14 +6136,14 @@ $.Column2D = $.extend($.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(),S = _.coo.getScale(_.get('scaleAlign')), bs = _.coo.get('brushsize'), H = _.coo.get(_.H), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), h;
+		var _ = this._(),S = _.coo.getScale(_.get('scaleAlign')), H = _.coo.get(_.H), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), h;
 		
 		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
 			_.doParse(_,d, i, {
 				id : i,
 				originx :_.x + _.get('hispace') + i * gw,
-				originy : _.y + H - h - bs,
+				originy : _.y + H - h,
 				height : h
 			});
 			_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
@@ -6260,7 +6273,7 @@ $.ColumnMulti2D = $.extend($.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), bs = _.coo.get('brushsize'), gw = _.data.length * bw + _.get('hispace'), h;
+		var S = _.coo.getScale(_.get('scaleAlign')),gw = _.data.length * bw + _.get('hispace'), h;
 
 		/**
 		 * quick config to all rectangle
@@ -6273,7 +6286,7 @@ $.ColumnMulti2D = $.extend($.Column, {
 				_.doParse(_, d, j, {
 					id : i + '-' + j,
 					originx : _.x + _.get('hispace') + j * bw + i * gw,
-					originy : _.y + H - h - bs,
+					originy : _.y + H - h,
 					height : h
 				});
 				_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), this));

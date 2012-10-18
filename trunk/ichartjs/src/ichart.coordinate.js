@@ -143,7 +143,6 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			_.items.each(function(item) {
 				_.T.line(item.x0, item.y0, item.x1, item.y1, _.get('scale_size'), _.get('scale_color'), false);
 			});
-
 		_.labels.each(function(l) {
 			l.draw();
 		});
@@ -531,12 +530,8 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		}
 
 		var glw = _.get('grid_line_width'), v = _.get('alternate_direction') == 'v';
-
+		
 		_.gridlines.each(function(g) {
-			g.x1 = Math.round(g.x1);
-			g.y1 = Math.round(g.y1);
-			g.x2 = Math.round(g.x2);
-			g.y2 = Math.round(g.y2);
 			if (_.get('alternate_color')) {
 				if (f) {
 					if (v)
@@ -548,9 +543,10 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 				y = g.y1;
 				f = !f;
 			}
+		}).each(function(g) {
 			_.T.line(g.x1, g.y1, g.x2, g.y2, glw, _.get('grid_color'));
 		});
-
+		
 		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), _.get('axis'), false, _.get('shadow'));
 
 		_.scale.each(function(s) {

@@ -43,7 +43,7 @@ iChart.ColumnMulti2D = iChart.extend(iChart.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), bs = _.coo.get('brushsize'), gw = _.data.length * bw + _.get('hispace'), h;
+		var S = _.coo.getScale(_.get('scaleAlign')),gw = _.data.length * bw + _.get('hispace'), h;
 
 		/**
 		 * quick config to all rectangle
@@ -56,7 +56,7 @@ iChart.ColumnMulti2D = iChart.extend(iChart.Column, {
 				_.doParse(_, d, j, {
 					id : i + '-' + j,
 					originx : _.x + _.get('hispace') + j * bw + i * gw,
-					originy : _.y + H - h - bs,
+					originy : _.y + H - h,
 					height : h
 				});
 				_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), this));

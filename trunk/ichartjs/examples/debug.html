@@ -49,104 +49,63 @@
 			margin-top:10px;
 			text-align: center;
 		}
-		#myCanvas div{
+		#canvasDiv div{
 			margin:0px auto;
 		}
 	</style>
 	<script type="text/javascript">
-	var data = [
-	         	{
-	         		name : 'DPS01A',
-	         		value:[45,52,54,74,90,84],
-	         		color:'#1f7e92',
-	         		linewidth:1
-	         	},
-	         	{
-	         		name : 'DPS01B',
-	         		value:[60,80,105,125,108,120],
-	         		color:'#2b7f39',
-	         		linewidth:1
-	         	}
-	         ];
+	$(function(){
+		var data = [
+		        	{name : 'IE',value : 59863.73,color:'#a5c2d5'},
+		        	{name : 'Chrome',value : 39263.72,color:'#cbab4f'},
+		        	{name : 'Firefox',value : 49863.11,color:'#76a871'},
+		        	{name : 'Safari',value : 52243.82,color:'#9f7961'},
+		        	{name : 'Opera',value : 19833.78,color:'#a56f8f'},
+		        	{name : 'Other',value : 39863.12,color:'#6f83a5'}
+	        	];
 
-	 var data1 = [
-	        	{name : 'Firefox10',value : 20,color:'#76a871'},
-	        	{name : 'Safari',value : 30,color:'#9f7961'},
-	        	{name : 'Opera',value : 21,color:'#a56f8f'},
-	        	{name : 'Opera',value : 24,color:'#a56f8f'},
-	        	{name : 'Other',value : 28,color:'#6f83a5'}
-        	];
-	 var data2 = [
+		var data1 = [
 		         	{
-		         		name : '北京',
-		         		value:[8,12,14,20,26,28,30,26,28,20,16,10],
-		         		color:'#1f7e92'
+		         		name : 'DPS01A',
+		         		value:[59863.73,5200,5400,2374,3490,4584],
+		         		color:'#1f7e92',
+		         		linewidth:1
+		         	},
+		         	{
+		         		name : 'DPS01B',
+		         		value:[6560,59863.73,5105,5125,2108,2120],
+		         		color:'#2b7f39',
+		         		linewidth:1
 		         	}
-	         ];	
-     
-	 $(function(){
-			new iChart.Pie3D({
-					render : 'canvasDiv',
-					data: data1,
-					title : 'Average Temperature Of 2012',
-					width : 800,
-					height : 400,
-					tip:{
-						enable:true
-					},
-					showpercent:true,
-					//animation:true,
-					listeners :{
-						parseTipText:function(d,v,i){
-							return true;
+		         ];
+        
+		new iChart.Column2D({
+			render : 'canvasDiv',
+			data: data,
+			labels:["一月","二月","三月","四月","五月","六月"],
+			title : 'Top 5 Browsers from 1 to 29 Feb 2012',
+			width : 800,
+			height : 400,
+			fit:true,
+			coordinate:{
+				scale:[{
+					 position:'left',	
+					 start_scale:0,
+					 end_scale:80000,
+					 scale_space:5000,
+					 listeners:{
+						parseText:function(t,x,y){
+							return {text:(t/10000)+"万"}
 						}
-					},
-					sub_option:{
-						listeners :{
-							parseText:function(r,v){
-								return v+"-ABC";
-							}
-						},
-						label:{
-							fontsize:12
-						}
-					},
-					coordinate : {
-						height:260,
-						text_space:10
-					},
-					label:{
-						rotate:-45,
-						fontsize:10,
-						color:'red',
-						textAlign:'right',
-						textBaseline:'middle'
-					},
-					//labels:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]
-					labels:["一月","二月","三月","四月","五月","六月"]
-				}).draw();
-		});
-	
-	function color(){
-		return '#'+('00000'+(Math.random()*0x1000000<<0).toString(16)).slice(-6);
-	}
-	
-	function test(){
-		data.push({name : 'NEWS',value : 7,color:color()});
-		chart.push('data',data);
-		chart.push('coordinate.height',220);
-		chart.push('title.text','All Test Passed');
-		chart.push('footnote.text','test');
-		chart.setUp();
-		chart.draw();
-	}
+					}
+				}]
+			}
+		}).draw();
+});
 	
 	</script>
 	</head>
 	<body>
-		<div><a href="../index.html">Home</a>&nbsp;Sample</div>
-		<br>
-		<input type="button" value="test" onclick="test()"/>
 		<div id='canvasDiv' ></div>
 	</body>
 </html>
