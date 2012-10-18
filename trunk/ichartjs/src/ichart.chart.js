@@ -1242,7 +1242,7 @@
 			
 			$.Assert.isArray(_.data);
 				
-			_.T.strokeStyle(true,_.get('brushsize'), _.get('strokeStyle'), _.get('lineJoin'));
+			_.T.strokeStyle(true,0, _.get('strokeStyle'), _.get('lineJoin'));
 
 			_.processAnimation = _.get('animation');
 			

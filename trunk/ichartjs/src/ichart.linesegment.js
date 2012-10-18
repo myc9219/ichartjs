@@ -19,6 +19,10 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 
 		this.set({
 			/**
+			 * @cfg {Number} Specifies the default linewidth of the canvas's context in this element.(defaults to 1)
+			 */
+			brushsize : 1,
+			/**
 			 * @cfg {Boolean} If true there show a point when Line-line intersection(default to true)
 			 */
 			intersection : true,
