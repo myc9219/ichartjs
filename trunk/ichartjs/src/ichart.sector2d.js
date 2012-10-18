@@ -67,7 +67,7 @@
 			var _ = this._();
 			_.r = _.get('radius');
 			
-			iChart.Assert.gtZero(_.r);
+			iChart.Assert.gt(_.r,0);
 			
 			if(_.get('donutwidth')>_.r){
 				_.push('donutwidth',0);

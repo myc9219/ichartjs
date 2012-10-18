@@ -160,7 +160,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	},
 	doConfig : function() {
 		iChart.Pie.superclass.doConfig.call(this);
-		iChart.Assert.gtZero(this.total, 'this.total');
+		iChart.Assert.gt(this.total,0,'this.total');
 		
 		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44;
 		
