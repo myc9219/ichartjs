@@ -64,6 +64,7 @@ iChart.Element = function(config) {
 		 */
 		shadow_offsety : 0
 	});
+	
 	/**
 	 * variable for short
 	 */
