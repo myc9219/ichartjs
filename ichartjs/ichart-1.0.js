@@ -2,7 +2,9 @@
  * ichartjs Library v1.0 http://www.ichartjs.com/
  * 
  * @author wanghe
- * @Copyright 2012 wanghetommy@gmail.com Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * @Copyright 2012 wanghetommy@gmail.com Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 ;
 (function(window) {
@@ -535,11 +537,10 @@
 			},
 			/**
 			 * obtain the Dom Document
-			 */
 			getDoc : function() {
 				var doc = window.contentWindow ? window.contentWindow.document : window.contentDocument ? window.contentDocument : window.document;
 				return doc;
-			},
+			},*/
 			/**
 			 * define the interface,the subclass must implement it
 			 */
@@ -565,9 +566,6 @@
 			plugin : function(t, m, f) {
 				if (_.isFunction(t))
 					t.plugin(m, f);
-			},
-			isLR:function(g){
-				return g=='left' || g=='right';
 			},
 			parsePadding : function(s, d) {
 				if (_.isNumber(s))
@@ -749,10 +747,8 @@
 			FRAME : isMobile ? 30 : 60,
 			DefaultAA : 'Cubic'
 		});
+		
 		_.Assert = {
-			gtZero : function(v, n) {
-				_.Assert.gt(v, 0, n);
-			},
 			gt : function(v, c, n) {
 				if (!_.isNumber(v) && v >= c)
 					throw new Error(n + " required Number gt " + c + ",given:" + v);
@@ -767,10 +763,6 @@
 			},
 			isTrue : function(v, cause) {
 				if (v !== true)
-					throw new Error(cause);
-			},
-			equal : function(v1, v2, cause) {
-				if (v1 !== v2)
 					throw new Error(cause);
 			}
 		};
@@ -3381,7 +3373,7 @@ $.Label = $.extend($.Component, {
 		commonDraw : function(_) {
 			$.Assert.isTrue(_.RENDERED, _.type + ' has not rendered.');
 			$.Assert.isTrue(_.initialization, _.type + ' has initialize failed.');
-			$.Assert.gtZero(_.data.length, _.type + '\'s data is empty.');
+			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty.');
 			
 			/**
 			 * console.time('Test for draw');
@@ -4520,7 +4512,7 @@ $.Coordinate2D = $.extend($.Component, {
 		}
 		if (vg) {
 			var gv = _.get('grids.vertical');
-			$.Assert.gtZero(gv['value'], 'value');
+			$.Assert.gt(gv['value'],0, 'value');
 			var d = w / gv['value'], n = gv['value'];
 			if (gv['way'] == 'given_value') {
 				n = d;
@@ -4542,7 +4534,7 @@ $.Coordinate2D = $.extend($.Component, {
 		}
 		if (hg) {
 			var gh = _.get('grids.horizontal');
-			$.Assert.gtZero(gh['value'], 'value');
+			$.Assert.gt(gh['value'],0,'value');
 			var d = h / gh['value'], n = gh['value'];
 			if (gh['way'] == 'given_value') {
 				n = d;
@@ -4829,7 +4821,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		doConfig:function(){
 			$.Rectangle.superclass.doConfig.call(this);
 			var _ = this._(),v = _.variable.event,vA=_.get('valueAlign');
-			$.Assert.gtZero(_.get(_.W),_.W);
+			$.Assert.gt(_.get(_.W),0,_.W);
 			
 			/**
 			 * mouseover light
@@ -5176,12 +5168,13 @@ $.Sector = $.extend($.Component, {
 	 * @return object
 	 */
 	getDimension : function() {
+		var _ = this._();
 		return {
-			x : this.x,
-			x : this.y,
-			startAngle : this.get("startAngle"),
-			middleAngle : this.get("middleAngle"),
-			endAngle : this.get("endAngle")
+			x : _.x,
+			x : _.y,
+			startAngle : _.get("startAngle"),
+			middleAngle : _.get("middleAngle"),
+			endAngle : _.get("endAngle")
 		}
 	},
 	doDraw : function(_) {
@@ -5354,7 +5347,7 @@ $.Sector = $.extend($.Component, {
 			var _ = this._();
 			_.r = _.get('radius');
 			
-			$.Assert.gtZero(_.r);
+			$.Assert.gt(_.r,0);
 			
 			if(_.get('donutwidth')>_.r){
 				_.push('donutwidth',0);
@@ -5474,8 +5467,8 @@ $.Sector = $.extend($.Component, {
 			_.b = _.get('semi_minor_axis');
 			_.h = _.get('cylinder_height');
 			
-			$.Assert.gtZero(_.a);
-			$.Assert.gtZero(_.b);
+			$.Assert.gt(_.a,0);
+			$.Assert.gt(_.b,0);
 			
 			_.pushIf('increment',$.lowTo(5,_.a/8));
 			
@@ -5673,7 +5666,7 @@ $.Pie = $.extend($.Chart, {
 	},
 	doConfig : function() {
 		$.Pie.superclass.doConfig.call(this);
-		$.Assert.gtZero(this.total, 'this.total');
+		$.Assert.gt(this.total,0,'this.total');
 		
 		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44;
 		
@@ -6709,7 +6702,7 @@ $.LineSegment = $.extend($.Component, {
 	},
 	doConfig : function() {
 		$.LineSegment.superclass.doConfig.call(this);
-		$.Assert.gtZero(this.get('point_space'), 'point_space');
+		$.Assert.gt(this.get('point_space'),0,'point_space');
 
 		var _ = this._(),L = !!_.get('label'),ps = _.get('point_size') * 3 / 2,sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points');
 		

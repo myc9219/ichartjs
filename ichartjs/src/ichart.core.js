@@ -2,7 +2,9 @@
  * ichartjs Library v1.0 http://www.ichartjs.com/
  * 
  * @author wanghe
- * @Copyright 2012 wanghetommy@gmail.com Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * @Copyright 2012 wanghetommy@gmail.com Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 ;
 (function(window) {
@@ -535,11 +537,10 @@
 			},
 			/**
 			 * obtain the Dom Document
-			 */
 			getDoc : function() {
 				var doc = window.contentWindow ? window.contentWindow.document : window.contentDocument ? window.contentDocument : window.document;
 				return doc;
-			},
+			},*/
 			/**
 			 * define the interface,the subclass must implement it
 			 */
@@ -565,9 +566,6 @@
 			plugin : function(t, m, f) {
 				if (_.isFunction(t))
 					t.plugin(m, f);
-			},
-			isLR:function(g){
-				return g=='left' || g=='right';
 			},
 			parsePadding : function(s, d) {
 				if (_.isNumber(s))
@@ -749,10 +747,8 @@
 			FRAME : isMobile ? 30 : 60,
 			DefaultAA : 'Cubic'
 		});
+		
 		_.Assert = {
-			gtZero : function(v, n) {
-				_.Assert.gt(v, 0, n);
-			},
 			gt : function(v, c, n) {
 				if (!_.isNumber(v) && v >= c)
 					throw new Error(n + " required Number gt " + c + ",given:" + v);
@@ -767,10 +763,6 @@
 			},
 			isTrue : function(v, cause) {
 				if (v !== true)
-					throw new Error(cause);
-			},
-			equal : function(v1, v2, cause) {
-				if (v1 !== v2)
 					throw new Error(cause);
 			}
 		};

@@ -954,7 +954,7 @@
 		commonDraw : function(_) {
 			$.Assert.isTrue(_.RENDERED, _.type + ' has not rendered.');
 			$.Assert.isTrue(_.initialization, _.type + ' has initialize failed.');
-			$.Assert.gtZero(_.data.length, _.type + '\'s data is empty.');
+			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty.');
 			
 			/**
 			 * console.time('Test for draw');

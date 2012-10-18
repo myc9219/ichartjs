@@ -92,8 +92,8 @@
 			_.b = _.get('semi_minor_axis');
 			_.h = _.get('cylinder_height');
 			
-			iChart.Assert.gtZero(_.a);
-			iChart.Assert.gtZero(_.b);
+			iChart.Assert.gt(_.a,0);
+			iChart.Assert.gt(_.b,0);
 			
 			_.pushIf('increment',iChart.lowTo(5,_.a/8));
 			

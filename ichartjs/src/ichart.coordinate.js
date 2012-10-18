@@ -688,7 +688,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		}
 		if (vg) {
 			var gv = _.get('grids.vertical');
-			iChart.Assert.gtZero(gv['value'], 'value');
+			iChart.Assert.gt(gv['value'],0, 'value');
 			var d = w / gv['value'], n = gv['value'];
 			if (gv['way'] == 'given_value') {
 				n = d;
@@ -710,7 +710,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		}
 		if (hg) {
 			var gh = _.get('grids.horizontal');
-			iChart.Assert.gtZero(gh['value'], 'value');
+			iChart.Assert.gt(gh['value'],0,'value');
 			var d = h / gh['value'], n = gh['value'];
 			if (gh['way'] == 'given_value') {
 				n = d;
