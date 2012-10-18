@@ -125,12 +125,13 @@ iChart.Sector = iChart.extend(iChart.Component, {
 	 * @return object
 	 */
 	getDimension : function() {
+		var _ = this._();
 		return {
-			x : this.x,
-			x : this.y,
-			startAngle : this.get("startAngle"),
-			middleAngle : this.get("middleAngle"),
-			endAngle : this.get("endAngle")
+			x : _.x,
+			x : _.y,
+			startAngle : _.get("startAngle"),
+			middleAngle : _.get("middleAngle"),
+			endAngle : _.get("endAngle")
 		}
 	},
 	doDraw : function(_) {
@@ -210,12 +211,12 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		});
 		
 		_.on('beforedraw', function() {
-			_.x = _.get('originx');
-			_.y = _.get('originy');
+			_.x = _.get(_.X);
+			_.y = _.get(_.Y);
 			if (v.status != _.expanded) {
 				_.fireEvent(_, 'changed', [_, _.expanded]);
 				if (f)
-					_.label.doLayout(_.get('inc_x') * (_.expanded ? 1 : -1), -_.get('inc_y') * (_.expanded ? 1 : -1));
+					_.label.doLayout(_.get('inc_x') * (_.expanded ? 1 : -1), -_.get('inc_y') * (_.expanded ? 1 : -1),_.label);
 			}
 			v.status = _.expanded;
 			if (_.expanded) {

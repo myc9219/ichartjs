@@ -124,21 +124,21 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		}
 	},
 	localizer : function(la) {
-		var d = this.get('layout_distance');
+		var _ = this._(),d = _.get('layout_distance');
 		/**
 		 * Did the code optimal?,did need to enhance so that the label can fit the continar?
 		 */
-		this.sectors.each(function(s, i) {
+		_.sectors.each(function(s, i) {
 			if(!s.isLabel())return;
 			var l = s.label, x = l.labelx, y = l.labely;
-			if ((la.labely <= y && (y - la.labely-1) < la.get('height')) || (la.labely > y && (la.labely - y-1) < l.get('height'))) {
-				if ((la.labelx < x && (x - la.labelx) < la.get(this.W)) || (la.labelx > x && (la.labelx - x) < l.get(this.W))) {
-					la.push('labely', (la.get('labely')+ y - la.labely) + (la.get('height')  + d)*((la.get('quadrantd') == 2)?-1:1));
+			if ((la.labely <= y && (y - la.labely-1) < la.get(_.H)) || (la.labely > y && (la.labely - y-1) < l.get(_.H))) {
+				if ((la.labelx < x && (x - la.labelx) < la.get(_.W)) || (la.labelx > x && (la.labelx - x) < l.get(_.W))) {
+					la.push('labely', (la.get('labely')+ y - la.labely) + (la.get(_.H)  + d)*((la.get('quadrantd') == 2)?-1:1));
 					la.push('line_points', la.get('line_points').concat({x:la.get('labelx'),y:la.get('labely')}));
-					la.localizer();
+					la.localizer(la);
 				}
 			}
-		}, this);
+		}, _);
 	},
 	doParse : function(_,d, i) {
 		var t = d.name + ' ' +_.getPercent(d.value);
@@ -152,11 +152,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			_.fireEvent(_, st ? 'bound' : 'rebound', [_, se.get('name')]);
 		});
 		
-		var s = this.doSector(d);
-		if (s.isLabel() && this.get('intellectLayout')) {
-			this.localizer(s.label);
+		var s = _.doSector(d);
+		if (s.isLabel() && _.get('intellectLayout')) {
+			_.localizer(s.label);
 		}
-		this.sectors.push(s);
+		_.sectors.push(s);
 	},
 	doConfig : function() {
 		iChart.Pie.superclass.doConfig.call(this);
@@ -202,16 +202,16 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		/**
 		 * calculate pie chart's alignment
 		 */
-		if (_.get('align') == 'left') {
-			_.push('originx', r + _.get('l_originx') + _.get('offsetx'));
-		} else if (_.get('align') == 'right') {
-			_.push('originx', _.get('r_originx') - r + _.get('offsetx'));
+		if (_.get('align') == _.L) {
+			_.push(_.X, r + _.get('l_originx') + _.get('offsetx'));
+		} else if (_.get('align') == _.R) {
+			_.push(_.X, _.get('r_originx') - r + _.get('offsetx'));
 		} else {
-			_.push('originx', _.get('centerx') + _.get('offsetx'));
+			_.push(_.X, _.get('centerx') + _.get('offsetx'));
 		}
-		_.push('originy', _.get('centery') + _.get('offsety'));
+		_.push(_.Y, _.get('centery') + _.get('offsety'));
 		
-		iChart.apply(_.get('sub_option'),iChart.clone(['originx', 'originy', 'bound_event','mutex','increment'], _.options));
+		iChart.apply(_.get('sub_option'),iChart.clone([_.X, _.Y, 'bound_event','mutex','increment'], _.options));
 		
 	}
 });

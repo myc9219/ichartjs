@@ -26,8 +26,8 @@
 		drawRectangle:function(){
 			var _ = this._();
 			_.T.box(
-				_.get('originx'),
-				_.get('originy'),
+				_.get(_.X),
+				_.get(_.Y),
 				_.get(_.W),
 				_.get(_.H),
 				_.get('border'),
@@ -52,17 +52,17 @@
 		doConfig:function(){
 			iChart.Rectangle2D.superclass.doConfig.call(this);
 			var _ = this._(),tipAlign = _.get('tipAlign');
-			if(tipAlign=='left'||tipAlign=='right'){
+			if(tipAlign==_.L||tipAlign==_.R){
 				_.tipY = function(w,h){return _.get('centery') - h/2;};
 			}else{
 				_.tipX = function(w,h){return _.get('centerx') -w/2;};
 			}
 			
-			if(tipAlign=='left'){
+			if(tipAlign==_.L){
 				_.tipX = function(w,h){return _.x - _.get('value_space') -w;};
-			}else if(tipAlign=='right'){
+			}else if(tipAlign==_.R){
 				_.tipX = function(w,h){return _.x + _.width + _.get('value_space');};
-			}else if(tipAlign=='bottom'){
+			}else if(tipAlign==_.B){
 				_.tipY = function(w,h){return _.y  +_.height+3;};
 			}else{
 				_.tipY = function(w,h){return _.y  - h -3;};

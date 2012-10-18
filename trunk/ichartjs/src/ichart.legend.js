@@ -169,7 +169,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		//_.push('border.radius',5); ??
 		_.T.box(_.x, _.y, _.width, _.height, _.get('border'), _.get('f_color'), false, _.get('shadow'));
 
-		_.T.textStyle('left', 'middle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
+		_.T.textStyle(_.L, 'middle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
 
 		var x = _.x + _.get('padding_left'), y = _.y + _.get('padding_top'), text, c = _.get('column'), r = _.get('row');
 
@@ -195,16 +195,16 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		/**
 		 * if the position is incompatible,rectify it.
 		 */
-		if (_.get('align') == 'center' && _.get('valign') == 'middle') {
-			_.push('valign', 'top');
+		if (_.get('align') == _.C && _.get('valign') == 'middle') {
+			_.push('valign', _.O);
 		}
 
 		/**
 		 * if this position incompatible with container,rectify it.
 		 */
-		if (g.get('align') == 'left') {
+		if (g.get('align') == _.L) {
 			if (_.get('valign') == 'middle') {
-				_.push('align', 'right');
+				_.push('align', _.R);
 			}
 		}
 
@@ -266,26 +266,26 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		_.push('textwidth', w - _.get('hpadding') - _.get('signwidth'));
 
 		_.width = w;
-		_.height = h = _.push('height', r * _.get('line_height') + _.get('vpadding'));
+		_.height = h = _.push(_.H, r * _.get('line_height') + _.get('vpadding'));
 
-		if (_.get('valign') == 'top') {
+		if (_.get('valign') == _.O) {
 			_.y = g.get('t_originy');
-		} else if (_.get('valign') == 'bottom') {
+		} else if (_.get('valign') == _.B) {
 			_.y = g.get('b_originy') - h;
 		} else {
 			_.y = g.get('centery') - h / 2;
 		}
 
-		if (_.get('align') == 'left') {
+		if (_.get('align') == _.L) {
 			_.x = g.get('l_originx');
-		} else if (_.get('align') == 'center') {
+		} else if (_.get('align') == _.C) {
 			_.x = g.get('centerx') - _.get('textwidth') / 2;
 		} else {
 			_.x = g.get('r_originx') - w;
 		}
 
-		_.x = _.push('originx', _.x + _.get('offsetx'));
-		_.y = _.push('originy', _.y + _.get('offsety'));
+		_.x = _.push(_.X, _.x + _.get('offsetx'));
+		_.y = _.push(_.Y, _.y + _.get('offsety'));
 
 	}
 });/** @end */

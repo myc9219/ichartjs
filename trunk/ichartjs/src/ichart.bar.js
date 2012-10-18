@@ -122,8 +122,8 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		 * quick config to all rectangle
 		 */
 		_.push('sub_option.height', bh);
-		_.push('sub_option.valueAlign', 'right');
-		_.push('sub_option.tipAlign', 'right');
+		_.push('sub_option.valueAlign', _.R);
+		_.push('sub_option.tipAlign', _.R);
 		_.push('sub_option.originx', _.x + _.coo.get('brushsize'));
 
 	}

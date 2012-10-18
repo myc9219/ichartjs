@@ -42,7 +42,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		_.push('sub_option.semi_major_axis', _.r);
 		_.push('sub_option.semi_minor_axis', _.r * z / 90);
 		_.push('sub_option.semi_major_axis', _.r);
-		_.push('sub_option.originy', _.get('originy') - _.get('yHeight') / 2);
+		_.push('sub_option.originy', _.get(_.Y) - _.get('yHeight') / 2);
 
 		_.data.each(function(d, i) {
 			_.doParse(_,d, i);

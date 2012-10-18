@@ -70,7 +70,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 	},
 	isEventValid : function(e,_) {
 		return {
-			valid : iChart.inRange(_.labelx, _.labelx + _.get(_.W), e.x) && iChart.inRange(_.labely, _.labely + _.get('height'), e.y)
+			valid : iChart.inRange(_.labelx, _.labelx + _.get(_.W), e.x) && iChart.inRange(_.labely, _.labely + _.get(_.H), e.y)
 		};
 	},
 	text : function(text) {
@@ -78,13 +78,12 @@ iChart.Label = iChart.extend(iChart.Component, {
 			this.push('text', text);
 		this.push(this.W, this.T.measureText(this.get('text')) + this.get('hpadding') + this.get('sign_size') + this.get('sign_space'));
 	},
-	localizer : function() {
-		var Q = this.get('quadrantd');
-		this.labelx = (Q >= 1 && Q <= 2) ? (this.get('labelx') - this.get(this.W)) : this.get('labelx');
-		this.labely = Q >= 2 ? (this.get('labely') - this.get('height')) : this.get('labely');
+	localizer : function(_) {
+		var Q = _.get('quadrantd');
+		_.labelx = (Q >= 1 && Q <= 2) ? (_.get('labelx') - _.get(_.W)) : _.get('labelx');
+		_.labely = Q >= 2 ? (_.get('labely') - _.get(_.H)) : _.get('labely');
 	},
-	doLayout : function(x, y) {
-		var _ = this._();
+	doLayout : function(x, y,_) {
 		_.push('labelx', _.get('labelx') + x);
 		_.push('labely', _.get('labely') + y);
 		_.get('line_points').each(function(p) {
@@ -93,14 +92,13 @@ iChart.Label = iChart.extend(iChart.Component, {
 		}, _);
 	},
 	doDraw : function(_){
-		_.localizer();
-		
+		_.localizer(_);
 		var p = _.get('line_points'), ss = _.get('sign_size'), x = _.labelx + _.get('padding_left'), y = _.labely + _.get('padding_top');
 
 		_.T.lineArray(p, _.get('line_thickness'), _.get('border.color'));
-		_.T.box(_.labelx, _.labely, _.get(_.W), _.get('height'), _.get('border'), _.get('f_color'), false, _.get('shadow'), _.get('shadow_color'), _.get('shadow_blur'), _.get('shadow_offsetx'), _.get('shadow_offsety'));
+		_.T.box(_.labelx, _.labely, _.get(_.W), _.get(_.H), _.get('border'), _.get('f_color'), false, _.get('shadow'), _.get('shadow_color'), _.get('shadow_blur'), _.get('shadow_offsetx'), _.get('shadow_offsety'));
 
-		_.T.textStyle('left', 'top', _.get('fontStyle'));
+		_.T.textStyle(_.L, _.O, _.get('fontStyle'));
 
 		var textcolor = _.get('color');
 		if (_.get('text_with_sign_color')) {
@@ -123,11 +121,11 @@ iChart.Label = iChart.extend(iChart.Component, {
 			_.push('line_height', _.get('fontsize'));
 		}
 
-		_.push('height', _.get('line_height') + _.get('vpadding'));
+		_.push(_.H, _.get('line_height') + _.get('vpadding'));
 
 		_.text();
 
-		_.localizer();
+		_.localizer(_);
 
 	}
 });

@@ -76,8 +76,8 @@
 			
 			var _ = this._();
 			
-			_.top = iChart.fixPixel(_.get('top'));
-			_.left = iChart.fixPixel(_.get('left'));
+			_.top = iChart.fixPixel(_.get(_.O));
+			_.left = iChart.fixPixel(_.get(_.L));
 			
 			_.dom = document.createElement("div");
 			
@@ -88,8 +88,8 @@
 			 */
 			_.dom.style.width= iChart.toPixel(0);
 			_.dom.style.height=iChart.toPixel(0);
-			_.dom.style.top=iChart.toPixel(_.get('top'));
-			_.dom.style.left=iChart.toPixel(_.get('left'));
+			_.dom.style.top=iChart.toPixel(_.get(_.O));
+			_.dom.style.left=iChart.toPixel(_.get(_.L));
 			_.css('visibility','hidden');
 			
 			_.horizontal = document.createElement("div");
@@ -101,7 +101,7 @@
 			_.horizontal.style.position="absolute";
 			
 			_.vertical.style.width= iChart.toPixel(_.get('line_width'));
-			_.vertical.style.height = iChart.toPixel(_.get('height'));
+			_.vertical.style.height = iChart.toPixel(_.get(_.H));
 			_.vertical.style.backgroundColor = _.get('line_color');
 			_.vertical.style.position="absolute";
 			_.dom.appendChild(_.horizontal);

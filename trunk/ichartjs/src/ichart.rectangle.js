@@ -97,28 +97,28 @@
 			iChart.taylor.light(_,v);
 			
 			_.width = _.get(_.W);
-			_.height = _.get('height');
+			_.height = _.get(_.H);
 			
 			var x = _.push('centerx',_.x + _.width/2),
 				y = _.push('centery',_.y + _.height/2),
-				a = 'center',
+				a = _.C,
 				b = 'middle',
 				s=_.get('value_space');
 			
 			_.push('value',_.fireString(_, 'parseText', [_, _.get('value')], _.get('value')));
 			
-			if(vA=='left'){
-				a = 'right';
+			if(vA==_.L){
+				a = _.R;
 				x = _.x - s;
-			}else if(vA=='right'){
-				a = 'left';
+			}else if(vA==_.R){
+				a = _.L;
 				x =_.x + _.width + s;
-			}else if(vA=='bottom'){
+			}else if(vA==_.B){
 				y = _.y  + _.height + s;
-				b = 'top';
+				b = _.O;
 			}else{
 				y = _.y  - s;
-				b = 'bottom';
+				b = _.B;
 			}
 			
 			if(_.get('label')){

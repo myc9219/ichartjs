@@ -67,13 +67,15 @@ iChart.Element = function(config) {
 	/**
 	 * variable for short
 	 */
-	_.B = 'bottom';
+	_.W = 'width';
 	_.H = 'height';
+	_.O = 'top';
+	_.B = 'bottom';
 	_.L = 'left';
 	_.R = 'right';
-	_.O = 'top';
-	_.W = 'width';
-	
+	_.C = 'center';
+	_.X = 'originx';
+	_.Y = 'originy';
 	/**
 	 * the running variable cache
 	 */

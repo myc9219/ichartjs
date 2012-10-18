@@ -210,38 +210,38 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		_.isH = _.get('which') == 'h';
 
 		if (_.isH) {
-			if (sa == 'top') {
+			if (sa == _.O) {
 				y0 = -w;
-			} else if (sa == 'center') {
+			} else if (sa == _.C) {
 				y0 = -w2;
 				y1 = w2;
 			} else {
 				y1 = w;
 			}
 
-			if (ta == 'top') {
+			if (ta == _.O) {
 				ty = -ts;
-				tbl = 'bottom';
+				tbl = _.B;
 			} else {
 				ty = ts;
-				tbl = 'top';
+				tbl = _.O;
 			}
-			ta = 'center';
+			ta = _.C;
 		} else {
-			if (sa == 'left') {
+			if (sa == _.L) {
 				x0 = -w;
-			} else if (sa == 'center') {
+			} else if (sa == _.C) {
 				x0 = -w2;
 				x1 = w2;
 			} else {
 				x1 = w;
 			}
 			tbl = 'middle';
-			if (ta == 'right') {
-				ta = 'left';
+			if (ta == _.R) {
+				ta = _.L;
 				tx = ts;
 			} else {
-				ta = 'right';
+				ta = _.R;
 				tx = -ts;
 			}
 		}
@@ -283,8 +283,8 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		}
 
 		/**
-		 * what does follow code doing? _.left = _.right = _.top = _.bottom = 0; var ts = _.get('text_space'), ta = _.get('textAlign'), sa = _.get('scaleAlign'), w = _.get('scale_width'), w2 = w / 2; if (_.isH) { if (sa == 'top') { _.top = w; } else if (sa == 'center') { _.top =
-		 * w2; } else { _.top = 0; } _.bottom = w - _.top; if (ta == 'top') { _.top += _.get('text_height') + ts; } else { _.bottom += _.get('text_height') + ts; } } else { if (sa == 'left') { _.left = w; } else if (sa == 'center') { _.left = w2; } else { _.left = 0; } _.right =
+		 * what does follow code doing? _.left = _.right = _.top = _.bottom = 0; var ts = _.get('text_space'), ta = _.get('textAlign'), sa = _.get('scaleAlign'), w = _.get('scale_width'), w2 = w / 2; if (_.isH) { if (sa == _.O) { _.top = w; } else if (sa == _.C) { _.top =
+		 * w2; } else { _.top = 0; } _.bottom = w - _.top; if (ta == _.O) { _.top += _.get('text_height') + ts; } else { _.bottom += _.get('text_height') + ts; } } else { if (sa == 'left') { _.left = w; } else if (sa == _.C) { _.left = w2; } else { _.left = 0; } _.right =
 		 * w - _.left; if (ta == 'left') { _.left += maxwidth + ts; } else { _.right += maxwidth + ts; } }
 		 */
 	}
@@ -340,16 +340,16 @@ iChart.Coordinate = {
 		/**
 		 * calculate chart's alignment
 		 */
-		if (_.get('align') == 'left') {
-			_.push('originx', _.get('l_originx'));
-		} else if (_.get('align') == 'right') {
-			_.push('originx', _.get('r_originx') - w);
+		if (_.get('align') == _.L) {
+			_.push(_.X, _.get('l_originx'));
+		} else if (_.get('align') == _.R) {
+			_.push(_.X, _.get('r_originx') - w);
 		} else {
-			_.push('originx', _.get('centerx') - w / 2);
+			_.push(_.X, _.get('centerx') - w / 2);
 		}
 
-		_.push('originx', _.get('originx') + _.get('offsetx'));
-		_.push('originy', _.get('centery') - h / 2 + _.get('offsety'));
+		_.push(_.X, _.get(_.X) + _.get('offsetx'));
+		_.push(_.Y, _.get('centery') - h / 2 + _.get('offsety'));
 
 		if (!_.get('coordinate.valid_width') || _.get('coordinate.valid_width') > w) {
 			_.push('coordinate.valid_width', w);
@@ -362,11 +362,11 @@ iChart.Coordinate = {
 		/**
 		 * originx for short
 		 */
-		_.x = _.get('originx');
+		_.x = _.get(_.X);
 		/**
 		 * originy for short
 		 */
-		_.y = _.get('originy');
+		_.y = _.get(_.Y);
 
 		_.push('coordinate.originx', _.x);
 		_.push('coordinate.originy', _.y);
@@ -518,11 +518,11 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 	},
 	isEventValid : function(e,_) {
 		return {
-			valid : e.x > _.x && e.x < (_.x + _.get(_.W)) && e.y < _.y + _.get('height') && e.y > _.y
+			valid : e.x > _.x && e.x < (_.x + _.get(_.W)) && e.y < _.y + _.get(_.H) && e.y > _.y
 		};
 	},
 	doDraw : function(_) {
-		_.T.box(_.x, _.y, _.get(_.W), _.get('height'), 0, _.get('f_color'));
+		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), 0, _.get('f_color'));
 		if (_.get('alternate_color')) {
 			var x, y, f = false, axis = [0, 0, 0, 0], c = iChart.dark(_.get('background_color'), _.get('alternate_color_factor'));
 			if (_.get('axis.enable')) {
@@ -551,7 +551,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			_.T.line(g.x1, g.y1, g.x2, g.y2, glw, _.get('grid_color'));
 		});
 
-		_.T.box(_.x, _.y, _.get(_.W), _.get('height'), _.get('axis'), false, _.get('shadow'));
+		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), _.get('axis'), false, _.get('shadow'));
 
 		_.scale.each(function(s) {
 			s.draw()
@@ -563,7 +563,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		var _ = this._();
 
 		iChart.Assert.isNumber(_.get(_.W), _.W);
-		iChart.Assert.isNumber(_.get('height'), 'height');
+		iChart.Assert.isNumber(_.get(_.H), _.H);
 
 		/**
 		 * this element not atomic because it is a container,so this is a particular case.
@@ -574,7 +574,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		 * apply the gradient color to f_color
 		 */
 		if (_.get('gradient') && iChart.isString(_.get('f_color'))) {
-			_.push('f_color', _.T.avgLinearGradient(_.x, _.y, _.x, _.y + _.get('height'), [_.get('dark_color'), _.get('light_color')]));
+			_.push('f_color', _.T.avgLinearGradient(_.x, _.y, _.x, _.y + _.get(_.H), [_.get('dark_color'), _.get('light_color')]));
 		}
 
 		if (_.get('axis.enable')) {
@@ -585,7 +585,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 
 		if (_.get('crosshair.enable')) {
 			_.push('crosshair.wrap', _.container.shell);
-			_.push('crosshair.height', _.get('height'));
+			_.push('crosshair.height', _.get(_.H));
 			_.push('crosshair.width', _.get(_.W));
 			_.push('crosshair.top', _.y);
 			_.push('crosshair.left', _.x);
@@ -593,7 +593,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			_.crosshair = new iChart.CrossHair(_.get('crosshair'), _);
 		}
 
-		var jp, cg = !!(_.get('gridlinesVisible') && _.get('grids')), hg = cg && !!_.get('grids.horizontal'), vg = cg && !!_.get('grids.vertical'), h = _.get('height'), w = _.get(_.W), vw = _.get('valid_width'), vh = _.get('valid_height'), k2g = _.get('gridlinesVisible')
+		var jp, cg = !!(_.get('gridlinesVisible') && _.get('grids')), hg = cg && !!_.get('grids.horizontal'), vg = cg && !!_.get('grids.vertical'), h = _.get(_.H), w = _.get(_.W), vw = _.get('valid_width'), vh = _.get('valid_height'), k2g = _.get('gridlinesVisible')
 				&& _.get('scale2grid') && !(hg && vg), sw = (w - vw) / 2, sh = (h - vh) / 2, axis = _.get('axis.width');
 
 		if (!iChart.isArray(_.get('scale'))) {
@@ -604,31 +604,31 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		}
 		_.get('scale').each(function(kd, i) {
 			jp = kd['position'];
-			jp = jp || 'left';
+			jp = jp || _.L;
 			jp = jp.toLowerCase();
-			kd['originx'] = _.x;
-			kd['originy'] = _.y;
+			kd[_.X] = _.x;
+			kd[_.Y] = _.y;
 			kd['valid_x'] = _.x + sw;
 			kd['valid_y'] = _.y + sh;
 			kd['position'] = jp;
 			/**
 			 * calculate coordinate,direction,distance
 			 */
-			if (jp == 'top') {
+			if (jp == _.O) {
 				kd['which'] = 'h';
 				kd['distance'] = w;
 				kd['valid_distance'] = vw;
-			} else if (jp == 'right') {
+			} else if (jp == _.R) {
 				kd['which'] = 'v';
 				kd['distance'] = h;
 				kd['valid_distance'] = vh;
-				kd['originx'] += w;
+				kd[_.X] += w;
 				kd['valid_x'] += vw;
-			} else if (jp == 'bottom') {
+			} else if (jp == _.B) {
 				kd['which'] = 'h';
 				kd['distance'] = w;
 				kd['valid_distance'] = vw;
-				kd['originy'] += h;
+				kd[_.Y] += h;
 				kd['valid_y'] += vh;
 			} else {
 				kd['which'] = 'v';
@@ -663,11 +663,11 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 					return;
 				}
 				x = y = 0;
-				if (p == 'top') {
+				if (p == _.O) {
 					y = h;
-				} else if (p == 'right') {
+				} else if (p == _.R) {
 					x = -w;
-				} else if (p == 'bottom') {
+				} else if (p == _.B) {
 					y = -h;
 				} else {
 					x = w;
@@ -823,7 +823,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 		});
 	},
 	doDraw : function(_) {
-		var w = _.get(_.W), h = _.get('height'), xa = _.get('xAngle_'), ya = _.get('yAngle_'), zh = _.get('zHeight'), offx = xa * zh, offy = ya * zh;
+		var w = _.get(_.W), h = _.get(_.H), xa = _.get('xAngle_'), ya = _.get('yAngle_'), zh = _.get('zHeight'), offx = xa * zh, offy = ya * zh;
 		/**
 		 * bottom
 		 */
@@ -847,7 +847,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 	doConfig : function() {
 		iChart.Coordinate3D.superclass.doConfig.call(this);
 
-		var _ = this._(), ws = _.get('wall_style'), bg = _.get('background_color'), c = iChart.dark(bg, 0.1), c1 = _.get('dark_color'), h = _.get('height'), w = _.get(_.W);
+		var _ = this._(), ws = _.get('wall_style'), bg = _.get('background_color'), c = iChart.dark(bg, 0.1), c1 = _.get('dark_color'), h = _.get(_.H), w = _.get(_.W);
 
 		if (ws.length < 3) {
 			ws = _.push('wall_style', [{
