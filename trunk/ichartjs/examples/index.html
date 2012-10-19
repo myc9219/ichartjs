@@ -43,8 +43,14 @@
 					autoOpen:false
 				});
 			});
-			function viewCode(html){
-				$pre.html($.trim(html));
+			var keyword = new RegExp("(var |true|false|function|new )","g");
+			var quote = new RegExp("'(.*?)'","g");
+			function viewCode(doc){
+				var scripts = doc.getElementsByTagName("script");	
+				var html = scripts[scripts.length-1].innerHTML;
+				html = html.replace(quote,"'<span class='ichartjs_string'>$1</span>'");	
+				html = html.replace(keyword,"<span class='ichartjs_keyword'>$1</span>");	
+				$pre.html(html);
 				$( "#ichartjs_codeview" ).dialog( "open" ) 
 			}
 		</script>
