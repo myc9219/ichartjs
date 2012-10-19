@@ -8,78 +8,77 @@
 		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
-					$(function(){
-						var flow=[];
-						for(var i=0;i<61;i++){
-							flow.push(Math.floor(Math.random()*(30+((i%12)*5)))+10);
-						}
-						
-						var data = [
-						         	{
-						         		name : 'PV',
-						         		value:flow,
-						         		color:'#0d8ecf',
-						         		linewidth:2
-						         	}
-						         ];
-						var labels = ["2012-08-01","2012-08-02","2012-08-03","2012-08-04","2012-08-05","2012-08-06"];
-						var line = new iChart.LineBasic2D({
-							render : 'canvasDiv',
-							data: data,
-							align:'center',
-							title : 'ichartjs官方网站最近5天PV流量趋势',
-							subtitle : '平均18:00-22:00访问量达到最大值(单位：万)',
-							footnote : '数据来源：模拟数据',
-							width : 800,
-							height : 400,
-							tip:{
-								enable:true,
-								shadow:true
-							},
-							legend : {
-								enable : true
-							},
-							crosshair:{
-								enable:true,
-								line_color:'#62bce9'
-							},
-							coordinate:{
-								width:640,
-								height:260,
-								axis:{
-									color:'#9f9f9f',
-									width:[0,0,2,2]
-								},
-								grids:{
-									vertical:{
-										way:'share_alike',
-								 		value:5
-									}
-								},
-								scale:[{
-									 position:'left',	
-									 start_scale:0,
-									 end_scale:100,
-									 scale_space:10,
-									 scale_size:2,
-									 scale_color:'#9f9f9f'
-								},{
-									 position:'bottom',	
-									 labels:labels
-								}]
-							}
-						});
-					
-					//开始画图
-					line.draw();
-				});
+			$(function(){
+				var flow=[];
+				for(var i=0;i<61;i++){
+					flow.push(Math.floor(Math.random()*(30+((i%12)*5)))+10);
+				}
 				
+				var data = [
+				         	{
+				         		name : 'PV',
+				         		value:flow,
+				         		color:'#0d8ecf',
+				         		linewidth:2
+				         	}
+				         ];
+				var labels = ["2012-08-01","2012-08-02","2012-08-03","2012-08-04","2012-08-05","2012-08-06"];
+				var line = new iChart.LineBasic2D({
+					render : 'canvasDiv',
+					data: data,
+					align:'center',
+					title : 'ichartjs官方网站最近5天PV流量趋势',
+					subtitle : '平均18:00-22:00访问量达到最大值(单位：万)',
+					footnote : '数据来源：模拟数据',
+					width : 800,
+					height : 400,
+					tip:{
+						enable:true,
+						shadow:true
+					},
+					legend : {
+						enable : true
+					},
+					crosshair:{
+						enable:true,
+						line_color:'#62bce9'
+					},
+					coordinate:{
+						width:640,
+						height:260,
+						axis:{
+							color:'#9f9f9f',
+							width:[0,0,2,2]
+						},
+						grids:{
+							vertical:{
+								way:'share_alike',
+						 		value:5
+							}
+						},
+						scale:[{
+							 position:'left',	
+							 start_scale:0,
+							 end_scale:100,
+							 scale_space:10,
+							 scale_size:2,
+							 scale_color:'#9f9f9f'
+						},{
+							 position:'bottom',	
+							 labels:labels
+						}]
+					}
+				});
+			
+			//开始画图
+			line.draw();
+		});
 			</script>
 		</head>
 		<body>
 			<div id='canvasDiv'></div>
 			<div class='ichartjs_info'>
-				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document.getElementById('ichartjs_code').innerHTML);">View Code</span>
+				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
 					这是一个很常见的的折线图例子，例子展示了网站最近5天的流量统计。每隔2个小时统计一次。通过统计图可以看出每天晚上18：00-22：00访问量较大。
@@ -91,66 +90,69 @@
 			</div>
 <!-- the source code -->
 <div id='ichartjs_code'>
-$(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>var</span> flow=[];
-	for(<span class='ichartjs_keyword'>var</span> i=0;i<61;i++){
-		flow.push(Math.floor(Math.random()*(30+((i%12)*5)))+10);
-	}
-	<span class='ichartjs_keyword'>var</span> data = [
-	         	{
-	         		name : '<span class='ichartjs_string'>PV</span>',
-	         		value:flow,
-	         		color:'<span class='ichartjs_string'>#0d8ecf</span>',
-	         		linewidth:2
-	         	}
-	         ];
-	<span class='ichartjs_keyword'>var</span> labels = ["<span class='ichartjs_string'>2012-08-01</span>","<span class='ichartjs_string'>2012-08-02</span>","<span class='ichartjs_string'>2012-08-03</span>","<span class='ichartjs_string'>2012-08-04</span>","<span class='ichartjs_string'>2012-08-05</span>","<span class='ichartjs_string'>2012-08-06</span>"];
-	<span class='ichartjs_keyword'>var</span> line = new iChart.LineBasic2D({
-		render : 'canvasDiv',
-		data: data,
-		align:'center',
-		title : '<span class='ichartjs_string'>ichartjs官方网站最近5天PV流量趋势</span>',
-		subtitle : '<span class='ichartjs_string'>平均18:00-22:00访问量达到最大值(单位：万)</span>',
-		footnote : '<span class='ichartjs_string'>数据来源：模拟数据</span>',
-		width : 800,
-		height : 400,
-		tip:{
-			enable:<span class='ichartjs_keyword'>true</span>,
-			shadow:<span class='ichartjs_keyword'>true</span>
-		},
-		legend : {
-			enable : <span class='ichartjs_keyword'>true</span>
-		},
-		crosshair:{
-			enable:<span class='ichartjs_keyword'>true</span>,
-			line_color:'<span class='ichartjs_string'>#62bce9</span>'
-		},
-		coordinate:{
-			width:640,
-			height:260,
-			axis:{
-				color:'<span class='ichartjs_string'>#9f9f9f</span>',
-				width:[0,0,2,2]
-			},
-			grids:{
-				vertical:{
-					way:'<span class='ichartjs_string'>share_alike</span>',
-			 		value:5
-				}
-			},
-			scale:[{
-				 position:'<span class='ichartjs_string'>left</span>',	
-				 start_scale:0,
-				 end_scale:100,
-				 scale_space:10,
-				 scale_size:2,
-				 scale_color:'<span class='ichartjs_string'>#9f9f9f</span>'
-			},{
-				 position:'<span class='ichartjs_string'>bottom</span>',	
-				 labels:labels
-			}]
+$(function(){
+		var flow=[];
+		for(var i=0;i<61;i++){
+			flow.push(Math.floor(Math.random()*(30+((i%12)*5)))+10);
 		}
-	});
+		
+		var data = [
+		         	{
+		         		name : 'PV',
+		         		value:flow,
+		         		color:'#0d8ecf',
+		         		linewidth:2
+		         	}
+		         ];
+		var labels = ["2012-08-01","2012-08-02","2012-08-03","2012-08-04","2012-08-05","2012-08-06"];
+		var line = new iChart.LineBasic2D({
+			render : 'canvasDiv',
+			data: data,
+			align:'center',
+			title : 'ichartjs官方网站最近5天PV流量趋势',
+			subtitle : '平均18:00-22:00访问量达到最大值(单位：万)',
+			footnote : '数据来源：模拟数据',
+			width : 800,
+			height : 400,
+			tip:{
+				enable:true,
+				shadow:true
+			},
+			legend : {
+				enable : true
+			},
+			crosshair:{
+				enable:true,
+				line_color:'#62bce9'
+			},
+			coordinate:{
+				width:640,
+				height:260,
+				axis:{
+					color:'#9f9f9f',
+					width:[0,0,2,2]
+				},
+				grids:{
+					vertical:{
+						way:'share_alike',
+				 		value:5
+					}
+				},
+				scale:[{
+					 position:'left',	
+					 start_scale:0,
+					 end_scale:100,
+					 scale_space:10,
+					 scale_size:2,
+					 scale_color:'#9f9f9f'
+				},{
+					 position:'bottom',	
+					 labels:labels
+				}]
+			}
+		});
+	
+	//开始画图
 	line.draw();
 });
 </div>

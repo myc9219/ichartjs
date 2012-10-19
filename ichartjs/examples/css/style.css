@@ -93,7 +93,8 @@ body {
 
 #ichartjs_pre{
 	text-align: left;
-	font-size:13px;
+	font-size:12px;
+	padding:10px;
 	margin:0px;
 }
 .ichartjs_keyword{
