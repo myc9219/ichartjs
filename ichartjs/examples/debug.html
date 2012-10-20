@@ -54,54 +54,58 @@
 		}
 	</style>
 	<script type="text/javascript">
-	$(function(){
-		var data = [
-		        	{name : 'IE',value : 59863.73,color:'#a5c2d5'},
-		        	{name : 'Chrome',value : 39263.72,color:'#cbab4f'},
-		        	{name : 'Firefox',value : 49863.11,color:'#76a871'},
-		        	{name : 'Safari',value : 52243.82,color:'#9f7961'},
-		        	{name : 'Opera',value : 19833.78,color:'#a56f8f'},
-		        	{name : 'Other',value : 39863.12,color:'#6f83a5'}
-	        	];
-
-		var data1 = [
-		         	{
-		         		name : 'DPS01A',
-		         		value:[59863.73,5200,5400,2374,3490,4584],
-		         		color:'#1f7e92',
-		         		linewidth:1
-		         	},
-		         	{
-		         		name : 'DPS01B',
-		         		value:[6560,59863.73,5105,5125,2108,2120],
-		         		color:'#2b7f39',
-		         		linewidth:1
-		         	}
-		         ];
-        
-		new iChart.Column2D({
-			render : 'canvasDiv',
-			data: data,
-			labels:["一月","二月","三月","四月","五月","六月"],
-			title : 'Top 5 Browsers from 1 to 29 Feb 2012',
-			width : 800,
-			height : 400,
-			fit:true,
-			coordinate:{
-				scale:[{
-					 position:'left',	
-					 start_scale:0,
-					 end_scale:80000,
-					 scale_space:5000,
-					 listeners:{
-						parseText:function(t,x,y){
-							return {text:(t/10000)+"万"}
-						}
+		$(function(){
+			var data = [
+			        	{name : '广州',value : 4000,color:'#a5c2d5'},
+			        	{name : '上海',value : 4200,color:'#cbab4f'},
+			        	{name : '南昌',value : 3500,color:'#76a871'},
+			        	{name : '哈尔滨',value : 3600,color:'#9f7961'},
+			        	{name : '北京',value : 4150,color:'#a56f8f'}
+		        	];
+	    	
+			var chart = new iChart.Column2D({
+				render : 'canvasDiv',
+				data: data,
+				title : '2012年5个城市平均工资的情况',
+				width : 800,
+				height : 400,
+				coordinate:{
+					scale:[{
+						 position:'left',	
+						 start_scale:1000,
+						 end_scale:5000,
+						 scale_space:500
+					}]
+				}
+			});
+	
+			/**
+			 *自定义组件,画平均线。
+			 */
+			chart.plugin(new iChart.Custom({
+					drawFn:function(){
+						/**
+						 *计算平均值的高度(坐标Y值)
+						 */	
+						var avg = chart.total/5,
+							coo = chart.getCoordinate(),
+							x = coo.get('originx'),
+							W = coo.get('width'),
+							S = coo.getScale('left'),
+							bs = coo.get('brushsize'),
+							H = coo.get('height'),
+							h = (avg - S.start) * H / S.distance,
+							y = chart.y + H - h - bs;
+						
+						chart.target.line(x,y,x+W,y,1,'#b32c0d')
+						.textAlign('start')
+						.textBaseline('middle')
+						.fillText('avg:'+avg,x+W+5,y,false,'#b32c0d');
 					}
-				}]
-			}
-		}).draw();
-});
+			}));	
+				
+			chart.draw();
+	});
 	
 	</script>
 	</head>

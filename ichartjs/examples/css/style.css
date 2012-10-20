@@ -81,19 +81,45 @@ body {
 	padding: 5px 10px;
 }
 .ui-widget{
-	font-size:14px;
+	font-size:12px;
 }
 
 #ichartjs_view{
 	width:820px;
 	height:700px;
 	float:right;
+	font-family:'微软雅黑',Trebuchet MS,Verdana,Helvetica,Arial,sans-serif;
 	background-color: #FAFAFA;
+}
+.ichartjs_row{
+	font-size:12px;
+}
+#ichartjs_number{
+	font-size:12px;
+	color:#2B91AF;
+	cursor:pointer;
+	text-align: right;
+	padding:10px 0px;
+	margin:0px;
+}
+.ichartjs_number{
+	padding:0px 4px;
+}
+.ichartjs_number_over{
+	background-color: #dfeaec;
+}
+#ichartjs_code{
+	border:1px solid #D1D7DC;
+	background-color: #FFFFFF;
+	font-size:12px;
+	padding:2px;
+	margin-right:10px;
 }
 
 #ichartjs_pre{
+	border-left:1px solid #D1D7DC;
+	background-color: #FAFAFA;
 	text-align: left;
-	font-size:12px;
 	padding:10px;
 	margin:0px;
 }
@@ -103,6 +129,10 @@ body {
 .ichartjs_string{
 	color:#5400ff;
 }
+.ichartjs_note{
+	color:#008239;
+}
+
 
 .ichartjs_home a:LINK{
 	color:#FEFEFE;

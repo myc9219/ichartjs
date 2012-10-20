@@ -22,7 +22,18 @@ body {
 	-khtml-border-radius:5px;
 	border-radius:5px
 }
+.ichartjs_author{
+	position: absolute;
+	font-size:12px;
+	right: 20px;
+	top: 0px;
+}
+.ichartjs_author a{
+	color:#113659;
+}
+
 .ichartjs_info{
+	position:relative;
 	margin:10px;
 	padding:5px;
 	color:#1b4267;
