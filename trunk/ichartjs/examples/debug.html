@@ -54,58 +54,58 @@
 		}
 	</style>
 	<script type="text/javascript">
-		$(function(){
-			var data = [
-			        	{name : '广州',value : 4000,color:'#a5c2d5'},
-			        	{name : '上海',value : 4200,color:'#cbab4f'},
-			        	{name : '南昌',value : 3500,color:'#76a871'},
-			        	{name : '哈尔滨',value : 3600,color:'#9f7961'},
-			        	{name : '北京',value : 4150,color:'#a56f8f'}
-		        	];
-	    	
-			var chart = new iChart.Column2D({
-				render : 'canvasDiv',
-				data: data,
-				title : '2012年5个城市平均工资的情况',
-				width : 800,
-				height : 400,
-				coordinate:{
-					scale:[{
-						 position:'left',	
-						 start_scale:1000,
-						 end_scale:5000,
-						 scale_space:500
-					}]
+	$(function(){
+		var data = [
+		        	{name : '广州',value : 4000,color:'#a5c2d5'},
+		        	{name : '上海',value : 4200,color:'#cbab4f'},
+		        	{name : '南昌',value : 3500,color:'#76a871'},
+		        	{name : '哈尔滨',value : 3600,color:'#9f7961'},
+		        	{name : '北京',value : 4150,color:'#a56f8f'}
+	        	];
+    	
+		var chart = new iChart.Column2D({
+			render : 'canvasDiv',
+			data: data,
+			title : '2012年5个城市平均工资的情况',
+			width : 800,
+			height : 400,
+			coordinate:{
+				scale:[{
+					 position:'left',	
+					 start_scale:1000,
+					 end_scale:5000,
+					 scale_space:500
+				}]
+			}
+		});
+
+		/**
+		 *自定义组件,画平均线。
+		 */
+		chart.plugin(new iChart.Custom({
+				z_index:9,
+				drawFn:function(){
+					/**
+					 *计算平均值的高度(坐标Y值)
+					 */	
+					var avg = chart.total/5,
+						coo = chart.getCoordinate(),
+						x = coo.get('originx'),
+						W = coo.get('width'),
+						S = coo.getScale('left'),
+						H = coo.get('height'),
+						h = (avg - S.start) * H / S.distance,
+						y = chart.y + H - h;
+					
+					chart.target.line(x,y,x+W,y,1,'#b32c0d')
+					.textAlign('start')
+					.textBaseline('middle')
+					.fillText('avg:'+avg,x+W+5,y,false,'#b32c0d');
 				}
-			});
-	
-			/**
-			 *自定义组件,画平均线。
-			 */
-			chart.plugin(new iChart.Custom({
-					drawFn:function(){
-						/**
-						 *计算平均值的高度(坐标Y值)
-						 */	
-						var avg = chart.total/5,
-							coo = chart.getCoordinate(),
-							x = coo.get('originx'),
-							W = coo.get('width'),
-							S = coo.getScale('left'),
-							bs = coo.get('brushsize'),
-							H = coo.get('height'),
-							h = (avg - S.start) * H / S.distance,
-							y = chart.y + H - h - bs;
-						
-						chart.target.line(x,y,x+W,y,1,'#b32c0d')
-						.textAlign('start')
-						.textBaseline('middle')
-						.fillText('avg:'+avg,x+W+5,y,false,'#b32c0d');
-					}
-			}));	
-				
-			chart.draw();
-	});
+		}));	
+			
+		chart.draw();
+});
 	
 	</script>
 	</head>

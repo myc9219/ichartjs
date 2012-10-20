@@ -997,7 +997,7 @@
 		plugin : function(c) {
 			c.inject(this);
 			this.components.push(c);
-			this.plugins(c);
+			this.plugins.push(c);
 		},
 		/**
 		 * @method return the title,return undefined if unavailable

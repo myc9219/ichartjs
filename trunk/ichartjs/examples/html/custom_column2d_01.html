@@ -46,10 +46,9 @@
 									x = coo.get('originx'),
 									W = coo.get('width'),
 									S = coo.getScale('left'),
-									bs = coo.get('brushsize'),
 									H = coo.get('height'),
 									h = (avg - S.start) * H / S.distance,
-									y = chart.y + H - h - bs;
+									y = chart.y + H - h;
 								
 								chart.target.line(x,y,x+W,y,1,'#b32c0d')
 								.textAlign('start')
