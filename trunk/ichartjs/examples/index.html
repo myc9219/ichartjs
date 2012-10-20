@@ -10,7 +10,7 @@
 		<link rel="stylesheet" href="jq-ui/themes/base/jquery.ui.all.css">
 		<link rel="stylesheet" href="css/style.css" type="text/css"/>
 		<script type="text/javascript">
-			var hash = location.hash,$pre,$win,index=0;
+			var hash = location.hash,$pre,$num,$win,index=0;
 			$(function() {
 				var icons = {
 					header: "ui-icon-circle-arrow-e",
@@ -33,25 +33,48 @@
 				$( "#ichartjs_accordion" ).accordion( "activate" ,index);
 				
 				$pre = $("#ichartjs_pre");
+				$num = $("#ichartjs_number");
 				$win = $("#ichartjs_codeview");
 				$win.dialog({
 					width:'auto',
 					height:600,
-					maxWidth:800,
+					maxWidth:1000,
 					modal: true,
 					autoHeight: true,
 					autoOpen:false
 				});
 			});
-			var keyword = new RegExp("(var |true|false|function|new )","g");
+			var keyword = new RegExp("(var |true|false|function|new |null|return|if|else)","g");
 			var quote = new RegExp("'(.*?)'","g");
+			var dQuote = new RegExp('"(.*?)"',"g");
+			var row = new RegExp("^","m");
 			function viewCode(doc){
+				//获取最后一个script
 				var scripts = doc.getElementsByTagName("script");	
 				var html = scripts[scripts.length-1].innerHTML;
-				html = html.replace(quote,"'<span class='ichartjs_string'>$1</span>'");	
-				html = html.replace(keyword,"<span class='ichartjs_keyword'>$1</span>");	
-				$pre.html(html);
-				$( "#ichartjs_codeview" ).dialog( "open" ) 
+				//简单的代码语法显示
+				html = html.replace(quote,"'<span class=ichartjs_string>$1</span>'");	
+				html = html.replace(dQuote,'"<span class=ichartjs_string>$1</span>"');	
+				html = html.replace("ichartjs_string","'ichartjs_string'");	
+				html = html.replace(keyword,"<span class='ichartjs_keyword'>$1</span>");
+				var tt = html.split(row);
+				tt.shift();//去除第一行空行
+				var number = [],j = 1;
+				for(var i=0;i<tt.length;i++){
+					tt[i] = "<div id='ichartjs_row_"+i+"'>"+tt[i]+"</div>";
+					number.push("<span class='ichartjs_number' row="+i+">"+(j++)+".</span><br/>");
+				}
+				
+				$num.html(number.join(""));	
+				$pre.html(tt.join(""));
+				
+				$(".ichartjs_number").hover(function(){
+					$("#ichartjs_row_"+$(this).attr("row")).addClass("ichartjs_number_over");
+				},function(){
+					$("#ichartjs_row_"+$(this).attr("row")).removeClass("ichartjs_number_over");
+				});	
+				
+				$( "#ichartjs_codeview" ).dialog("open"); 
 			}
 		</script>
 	</head>
@@ -141,10 +164,17 @@
 			</div>
 		</div>
 		</div>
-		<div id="ichartjs_codeview" title="View JSCode">
-			<pre id="ichartjs_pre">
-			
-			</pre>
+		<div id="ichartjs_codeview" title="Js代码">
+			<table id="ichartjs_code">
+				<tr>
+					<td valign="top">
+						<pre id="ichartjs_number"><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/></pre>
+					</td>
+					<td valign="top">
+						<pre id="ichartjs_pre"></pre>
+					</td>
+				</tr>
+			</table>
 		</div>
 	</body>
 </html>
