@@ -127,17 +127,16 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		_.push('sub_option.originy', _.get(_.Y) + _.get('coordinate.height'));
 		_.push('sub_option.width', _.get('coordinate.valid_width'));
 		_.push('sub_option.height', _.get('coordinate.valid_height'));
-		_.push('sub_option.limit_y', !s);
-		_.pushIf('sub_option.keep_with_coordinate', s);
-
+		_.pushIf('sub_option.keep_with_coordinate',s);
+		
 		if (_.get('crosshair.enable')) {
 			_.push('coordinate.crosshair', _.get('crosshair'));
 			_.push('coordinate.crosshair.hcross', s);
 			_.push('coordinate.crosshair.invokeOffset', function(e, m) {
-				var r = _.lines[0].isEventValid(e,_.lines[0]);
 				/**
-				 * TODO how fire muti line?
+				 * TODO how fire muti line?now fire by first line
 				 */
+				var r = _.lines[0].isEventValid(e,_.lines[0]);
 				return r.valid ? r : false;
 			});
 		}

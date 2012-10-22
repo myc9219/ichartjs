@@ -99,7 +99,7 @@ iChart.Html = iChart.extend(iChart.Element,{
 		}
 	},
 	show:function(e,m){
-		this.beforeshow(e,m);
+		if(this.beforeshow(e,m))
 		this.css('visibility','visible');
 	},
 	hidden:function(e){

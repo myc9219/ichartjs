@@ -1436,7 +1436,7 @@ $.Html = $.extend($.Element,{
 		}
 	},
 	show:function(e,m){
-		this.beforeshow(e,m);
+		if(this.beforeshow(e,m))
 		this.css('visibility','visible');
 	},
 	hidden:function(e){
@@ -1801,22 +1801,34 @@ $.Component = $.extend($.Painter, {
 				if(o&&o.hit){
 					this.horizontal.style.top = (o.top-this.top)+"px";
 					this.vertical.style.left = (o.left-this.left)+"px";
+					return true;
 				}
+				return false;
 			}else{
 				/**
 				 * set the 1px offset will make the line at the top left all the time
 				 */
 				this.horizontal.style.top = (e.y-this.top-1)+"px";
 				this.vertical.style.left = (e.x-this.left-1)+"px";
+				return true;
 			}
 		},
 		beforeshow:function(e,m){
-			this.follow(e,m);
+			return this.follow(e,m);
+		},
+		doCreate:function(_,w,h){
+			var d = document.createElement("div");
+			d.style.width= $.toPixel(w);
+			d.style.height= $.toPixel(h);
+			d.style.backgroundColor = _.get('line_color');
+			d.style.position="absolute";
+			_.dom.appendChild(d);
+			return d;
 		},
 		initialize:function(){
 			$.CrossHair.superclass.initialize.call(this);
 			
-			var _ = this._();
+			var _ = this._(),L = $.toPixel(_.get('line_width'));
 			
 			_.top = $.fixPixel(_.get(_.O));
 			_.left = $.fixPixel(_.get(_.L));
@@ -1834,20 +1846,9 @@ $.Component = $.extend($.Painter, {
 			_.dom.style.left=$.toPixel(_.get(_.L));
 			_.css('visibility','hidden');
 			
-			_.horizontal = document.createElement("div");
-			_.vertical = document.createElement("div");
+			_.horizontal = _.doCreate(_,_.get('hcross')?$.toPixel(_.get(_.W)):"0px",L);
+			_.vertical = _.doCreate(_,L,_.get('vcross')?$.toPixel(_.get(_.H)):"0px");
 			
-			_.horizontal.style.width= $.toPixel(_.get(_.W));
-			_.horizontal.style.height= $.toPixel(_.get('line_width'));
-			_.horizontal.style.backgroundColor = _.get('line_color');
-			_.horizontal.style.position="absolute";
-			
-			_.vertical.style.width= $.toPixel(_.get('line_width'));
-			_.vertical.style.height = $.toPixel(_.get(_.H));
-			_.vertical.style.backgroundColor = _.get('line_color');
-			_.vertical.style.position="absolute";
-			_.dom.appendChild(_.horizontal);
-			_.dom.appendChild(_.vertical);
 			
 			if(_.get('shadow')){
 				_.dom.style.boxShadow = _.get('shadowStyle');
@@ -3411,7 +3412,7 @@ $.Label = $.extend($.Component, {
 		plugin : function(c) {
 			c.inject(this);
 			this.components.push(c);
-			this.plugins(c);
+			this.plugins.push(c);
 		},
 		/**
 		 * @method return the title,return undefined if unavailable
@@ -6742,15 +6743,13 @@ $.LineSegment = $.extend($.Component, {
 			}
 		});
 		
-		if (rx == 0) {
-			rx = _.push('event_range_x', Math.floor(sp / 2));
-		} else {
-			rx = _.push('event_range_x', $.between(1, Math.floor(sp / 2), rx));
-		}
-		if (ry == 0) {
-			ry = _.push('event_range_y', Math.floor(_.get('point_size')/2));
+		if (rx <= 0||rx > sp / 2) {
+			rx = _.push('event_range_x', sp / 2);
 		}
 		
+		if (ry == 0) {
+			ry = _.push('event_range_y', ps/2);
+		}
 		
 		if (_.get('tip.enable')) {
 			/**
@@ -6791,7 +6790,9 @@ $.LineSegment = $.extend($.Component, {
 					valid : false
 				};
 			}
+			
 			var ii = Math.floor((e.x - _.x) / sp);
+			
 			if (ii < 0 || ii >= (p.length - 1)) {
 				ii = $.between(0, p.length - 1, ii);
 				if (valid(p[ii], e.x, e.y))
@@ -6801,6 +6802,7 @@ $.LineSegment = $.extend($.Component, {
 						valid : k
 					};
 			}
+			
 			/**
 			 * calculate the pointer's position will between which two point?this function can improve location speed
 			 */
@@ -6948,17 +6950,16 @@ $.Line = $.extend($.Chart, {
 		_.push('sub_option.originy', _.get(_.Y) + _.get('coordinate.height'));
 		_.push('sub_option.width', _.get('coordinate.valid_width'));
 		_.push('sub_option.height', _.get('coordinate.valid_height'));
-		_.push('sub_option.limit_y', !s);
-		_.pushIf('sub_option.keep_with_coordinate', s);
-
+		_.pushIf('sub_option.keep_with_coordinate',s);
+		
 		if (_.get('crosshair.enable')) {
 			_.push('coordinate.crosshair', _.get('crosshair'));
 			_.push('coordinate.crosshair.hcross', s);
 			_.push('coordinate.crosshair.invokeOffset', function(e, m) {
-				var r = _.lines[0].isEventValid(e,_.lines[0]);
 				/**
-				 * TODO how fire muti line?
+				 * TODO how fire muti line?now fire by first line
 				 */
+				var r = _.lines[0].isEventValid(e,_.lines[0]);
 				return r.valid ? r : false;
 			});
 		}

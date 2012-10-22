@@ -59,22 +59,34 @@
 				if(o&&o.hit){
 					this.horizontal.style.top = (o.top-this.top)+"px";
 					this.vertical.style.left = (o.left-this.left)+"px";
+					return true;
 				}
+				return false;
 			}else{
 				/**
 				 * set the 1px offset will make the line at the top left all the time
 				 */
 				this.horizontal.style.top = (e.y-this.top-1)+"px";
 				this.vertical.style.left = (e.x-this.left-1)+"px";
+				return true;
 			}
 		},
 		beforeshow:function(e,m){
-			this.follow(e,m);
+			return this.follow(e,m);
+		},
+		doCreate:function(_,w,h){
+			var d = document.createElement("div");
+			d.style.width= iChart.toPixel(w);
+			d.style.height= iChart.toPixel(h);
+			d.style.backgroundColor = _.get('line_color');
+			d.style.position="absolute";
+			_.dom.appendChild(d);
+			return d;
 		},
 		initialize:function(){
 			iChart.CrossHair.superclass.initialize.call(this);
 			
-			var _ = this._();
+			var _ = this._(),L = iChart.toPixel(_.get('line_width'));
 			
 			_.top = iChart.fixPixel(_.get(_.O));
 			_.left = iChart.fixPixel(_.get(_.L));
@@ -92,20 +104,9 @@
 			_.dom.style.left=iChart.toPixel(_.get(_.L));
 			_.css('visibility','hidden');
 			
-			_.horizontal = document.createElement("div");
-			_.vertical = document.createElement("div");
+			_.horizontal = _.doCreate(_,_.get('hcross')?iChart.toPixel(_.get(_.W)):"0px",L);
+			_.vertical = _.doCreate(_,L,_.get('vcross')?iChart.toPixel(_.get(_.H)):"0px");
 			
-			_.horizontal.style.width= iChart.toPixel(_.get(_.W));
-			_.horizontal.style.height= iChart.toPixel(_.get('line_width'));
-			_.horizontal.style.backgroundColor = _.get('line_color');
-			_.horizontal.style.position="absolute";
-			
-			_.vertical.style.width= iChart.toPixel(_.get('line_width'));
-			_.vertical.style.height = iChart.toPixel(_.get(_.H));
-			_.vertical.style.backgroundColor = _.get('line_color');
-			_.vertical.style.position="absolute";
-			_.dom.appendChild(_.horizontal);
-			_.dom.appendChild(_.vertical);
 			
 			if(_.get('shadow')){
 				_.dom.style.boxShadow = _.get('shadowStyle');

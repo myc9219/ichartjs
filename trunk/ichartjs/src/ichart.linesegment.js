@@ -196,15 +196,13 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			}
 		});
 		
-		if (rx == 0) {
-			rx = _.push('event_range_x', Math.floor(sp / 2));
-		} else {
-			rx = _.push('event_range_x', iChart.between(1, Math.floor(sp / 2), rx));
-		}
-		if (ry == 0) {
-			ry = _.push('event_range_y', Math.floor(_.get('point_size')/2));
+		if (rx <= 0||rx > sp / 2) {
+			rx = _.push('event_range_x', sp / 2);
 		}
 		
+		if (ry == 0) {
+			ry = _.push('event_range_y', ps/2);
+		}
 		
 		if (_.get('tip.enable')) {
 			/**
@@ -245,7 +243,9 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 					valid : false
 				};
 			}
+			
 			var ii = Math.floor((e.x - _.x) / sp);
+			
 			if (ii < 0 || ii >= (p.length - 1)) {
 				ii = iChart.between(0, p.length - 1, ii);
 				if (valid(p[ii], e.x, e.y))
@@ -255,6 +255,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 						valid : k
 					};
 			}
+			
 			/**
 			 * calculate the pointer's position will between which two point?this function can improve location speed
 			 */
