@@ -55,14 +55,13 @@
 		},
 		isEventValid:function(e,_){
 			if(!_.get('ignored')){
-				if(_.isLabel()){
-					if(_.label.isEventValid(e,_.label).valid)
+				if(_.isLabel()&&_.label.isEventValid(e,_.label).valid){
 						return {valid:true};
 				}
 				if(!iChart.inEllipse(e.x - _.x,e.y-_.y,_.a,_.b)){
 					return {valid:false};
 				}
-				if(iChart.angleInRange(_.sA,_.eA,(2*Math.PI - iChart.atan2Radian(_.x,_.y,e.x,e.y)))){
+				if(iChart.angleInRange(_.sA,_.eA,iChart.atan2Radian(_.x,_.y,e.x,e.y))){
 					return {valid:true};
 				}
 			}

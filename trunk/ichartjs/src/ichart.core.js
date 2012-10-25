@@ -603,16 +603,16 @@
 						return pi / 2;
 					return pi * 3 / 2;
 				}
-				var q = _.quadrant(ox, oy, x, y);
-				var r = atan(abs((oy - y) / (ox - x)));
-				if (q == 1) {
-					r = pi - r;
-				} else if (q == 2) {
-					r = pi + r;
-				} else if (q == 3) {
-					r = pi2 - r;
+				if (oy == y) {
+					if (x > ox)
+						return 0;
+					return pi;
 				}
-				return r;
+				
+				var q = _.quadrant(ox, oy, x, y),
+					r = atan(abs((oy - y) / (ox - x)));
+				
+				return q?(q == 3?pi2:pi)+(q == 2?r:-r):r;
 			},
 			angle2Radian : function(a) {
 				return a * pi / 180;
@@ -621,20 +621,20 @@
 				return r * 180 / pi;
 			},
 			/**
-			 * indicate angle in which quadrant,and it different from math's concept.this will return 0 if it in first quadrant(other eg.0,1,2,3)
+			 * indicate angle in which quadrant,and it different from concept of Math.this will return 0 if it in first quadrant(other eg.0,1,2,3)
 			 */
 			quadrant : function(ox, oy, x, y) {
 				if (ox < x) {
 					if (oy < y) {
-						return 3;
-					} else {
 						return 0;
+					} else {
+						return 3;
 					}
 				} else {
 					if (oy < y) {
-						return 2;
-					} else {
 						return 1;
+					} else {
+						return 2;
 					}
 				}
 			},

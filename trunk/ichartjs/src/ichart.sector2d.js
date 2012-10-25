@@ -40,13 +40,16 @@
 		},
 		isEventValid:function(e,_){
 			if(!_.get('ignored')){
-				if(_.label&&_.label.isEventValid(e,_.label).valid)
+				if(_.isLabel()&&_.label.isEventValid(e,_.label).valid){
 					return {valid:true};
+				}
+				
 				var r = iChart.distanceP2P(_.x,_.y,e.x,e.y),b=_.get('donutwidth');	
 				if(_.r<r||(b&&(_.r-b)>r)){
 					return {valid:false};
 				}
-				if(iChart.angleInRange(_.get('startAngle'),_.get('endAngle'),(2*Math.PI - iChart.atan2Radian(_.x,_.y,e.x,e.y)))){
+				
+				if(iChart.angleInRange(_.get('startAngle'),_.get('endAngle'),iChart.atan2Radian(_.x,_.y,e.x,e.y))){
 					return {valid:true};
 				}
 			}

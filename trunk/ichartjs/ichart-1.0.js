@@ -5774,6 +5774,9 @@ $.Pie2D = $.extend($.Pie, {
 	}
 });
 /**
+ * @end
+ */
+/**
  * @overview this component use for abc
  * @component#@chart#$.Pie3D
  * @extend#$.Pie
@@ -5975,14 +5978,16 @@ $.Donut2D = $.extend($.Pie, {
 			_.push('sub_option.donutwidth',_.get(d));
 		}
 		
-		
 		_.data.each(function(d,i){
-			_.doParse(d,i);
+			_.doParse(_,d,i);
 		},_);
 		
 		_.components.push(_.sectors);
 	}
 });
+/**
+ * @end
+ */
 /**
  * @overview this class is abstract,use for config column
  * @component#$.Column
