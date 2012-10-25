@@ -33,4 +33,7 @@ iChart.Pie2D = iChart.extend(iChart.Pie, {
 		
 		
 	}
-});//@end
+});
+/**
+ * @end
+ */

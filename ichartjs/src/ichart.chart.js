@@ -973,9 +973,6 @@
 				_.runAnimation();
 				return;
 			}
-			_.components.each(function(c) {
-				//console.log(c.type+","+(c.zIndex||c.get('z_index')));
-			});
 			
 			_.segmentRect();
 

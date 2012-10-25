@@ -42,11 +42,11 @@ iChart.Donut2D = iChart.extend(iChart.Pie, {
 			_.push('sub_option.donutwidth',_.get(d));
 		}
 		
-		
 		_.data.each(function(d,i){
-			_.doParse(d,i);
+			_.doParse(_,d,i);
 		},_);
-		
-		_.components.push(_.sectors);
 	}
-});//@end
+});
+/**
+ * @end
+ */

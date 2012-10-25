@@ -1,10 +1,8 @@
 //expect next
 0.考虑负数坐标?
-0.1.muti Line 的处理
 1.增加测试用例*
 2.教程同步*
 3.新示例模板编写*
-4.Pie2d的isEventValid?
 5.考虑插件式开发架构接口设计
 7.suport hsl,hsla model
 9.十字指针还是放到各自组件中,方便管理

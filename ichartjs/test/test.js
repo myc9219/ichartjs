@@ -10,6 +10,7 @@ var resultList,
 	panel,
 	result_score,
 	costtime=0;
+
 function level(cost){
 	if(cost<=20){//50FPS
 		return "<td class='test_item_speed_high'></td>";
@@ -21,6 +22,7 @@ function level(cost){
 		return "<td class='test_item_speed_poor'></td>";
 	}
 }
+
 function result(succ,type,costOrCause){
 	str = [resultList.innerHTML];
 	str.push("<table class='test_item'><tr><td class='test_item_name'>&nbsp;");
@@ -50,6 +52,7 @@ function result(succ,type,costOrCause){
 	resultList.innerHTML = str.join("");
 	canvas.innerHTML = "";
 }
+
 //You Browser Scores  out of a total of 100
 function start(){
 	setTimeout(function(){
@@ -64,7 +67,7 @@ function start(){
 				str.push(fail);
 				str.push("&nbsp;<button onclick='test();'>Test Again</button>&nbsp;&nbsp;");
 				str.push("<a href='../examples/index.html'>Example</a>&nbsp;&nbsp;");
-				str.push("<a href='http://www.ichartjs.cn'>Home</a>");
+				str.push("<a href='http://www.ichartjs.com'>Home</a>");
 				str.push("</div>");
 				panel.innerHTML = str.join("");
 				return;
@@ -93,6 +96,7 @@ function start(){
 		start();
 	},300)
 }
+
 /////////////////////上面的写成一个测试的js//////////////////////
 function test(){
 	resultList.innerHTML = Html;
@@ -109,6 +113,26 @@ function test(){
 			data:data,
 			radius:140,
 			offsetAngle:45
+		});
+	});
+	
+	
+	
+	unit.push(function(){
+		return new iChart.Donut2D({
+			render :canvas,
+			title : {text:'Test Donut2D'},
+			shadow:true,
+			data:data
+		});
+	});
+	
+	unit.push(function(){
+		return new iChart.Donut2D({
+			render :canvas,
+			title : {text:'Test Donut2D No Shadow'},
+			shadow:false,
+			data:data
 		});
 	});
 	
@@ -461,6 +485,7 @@ function test(){
 			}
 		});
 	});
+	
 	/**
 	 * start Test
 	 */
