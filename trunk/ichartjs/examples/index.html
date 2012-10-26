@@ -41,7 +41,13 @@
 					maxWidth:1000,
 					modal: true,
 					autoHeight: true,
-					autoOpen:false
+					autoOpen:false,
+					open:function(){
+						$(document.body).css("overflow","hidden");
+					},
+					close:function(){
+						$(document.body).css("overflow","visible");
+					}
 				});
 			});
 			var keyword = new RegExp("(var |true|false|function|new |null|return|if|else)","g");

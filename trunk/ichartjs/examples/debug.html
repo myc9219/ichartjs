@@ -57,15 +57,15 @@
 	<script type="text/javascript">
 	$(function(){
 		var data = [
-	        	{name : 'IE',value : 300,color:'#a5c2d5'},
-	        	{name : 'Chrome',value : 243,color:'#cbab4f'},
-	        	{name : 'Firefox',value : 343,color:'#76a871'},
-	        	{name : 'Safari',value : -134,color:'#9f7961'},
-	        	{name : 'Opera',value : 175,color:'#a56f8f'},
-	        	{name : 'Other',value : -95,color:'#6f83a5'}
+	        	{name : 'IE',value : -300,color:'#a5c2d5'},
+	        	{name : 'Chrome',value : -200,color:'#cbab4f'},
+	        	{name : 'Firefox',value : -100,color:'#76a871'},
+	        	{name : 'Safari',value : -50,color:'#9f7961'},
+	        	{name : 'Opera',value : -150,color:'#a56f8f'},
+	        	{name : 'Other',value : -250,color:'#6f83a5'}
         	];
 		
-		new iChart.Bar2D({
+		new iChart.Column2D({
 			render : 'canvasDiv',
 			data: data,
 			title : 'Top 5 Browsers from 1 to 29 Feb 2012',
@@ -80,18 +80,7 @@
 				enable : true
 			},
 			coordinate:{
-				width:580,
-				scale:[{
-					 position:'bottom',	
-					 start_scale:-200,
-					 end_scale:400,
-					 scale_space:50,
-					 listeners:{
-						parseText:function(t,x,y){
-							return {text:t+"%"}
-						}
-					}
-				}]
+				width:580
 			}
 		}).draw();
 

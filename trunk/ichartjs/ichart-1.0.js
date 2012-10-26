@@ -603,16 +603,16 @@
 						return pi / 2;
 					return pi * 3 / 2;
 				}
-				var q = _.quadrant(ox, oy, x, y);
-				var r = atan(abs((oy - y) / (ox - x)));
-				if (q == 1) {
-					r = pi - r;
-				} else if (q == 2) {
-					r = pi + r;
-				} else if (q == 3) {
-					r = pi2 - r;
+				if (oy == y) {
+					if (x > ox)
+						return 0;
+					return pi;
 				}
-				return r;
+				
+				var q = _.quadrant(ox, oy, x, y),
+					r = atan(abs((oy - y) / (ox - x)));
+				
+				return q?(q == 3?pi2:pi)+(q == 2?r:-r):r;
 			},
 			angle2Radian : function(a) {
 				return a * pi / 180;
@@ -621,20 +621,20 @@
 				return r * 180 / pi;
 			},
 			/**
-			 * indicate angle in which quadrant,and it different from math's concept.this will return 0 if it in first quadrant(other eg.0,1,2,3)
+			 * indicate angle in which quadrant,and it different from concept of Math.this will return 0 if it in first quadrant(other eg.0,1,2,3)
 			 */
 			quadrant : function(ox, oy, x, y) {
 				if (ox < x) {
 					if (oy < y) {
-						return 3;
-					} else {
 						return 0;
+					} else {
+						return 3;
 					}
 				} else {
 					if (oy < y) {
-						return 2;
-					} else {
 						return 1;
+					} else {
+						return 2;
 					}
 				}
 			},
@@ -710,13 +710,13 @@
 			 * 返回向上靠近一个数量级为f的数
 			 */
 			ceil : function(max, f) {
-				return max + factor(max, f);
+				return max + factor(max, f)*(max>0?1:-1);
 			},
 			/**
 			 * 返回向下靠近一个数量级为f的数
 			 */
 			floor : function(max, f) {
-				return max - factor(max, f);
+				return max + factor(max, f)*(max>0?-1:1);
 			},
 			_2D : '2d',
 			_3D : '3d',
@@ -2454,7 +2454,7 @@ $.Label = $.extend($.Component, {
 		return $.isNumber(n)?n:$.parseFloat(n,n);
 	},
 	simple = function(c) {
-		var M=0,V=0,MI,ML=0,n='minValue',x='maxValue';
+		var M,V=0,MI,ML=0,n='minValue',x='maxValue';
 		this.total = 0;
 		c.each(function(d,i){
 			V  = d.value;
@@ -2474,6 +2474,8 @@ $.Label = $.extend($.Component, {
 				V = pF(V);
 				d.value = V;
 				this.total+=V;
+				if(!M)
+					M = V;
 				M = V>M?V:M;
 				if(!MI)
 					MI = V;
@@ -2496,10 +2498,9 @@ $.Label = $.extend($.Component, {
 		this.push('maxItemSize',ML);
 		this.push(n,MI);
 		this.push(x,M);
-		
 	},
 	complex = function(c){
-		var _=this._(),M=0,MI=0,V,d,L;
+		var _=this._(),M,MI,V,d,L;
 		_.labels = _.get('labels');
 		L =_.labels.length;
 		if(L==0){
@@ -2515,9 +2516,12 @@ $.Label = $.extend($.Component, {
 				V =  pF(V,V);
 				d.value[i] = V;
 				_.total+=V;
+				if(!M){
+					M = V;
+					MI = V;	
+				}
 				M = V>M?V:M;
 				MI = V<MI?V:MI;
-				
 				item.push({
 					name:d.name,
 					value:d.value[i],
@@ -3388,9 +3392,6 @@ $.Label = $.extend($.Component, {
 				_.runAnimation();
 				return;
 			}
-			_.components.each(function(c) {
-				//console.log(c.type+","+(c.zIndex||c.get('z_index')));
-			});
 			
 			_.segmentRect();
 
@@ -3867,6 +3868,10 @@ $.Scale = $.extend($.Component, {
 			 */
 			which : 'h',
 			/**
+			 * @cfg {Number} Specifies value of Baseline Coordinate.(default to 0)
+			 */
+			basic_value:0,
+			/**
 			 * @inner {Number}
 			 */
 			distance : undefined,
@@ -3990,7 +3995,7 @@ $.Scale = $.extend($.Component, {
 		$.Scale.superclass.doConfig.call(this);
 		$.Assert.isNumber(this.get('distance'), 'distance');
 
-		var _ = this._(), customL = _.get('labels').length, min_s = _.get('min_scale'), max_s = _.get('max_scale'), s_space = _.get('scale_space'), e_scale = _.get('end_scale'), start_scale = _.get('start_scale');
+		var _ = this._(),abs = Math.abs,customL = _.get('labels').length, min_s = _.get('min_scale'), max_s = _.get('max_scale'), s_space = _.get('scale_space'), e_scale = _.get('end_scale'), start_scale = _.get('start_scale');
 
 		_.items = [];
 		_.labels = [];
@@ -4003,50 +4008,50 @@ $.Scale = $.extend($.Component, {
 			/**
 			 * end_scale must greater than maxScale
 			 */
-			if (!e_scale || e_scale < max_s) {
+			if (!$.isNumber(e_scale) || e_scale < max_s) {
 				e_scale = _.push('end_scale', $.ceil(max_s));
 			}
-
+			
 			/**
 			 * startScale must less than minScale
 			 */
 			if (start_scale > min_s) {
-				_.push('start_scale', $.floor(min_s));
+				start_scale = _.push('start_scale', $.floor(min_s));
 			}
-
-			if (s_space && s_space < e_scale - start_scale) {
+			
+			
+			if (s_space && abs(s_space) < abs(e_scale - start_scale)) {
 				_.push('scale_share', (e_scale - start_scale) / s_space);
 			}
-
+			
+			_.number = _.push('scale_share', abs(_.get('scale_share')));
+			
 			/**
 			 * value of each scale
 			 */
-			if (!s_space || s_space > e_scale - start_scale) {
+			if (!s_space || s_space >( e_scale - start_scale)) {
 				s_space = _.push('scale', (e_scale - start_scale) / _.get('scale_share'));
 			}
-
-			_.number = _.get('scale_share');
-
-			if (s_space < 1 && _.get('decimalsnum') == 0) {
-				var dec = s_space;
+			
+			if (abs(s_space) < 1 && _.get('decimalsnum') == 0) {
+				var dec = abs(s_space);
 				while (dec < 1) {
 					dec *= 10;
 					_.push('decimalsnum', _.get('decimalsnum') + 1);
 				}
 			}
-
 		}
-
+		
 		/**
 		 * the real distance of each scale
 		 */
 		_.push('distanceOne', _.get('valid_distance') / _.number);
 
 		var text, x, y, x1 = 0, y1 = 0, x0 = 0, y0 = 0, tx = 0, ty = 0, w = _.get('scale_width'), w2 = w / 2, sa = _.get('scaleAlign'), ta = _.get('textAlign'), ts = _.get('text_space'), tbl = '';
-
+		
 		_.push('which', _.get('which').toLowerCase());
 		_.isH = _.get('which') == 'h';
-
+		
 		if (_.isH) {
 			if (sa == _.O) {
 				y0 = -w;
@@ -4083,7 +4088,6 @@ $.Scale = $.extend($.Component, {
 				tx = -ts;
 			}
 		}
-
 		/**
 		 * 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
 		 */
@@ -4141,6 +4145,7 @@ $.Coordinate = {
 			 * the Coordinate' Z is same as long as the column's
 			 */
 			_.push('coordinate.zHeight', _.get('zHeight') * _.get('bottom_scale'));
+			
 			return new $.Coordinate3D($.apply({
 				scale : {
 					position : _.get('scaleAlign'),
@@ -4341,10 +4346,14 @@ $.Coordinate2D = $.extend($.Component, {
 		for ( var i = 0; i < this.scale.length; i++) {
 			var k = this.scale[i];
 			if (k.get('position') == p) {
+				var u = [k.get('basic_value'),k.get('start_scale'),k.get('end_scale'),k.get('end_scale') - k.get('start_scale'),0];
+				u[4] = $.inRange(u[1],u[2]+1,u[0])||$.inRange(u[2]-1,u[1],u[0]);
 				return {
-					start : k.get('start_scale'),
-					end : k.get('end_scale'),
-					distance : k.get('end_scale') - k.get('start_scale')
+					range:u[4],
+					basic:u[4]?(u[0]-u[1]) / u[3]:0,
+					start : u[4]?u[0]:u[1],
+					end : u[2],
+					distance : u[3]
 				};
 			}
 		}
@@ -4367,10 +4376,10 @@ $.Coordinate2D = $.extend($.Component, {
 				axis = _.get('axis.width');
 			}
 		}
-
+		
 		var glw = _.get('grid_line_width'), v = _.get('alternate_direction') == 'v';
 		
-		_.gridlines.each(function(g) {
+		_.gridlines.each(function(g,i) {
 			if (_.get('alternate_color')) {
 				if (f) {
 					if (v)
@@ -4383,6 +4392,7 @@ $.Coordinate2D = $.extend($.Component, {
 				f = !f;
 			}
 		}).each(function(g) {
+			if(!g.overlap)
 			_.T.line(g.x1, g.y1, g.x2, g.y2, glw, _.get('grid_color'));
 		});
 		
@@ -4510,9 +4520,8 @@ $.Coordinate2D = $.extend($.Component, {
 
 				scale.items.each(function(item) {
 					if (iol)
-						if (ignoreOverlap.call(_, scale.get('which'), item.x, item.y))
-							return;
 					_.gridlines.push({
+						overlap:ignoreOverlap.call(_, scale.get('which'), item.x, item.y),
 						x1 : item.x,
 						y1 : item.y,
 						x2 : item.x + x,
@@ -4533,9 +4542,8 @@ $.Coordinate2D = $.extend($.Component, {
 
 			for ( var i = 0; i <= n; i++) {
 				if (iol)
-					if (ignoreOverlap.call(_, 'h', _.x + i * d, _.y))
-						continue;
 				_.gridlines.push({
+					overlap:ignoreOverlap.call(_, 'h', _.x + i * d, _.y),
 					x1 : _.x + i * d,
 					y1 : _.y,
 					x2 : _.x + i * d,
@@ -4555,9 +4563,8 @@ $.Coordinate2D = $.extend($.Component, {
 
 			for ( var i = 0; i <= n; i++) {
 				if (iol)
-					if (ignoreOverlap.call(_, 'v', _.x, _.y + i * d))
-						continue;
 				_.gridlines.push({
+					overlap:ignoreOverlap.call(_, 'v', _.x, _.y + i * d),
 					x1 : _.x,
 					y1 : _.y + i * d,
 					x2 : _.x + w,
@@ -5218,6 +5225,7 @@ $.Sector = $.extend($.Component, {
 		$.Sector.superclass.doConfig.call(this);
 
 		var _ = this._(), v = _.variable.event, f = _.get('label');
+		
 		/**
 		 * mouseover light
 		 */
@@ -5331,13 +5339,16 @@ $.Sector = $.extend($.Component, {
 		},
 		isEventValid:function(e,_){
 			if(!_.get('ignored')){
-				if(_.label&&_.label.isEventValid(e,_.label).valid)
+				if(_.isLabel()&&_.label.isEventValid(e,_.label).valid){
 					return {valid:true};
+				}
+				
 				var r = $.distanceP2P(_.x,_.y,e.x,e.y),b=_.get('donutwidth');	
 				if(_.r<r||(b&&(_.r-b)>r)){
 					return {valid:false};
 				}
-				if($.angleInRange(_.get('startAngle'),_.get('endAngle'),(2*Math.PI - $.atan2Radian(_.x,_.y,e.x,e.y)))){
+				
+				if($.angleInRange(_.get('startAngle'),_.get('endAngle'),$.atan2Radian(_.x,_.y,e.x,e.y))){
 					return {valid:true};
 				}
 			}
@@ -5444,14 +5455,13 @@ $.Sector = $.extend($.Component, {
 		},
 		isEventValid:function(e,_){
 			if(!_.get('ignored')){
-				if(_.isLabel()){
-					if(_.label.isEventValid(e,_.label).valid)
+				if(_.isLabel()&&_.label.isEventValid(e,_.label).valid){
 						return {valid:true};
 				}
 				if(!$.inEllipse(e.x - _.x,e.y-_.y,_.a,_.b)){
 					return {valid:false};
 				}
-				if($.angleInRange(_.sA,_.eA,(2*Math.PI - $.atan2Radian(_.x,_.y,e.x,e.y)))){
+				if($.angleInRange(_.sA,_.eA,$.atan2Radian(_.x,_.y,e.x,e.y))){
 					return {valid:true};
 				}
 			}
@@ -5981,8 +5991,6 @@ $.Donut2D = $.extend($.Pie, {
 		_.data.each(function(d,i){
 			_.doParse(_,d,i);
 		},_);
-		
-		_.components.push(_.sectors);
 	}
 });
 /**
@@ -6090,9 +6098,9 @@ $.Column = $.extend($.Chart, {
 		
 		
 		if (_.dataType == 'simple') {
-			var L = _.data.length, W = _.get('coordinate.width'), hw = _.pushIf(c, W / (L * 2 + 1));
+			var L = _.data.length, W = _.get('coordinate.width'),w_= Math.floor(W*2 / (L * 3 + 1)), hw = _.pushIf(c, w_);
 			if (hw * L > W) {
-				hw = _.push(c, W / (L * 2 + 1));
+				hw = _.push(c, w_);
 			}
 			/**
 			 * the space of two column
@@ -6142,23 +6150,19 @@ $.Column2D = $.extend($.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(),S = _.coo.getScale(_.get('scaleAlign')), H = _.coo.get(_.H), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), h;
-		
+		var _ = this._(),S = _.coo.getScale(_.get('scaleAlign')), H = _.coo.get(_.H), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), h,I = _.y - S.basic*H + H;
 		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
 			_.doParse(_,d, i, {
 				id : i,
 				originx :_.x + _.get('hispace') + i * gw,
-				originy : _.y + H - h,
-				height : h
+				originy : I  - (h>0? h :0),
+				height : Math.abs(h)
 			});
 			_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
 			_.doLabel(_,i, d.name, _.x + _.get('hispace') + gw * i + h2, _.y + H + _.get('text_space'));
 		}, _);
-
-		
 	}
-
 });
 /**
  *@end 
@@ -6279,7 +6283,7 @@ $.ColumnMulti2D = $.extend($.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')),gw = _.data.length * bw + _.get('hispace'), h;
+		var S = _.coo.getScale(_.get('scaleAlign')), gw = _.data.length * bw + _.get('hispace'), h, I = _.y - S.basic * H + H;
 
 		/**
 		 * quick config to all rectangle
@@ -6292,13 +6296,13 @@ $.ColumnMulti2D = $.extend($.Column, {
 				_.doParse(_, d, j, {
 					id : i + '-' + j,
 					originx : _.x + _.get('hispace') + j * bw + i * gw,
-					originy : _.y + H - h,
-					height : h
+					originy : I - (h > 0 ? h : 0),
+					height : Math.abs(h)
 				});
 				_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), this));
 			}, _);
 
-			_.doLabel(_,i, column.name, _.x + _.get('hispace') * 0.5 + (i + 0.5) * gw, _.y + H + _.get('text_space'));
+			_.doLabel(_, i, column.name, _.x + _.get('hispace') * 0.5 + (i + 0.5) * gw, _.y + H + _.get('text_space'));
 		}, _);
 
 	}
@@ -6404,12 +6408,12 @@ $.Bar = $.extend($.Chart, {
 
 		if (_.dataType == 'simple') {
 
-			var L = _.data.length, H = _.get('coordinate.height'), bh = _.pushIf(b, H / (L * 2 + 1));
+			var L = _.data.length, H = _.get('coordinate.height'),h_ = Math.floor(H*2 / (L * 3 + 1)),bh = _.pushIf(b, h_);
 			/**
 			 * bar's height
 			 */
 			if (bh * L > H) {
-				bh = _.push(b, H / (L * 2 + 1));
+				bh = _.push(b, h_);
 			}
 			/**
 			 * the space of two bar
@@ -6420,6 +6424,7 @@ $.Bar = $.extend($.Chart, {
 		if (_.is3D()) {
 
 		}
+		
 		/**
 		 * use option create a coordinate
 		 */
@@ -6433,7 +6438,7 @@ $.Bar = $.extend($.Chart, {
 		_.push('sub_option.height', bh);
 		_.push('sub_option.valueAlign', _.R);
 		_.push('sub_option.tipAlign', _.R);
-		_.push('sub_option.originx', _.x);
+		_.push('sub_option.originx',_.x+1);
 
 	}
 
@@ -6466,18 +6471,20 @@ $.Bar2D = $.extend($.Bar, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(), S = _.coo.getScale(_.get('scaleAlign')), W = _.coo.get(_.W), h2 = _.get('barheight') / 2, gw = _.get('barheight') + _.get('barspace');
-
+		var _ = this._(), S = _.coo.getScale(_.get('scaleAlign')), W = _.coo.get(_.W), h2 = _.get('barheight') / 2, gw = _.get('barheight') + _.get('barspace'),w,I = _.x+S.basic*W;
+		
 		_.data.each(function(d, i) {
+			w = (d.value - S.start) * W / S.distance;
 			_.doParse(_, d, i,{
 				id : i,
 				originy : _.y + _.get('barspace') + i * gw,
-				width : (d.value - S.start) * W / S.distance
+				width : Math.abs(w),
+				originx: I+(w>0?1:-Math.abs(w))
 			});
+			
 			_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
 			_.doLabel(i, d.name, _.x - _.get('text_space'), _.y + _.get('barspace') + i * gw + h2);
 		}, _);
-
 	}
 
 });
@@ -6528,16 +6535,18 @@ $.BarMulti2D = $.extend($.Bar, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2;
-
+		var S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2,w,I = _.x+S.basic*W;
+		
 		_.push('sub_option.height', bh);
-
+		
 		_.columns.each(function(column, i) {
 			column.item.each(function(d, j) {
+				w = (d.value - S.start) * W / S.distance;
 				_.doParse(_, d, j, {
 					id : i + '-' + j,
 					originy : _.y + _.get(s) + j * bh + i * gw,
-					width : (d.value - S.start) * W / S.distance
+					width : Math.abs(w),
+					originx: I+(w>0?1:-Math.abs(w))
 				});
 				_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
 			}, _);
@@ -7035,7 +7044,7 @@ $.LineBasic2D = $.extend($.Line, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), H = _.get('coordinate.valid_height'), sp = _.get('label_spacing'), points, x, y, ox = _.get('sub_option.originx'), oy = _.get('sub_option.originy'), p;
+		var S = _.coo.getScale(_.get('scaleAlign')), H = _.get('coordinate.valid_height'), sp = _.get('label_spacing'), points, x, y, ox = _.get('sub_option.originx'), oy = _.get('sub_option.originy')- S.basic*H, p;
 		
 		_.push('sub_option.tip.showType', 'follow');
 		_.push('sub_option.coordinate', _.coo);
