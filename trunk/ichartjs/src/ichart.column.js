@@ -100,9 +100,9 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		
 		
 		if (_.dataType == 'simple') {
-			var L = _.data.length, W = _.get('coordinate.width'), hw = _.pushIf(c, W / (L * 2 + 1));
+			var L = _.data.length, W = _.get('coordinate.width'),w_= Math.floor(W*2 / (L * 3 + 1)), hw = _.pushIf(c, w_);
 			if (hw * L > W) {
-				hw = _.push(c, W / (L * 2 + 1));
+				hw = _.push(c, w_);
 			}
 			/**
 			 * the space of two column

@@ -41,16 +41,18 @@ iChart.BarMulti2D = iChart.extend(iChart.Bar, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2;
-
+		var S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2,w,I = _.x+S.basic*W;
+		
 		_.push('sub_option.height', bh);
-
+		
 		_.columns.each(function(column, i) {
 			column.item.each(function(d, j) {
+				w = (d.value - S.start) * W / S.distance;
 				_.doParse(_, d, j, {
 					id : i + '-' + j,
 					originy : _.y + _.get(s) + j * bh + i * gw,
-					width : (d.value - S.start) * W / S.distance
+					width : Math.abs(w),
+					originx: I+(w>0?1:-Math.abs(w))
 				});
 				_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), _));
 			}, _);
