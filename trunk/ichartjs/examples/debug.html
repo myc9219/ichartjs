@@ -56,33 +56,28 @@
 	</style>
 	<script type="text/javascript">
 	$(function(){
-		var data = [
-	        	{name : 'IE',value : -300,color:'#a5c2d5'},
-	        	{name : 'Chrome',value : -200,color:'#cbab4f'},
-	        	{name : 'Firefox',value : -100,color:'#76a871'},
-	        	{name : 'Safari',value : -50,color:'#9f7961'},
-	        	{name : 'Opera',value : -150,color:'#a56f8f'},
-	        	{name : 'Other',value : -250,color:'#6f83a5'}
-        	];
-		
-		new iChart.Column2D({
-			render : 'canvasDiv',
-			data: data,
-			title : 'Top 5 Browsers from 1 to 29 Feb 2012',
-			showpercent:true,
-			decimalsnum:2,
-			width : 800,
-			height : 400,
-			legend : {
-				enable : true
-			},
-			tip:{
-				enable : true
-			},
-			coordinate:{
-				width:580
-			}
-		}).draw();
+        var data3 = [
+                 	{
+             		name : '北京',
+             		value:[8,12,14,20,26,28,30,26,28,20,16,10],
+             		color:'#1f7e92'
+             	}
+             ];
+        var lineLabels =  ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+        
+			new iChart.LineBasic2D({
+				render :canvasDiv,
+				title : {text: 'Test LineBasic2D'},
+				data: data3,
+				align:'center',
+				shadow:true,
+				labels:lineLabels,
+				listeners:{
+					parsePoint:function(d,v,x,y){
+						return {value:v+"℃"}
+					}
+				}
+			}).draw();
 
 	});
 	</script>
