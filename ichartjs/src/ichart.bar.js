@@ -95,12 +95,12 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 
 		if (_.dataType == 'simple') {
 
-			var L = _.data.length, H = _.get('coordinate.height'), bh = _.pushIf(b, H / (L * 2 + 1));
+			var L = _.data.length, H = _.get('coordinate.height'),h_ = Math.floor(H*2 / (L * 3 + 1)),bh = _.pushIf(b, h_);
 			/**
 			 * bar's height
 			 */
 			if (bh * L > H) {
-				bh = _.push(b, H / (L * 2 + 1));
+				bh = _.push(b, h_);
 			}
 			/**
 			 * the space of two bar
@@ -111,6 +111,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		if (_.is3D()) {
 
 		}
+		
 		/**
 		 * use option create a coordinate
 		 */
@@ -124,7 +125,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		_.push('sub_option.height', bh);
 		_.push('sub_option.valueAlign', _.R);
 		_.push('sub_option.tipAlign', _.R);
-		_.push('sub_option.originx', _.x);
+		_.push('sub_option.originx',_.x+1);
 
 	}
 

@@ -28,6 +28,10 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			 */
 			which : 'h',
 			/**
+			 * @cfg {Number} Specifies value of Baseline Coordinate.(default to 0)
+			 */
+			basic_value:0,
+			/**
 			 * @inner {Number}
 			 */
 			distance : undefined,
@@ -151,7 +155,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		iChart.Scale.superclass.doConfig.call(this);
 		iChart.Assert.isNumber(this.get('distance'), 'distance');
 
-		var _ = this._(), customL = _.get('labels').length, min_s = _.get('min_scale'), max_s = _.get('max_scale'), s_space = _.get('scale_space'), e_scale = _.get('end_scale'), start_scale = _.get('start_scale');
+		var _ = this._(),abs = Math.abs,customL = _.get('labels').length, min_s = _.get('min_scale'), max_s = _.get('max_scale'), s_space = _.get('scale_space'), e_scale = _.get('end_scale'), start_scale = _.get('start_scale');
 
 		_.items = [];
 		_.labels = [];
@@ -164,50 +168,48 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			/**
 			 * end_scale must greater than maxScale
 			 */
-			if (!e_scale || e_scale < max_s) {
+			if (!iChart.isNumber(e_scale) || e_scale < max_s) {
 				e_scale = _.push('end_scale', iChart.ceil(max_s));
 			}
-
+			
 			/**
 			 * startScale must less than minScale
 			 */
 			if (start_scale > min_s) {
 				_.push('start_scale', iChart.floor(min_s));
 			}
-
-			if (s_space && s_space < e_scale - start_scale) {
+			
+			if (s_space && abs(s_space) < abs(e_scale - start_scale)) {
 				_.push('scale_share', (e_scale - start_scale) / s_space);
 			}
-
+			
+			_.number = _.push('scale_share', abs(_.get('scale_share')));
+			
 			/**
 			 * value of each scale
 			 */
-			if (!s_space || s_space > e_scale - start_scale) {
+			if (!s_space || s_space >( e_scale - start_scale)) {
 				s_space = _.push('scale', (e_scale - start_scale) / _.get('scale_share'));
 			}
-
-			_.number = _.get('scale_share');
-
-			if (s_space < 1 && _.get('decimalsnum') == 0) {
-				var dec = s_space;
+			
+			if (abs(s_space) < 1 && _.get('decimalsnum') == 0) {
+				var dec = abs(s_space);
 				while (dec < 1) {
 					dec *= 10;
 					_.push('decimalsnum', _.get('decimalsnum') + 1);
 				}
 			}
-
 		}
-
 		/**
 		 * the real distance of each scale
 		 */
 		_.push('distanceOne', _.get('valid_distance') / _.number);
 
 		var text, x, y, x1 = 0, y1 = 0, x0 = 0, y0 = 0, tx = 0, ty = 0, w = _.get('scale_width'), w2 = w / 2, sa = _.get('scaleAlign'), ta = _.get('textAlign'), ts = _.get('text_space'), tbl = '';
-
+		
 		_.push('which', _.get('which').toLowerCase());
 		_.isH = _.get('which') == 'h';
-
+		
 		if (_.isH) {
 			if (sa == _.O) {
 				y0 = -w;
@@ -244,7 +246,6 @@ iChart.Scale = iChart.extend(iChart.Component, {
 				tx = -ts;
 			}
 		}
-
 		/**
 		 * 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
 		 */
@@ -502,10 +503,14 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		for ( var i = 0; i < this.scale.length; i++) {
 			var k = this.scale[i];
 			if (k.get('position') == p) {
+				var u = [k.get('basic_value'),k.get('start_scale'),k.get('end_scale'),k.get('end_scale') - k.get('start_scale'),0];
+				u[4] = iChart.inRange(u[1],u[2]+1,u[0])||iChart.inRange(u[2]-1,u[1],u[0]);
 				return {
-					start : k.get('start_scale'),
-					end : k.get('end_scale'),
-					distance : k.get('end_scale') - k.get('start_scale')
+					range:u[4],
+					basic:u[4]?(u[0]-u[1]) / u[3]:0,
+					start : u[4]?u[0]:u[1],
+					end : u[2],
+					distance : u[3]
 				};
 			}
 		}
@@ -528,10 +533,10 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 				axis = _.get('axis.width');
 			}
 		}
-
+		
 		var glw = _.get('grid_line_width'), v = _.get('alternate_direction') == 'v';
 		
-		_.gridlines.each(function(g) {
+		_.gridlines.each(function(g,i) {
 			if (_.get('alternate_color')) {
 				if (f) {
 					if (v)
@@ -544,6 +549,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 				f = !f;
 			}
 		}).each(function(g) {
+			if(!g.overlap)
 			_.T.line(g.x1, g.y1, g.x2, g.y2, glw, _.get('grid_color'));
 		});
 		
@@ -671,9 +677,8 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 
 				scale.items.each(function(item) {
 					if (iol)
-						if (ignoreOverlap.call(_, scale.get('which'), item.x, item.y))
-							return;
 					_.gridlines.push({
+						overlap:ignoreOverlap.call(_, scale.get('which'), item.x, item.y),
 						x1 : item.x,
 						y1 : item.y,
 						x2 : item.x + x,
@@ -694,9 +699,8 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 
 			for ( var i = 0; i <= n; i++) {
 				if (iol)
-					if (ignoreOverlap.call(_, 'h', _.x + i * d, _.y))
-						continue;
 				_.gridlines.push({
+					overlap:ignoreOverlap.call(_, 'h', _.x + i * d, _.y),
 					x1 : _.x + i * d,
 					y1 : _.y,
 					x2 : _.x + i * d,
@@ -716,9 +720,8 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 
 			for ( var i = 0; i <= n; i++) {
 				if (iol)
-					if (ignoreOverlap.call(_, 'v', _.x, _.y + i * d))
-						continue;
 				_.gridlines.push({
+					overlap:ignoreOverlap.call(_, 'v', _.x, _.y + i * d),
 					x1 : _.x,
 					y1 : _.y + i * d,
 					x2 : _.x + w,

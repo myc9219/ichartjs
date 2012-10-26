@@ -21,23 +21,19 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(),S = _.coo.getScale(_.get('scaleAlign')), H = _.coo.get(_.H), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), h;
-		
+		var _ = this._(),S = _.coo.getScale(_.get('scaleAlign')), H = _.coo.get(_.H), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), h,I = _.y - S.basic*H + H;
 		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
 			_.doParse(_,d, i, {
 				id : i,
 				originx :_.x + _.get('hispace') + i * gw,
-				originy : _.y + H - h,
-				height : h
+				originy : I  - (h>0? h :0),
+				height : Math.abs(h)
 			});
 			_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), _));
 			_.doLabel(_,i, d.name, _.x + _.get('hispace') + gw * i + h2, _.y + H + _.get('text_space'));
 		}, _);
-
-		
 	}
-
 });
 /**
  *@end 
