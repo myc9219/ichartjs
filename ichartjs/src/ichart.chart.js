@@ -40,7 +40,7 @@
 	},
 	simple = function(c) {
 		var M,V=0,MI,ML=0,n='minValue',x='maxValue';
-		this.total = 0;
+		this.total = 0,init=false;
 		c.each(function(d,i){
 			V  = d.value;
 			if($.isArray(V)){
@@ -49,43 +49,44 @@
 				for(var j=0;j<V.length;j++){
 					V[j] = pF(V[j]);
 					T+=V[j];
-					if(!MI)
-					MI = V;
-					M = V[j]>M?V[j]:M;
-					MI = V[j]<MI?V[j]:MI;
+					if(!init){
+						M = MI = V[j];
+						init=true;
+					}
+					M = max(V[j],M);
+					MI = min(V[j],MI);
 				}
 				d.total = T;
 			}else{
 				V = pF(V);
 				d.value = V;
 				this.total+=V;
-				if(!M)
-					M = V;
-				M = V>M?V:M;
-				if(!MI)
-					MI = V;
-				MI = V<MI?V:MI;
+				if(!init){
+					M = MI = V;
+					init=true;
+				}
+				M = max(V,M);
+				MI = min(V,MI);
 			}
 		},this);
 		
 		if(this.get(n)){
-			MI = this.get(n)<MI?this.get(n):MI;
+			MI = min(this.get(n),MI);
 		}
 		
 		if(this.get(x)){
-			M = this.get(x)<M?this.get(x):M;
+			M = max(this.get(x),M);
 		}
 		
 		if($.isArray(this.get('labels'))){
 			ML = this.get('labels').length>ML?this.get('labels').length:ML;
 		}
-		
 		this.push('maxItemSize',ML);
 		this.push(n,MI);
 		this.push(x,M);
 	},
 	complex = function(c){
-		var _=this._(),M,MI,V,d,L;
+		var _=this._(),M,MI,V,d,L,init=false;
 		_.labels = _.get('labels');
 		L =_.labels.length;
 		if(L==0){
@@ -101,12 +102,12 @@
 				V =  pF(V,V);
 				d.value[i] = V;
 				_.total+=V;
-				if(!M){
-					M = V;
-					MI = V;	
+				if(!init){
+					M = MI = V;
+					init=true;
 				}
-				M = V>M?V:M;
-				MI = V<MI?V:MI;
+				M = max(V,M);
+				MI = min(V,MI);
 				item.push({
 					name:d.name,
 					value:d.value[i],

@@ -13,7 +13,7 @@ iChart.Donut2D = iChart.extend(iChart.Pie, {
 		 */
 		iChart.Donut2D.superclass.configure.call(this);
 		
-		this.type = 'pie2d';
+		this.type = 'donut2d';
 		
 		this.set({
 			/**

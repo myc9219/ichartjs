@@ -52,7 +52,6 @@ function result(succ,type,costOrCause){
 	resultList.innerHTML = str.join("");
 	canvas.innerHTML = "";
 }
-
 //You Browser Scores  out of a total of 100
 function start(){
 	setTimeout(function(){
@@ -74,6 +73,7 @@ function start(){
 			}
 			
 			chart = unit.shift()();
+			
 			chart.on('beforedraw',function(e){
 				chart.START_RUN_TIME = new Date().getTime();
 				return true;
@@ -105,6 +105,7 @@ function test(){
 	costtime = total=success=fail=0;
 	unit = [];
 	
+	//0
 	unit.push(function(){
 		return new iChart.Pie2D({
 			render :canvas,
@@ -117,7 +118,7 @@ function test(){
 	});
 	
 	
-	
+	//1
 	unit.push(function(){
 		return new iChart.Donut2D({
 			render :canvas,
@@ -126,7 +127,7 @@ function test(){
 			data:data
 		});
 	});
-	
+	//2
 	unit.push(function(){
 		return new iChart.Donut2D({
 			render :canvas,
@@ -135,7 +136,7 @@ function test(){
 			data:data
 		});
 	});
-	
+	//3
 	unit.push(function(){
 		return new iChart.Pie2D({
 			render :canvas,
@@ -146,7 +147,7 @@ function test(){
 			offsetAngle:45
 		});
 	});
-	
+	//4
 	unit.push(function(){
 		return new iChart.Pie2D({
 			render :canvas,
@@ -156,7 +157,7 @@ function test(){
 			offsetAngle:45
 		});
 	});
-	
+	//5
 	unit.push(function(){
 		return new iChart.Pie3D({
 			render :canvas,
@@ -176,7 +177,7 @@ function test(){
 			}
 		});
 	});
-	
+	//6
 	unit.push(function(){
 		return new iChart.Pie3D({
 			render :canvas,
@@ -195,7 +196,7 @@ function test(){
 			}
 		});
 	});
-	
+	//7
 	unit.push(function(){
 		return new iChart.Column2D({
 			render :canvas,
@@ -217,7 +218,7 @@ function test(){
 			
 		});
 	});
-	
+	//8
 	unit.push(function(){
 		return new iChart.Column2D({
 			render :canvas,
@@ -239,7 +240,7 @@ function test(){
 			
 		});
 	});
-	
+	//9
 	unit.push(function(){
 		return new iChart.Column3D({
 			render :canvas,
@@ -263,7 +264,7 @@ function test(){
 			zScale:1
 		});
 	});
-	
+	//10
 	unit.push(function(){
 		return new iChart.Column3D({
 			render :canvas,
@@ -287,7 +288,7 @@ function test(){
 			zScale:1
 		});
 	});
-	
+	//11
 	unit.push(function(){
 		return new iChart.Bar2D({
 			render :canvas,
@@ -310,7 +311,7 @@ function test(){
 			
 		});
 	});
-	
+	//12
 	unit.push(function(){
 		return new iChart.ColumnMulti2D({
 			render :canvas,
@@ -339,7 +340,7 @@ function test(){
 		});
 	});
 	
-	
+	//13
 	unit.push(function(){
 		return new iChart.LineBasic2D({
 			render :canvas,
@@ -349,13 +350,13 @@ function test(){
 			shadow:true,
 			labels:lineLabels,
 			listeners:{
-				parsePoint:function(v,x,y){
+				parsePoint:function(d,v,x,y){
 					return {value:v+"℃"}
 				}
 			}
 		});
 	});
-	
+	//14
 	unit.push(function(){
 		return new iChart.LineBasic2D({
 			render :canvas,
@@ -406,14 +407,14 @@ function test(){
 				}]
 			},
 			listeners:{
-				parsePoint:function(v,x,y){
+				parsePoint:function(d,v,x,y){
 					return {value:v+"℃"}
 				}
 			}
 		});
 	});
 	
-	
+	//15
 	unit.push(function(){
 		var myChart = iChart.noConflict();
 		return new myChart.Area2D({
@@ -426,12 +427,13 @@ function test(){
 			height : 400,
 			labels:lineLabels,
 			listeners:{
-				parsePoint:function(v,x,y){
+				parsePoint:function(d,v,x,y){
 					return {value:v+"℃"}
 				}
 			}
 		});
 	});
+	//16
 	unit.push(function(){
 		return new iChart.Area2D({
 			render :canvas,
@@ -443,7 +445,7 @@ function test(){
 			height : 400,
 			labels:lineLabels,
 			listeners:{
-				parsePoint:function(v,x,y){
+				parsePoint:function(d,v,x,y){
 					return {value:v+"℃"}
 				}
 			}
@@ -451,7 +453,7 @@ function test(){
 	});
 	
 	
-	
+	//17
 	unit.push(function(){
 		return new iChart.Bar2D({
 				render :canvas,
@@ -469,7 +471,7 @@ function test(){
 				height : 600
 		});
 	});
-	
+	//18
 	unit.push(function(){
 		return new iChart.BarMulti2D({
 			render :canvas,
@@ -485,7 +487,6 @@ function test(){
 			}
 		});
 	});
-	
 	/**
 	 * start Test
 	 */
