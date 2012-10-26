@@ -176,8 +176,9 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			 * startScale must less than minScale
 			 */
 			if (start_scale > min_s) {
-				_.push('start_scale', iChart.floor(min_s));
+				start_scale = _.push('start_scale', iChart.floor(min_s));
 			}
+			
 			
 			if (s_space && abs(s_space) < abs(e_scale - start_scale)) {
 				_.push('scale_share', (e_scale - start_scale) / s_space);
@@ -200,6 +201,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 				}
 			}
 		}
+		
 		/**
 		 * the real distance of each scale
 		 */
@@ -303,6 +305,7 @@ iChart.Coordinate = {
 			 * the Coordinate' Z is same as long as the column's
 			 */
 			_.push('coordinate.zHeight', _.get('zHeight') * _.get('bottom_scale'));
+			
 			return new iChart.Coordinate3D(iChart.apply({
 				scale : {
 					position : _.get('scaleAlign'),

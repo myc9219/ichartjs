@@ -39,7 +39,7 @@
 		return $.isNumber(n)?n:$.parseFloat(n,n);
 	},
 	simple = function(c) {
-		var M=0,V=0,MI,ML=0,n='minValue',x='maxValue';
+		var M,V=0,MI,ML=0,n='minValue',x='maxValue';
 		this.total = 0;
 		c.each(function(d,i){
 			V  = d.value;
@@ -59,6 +59,8 @@
 				V = pF(V);
 				d.value = V;
 				this.total+=V;
+				if(!M)
+					M = V;
 				M = V>M?V:M;
 				if(!MI)
 					MI = V;
@@ -81,10 +83,9 @@
 		this.push('maxItemSize',ML);
 		this.push(n,MI);
 		this.push(x,M);
-		
 	},
 	complex = function(c){
-		var _=this._(),M=0,MI=0,V,d,L;
+		var _=this._(),M,MI,V,d,L;
 		_.labels = _.get('labels');
 		L =_.labels.length;
 		if(L==0){
@@ -100,9 +101,12 @@
 				V =  pF(V,V);
 				d.value[i] = V;
 				_.total+=V;
+				if(!M){
+					M = V;
+					MI = V;	
+				}
 				M = V>M?V:M;
 				MI = V<MI?V:MI;
-				
 				item.push({
 					name:d.name,
 					value:d.value[i],

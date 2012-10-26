@@ -710,13 +710,13 @@
 			 * 返回向上靠近一个数量级为f的数
 			 */
 			ceil : function(max, f) {
-				return max + factor(max, f);
+				return max + factor(max, f)*(max>0?1:-1);
 			},
 			/**
 			 * 返回向下靠近一个数量级为f的数
 			 */
 			floor : function(max, f) {
-				return max - factor(max, f);
+				return max + factor(max, f)*(max>0?-1:1);
 			},
 			_2D : '2d',
 			_3D : '3d',
