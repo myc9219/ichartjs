@@ -124,6 +124,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			
 			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'), polygons);
 		}
+		
 		_.T[_.ignored_?"manyLine":"lineArray"](p,h, b, _.get('smooth'), _.get('smoothing'));
 		
 		if (_.get('intersection')) {
