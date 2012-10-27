@@ -599,11 +599,14 @@
 					this.lineArray(T, w, c, smooth, smo);
 					T = [];
 					Q = false;
-				}else{
+				}else if(!p0.ignored){
 					T.push(p0);
 					Q = true;
 				}
 			},this);
+			if(T.length>0){
+				this.lineArray(T, w, c, smooth, smo);
+			}
 		},
 		line : function(x1, y1, x2, y2, w, c, last) {
 			if (!w || w == 0)
@@ -1132,7 +1135,7 @@
 		 */
 		oneWay:function(_){
 			
-			var E = _.variable.event, mCSS = !$.touch&&_.get('default_mouseover_css'), O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
+			var E = _.variable.event,tot=!_.get('turn_off_touchmove'), mCSS = !$.touch&&_.get('default_mouseover_css'), O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
 			
 			events.each(function(it) {
 				_.T.addEvent(it, function(e) {
@@ -1154,12 +1157,13 @@
 					}
 				});
 				if(E.click){
+					if(tot)
 					e.event.preventDefault();
 					E.click = false;
 				}
 			});
 			
-			if(!$.touch||!_.get('turn_off_touchmove'))
+			if(!$.touch||tot)
 			_.on(events[1], function(_, e) {
 				O = AO = false;
 				_.components.eachAll(function(cot) {
