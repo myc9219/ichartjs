@@ -41,7 +41,8 @@ iChart.Column3D = iChart.extend(iChart.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(), S = _.coo.getScale(_.get('scaleAlign')), zh = _.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_'), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), H = _.coo.get(_.H), h;
+		var _ = this._(), S = _.coo.getScale(_.get('scaleAlign')), zh = _.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_'), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), H = _.coo.get(_.H), h,
+		y = _.coo.get('originy')+  H,x = _.get('hispace')+_.coo.get('originx');
 
 		/**
 		 * quick config to all rectangle
@@ -53,14 +54,13 @@ iChart.Column3D = iChart.extend(iChart.Column, {
 			h = (d.value - S.start) * H / S.distance;
 			_.doParse(_, d, i, {
 				id : i,
-				originx :_.x + _.get('hispace') + i * gw,
-				originy : _.y + (H - h) - zh,
+				originx :x + i * gw,
+				originy : y + - h - zh,
 				height : h
 			});
 			_.rectangles.push(new iChart.Rectangle3D(_.get('sub_option'), _));
-			_.doLabel(_,i, d.name, _.x + _.get('hispace') + gw * i + h2, _.y + H + _.get('text_space'));
+			_.doLabel(_,i, d.name, x + gw * i + h2, y + _.get('text_space'));
 		}, _);
-
 		
 	}
 

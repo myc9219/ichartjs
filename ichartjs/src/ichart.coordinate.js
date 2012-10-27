@@ -328,7 +328,7 @@ iChart.Coordinate = {
 		/**
 		 * calculate chart's measurement
 		 */
-		var _ = this._(), f = 0.9, _w = _.get('client_width'), _h = _.get('client_height'), w = _.pushIf('coordinate.width', Math.floor(_w * f)), h = _.pushIf('coordinate.height', Math.floor(_h * f));
+		var _ = this._(), f = 0.8, _w = _.get('client_width'), _h = _.get('client_height'), w = _.pushIf('coordinate.width', Math.floor(_w * f)), h = _.pushIf('coordinate.height', Math.floor(_h * f));
 
 		if (h > _h) {
 			h = _.push('coordinate.height', _h * f);

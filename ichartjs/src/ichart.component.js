@@ -70,7 +70,7 @@ iChart.Component = iChart.extend(iChart.Painter, {
 	getDimension : function() {
 		return {
 			x : this.x,
-			x : this.y,
+			y : this.y,
 			width : this.get("width"),
 			height : this.get("height")
 		}

@@ -32,7 +32,6 @@ body {
 #ichart_header_line{
 	height:5px;
 	background:url(../images/ichart_menu_line.png);
-	background-repeat:no-repeat;	
 	background-repeat: repeat;
 }
 #ichart_header_logo{

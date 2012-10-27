@@ -1531,7 +1531,7 @@ $.Component = $.extend($.Painter, {
 	getDimension : function() {
 		return {
 			x : this.x,
-			x : this.y,
+			y : this.y,
 			width : this.get("width"),
 			height : this.get("height")
 		}
@@ -3014,11 +3014,14 @@ $.Label = $.extend($.Component, {
 					this.lineArray(T, w, c, smooth, smo);
 					T = [];
 					Q = false;
-				}else{
+				}else if(!p0.ignored){
 					T.push(p0);
 					Q = true;
 				}
 			},this);
+			if(T.length>0){
+				this.lineArray(T, w, c, smooth, smo);
+			}
 		},
 		line : function(x1, y1, x2, y2, w, c, last) {
 			if (!w || w == 0)
@@ -3547,7 +3550,7 @@ $.Label = $.extend($.Component, {
 		 */
 		oneWay:function(_){
 			
-			var E = _.variable.event, mCSS = !$.touch&&_.get('default_mouseover_css'), O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
+			var E = _.variable.event,tot=!_.get('turn_off_touchmove'), mCSS = !$.touch&&_.get('default_mouseover_css'), O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
 			
 			events.each(function(it) {
 				_.T.addEvent(it, function(e) {
@@ -3569,12 +3572,13 @@ $.Label = $.extend($.Component, {
 					}
 				});
 				if(E.click){
+					if(tot)
 					e.event.preventDefault();
 					E.click = false;
 				}
 			});
 			
-			if(!$.touch||!_.get('turn_off_touchmove'))
+			if(!$.touch||tot)
 			_.on(events[1], function(_, e) {
 				O = AO = false;
 				_.components.eachAll(function(cot) {
@@ -4169,7 +4173,7 @@ $.Coordinate = {
 		/**
 		 * calculate chart's measurement
 		 */
-		var _ = this._(), f = 0.9, _w = _.get('client_width'), _h = _.get('client_height'), w = _.pushIf('coordinate.width', Math.floor(_w * f)), h = _.pushIf('coordinate.height', Math.floor(_h * f));
+		var _ = this._(), f = 0.8, _w = _.get('client_width'), _h = _.get('client_height'), w = _.pushIf('coordinate.width', Math.floor(_w * f)), h = _.pushIf('coordinate.height', Math.floor(_h * f));
 
 		if (h > _h) {
 			h = _.push('coordinate.height', _h * f);
@@ -6151,17 +6155,20 @@ $.Column2D = $.extend($.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(),S = _.coo.getScale(_.get('scaleAlign')), H = _.coo.get(_.H), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), h,I = _.y - S.basic*H + H;
+		var _ = this._(),S = _.coo.getScale(_.get('scaleAlign')), H = _.coo.get(_.H), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), h,
+		
+		y0 = _.coo.get('originy')+  H,y = y0 - S.basic*H,x = _.get('hispace')+_.coo.get('originx');
+		
 		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
 			_.doParse(_,d, i, {
 				id : i,
-				originx :_.x + _.get('hispace') + i * gw,
-				originy : I  - (h>0? h :0),
+				originx :x + i * gw,
+				originy : y  - (h>0? h :0),
 				height : Math.abs(h)
 			});
 			_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
-			_.doLabel(_,i, d.name, _.x + _.get('hispace') + gw * i + h2, _.y + H + _.get('text_space'));
+			_.doLabel(_,i, d.name, x + gw * i + h2, y0 + _.get('text_space'));
 		}, _);
 	}
 });
@@ -6211,7 +6218,8 @@ $.Column3D = $.extend($.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(), S = _.coo.getScale(_.get('scaleAlign')), zh = _.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_'), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), H = _.coo.get(_.H), h;
+		var _ = this._(), S = _.coo.getScale(_.get('scaleAlign')), zh = _.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_'), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), H = _.coo.get(_.H), h,
+		y = _.coo.get('originy')+  H,x = _.get('hispace')+_.coo.get('originx');
 
 		/**
 		 * quick config to all rectangle
@@ -6223,14 +6231,13 @@ $.Column3D = $.extend($.Column, {
 			h = (d.value - S.start) * H / S.distance;
 			_.doParse(_, d, i, {
 				id : i,
-				originx :_.x + _.get('hispace') + i * gw,
-				originy : _.y + (H - h) - zh,
+				originx :x + i * gw,
+				originy : y + - h - zh,
 				height : h
 			});
 			_.rectangles.push(new $.Rectangle3D(_.get('sub_option'), _));
-			_.doLabel(_,i, d.name, _.x + _.get('hispace') + gw * i + h2, _.y + H + _.get('text_space'));
+			_.doLabel(_,i, d.name, x + gw * i + h2, y + _.get('text_space'));
 		}, _);
-
 		
 	}
 
@@ -6686,7 +6693,6 @@ $.LineSegment = $.extend($.Component, {
 			
 			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'), polygons);
 		}
-		
 		_.T[_.ignored_?"manyLine":"lineArray"](p,h, b, _.get('smooth'), _.get('smoothing'));
 		
 		if (_.get('intersection')) {
@@ -7045,7 +7051,7 @@ $.LineBasic2D = $.extend($.Line, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), H = _.get('coordinate.valid_height'), sp = _.get('label_spacing'), points, x, y, ox = _.get('sub_option.originx'), oy = _.get('sub_option.originy')- S.basic*H, p;
+		var S = _.coo.getScale(_.get('scaleAlign')), H = _.get('coordinate.valid_height'), sp = _.get('label_spacing'), points, x, y, ox = _.coo.get('originx'), oy = _.coo.get('originy') + _.coo.get('height')- S.basic*H, p;
 		
 		_.push('sub_option.tip.showType', 'follow');
 		_.push('sub_option.coordinate', _.coo);
