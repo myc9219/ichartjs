@@ -169,6 +169,7 @@
 		 */
 		arc : function(x, y, r, dw, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
 			var ccw = !!ccw, a2r = !!a2r&&!dw;
+			
 			this.save().gCo(last).strokeStyle(b,bw,bc).shadowOn(sw).fillStyle(c).beginPath();
 			
 			if(dw){
@@ -582,7 +583,7 @@
 		lineArray : function(p, w, c, smooth, smo) {
 			if (p.length < 2||!w)
 				return this;
-			this.strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
+			this.save().beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
 			if (smooth) {
 				for ( var i = 1; i < p.length; i++)
 					this.bezierCurveTo(getCurvePoint(p, p[i], i, smo));
@@ -590,7 +591,7 @@
 				for ( var i = 1; i < p.length; i++)
 					this.lineTo(fd(w, p[i].x), fd(w, p[i].y));
 			}
-			return this.stroke(true);
+			return this.stroke(true).restore();
 		},
 		manyLine : function(p, w, c, smooth, smo) {
 			var T = [],Q  = false;
