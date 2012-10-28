@@ -42,8 +42,8 @@
 		<script type="text/javascript" src="../src/ichart.area2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.linemonitor2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.points.js"></script>
-		<script type="text/javascript" src="../src/ichart.scatter2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.interface.js"></script>
+		<script type="text/javascript" src="ichart.customize.js"></script>
 	<style type="text/css">
 		body{
 			margin-top:10px;
@@ -58,115 +58,82 @@
 	</style>
 	<script type="text/javascript">
 	$(function(){
+		//legend背景透明
+		//虚线
+		//legend自定义
 		var data = [
-	         	{
-	         		name : '型号AS01',
-	         		value:[10,4600,2800,1200,1320,1426,3000,4650,4000,3280,2700,2800,2950],
-	         		color:'#009bc6',
-	         		linewidth:2
-	         	},
-	         	{
-	         		name : '型号AF02',
-	         		value:[10,3200,3300,3400,2220,926,1200,2050,2800,980,1200,2200,650],
-	         		color:'#eaea04',
-	         		linewidth:2
-	         	},
-	         	{
-	         		name : '型号AD03',
-	         		value:[10,1500,2100,2300,2120,2426,2300,3000,2500,2380,4600,800,3650],
-	         		color:'#640709',
-	         		linewidth:2
-	         	}
-	         ];	
-
+		        	{name : '1月',value : 42,color:'#CD4C43'},
+		        	{name : '2月',value : 30,color:'#ECBD31'},
+		        	{name : '3月',value : 10,color:'#9bb60f'},
+		        	{name : '4月',value : 8,color:'#058d8d'},
+		        	{name : '5月',value : 6,color:'#84588d'},
+		        	{name : '6月',value : 4,color:'#b4cfe4'}
+	        	];
+    	
 			var w = window.innerWidth;
 	   		var h = window.innerHeight;
-	   		if(h>w){
-				h = w*0.6;
+	   		var radius = w;
+	   		if(w>h){
+	   			radius = h;
 		   	}
-    		
-			var labels = ["","1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
-			
-			var chart = new iChart.LineBasic2D({
+			var chart = new iChart.Pie3D({
 				render : 'canvasDiv',
 				data: data,
 				title : {
-					text:'2012年度A系列产品销售统计',
-					textAlign:'left',
-					fontsize:24,
-					offsetx:w*0.1-10,
+					text:'本广场全年进客量统计',
+					textAlign:'center',
+					height:40,
 					color:'#ffffff'
 				},
+				padding:0,
+				radius:radius*0.32,
 				align:'center',
 				fit:true,
+				yHeight:20,
+				zRotate : 60,
 				shadow:true,
 				shadow_color : '#20262f',
 				shadow_blur : 4,
 				shadow_offsetx : 0,
 				shadow_offsety : 2,
 				border:false,
+				offsetAngle : -90,
 				background_color:null,
-				labels:labels,
 				turn_off_touchmove : true,
+				showpercent:true,
+				decimalsnum:1, 
 				legend : {
 					enable : true,
-					background_color:null,
+					background_color:'#3D434B',
 					column:3,
-					border:false,
-					sign : 'round',
-					color:'#ffffff',
-					fontsize:16,
-					offsetx:w*0.1-30,
-					valign:'bottom',
-					align : 'left'
-				},
-				sub_option : {
-					label:false,
-					point_size : 10
-				},
-				listeners:{
-					parsePoint:function(d,v,x,y,j){
-						if(j==0)
-						return {ignored:true};
-					}
-				},
-				coordinate:{
-					width:w*0.8,
-					height:h*0.6,
-					offsety:-20,
-					background_color:null,
-					axis:{
-						color:'#cccccc',
-						width:[0,0,2,2]
+					offsety:-60,
+					border : {
+						enable : true,
+						color : '#D7D8D9',
+						style : 'solid',
+						width : 1,
+						radius : 5
 					},
-					scale:[{
-						 position:'left',	
-						 start_scale:0,
-						 end_scale:5000,
-						 scale_space:1000,
-						 scale_enable:false,
-						 label : {color:'#ffffff',fontsize:16},
-						 scale_color:'#ffffff'
-					},{
-						 position:'bottom',	
-						 label : {color:'#ffffff',fontsize:16},
-						 labels:labels
-					}]
+					sign : 'square',
+					padding:"8 20 0 20",
+					legend_space:30,
+					line_height:20,
+					color:'#ffffff',
+					fontsize:14,
+					valign:'bottom',
+					align : 'center'
+				},
+				label : {color:'#ffffff',fontsize:14},
+				sub_option : {
+					label : {color:'#ffffff',fontsize:14,line_thickness:2},
+					listeners:{
+						parseText:function(s, t){
+							return s.get('value')+"%";
+						}
+					}
 				}
 			});
 
-			chart.plugin(new iChart.Custom({
-				drawFn:function(){
-						var coo = chart.getCoordinate(),
-							dimen = coo.getDimension();
-						chart.target.textAlign('center')
-						.textBaseline('bottom').textFont("normal 16px Verdana")
-						.fillText('单位(万件)',dimen.x,dimen.y-10,false,'#ffffff')
-						.textBaseline('top')
-						.fillText('时间(月)',dimen.x,dimen.y+6+dimen.height,false,'#ffffff')
-					}
-			}));	
-			
 			chart.draw();
 	});
 	</script>

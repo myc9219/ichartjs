@@ -529,6 +529,11 @@
 				hsv[2] = _.upTo(hsv[2], 1);
 			}
 			return hsv2Rgb(hsv, rgb[3]);
+		},
+		topi = function(v){
+			if(v==0)return v;
+			if(v%pi2==0)return pi2;
+			return v%pi2;
 		};
 
 		_.apply(_, {
@@ -641,6 +646,8 @@
 			quadrantd : function(a) {
 				if(a==0)return 0;
 				if(a % pi2==0)return 3;
+				while(a<0)
+					a+=pi2;
 				return ceil(2 * (a % pi2) / pi)-1;
 			},
 			upTo : function(u, v) {
@@ -656,13 +663,14 @@
 				return u > v && l < v;
 			},
 			angleInRange : function(l, u, v) {
-				l = l % pi2;
-				u = u % pi2;
+				l = topi(l);
+				u = topi(u);
+				v = topi(v);
 				if (u > l) {
 					return u > v && l < v;
 				}
 				if (u < l) {
-					return v < u || v > l;
+					return v > l && v < u;
 				}
 				return v == u;
 			},

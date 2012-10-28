@@ -529,6 +529,11 @@
 				hsv[2] = _.upTo(hsv[2], 1);
 			}
 			return hsv2Rgb(hsv, rgb[3]);
+		},
+		topi = function(v){
+			if(v==0)return v;
+			if(v%pi2==0)return pi2;
+			return v%pi2;
 		};
 
 		_.apply(_, {
@@ -641,6 +646,8 @@
 			quadrantd : function(a) {
 				if(a==0)return 0;
 				if(a % pi2==0)return 3;
+				while(a<0)
+					a+=pi2;
 				return ceil(2 * (a % pi2) / pi)-1;
 			},
 			upTo : function(u, v) {
@@ -656,13 +663,14 @@
 				return u > v && l < v;
 			},
 			angleInRange : function(l, u, v) {
-				l = l % pi2;
-				u = u % pi2;
+				l = topi(l);
+				u = topi(u);
+				v = topi(v);
 				if (u > l) {
 					return u > v && l < v;
 				}
 				if (u < l) {
-					return v < u || v > l;
+					return v > l && v < u;
 				}
 				return v == u;
 			},
@@ -3478,7 +3486,6 @@ $.Label = $.extend($.Component, {
 			    style.padding = "0px";
 			    style.margin = "0px";
 			    style.overflow = "hidden";
-			    if(h>w)h = floor(w*0.6);
 			    _.push(_.W, w);
 			    _.push(_.H, h);
 			}
@@ -5380,7 +5387,6 @@ $.Sector = $.extend($.Component, {
 			if(_.get('donutwidth')>_.r){
 				_.push('donutwidth',0);
 			}
-			
 			_.applyGradient(_.x-_.r,_.y-_.r,2*_.r,2*_.r);
 			
 			_.pushIf('increment',$.lowTo(5,_.r/10));
@@ -5388,7 +5394,6 @@ $.Sector = $.extend($.Component, {
 			var A = _.get('middleAngle'),L = _.get('increment');
 			_.push('inc_x',L * Math.cos(2 * Math.PI -A));
 			_.push('inc_y',L * Math.sin(2 * Math.PI - A));
-			
 			if(_.get('label')){
 				var P2 = $.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
 				if(_.get('mini_label')){
@@ -5503,11 +5508,7 @@ $.Sector = $.extend($.Component, {
 			_.pushIf('increment',$.lowTo(5,_.a/8));
 			
 			var toAngle = function(A){
-				var t = $.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A)));
-				if(!ccw&&t!=0){
-					t = 2*Math.PI - t;
-				}
-				return t;
+				return $.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A)));
 			},
 			L = _.get('increment');
 			

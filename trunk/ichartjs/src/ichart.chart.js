@@ -1063,7 +1063,6 @@
 			    style.padding = "0px";
 			    style.margin = "0px";
 			    style.overflow = "hidden";
-			    if(h>w)h = floor(w*0.6);
 			    _.push(_.W, w);
 			    _.push(_.H, h);
 			}
