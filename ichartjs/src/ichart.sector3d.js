@@ -97,11 +97,7 @@
 			_.pushIf('increment',iChart.lowTo(5,_.a/8));
 			
 			var toAngle = function(A){
-				var t = iChart.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A)));
-				if(!ccw&&t!=0){
-					t = 2*Math.PI - t;
-				}
-				return t;
+				return iChart.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A)));
 			},
 			L = _.get('increment');
 			

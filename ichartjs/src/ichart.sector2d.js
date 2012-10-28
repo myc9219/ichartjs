@@ -75,7 +75,6 @@
 			if(_.get('donutwidth')>_.r){
 				_.push('donutwidth',0);
 			}
-			
 			_.applyGradient(_.x-_.r,_.y-_.r,2*_.r,2*_.r);
 			
 			_.pushIf('increment',iChart.lowTo(5,_.r/10));
@@ -83,7 +82,6 @@
 			var A = _.get('middleAngle'),L = _.get('increment');
 			_.push('inc_x',L * Math.cos(2 * Math.PI -A));
 			_.push('inc_y',L * Math.sin(2 * Math.PI - A));
-			
 			if(_.get('label')){
 				var P2 = iChart.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
 				if(_.get('mini_label')){
