@@ -57,10 +57,11 @@
 		}
 	</style>
 	<script type="text/javascript">
-	$(function(){
 		//legend背景透明
 		//虚线
 		//legend自定义
+		//折线图的点颜色
+		$(function(){
 		var data = [
 		        	{name : '1月',value : 42,color:'#CD4C43'},
 		        	{name : '2月',value : 30,color:'#ECBD31'},
@@ -82,14 +83,14 @@
 				title : {
 					text:'本广场全年进客量统计',
 					textAlign:'center',
-					height:40,
+					height:60,
+					fontsize:44,
 					color:'#ffffff'
 				},
 				padding:0,
 				radius:radius*0.32,
 				align:'center',
 				fit:true,
-				yHeight:20,
 				zRotate : 60,
 				shadow:true,
 				shadow_color : '#20262f',
@@ -97,6 +98,7 @@
 				shadow_offsetx : 0,
 				shadow_offsety : 2,
 				border:false,
+				zHeight:40,
 				offsetAngle : -90,
 				background_color:null,
 				turn_off_touchmove : true,
@@ -104,28 +106,30 @@
 				decimalsnum:1, 
 				legend : {
 					enable : true,
-					background_color:'#3D434B',
+					//background_color:'#3D434B',
+					background_color:'rgba(61,67,75,0.6)',
 					column:3,
-					offsety:-60,
+					offsety:-20,
+					offsetx:-40,
 					border : {
 						enable : true,
 						color : '#D7D8D9',
 						style : 'solid',
 						width : 1,
-						radius : 5
+						radius : 20
 					},
 					sign : 'square',
-					padding:"8 20 0 20",
-					legend_space:30,
-					line_height:20,
+					padding:"18 30 10 30",
+					legend_space:40,
+					line_height:40,
+					sign_size:34,
 					color:'#ffffff',
-					fontsize:14,
+					fontsize:34,
 					valign:'bottom',
 					align : 'center'
 				},
-				label : {color:'#ffffff',fontsize:14},
 				sub_option : {
-					label : {color:'#ffffff',fontsize:14,line_thickness:2},
+					label : {color:'#ffffff',fontsize:34,line_thickness:2},
 					listeners:{
 						parseText:function(s, t){
 							return s.get('value')+"%";
