@@ -168,7 +168,6 @@ iChart.Legend = iChart.extend(iChart.Component, {
 	doDraw : function(_) {
 		//_.push('border.radius',5); ??
 		_.T.box(_.x, _.y, _.width, _.height, _.get('border'), _.get('f_color'), false, _.get('shadow'));
-
 		_.T.textStyle(_.L, 'middle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
 
 		var x = _.x + _.get('padding_left'), y = _.y + _.get('padding_top'), text, c = _.get('column'), r = _.get('row');
