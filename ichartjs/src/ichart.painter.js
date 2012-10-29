@@ -220,7 +220,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	},
 	doConfig : function() {
 		
-		var _ = this._(), p = iChart.parsePadding(_.get('padding')), b = _.get('border.enable'), b = b ? iChart.parsePadding(_.get('border.width')) : [0, 0, 0, 0], bg = _.get('background_color'), f = _.get('color_factor');
+		var _ = this._(), p = iChart.parsePadding(_.get('padding')), b = _.get('border.enable'), b = b ? iChart.parsePadding(_.get('border.width')) : [0, 0, 0, 0], bg = iChart.toRgb(_.get('background_color')), f = _.get('color_factor');
 		
 		_.set({
 			border_top:b[0],

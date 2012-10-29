@@ -384,7 +384,7 @@
 			violet : 'rgb(128,0,128)'
 		}, hex2Rgb = function(hex) {
 			hex = hex.replace(/#/g, "").replace(/^(\w)(\w)(\w)$/, "$1$1$2$2$3$3");
-			return 'rgb(' + parseInt(hex.substring(0, 2), 16) + ',' + parseInt(hex.substring(2, 4), 16) + ',' + parseInt(hex.substring(4, 6), 16) + ')';
+			return  (hex.length==7?'rgba(':'rgb(') + parseInt(hex.substring(0, 2), 16) + ',' + parseInt(hex.substring(2, 4), 16) + ',' + parseInt(hex.substring(4, 6), 16) + (hex.length==7?',0.'+hex.substring(6,7)+')':')');
 		}, i2hex = function(N) {
 			return ('0' + parseInt(N).toString(16)).slice(-2);
 		}, rgb2Hex = function(rgb) {
@@ -426,19 +426,21 @@
 				h += 360;
 			return new Array(h, dv / m, m);
 		}, toRgb = function(color) {
+			if (!color)
+				return color;
 			color = color.replace(/\s/g, '').toLowerCase();
 			// Look for rgb(255,255,255)
-			if (/rgb\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3}\)/.exec(color)) {
+			if (/^rgb\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3}\)$/.exec(color)) {
 				return color;
 			}
 
 			// Look for rgba(255,255,255,0.3)
-			if (/rgba\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3},(0(\.[0-9])?|1(\.0)?)\)/.exec(color)) {
+			if (/^rgba\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3},(0(\.[0-9])?|1(\.0)?)\)$/.exec(color)) {
 				return color;
 			}
 
 			// Look for #a0b1c2 or #fff
-			if (/#(([a-fA-F0-9]{6})|([a-fA-F0-9]{3}))/.exec(color))
+			if (/^#(([a-fA-F0-9]{6,7})|([a-fA-F0-9]{3}))$/.exec(color))
 				return hex2Rgb(color);
 			// Look a string for green
 			if (colors[color])
@@ -670,7 +672,7 @@
 					return u > v && l < v;
 				}
 				if (u < l) {
-					return v > l && v < u;
+					return v > l || v < u;
 				}
 				return v == u;
 			},
@@ -686,6 +688,7 @@
 					y : y + sin(a) * C
 				}
 			},
+			toRgb:toRgb,
 			/**
 			 * 计算空间点坐标矢量
 			 */
