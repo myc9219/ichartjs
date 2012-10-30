@@ -2050,7 +2050,6 @@ $.Legend = $.extend($.Component, {
 	doDraw : function(_) {
 		//_.push('border.radius',5); ??
 		_.T.box(_.x, _.y, _.width, _.height, _.get('border'), _.get('f_color'), false, _.get('shadow'));
-
 		_.T.textStyle(_.L, 'middle', $.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
 
 		var x = _.x + _.get('padding_left'), y = _.y + _.get('padding_top'), text, c = _.get('column'), r = _.get('row');
@@ -2596,7 +2595,7 @@ $.Label = $.extend($.Component, {
 		arc : function(x, y, r, dw, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
 			var ccw = !!ccw, a2r = !!a2r&&!dw;
 			
-			this.save().gCo(last).strokeStyle(b,bw,bc).shadowOn(sw).fillStyle(c).beginPath();
+			this.save().gCo(last).strokeStyle(b,bw,bc).fillStyle(c).beginPath();
 			
 			if(dw){
 				this.moveTo(x+cos(s)*(r-dw),y+sin(s)*(r-dw)).lineTo(x+cos(s)*r,y+sin(s)*r);
@@ -2609,7 +2608,16 @@ $.Label = $.extend($.Component, {
 			
 			if (a2r)
 				this.lineTo(x, y);
-			return this.closePath().fill(c).stroke(b).restore();
+			
+			this.closePath();
+			
+			if(!b){
+				this.shadowOn(sw).fill(c);
+			}else{
+				this.shadowOn(sw).stroke(b).shadowOff().fill(c);
+			}
+			
+			return this.restore();
 		},
 		/**
 		 * draw sector
@@ -4193,9 +4201,13 @@ $.Coordinate = {
 			w = _.push('coordinate.width', _w * f);
 		}
 		if (_.is3D()) {
-			h = _.push('coordinate.height', h - (_.get('coordinate.pedestal_height') || 22) - (_.get('coordinate.board_deep') || 20));
+			var a = _.get('coordinate.pedestal_height');
+			var b = _.get('coordinate.board_deep');
+			a = $.isNumber(a)?a:22;
+			b = $.isNumber(b)?b:20;
+			h = _.push('coordinate.height', h - a - b);
 		}
-
+		
 		/**
 		 * calculate chart's alignment
 		 */
@@ -4685,10 +4697,12 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		/**
 		 * bottom
 		 */
+		if(_.get('pedestal_height'))
 		_.T.cube3D(_.x, _.y + h + _.get('pedestal_height'), xa, ya, false, w, _.get('pedestal_height'), zh * 3 / 2, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('bottom_style'));
 		/**
 		 * board_style
 		 */
+		if(_.get('board_deep'))
 		_.T.cube3D(_.x + _.get('board_deep') * xa, _.y + h - _.get('board_deep') * ya, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('board_style'));
 
 		_.T.cube3D(_.x, _.y + h, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('wall_style'));
@@ -4740,6 +4754,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		}, {
 			color : bg
 		}, false]);
+		
 		/**
 		 * 下底-底-左-右-上-前
 		 */
@@ -6700,14 +6715,13 @@ $.LineSegment = $.extend($.Component, {
 		}
 		
 		_.T[_.ignored_?"manyLine":"lineArray"](p,h, b, _.get('smooth'), _.get('smoothing'));
-		
 		if (_.get('intersection')) {
 			var f = _.getPlugin('sign'),s=_.get('point_size'),j=_.get('hollow_color');
 			p.each(function(q,i){
 				if(!q.ignored){
 					if(!f||!f.call(_,_.T,_.get('sign'),q.x, q.y,s,b)){
 						if (_.get('hollow')) {
-							_.T.round(q.x, q.y, s*3/8,_.get('hollow_color'),s/4,b);
+							_.T.round(q.x, q.y, s/2-h,b,h,_.get('hollow_color'));
 						} else {
 							_.T.round(q.x, q.y, s/2,b);
 						}

@@ -126,14 +126,13 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		}
 		
 		_.T[_.ignored_?"manyLine":"lineArray"](p,h, b, _.get('smooth'), _.get('smoothing'));
-		
 		if (_.get('intersection')) {
 			var f = _.getPlugin('sign'),s=_.get('point_size'),j=_.get('hollow_color');
 			p.each(function(q,i){
 				if(!q.ignored){
 					if(!f||!f.call(_,_.T,_.get('sign'),q.x, q.y,s,b)){
 						if (_.get('hollow')) {
-							_.T.round(q.x, q.y, s*3/8,_.get('hollow_color'),s/4,b);
+							_.T.round(q.x, q.y, s/2-h,b,h,_.get('hollow_color'));
 						} else {
 							_.T.round(q.x, q.y, s/2,b);
 						}

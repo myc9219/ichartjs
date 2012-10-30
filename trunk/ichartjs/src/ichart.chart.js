@@ -170,7 +170,7 @@
 		arc : function(x, y, r, dw, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
 			var ccw = !!ccw, a2r = !!a2r&&!dw;
 			
-			this.save().gCo(last).strokeStyle(b,bw,bc).shadowOn(sw).fillStyle(c).beginPath();
+			this.save().gCo(last).strokeStyle(b,bw,bc).fillStyle(c).beginPath();
 			
 			if(dw){
 				this.moveTo(x+cos(s)*(r-dw),y+sin(s)*(r-dw)).lineTo(x+cos(s)*r,y+sin(s)*r);
@@ -183,7 +183,16 @@
 			
 			if (a2r)
 				this.lineTo(x, y);
-			return this.closePath().fill(c).stroke(b).restore();
+			
+			this.closePath();
+			
+			if(!b){
+				this.shadowOn(sw).fill(c);
+			}else{
+				this.shadowOn(sw).stroke(b).shadowOff().fill(c);
+			}
+			
+			return this.restore();
 		},
 		/**
 		 * draw sector
@@ -605,12 +614,25 @@
 					Q = true;
 				}
 			},this);
-			if(T.length>0){
+			if(T.length){
 				this.lineArray(T, w, c, smooth, smo);
 			}
 		},
+		dotted : function(x1, y1, x2, y2, w, c,L,last) {
+			if (!w)
+				return this;
+			var d = iChart.distanceP2P(x1, y1, x2, y2);
+			if(L<=0||d<=L){
+				return this.line(x1, y1, x2, y2, w, c, last);
+			}
+			var g = floor(d/L);
+			//虚线
+			
+			this.save().gCo(last);
+			return this.beginPath().strokeStyle(true,w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke(true).restore();
+		},
 		line : function(x1, y1, x2, y2, w, c, last) {
-			if (!w || w == 0)
+			if (!w)
 				return this;
 			this.save().gCo(last);
 			return this.beginPath().strokeStyle(true,w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke(true).restore();
