@@ -337,9 +337,13 @@ iChart.Coordinate = {
 			w = _.push('coordinate.width', _w * f);
 		}
 		if (_.is3D()) {
-			h = _.push('coordinate.height', h - (_.get('coordinate.pedestal_height') || 22) - (_.get('coordinate.board_deep') || 20));
+			var a = _.get('coordinate.pedestal_height');
+			var b = _.get('coordinate.board_deep');
+			a = iChart.isNumber(a)?a:22;
+			b = iChart.isNumber(b)?b:20;
+			h = _.push('coordinate.height', h - a - b);
 		}
-
+		
 		/**
 		 * calculate chart's alignment
 		 */
@@ -829,10 +833,12 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 		/**
 		 * bottom
 		 */
+		if(_.get('pedestal_height'))
 		_.T.cube3D(_.x, _.y + h + _.get('pedestal_height'), xa, ya, false, w, _.get('pedestal_height'), zh * 3 / 2, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('bottom_style'));
 		/**
 		 * board_style
 		 */
+		if(_.get('board_deep'))
 		_.T.cube3D(_.x + _.get('board_deep') * xa, _.y + h - _.get('board_deep') * ya, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('board_style'));
 
 		_.T.cube3D(_.x, _.y + h, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('wall_style'));
@@ -884,6 +890,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 		}, {
 			color : bg
 		}, false]);
+		
 		/**
 		 * 下底-底-左-右-上-前
 		 */

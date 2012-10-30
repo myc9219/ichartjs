@@ -76,8 +76,11 @@ iChart.override(iChart.Label,{
 			this.T.box(x-size/2, y - size / 12, size, size / 6, 0, color);
 			this.T.box(x - size / 4, y - size / 4, size / 2, size / 2, 0, color);return true;
 		}else if (si == 'rectangle') {
-			var border = iChart.clone(this.get('border'));
-			border.radius = border.radius?border.radius/2:0; 
+			var border = this.get('sign_border') || this.get('border');
+			if(border){
+				border = iChart.clone(border);	
+				border.radius = border.radius?border.radius/2:0; 
+			}
 			T.box(x-size / 2, y - size*3 / 8-2, size*1.5, size*3/4 ,border, color);return true;
 		}
 		return false;
