@@ -426,7 +426,25 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			 */
 			grid_color : '#dbe1e1',
 			/**
+			 * @cfg {Object} Specifies the stlye of horizontal grid.(default to empty object).Available property are:
+			 * @Option solid {Boolean} True to draw a solid line.else draw a dotted line.(default to true)
+			 * @Option size {Number} Specifies size of line segment when solid is false.(default to 10)
+			 * @Option fator {Number} Specifies the times to size(default to 1)
+			 * @Option width {Number} Specifies the width of grid line.(default to 1)
+			 * @Option color {String} Specifies the color of grid line.(default to '#dbe1e1')
+			 */
+			gridHStyle : {},
+			/**
+			 * @cfg {Object} Specifies the stlye of horizontal grid.(default to empty object)
+			 */
+			gridVStyle : {},
+			/**
 			 * @cfg {Boolean} True to display grid line.(default to true)
+			 * @Option solid {Boolean} True to draw a solid line.else draw a dotted line.(default to true)
+			 * @Option size {Number} Specifies size of line segment when solid is false.(default to 10)
+			 * @Option fator {Number} Specifies the times to size(default to 1)
+			 * @Option width {Number} Specifies the width of grid line.(default to 1)
+			 * @Option color {String} Specifies the color of grid line.(default to '#dbe1e1')
 			 */
 			gridlinesVisible : true,
 			/**
@@ -540,24 +558,27 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 				axis = _.get('axis.width');
 			}
 		}
-		
-		var glw = _.get('grid_line_width'), v = _.get('alternate_direction') == 'v';
-		
+		var v = _.get('alternate_direction') == 'v';
 		_.gridlines.each(function(g,i) {
 			if (_.get('alternate_color')) {
 				if (f) {
 					if (v)
-						_.T.box(g.x1 + axis[3], g.y1 + glw, g.x2 - g.x1 - axis[3] - axis[1], y - g.y1 - glw, 0, c);
+						_.T.box(g.x1 + axis[3], g.y1 + g.width, g.x2 - g.x1 - axis[3] - axis[1], y - g.y1 - g.width, 0, c);
 					else
-						_.T.box(x + glw, g.y2 + axis[0], g.x1 - x, g.y1 - g.y2 - axis[0] - axis[2], 0, c);
+						_.T.box(x + g.width, g.y2 + axis[0], g.x1 - x, g.y1 - g.y2 - axis[0] - axis[2], 0, c);
 				}
 				x = g.x1;
 				y = g.y1;
 				f = !f;
 			}
 		}).each(function(g) {
-			if(!g.overlap)
-			_.T.line(g.x1, g.y1, g.x2, g.y2, glw, _.get('grid_color'));
+			if(!g.overlap){
+				if(g.solid){
+					_.T.line(g.x1, g.y1, g.x2, g.y2, g.width, g.color);
+				}else{
+					_.T.dotted(g.x1, g.y1, g.x2, g.y2, g.width, g.color,g.size,g.fator);
+				}
+			}
 		});
 		
 		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), _.get('axis'), false, _.get('shadow'));
@@ -660,7 +681,16 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 				}
 			}
 		}
-
+		var g = {
+				solid : true,
+				size : 10,
+				fator : 1,
+				width : _.get('grid_line_width'),
+				color : _.get('grid_color')
+			},
+			ghs = iChart.applyIf(_.get('gridHStyle'),g),
+			gvs = iChart.applyIf(_.get('gridVStyle'),g);
+		
 		if (k2g) {
 			var scale, x, y, p;
 			_.scale.each(function(scale) {
@@ -681,16 +711,16 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 				} else {
 					x = w;
 				}
-
+				
 				scale.items.each(function(item) {
 					if (iol)
-					_.gridlines.push({
+					_.gridlines.push(iChart.applyIf({
 						overlap:ignoreOverlap.call(_, scale.get('which'), item.x, item.y),
 						x1 : item.x,
 						y1 : item.y,
 						x2 : item.x + x,
 						y2 : item.y + y
-					});
+					},scale.isH?gvs:ghs));
 				});
 			});
 		}
@@ -706,13 +736,16 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 
 			for ( var i = 0; i <= n; i++) {
 				if (iol)
-				_.gridlines.push({
+				_.gridlines.push(iChart.applyIf({
 					overlap:ignoreOverlap.call(_, 'h', _.x + i * d, _.y),
 					x1 : _.x + i * d,
 					y1 : _.y,
 					x2 : _.x + i * d,
-					y2 : _.y + h
-				});
+					y2 : _.y + h,
+					H : false,
+					width : gvs.width,
+					color : gvs.color
+				},gvs));
 			}
 		}
 		if (hg) {
@@ -727,13 +760,16 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 
 			for ( var i = 0; i <= n; i++) {
 				if (iol)
-				_.gridlines.push({
+				_.gridlines.push(iChart.applyIf({
 					overlap:ignoreOverlap.call(_, 'v', _.x, _.y + i * d),
 					x1 : _.x,
 					y1 : _.y + i * d,
 					x2 : _.x + w,
-					y2 : _.y + i * d
-				});
+					y2 : _.y + i * d,
+					H : true,
+					width : ghs.width,
+					color : ghs.color
+				},ghs));
 			}
 		}
 	}
@@ -844,10 +880,15 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 		_.T.cube3D(_.x, _.y + h, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('wall_style'));
 
 		_.gridlines.each(function(g) {
-			_.T.line(g.x1, g.y1, g.x1 + offx, g.y1 - offy, _.get('grid_line_width'), _.get('grid_color'));
-			_.T.line(g.x1 + offx, g.y1 - offy, g.x2 + offx, g.y2 - offy, _.get('grid_line_width'), _.get('grid_color'));
+			if(g.solid){
+				_.T.line(g.x1, g.y1, g.x1 + offx, g.y1 - offy,g.width, g.color);
+				_.T.line(g.x1 + offx, g.y1 - offy, g.x2 + offx, g.y2 - offy, g.width, g.color);
+			}else{
+				_.T.dotted(g.x1, g.y1, g.x1 + offx, g.y1 - offy,g.width, g.color,g.size,g.fator);
+				_.T.dotted(g.x1 + offx, g.y1 - offy, g.x2 + offx, g.y2 - offy, g.width, g.color,g.size,g.fator);
+			}
 		});
-
+		
 		_.scale.each(function(s) {
 			s.draw()
 		});
