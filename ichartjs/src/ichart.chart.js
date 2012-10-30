@@ -618,18 +618,35 @@
 				this.lineArray(T, w, c, smooth, smo);
 			}
 		},
-		dotted : function(x1, y1, x2, y2, w, c,L,last) {
+		dotted : function(x1, y1, x2, y2, w, c,L,f,last) {
 			if (!w)
 				return this;
-			var d = iChart.distanceP2P(x1, y1, x2, y2);
-			if(L<=0||d<=L){
+			x1 = fd(w, x1);
+			y1 = fd(w, y1);
+			x2 = fd(w, x2);
+			y2 = fd(w, y2);
+			var d = iChart.distanceP2P(x1, y1, x2, y2),t;
+			if(L<=0||d<=L||(x1!=x2&&y1!=y2)){
 				return this.line(x1, y1, x2, y2, w, c, last);
 			}
-			var g = floor(d/L);
-			//虚线
-			
-			this.save().gCo(last);
-			return this.beginPath().strokeStyle(true,w, c).moveTo(fd(w, x1), fd(w, y1)).lineTo(fd(w, x2), fd(w, y2)).stroke(true).restore();
+			if(x1>x2||y1>y2){
+				t = x1;
+				x1 = x2;
+				x2 = t;
+				t = y1;
+				y1 = y2;
+				y2 = t;
+			}
+			this.save().gCo(last).strokeStyle(true,w, c).beginPath().moveTo(x1,y1);
+			var S = L*(f || 1),g = floor(d/(L+S)),k = (d-g*(L+S))>L,h=(y1==y2);
+			g = k?g+1:g;
+			for(var i=1;i<=g;i++){
+				this.lineTo(h?x1+L*i+S*(i-1):x1,h?y1:y1+L*i+S*(i-1)).moveTo(h?x1+(L+S)*i:x1, h?y1:y1+(L+S)*i);
+			}
+			if(!k){
+				this.lineTo(x2,y2);
+			}
+			return this.stroke(true).restore();
 		},
 		line : function(x1, y1, x2, y2, w, c, last) {
 			if (!w)
