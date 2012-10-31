@@ -191,7 +191,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		}
 
 		_.variable.event.status = _.expanded = _.get('expand');
-
+		
 		if (_.get('tip.enable')) {
 			if (_.get('tip.showType') != 'follow') {
 				_.push('tip.invokeOffsetDynamic', false);

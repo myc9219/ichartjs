@@ -4584,6 +4584,7 @@ $.Coordinate2D = $.extend($.Component, {
 			},
 			ghs = $.applyIf(_.get('gridHStyle'),g),
 			gvs = $.applyIf(_.get('gridVStyle'),g);
+		
 		if (k2g) {
 			var scale, x, y, p;
 			_.scale.each(function(scale) {
@@ -4604,7 +4605,7 @@ $.Coordinate2D = $.extend($.Component, {
 				} else {
 					x = w;
 				}
-					
+				
 				scale.items.each(function(item) {
 					if (iol)
 					_.gridlines.push($.applyIf({
@@ -5353,7 +5354,7 @@ $.Sector = $.extend($.Component, {
 		}
 
 		_.variable.event.status = _.expanded = _.get('expand');
-
+		
 		if (_.get('tip.enable')) {
 			if (_.get('tip.showType') != 'follow') {
 				_.push('tip.invokeOffsetDynamic', false);
@@ -6191,9 +6192,11 @@ $.Column = $.extend($.Chart, {
 		
 		_.labels.zIndex = _.get(z) + 1;
 		
+		var L = _.data.length, W = _.get('coordinate.width'),w_,hw;
 		
 		if (_.dataType == 'simple') {
-			var L = _.data.length, W = _.get('coordinate.width'),w_= Math.floor(W*2 / (L * 3 + 1)), hw = _.pushIf(c, w_);
+			w_= Math.floor(W*2 / (L * 3 + 1));
+			hw = _.pushIf(c, w_);
 			if (hw * L > W) {
 				hw = _.push(c, w_);
 			}
@@ -6201,13 +6204,20 @@ $.Column = $.extend($.Chart, {
 			 * the space of two column
 			 */
 			_.push('hispace', (W - hw * L) / (L + 1));
-
+		}else{
+			var KL = _.get('labels').length,total = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0), 
+				w_= Math.floor(W / (KL + 1 + total)),
+				hw = _.pushIf('colwidth',w_);
+			if (hw * total > W) {
+				hw = _.push('colwidth',w_);
+			}
+			_.push('hispace', (W - hw * total) / (KL + 1));
 		}
-
+		
+		
 		if (_.is3D()) {
 			_.push('zHeight', _.get(c) * _.get('zScale'));
 		}
-		
 		/**
 		 * use option create a coordinate
 		 */
@@ -6362,32 +6372,19 @@ $.ColumnMulti2D = $.extend($.Column, {
 		});
 
 	},
-	doRectangle : function(d, i, id, x, y, h) {
-		this.doParse(d, i, id, x, y, h);
-		d.reference = new $.Rectangle2D(this.get('sub_option'), this);
-		this.rectangles.push(d.reference);
-	},
 	doConfig : function() {
 		$.ColumnMulti2D.superclass.doConfig.call(this);
-
-		var _ = this._(), L = _.data.length, KL = _.get('labels').length, W = _.get('coordinate.width'), H = _.get('coordinate.height'), total = KL * L, bw = _.pushIf('colwidth', W / (KL + 1 + total));
-
-		if (bw * total > W) {
-			bw = _.push('colwidth', W / (KL + 1 + total));
-		}
-
-		_.push('hispace', (W - bw * total) / (KL + 1));
 
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), gw = _.data.length * bw + _.get('hispace'), h, I = _.y - S.basic * H + H;
-
+		var _ = this._(),bw = _.get('colwidth'),H = _.get('coordinate.height'),S = _.coo.getScale(_.get('scaleAlign')), gw = _.data.length * bw + _.get('hispace'), h, I = _.y - S.basic * H + H;
+		
 		/**
 		 * quick config to all rectangle
 		 */
 		_.push('sub_option.width', bw);
-
+		
 		_.columns.each(function(column, i) {
 			column.item.each(function(d, j) {
 				h = (d.value - S.start) * H / S.distance;
@@ -6400,6 +6397,87 @@ $.ColumnMulti2D = $.extend($.Column, {
 				_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), this));
 			}, _);
 
+			_.doLabel(_, i, column.name, _.x + _.get('hispace') * 0.5 + (i + 0.5) * gw, _.y + H + _.get('text_space'));
+		}, _);
+
+	}
+});
+/**
+ * @end
+ */
+
+/**
+ * @overview this component will draw a cluster column2d chart.
+ * @component#@chart#$.ColumnMulti3D
+ * @extend#$.Column
+ */
+$.ColumnMulti3D = $.extend($.Column, {
+	/**
+	 * initialize the context for the ColumnMulti3D
+	 */
+	configure : function() {
+		/**
+		 * invoked the super class's configuration
+		 */
+		$.ColumnMulti3D.superclass.configure.call(this);
+
+		this.type = 'columnmulti3d';
+		this.dataType = 'complex';
+		this.dimension = $._3D;
+
+		this.set({
+			/**
+			 * @cfg {Number(0~90)} Three-dimensional rotation X in degree(angle).(default to 60)
+			 */
+			xAngle : 60,
+			/**
+			 * @cfg {Number(0~90)} Three-dimensional rotation Y in degree(angle).(default to 20)
+			 */
+			yAngle : 20,
+			/**
+			 * @cfg {Number} Three-dimensional z-axis deep factor.frame of reference is width.(default to 1)
+			 */
+			zScale : 1,
+			group_fator : 0.3,
+			/**
+			 * @cfg {Number(1~)} Three-dimensional z-axis deep factor of pedestal.frame of reference is width.(default to 1.4)
+			 */
+			bottom_scale : 1.4,
+			/**
+			 * @cfg {Array} the array of labels close to the axis
+			 */
+			labels : []
+		});
+	},
+	doConfig : function() {
+		$.ColumnMulti3D.superclass.doConfig.call(this);
+
+		/**
+		 * get the max/min scale of this coordinate for calculated the height
+		 */
+		var _ = this._(),bw = _.get('colwidth'),H = _.get('coordinate.height'),
+			S = _.coo.getScale(_.get('scaleAlign')),q = bw*_.get('group_fator'), 
+			gw = _.data.length * (bw+q)-q + _.get('hispace'), h, 
+			I = _.coo.get('originy') - S.basic * H + H,
+			x = _.get('hispace')+_.coo.get('originx');
+		
+		/**
+		 * quick config to all rectangle
+		 */
+		_.push('sub_option.width', bw);
+		var g = 0;
+		_.columns.each(function(column, i) {
+			column.item.each(function(d, j) {
+				h = (d.value - S.start) * H / S.distance;
+				_.doParse(_, d, j, {
+					id : i + '-' + j,
+					originx : x + j * (bw+q) + i * gw,
+					originy : I - (h > 0 ? h : 0),
+					height : Math.abs(h)
+				});
+				_.rectangles.push(new $.Rectangle3D(_.get('sub_option'), this));
+			}, _);
+				
 			_.doLabel(_, i, column.name, _.x + _.get('hispace') * 0.5 + (i + 0.5) * gw, _.y + H + _.get('text_space'));
 		}, _);
 
