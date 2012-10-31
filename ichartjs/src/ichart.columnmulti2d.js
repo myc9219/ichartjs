@@ -24,32 +24,19 @@ iChart.ColumnMulti2D = iChart.extend(iChart.Column, {
 		});
 
 	},
-	doRectangle : function(d, i, id, x, y, h) {
-		this.doParse(d, i, id, x, y, h);
-		d.reference = new iChart.Rectangle2D(this.get('sub_option'), this);
-		this.rectangles.push(d.reference);
-	},
 	doConfig : function() {
 		iChart.ColumnMulti2D.superclass.doConfig.call(this);
-
-		var _ = this._(), L = _.data.length, KL = _.get('labels').length, W = _.get('coordinate.width'), H = _.get('coordinate.height'), total = KL * L, bw = _.pushIf('colwidth', W / (KL + 1 + total));
-
-		if (bw * total > W) {
-			bw = _.push('colwidth', W / (KL + 1 + total));
-		}
-
-		_.push('hispace', (W - bw * total) / (KL + 1));
 
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), gw = _.data.length * bw + _.get('hispace'), h, I = _.y - S.basic * H + H;
-
+		var _ = this._(),bw = _.get('colwidth'),H = _.get('coordinate.height'),S = _.coo.getScale(_.get('scaleAlign')), gw = _.data.length * bw + _.get('hispace'), h, I = _.y - S.basic * H + H;
+		
 		/**
 		 * quick config to all rectangle
 		 */
 		_.push('sub_option.width', bw);
-
+		
 		_.columns.each(function(column, i) {
 			column.item.each(function(d, j) {
 				h = (d.value - S.start) * H / S.distance;

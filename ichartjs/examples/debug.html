@@ -26,6 +26,7 @@
 		<script type="text/javascript" src="../src/ichart.bar.js"></script>
 		<script type="text/javascript" src="../src/ichart.bar2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.columnmulti2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.columnmulti3d.js"></script>
 		<script type="text/javascript" src="../src/ichart.barmulti2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.column3d.js"></script>
 		<script type="text/javascript" src="../src/ichart.tip.js"></script>
@@ -58,6 +59,7 @@
 	</style>
 	<script type="text/javascript">
 	$(function(){
+
 		var data = [
 		        	{name : '1月',value : 4600,color:'#e68943'},
 		        	{name : '2月',value : 2900,color:'#ffff4d'},
@@ -72,16 +74,45 @@
 		        	{name : '11月',value : 1600,color:'#76a871'},
 		        	{name : '12月',value : 3800,color:'#ecbe33'}
 	        	];
-    	
+
+		
+		var data = [
+		         	{
+		         		name : '产品1',
+		         		value:[2400,2400,2400],
+		         		color:'#e68943',
+		         		linewidth:1
+		         	},
+		         	{
+		         		name : '产品2',
+		         		value:[3300,3300,3300],
+		         		color:'#ffff4d',
+		         		linewidth:1
+		         	},
+		         	{
+		         		name : '产品3',
+		         		value:[2400,2400,2400],
+		         		color:'#76a871',
+		         		linewidth:1
+		         	},
+		         	{
+		         		name : '产品4',
+		         		value:[3600,3600,3600],
+		         		color:'#ecbe33',
+		         		linewidth:1
+		         	}
+		         ];
+        	
 			var w = window.innerWidth;
 	   		var h = window.innerHeight;
 	   		if(h>w){
 				h = w*0.6;
 		   	}
     		
-			var chart = new iChart.Column3D({
+			var chart = new iChart.ColumnMulti3D({
 				render : 'canvasDiv',
 				data: data,
+				labels:["1月","2月","3月"],
 				title : {
 					text:'本广场全年进客量统计',
 					textAlign:'left',
@@ -125,7 +156,7 @@
 					background_color:'#383e46',
 					pedestal_height:0,
 					gridVStyle:{
-						solid:false,
+						//solid:false,
 						size:10
 					},
 					wall_style:[{
@@ -164,7 +195,7 @@
 					}]
 				}
 			});
-
+			
 			chart.plugin(new iChart.Custom({
 				drawFn:function(){
 						/**
@@ -182,7 +213,6 @@
 			
 			chart.draw();
 	});
-
 		
 	</script>
 	</head>
