@@ -329,14 +329,24 @@
 		/**
 		 * 如果是纯整数或者纯小数,返回靠近其最小数量级(1/5)的数 若有整数和小数,则按照整数部分确定parseInt(value)==value
 		 */
-		factor = function(v, f) {
+		factor = function(v, w) {
 			if (v == 0)
 				return v;
-			f = f || 5;
-			if (parseInt(v) == 0) {
-				return pF((v / f + "").substring(0, (v + "").length + 1));
+			var M = abs(v),f = 0.1;
+			if(M>1){
+				while(M>1){
+					M = M/10;
+					f = f*10;
+				}
+				return floor(v/f+w)*f;
+			}else{
+				f = 1;
+				while(M<1){
+					M = M*10;
+					f = f/10;
+				}
+				return round(v/f+w)*f;
 			}
-			return ceil(v / f);
 		}, colors = {
 			navy : 'rgb(0,0,128)',
 			olive : 'rgb(128,128,0)',
@@ -718,16 +728,16 @@
 				return v;
 			},
 			/**
-			 * 返回向上靠近一个数量级为f的数
+			 * 返回向上靠近一个数量级的数
 			 */
-			ceil : function(max, f) {
-				return max + factor(max, f)*(max>0?1:-1);
+			ceil : function(max) {
+				return factor(max,1);
 			},
 			/**
-			 * 返回向下靠近一个数量级为f的数
+			 * 返回向下靠近一个数量级的数
 			 */
 			floor : function(max, f) {
-				return max + factor(max, f)*(max>0?-1:1);
+				return factor(max,-1);
 			},
 			_2D : '2d',
 			_3D : '3d',
@@ -4065,7 +4075,6 @@ $.Scale = $.extend($.Component, {
 			if (!$.isNumber(e_scale) || e_scale < max_s) {
 				e_scale = _.push('end_scale', $.ceil(max_s));
 			}
-			
 			/**
 			 * startScale must less than minScale
 			 */
@@ -4087,12 +4096,10 @@ $.Scale = $.extend($.Component, {
 				s_space = _.push('scale', (e_scale - start_scale) / _.get('scale_share'));
 			}
 			
-			if (abs(s_space) < 1 && _.get('decimalsnum') == 0) {
-				var dec = abs(s_space);
-				while (dec < 1) {
-					dec *= 10;
-					_.push('decimalsnum', _.get('decimalsnum') + 1);
-				}
+			if (parseInt(s_space)!=s_space && _.get('decimalsnum') == 0) {
+				var dec = s_space+"";
+				dec =  dec.substring(dec.indexOf('.')+1);
+				_.push('decimalsnum', dec.length);
 			}
 		}
 		
@@ -4191,7 +4198,30 @@ $.Scale = $.extend($.Component, {
  */
 $.Coordinate = {
 	coordinate_ : function() {
-		var _ = this._();
+		var _ = this._(),scale = _.get('coordinate.scale');
+		if($.isObject(scale)){
+			scale = [scale];
+		}
+		if($.isArray(scale)){
+			scale.each(function(s){
+				if(s.position ==_.get('scaleAlign')){
+					if(!s.start_scale)
+						s.min_scale = _.get('minValue');
+					if(!s.end_scale)
+						s.max_scale = _.get('maxValue');
+					
+					return false;
+				}
+			});
+		}else{
+			_.push('coordinate.scale',{
+				position : _.get('scaleAlign'),
+				scaleAlign : _.get('scaleAlign'),
+				max_scale : _.get('maxValue'),
+				min_scale : _.get('minValue')
+			});
+		}
+		
 		if (_.is3D()) {
 			_.push('coordinate.xAngle_', _.get('xAngle_'));
 			_.push('coordinate.yAngle_', _.get('yAngle_'));
@@ -4199,24 +4229,9 @@ $.Coordinate = {
 			 * the Coordinate' Z is same as long as the column's
 			 */
 			_.push('coordinate.zHeight', _.get('zHeight') * _.get('bottom_scale'));
-			
-			return new $.Coordinate3D($.apply({
-				scale : {
-					position : _.get('scaleAlign'),
-					scaleAlign : _.get('scaleAlign'),
-					max_scale : _.get('maxValue'),
-					min_scale : _.get('minValue')
-				}
-			}, _.get('coordinate')), _);
-		} else {
-			return new $.Coordinate2D($.apply({
-				scale : {
-					position : _.get('scaleAlign'),
-					max_scale : _.get('maxValue'),
-					min_scale : _.get('minValue')
-				}
-			}, _.get('coordinate')), _);
 		}
+		
+		return new $[_.is3D()?'Coordinate3D':'Coordinate2D'](_.get('coordinate'), _);
 	},
 	coordinate : function() {
 		/**
@@ -4329,16 +4344,16 @@ $.Coordinate2D = $.extend($.Component, {
 			 */
 			gridHStyle : {},
 			/**
-			 * @cfg {Object} Specifies the stlye of horizontal grid.(default to empty object)
-			 */
-			gridVStyle : {},
-			/**
-			 * @cfg {Boolean} True to display grid line.(default to true)
+			 * @cfg {Object} Specifies the stlye of horizontal grid.(default to empty object).Available property are:
 			 * @Option solid {Boolean} True to draw a solid line.else draw a dotted line.(default to true)
 			 * @Option size {Number} Specifies size of line segment when solid is false.(default to 10)
 			 * @Option fator {Number} Specifies the times to size(default to 1)
 			 * @Option width {Number} Specifies the width of grid line.(default to 1)
 			 * @Option color {String} Specifies the color of grid line.(default to '#dbe1e1')
+			 */
+			gridVStyle : {},
+			/**
+			 * @cfg {Boolean} True to display grid line.(default to true)
 			 */
 			gridlinesVisible : true,
 			/**
