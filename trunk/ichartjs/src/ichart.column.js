@@ -98,27 +98,27 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		
 		_.labels.zIndex = _.get(z) + 1;
 		
-		var L = _.data.length, W = _.get('coordinate.width'),w_,hw;
+		var L = _.data.length, W = _.get('coordinate.width'),w_,hw,KL;
 		
 		if (_.dataType == 'simple') {
 			w_= Math.floor(W*2 / (L * 3 + 1));
 			hw = _.pushIf(c, w_);
-			if (hw * L > W) {
-				hw = _.push(c, w_);
-			}
-			/**
-			 * the space of two column
-			 */
-			_.push('hispace', (W - hw * L) / (L + 1));
+			KL = L+1;
 		}else{
-			var KL = _.get('labels').length,total = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0), 
-				w_= Math.floor(W / (KL + 1 + total)),
-				hw = _.pushIf('colwidth',w_);
-			if (hw * total > W) {
-				hw = _.push('colwidth',w_);
-			}
-			_.push('hispace', (W - hw * total) / (KL + 1));
+				KL = _.get('labels').length;
+				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
+				w_= Math.floor(W / (KL + 1 + L));
+				hw = _.pushIf(c,w_);
+				KL +=1;
 		}
+		
+		if (hw * L > W) {
+			hw = _.push(c, w_);
+		}
+		/**
+		 * the space of two column
+		 */
+		_.push('hispace', (W - hw * L) / KL);
 		
 		
 		if (_.is3D()) {

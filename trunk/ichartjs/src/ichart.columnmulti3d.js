@@ -1,5 +1,5 @@
 /**
- * @overview this component will draw a cluster column2d chart.
+ * @overview this component will draw a cluster column3d chart.
  * @component#@chart#iChart.ColumnMulti3D
  * @extend#iChart.Column
  */
