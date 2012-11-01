@@ -435,16 +435,16 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			 */
 			gridHStyle : {},
 			/**
-			 * @cfg {Object} Specifies the stlye of horizontal grid.(default to empty object)
-			 */
-			gridVStyle : {},
-			/**
-			 * @cfg {Boolean} True to display grid line.(default to true)
+			 * @cfg {Object} Specifies the stlye of horizontal grid.(default to empty object).Available property are:
 			 * @Option solid {Boolean} True to draw a solid line.else draw a dotted line.(default to true)
 			 * @Option size {Number} Specifies size of line segment when solid is false.(default to 10)
 			 * @Option fator {Number} Specifies the times to size(default to 1)
 			 * @Option width {Number} Specifies the width of grid line.(default to 1)
 			 * @Option color {String} Specifies the color of grid line.(default to '#dbe1e1')
+			 */
+			gridVStyle : {},
+			/**
+			 * @cfg {Boolean} True to display grid line.(default to true)
 			 */
 			gridlinesVisible : true,
 			/**
