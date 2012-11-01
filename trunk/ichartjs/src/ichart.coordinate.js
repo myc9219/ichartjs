@@ -171,7 +171,6 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			if (!iChart.isNumber(e_scale) || e_scale < max_s) {
 				e_scale = _.push('end_scale', iChart.ceil(max_s));
 			}
-			
 			/**
 			 * startScale must less than minScale
 			 */
@@ -193,12 +192,10 @@ iChart.Scale = iChart.extend(iChart.Component, {
 				s_space = _.push('scale', (e_scale - start_scale) / _.get('scale_share'));
 			}
 			
-			if (abs(s_space) < 1 && _.get('decimalsnum') == 0) {
-				var dec = abs(s_space);
-				while (dec < 1) {
-					dec *= 10;
-					_.push('decimalsnum', _.get('decimalsnum') + 1);
-				}
+			if (parseInt(s_space)!=s_space && _.get('decimalsnum') == 0) {
+				var dec = s_space+"";
+				dec =  dec.substring(dec.indexOf('.')+1);
+				_.push('decimalsnum', dec.length);
 			}
 		}
 		
@@ -297,7 +294,32 @@ iChart.Scale = iChart.extend(iChart.Component, {
  */
 iChart.Coordinate = {
 	coordinate_ : function() {
-		var _ = this._();
+		var _ = this._(),scale = _.get('coordinate.scale');
+		if(iChart.isObject(scale)){
+			scale = [scale];
+		}
+		if(iChart.isArray(scale)){
+			scale.each(function(s){
+				if(s.position ==_.get('scaleAlign')){
+					if(!s.start_scale)
+						s.min_scale = _.get('minValue');
+					if(!s.end_scale)
+						s.max_scale = _.get('maxValue');
+					
+					return false;
+				}
+			});
+		}else{
+			_.push('coordinate.scale',{
+				scale : {
+					position : _.get('scaleAlign'),
+					scaleAlign : _.get('scaleAlign'),
+					max_scale : _.get('maxValue'),
+					min_scale : _.get('minValue')
+				}
+			});
+		}
+		
 		if (_.is3D()) {
 			_.push('coordinate.xAngle_', _.get('xAngle_'));
 			_.push('coordinate.yAngle_', _.get('yAngle_'));
@@ -305,24 +327,9 @@ iChart.Coordinate = {
 			 * the Coordinate' Z is same as long as the column's
 			 */
 			_.push('coordinate.zHeight', _.get('zHeight') * _.get('bottom_scale'));
-			
-			return new iChart.Coordinate3D(iChart.apply({
-				scale : {
-					position : _.get('scaleAlign'),
-					scaleAlign : _.get('scaleAlign'),
-					max_scale : _.get('maxValue'),
-					min_scale : _.get('minValue')
-				}
-			}, _.get('coordinate')), _);
-		} else {
-			return new iChart.Coordinate2D(iChart.apply({
-				scale : {
-					position : _.get('scaleAlign'),
-					max_scale : _.get('maxValue'),
-					min_scale : _.get('minValue')
-				}
-			}, _.get('coordinate')), _);
 		}
+		
+		return new iChart[_.is3D()?'Coordinate3D':'Coordinate2D'](_.get('coordinate'), _);
 	},
 	coordinate : function() {
 		/**

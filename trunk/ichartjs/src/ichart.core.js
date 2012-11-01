@@ -329,14 +329,24 @@
 		/**
 		 * 如果是纯整数或者纯小数,返回靠近其最小数量级(1/5)的数 若有整数和小数,则按照整数部分确定parseInt(value)==value
 		 */
-		factor = function(v, f) {
+		factor = function(v, w) {
 			if (v == 0)
 				return v;
-			f = f || 5;
-			if (parseInt(v) == 0) {
-				return pF((v / f + "").substring(0, (v + "").length + 1));
+			var M = abs(v),f = 0.1;
+			if(M>1){
+				while(M>1){
+					M = M/10;
+					f = f*10;
+				}
+				return floor(v/f+w)*f;
+			}else{
+				f = 1;
+				while(M<1){
+					M = M*10;
+					f = f/10;
+				}
+				return round(v/f+w)*f;
 			}
-			return ceil(v / f);
 		}, colors = {
 			navy : 'rgb(0,0,128)',
 			olive : 'rgb(128,128,0)',
@@ -718,16 +728,16 @@
 				return v;
 			},
 			/**
-			 * 返回向上靠近一个数量级为f的数
+			 * 返回向上靠近一个数量级的数
 			 */
-			ceil : function(max, f) {
-				return max + factor(max, f)*(max>0?1:-1);
+			ceil : function(max) {
+				return factor(max,1);
 			},
 			/**
-			 * 返回向下靠近一个数量级为f的数
+			 * 返回向下靠近一个数量级的数
 			 */
 			floor : function(max, f) {
-				return max + factor(max, f)*(max>0?-1:1);
+				return factor(max,-1);
 			},
 			_2D : '2d',
 			_3D : '3d',
