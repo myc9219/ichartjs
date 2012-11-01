@@ -49,7 +49,6 @@
 		body{
 			margin-top:10px;
 			text-align: center;
-			background:url(images/st_bg.png);
 			background-repeat: repeat;
 		}
 		#canvasDiv{
@@ -65,14 +64,8 @@
 		        	{name : '2月',value : 2900,color:'#ffff4d'},
 		        	{name : '3月',value : 2400,color:'#76a871'},
 		        	{name : '4月',value : 3300,color:'#ecbe33'},
-		        	{name : '5月',value : 1600,color:'#e68943'},
-		        	{name : '6月',value : 3800,color:'#ffff4d'},
-		        	{name : '7月',value : 4600,color:'#76a871'},
-		        	{name : '8月',value : 2900,color:'#ecbe33'},
-		        	{name : '9月',value : 2400,color:'#e68943'},
-		        	{name : '10月',value : 3300,color:'#ffff4d'},
-		        	{name : '11月',value : 1600,color:'#76a871'},
-		        	{name : '12月',value : 3800,color:'#ecbe33'}
+		        	{name : '5月',value : 3600,color:'#e68943'},
+		        	{name : '6月',value : 3800,color:'#ffff4d'}
 	        	];
 
 		
@@ -103,32 +96,33 @@
 		         	}
 		         ];
         	
-			var w = window.innerWidth;
-	   		var h = window.innerHeight;
+			var w = window.innerWidth*0.6;
+	   		var h = window.innerHeight*0.6;
 	   		if(h>w){
 				h = w*0.6;
 		   	}
     		
-			var chart = new iChart.Column3D({
+			var chart = new iChart.Column2D({
 				render : 'canvasDiv',
 				data: data,
 				labels:["1月","2月","3月"],
 				title : {
-					text:'本广场全年进客量统计',
+					text:'图形需求设计',
 					textAlign:'left',
 					fontsize:24,
 					offsetx:w*0.1-10,
 					color:'#ffffff'
 				},
 				align:'center',
-				fit:true,
-				shadow:true,
+				width:w,
+				height:h,
+				shadow:false,
 				shadow_color : '#20262f',
+				background_color:'rgb(61,67,75)',
 				shadow_blur : 4,
 				shadow_offsetx : 0,
 				shadow_offsety : 2,
 				border:false,
-				background_color:null,
 				turn_off_touchmove : true,
 				legend : {
 					enable : true,
@@ -154,62 +148,22 @@
 					grid_color : '#6d7177',
 					color_factor : 0.24,
 					background_color:'#383e46',
-					pedestal_height:0,
-					gridVStyle:{
-						//solid:false,
-						size:10
-					},
-					wall_style:[{
-						color : '#383e46'
-					},false, {
-						color : '#383e46'
-					}],
-					board_deep:0,
 					axis:{
 						color:'#cccccc',
 						width:2
 					},
 					scale:[{
 						 position:'left',	
-						 start_scale:0,
+						 start_scale:2000,
 						 end_scale:5000,
 						 scale_space:1000,
 						 scale_width:8,
 						 scaleAlign:'left',
 						 label : {color:'#ffffff',fontsize:16},
 						 scale_color:'#6d7177'
-					},{
-						 position:'bottom',	
-						 start_scale:0,
-						 end_scale:12,
-						 scale_space:1,
-						 scale_width:4,
-						 scaleAlign:'bottom',
-						 scale_color:'#6d7177',
-						 listeners:{
-							parseText:function(t){
-								return {text:''};
-							}
-						}
-						 
 					}]
 				}
 			});
-			
-			chart.plugin(new iChart.Custom({
-				drawFn:function(){
-						/**
-						 *计算平均值的高度(坐标Y值)
-						 */	
-						var coo = chart.getCoordinate(),
-							dimen = coo.getDimension();
-						chart.target.textAlign('center')
-						.textBaseline('bottom').textFont("normal 16px Verdana")
-						.fillText('进人数(人)',dimen.x-6,dimen.y-20,false,'#ffffff')
-						.textBaseline('top')
-						.fillText('时间(月)',dimen.x-14,dimen.y+6+dimen.height,false,'#ffffff')
-					}
-			}));	
 			
 			chart.draw();
 	});

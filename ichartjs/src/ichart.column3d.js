@@ -1,9 +1,9 @@
 /**
  * @overview this component use for abc
  * @component#@chart#iChart.Column3D
- * @extend#iChart.Column
+ * @extend#iChart.Column2D
  */
-iChart.Column3D = iChart.extend(iChart.Column, {
+iChart.Column3D = iChart.extend(iChart.Column2D, {
 	/**
 	 * initialize the context for the Column3D
 	 */
@@ -37,31 +37,6 @@ iChart.Column3D = iChart.extend(iChart.Column, {
 	},
 	doConfig : function() {
 		iChart.Column3D.superclass.doConfig.call(this);
-
-		/**
-		 * get the max/min scale of this coordinate for calculated the height
-		 */
-		var _ = this._(), S = _.coo.getScale(_.get('scaleAlign')), zh = _.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_'), h2 = _.get('colwidth') / 2, gw = _.get('colwidth') + _.get('hispace'), H = _.coo.get(_.H), h,
-		y = _.coo.get('originy')+  H,x = _.get('hispace')+_.coo.get('originx');
-
-		/**
-		 * quick config to all rectangle
-		 */
-		_.push('sub_option.xAngle_', _.get('xAngle_'));
-		_.push('sub_option.yAngle_', _.get('yAngle_'));
-		
-		_.data.each(function(d, i) {
-			h = (d.value - S.start) * H / S.distance;
-			_.doParse(_, d, i, {
-				id : i,
-				originx :x + i * gw,
-				originy : y + - h - zh,
-				height : h
-			});
-			_.rectangles.push(new iChart.Rectangle3D(_.get('sub_option'), _));
-			_.doLabel(_,i, d.name, x + gw * i + h2, y + _.get('text_space'));
-		}, _);
-		
 	}
 
 });
