@@ -83,6 +83,8 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		
 		var _ = this._(),c = 'colwidth',z = 'z_index';
 		
+		_.sub = _.is3D()?'Rectangle3D':'Rectangle2D';
+		
 		_.rectangles = [];
 		_.labels = [];
 		
@@ -120,9 +122,10 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		 */
 		_.push('hispace', (W - hw * L) / KL);
 		
-		
 		if (_.is3D()) {
 			_.push('zHeight', _.get(c) * _.get('zScale'));
+			_.push('sub_option.xAngle_', _.get('xAngle_'));
+			_.push('sub_option.yAngle_', _.get('yAngle_'));
 		}
 		/**
 		 * use option create a coordinate

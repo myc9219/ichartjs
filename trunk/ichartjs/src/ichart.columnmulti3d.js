@@ -1,9 +1,9 @@
 /**
  * @overview this component will draw a cluster column3d chart.
  * @component#@chart#iChart.ColumnMulti3D
- * @extend#iChart.Column
+ * @extend#iChart.ColumnMulti2D
  */
-iChart.ColumnMulti3D = iChart.extend(iChart.Column, {
+iChart.ColumnMulti3D = iChart.extend(iChart.ColumnMulti2D, {
 	/**
 	 * initialize the context for the ColumnMulti3D
 	 */
@@ -34,44 +34,13 @@ iChart.ColumnMulti3D = iChart.extend(iChart.Column, {
 			/**
 			 * @cfg {Number(1~)} Three-dimensional z-axis deep factor of pedestal.frame of reference is width.(default to 1.4)
 			 */
-			bottom_scale : 1.4,
-			/**
-			 * @cfg {Array} the array of labels close to the axis
-			 */
-			labels : []
+			bottom_scale : 1.4
 		});
 	},
 	doConfig : function() {
 		iChart.ColumnMulti3D.superclass.doConfig.call(this);
 
-		/**
-		 * get the max/min scale of this coordinate for calculated the height
-		 */
-		var _ = this._(),bw = _.get('colwidth'),H = _.get('coordinate.height'),
-			S = _.coo.getScale(_.get('scaleAlign')),q = bw*_.get('group_fator'), 
-			gw = _.data.length * (bw+q)-q + _.get('hispace'), h, 
-			I = _.coo.get('originy') - S.basic * H + H,
-			x = _.get('hispace')+_.coo.get('originx');
 		
-		/**
-		 * quick config to all rectangle
-		 */
-		_.push('sub_option.width', bw);
-		var g = 0;
-		_.columns.each(function(column, i) {
-			column.item.each(function(d, j) {
-				h = (d.value - S.start) * H / S.distance;
-				_.doParse(_, d, j, {
-					id : i + '-' + j,
-					originx : x + j * (bw+q) + i * gw,
-					originy : I - (h > 0 ? h : 0),
-					height : Math.abs(h)
-				});
-				_.rectangles.push(new iChart.Rectangle3D(_.get('sub_option'), this));
-			}, _);
-				
-			_.doLabel(_, i, column.name, _.x + _.get('hispace') * 0.5 + (i + 0.5) * gw, _.y + H + _.get('text_space'));
-		}, _);
 
 	}
 });

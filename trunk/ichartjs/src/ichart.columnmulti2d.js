@@ -30,23 +30,19 @@ iChart.ColumnMulti2D = iChart.extend(iChart.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(),bw = _.get('colwidth'),H = _.get('coordinate.height'),S = _.coo.getScale(_.get('scaleAlign')), gw = _.data.length * bw + _.get('hispace'), h, I = _.y - S.basic * H + H;
-		
-		/**
-		 * quick config to all rectangle
-		 */
-		_.push('sub_option.width', bw);
-		
+		var _ = this._(), bw = _.get('colwidth'), H = _.get('coordinate.height'), S = _.coo.getScale(_.get('scaleAlign')), q = bw * (_.get('group_fator') || 0), gw = _.data.length * bw + _.get('hispace') + (_.is3D() ? (_.data.length - 1) * q : 0), h, x = _.coo.get('originx')
+				+ _.get('hispace'), y = _.coo.get('originy') - S.basic * H + H;
+
 		_.columns.each(function(column, i) {
 			column.item.each(function(d, j) {
 				h = (d.value - S.start) * H / S.distance;
 				_.doParse(_, d, j, {
 					id : i + '-' + j,
-					originx : _.x + _.get('hispace') + j * bw + i * gw,
-					originy : I - (h > 0 ? h : 0),
+					originx : x + j * (bw + q) + i * gw,
+					originy : y - (h > 0 ? h : 0),
 					height : Math.abs(h)
 				});
-				_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), this));
+				_.rectangles.push(new iChart[_.sub](_.get('sub_option'), this));
 			}, _);
 
 			_.doLabel(_, i, column.name, _.x + _.get('hispace') * 0.5 + (i + 0.5) * gw, _.y + H + _.get('text_space'));

@@ -964,7 +964,7 @@
 			this.T.clearRect(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'));
 		},
 		resetCanvas : function() {
-			this.T.box(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'),0,this.get('f_color'),0,true);
+			this.T.box(this.get('l_originx'), this.get('t_originy'), this.get('client_width')+1, this.get('client_height')+1,0,this.get('f_color'),0,true);
 		},
 		animation : function(_) {
 			/**
