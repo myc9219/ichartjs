@@ -311,12 +311,10 @@ iChart.Coordinate = {
 			});
 		}else{
 			_.push('coordinate.scale',{
-				scale : {
-					position : _.get('scaleAlign'),
-					scaleAlign : _.get('scaleAlign'),
-					max_scale : _.get('maxValue'),
-					min_scale : _.get('minValue')
-				}
+				position : _.get('scaleAlign'),
+				scaleAlign : _.get('scaleAlign'),
+				max_scale : _.get('maxValue'),
+				min_scale : _.get('minValue')
 			});
 		}
 		
