@@ -42,8 +42,9 @@
 		return false;
 
 	}
-
+	if($.Legend)
 	$.Legend.plugin('sign', sign_fn);
+	if($.Points)
 	$.Points.plugin('sign', sign_fn);
 
 })(iChart);
