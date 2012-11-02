@@ -5342,7 +5342,7 @@ $.Sector = $.extend($.Component, {
 		$.Sector.superclass.doConfig.call(this);
 
 		var _ = this._(), v = _.variable.event, f = _.get('label');
-		
+		//alert(f);
 		/**
 		 * mouseover light
 		 */
@@ -5787,6 +5787,8 @@ $.Pie = $.extend($.Chart, {
 		_.doActing(_,d,i,t);
 		
 		_.push('sub_option.id', i);
+		
+		if(_.get('sub_option.label'))
 		_.push('sub_option.label.text', t);
 		
 		_.push('sub_option.listeners.changed', function(se, st, i) {
@@ -5802,7 +5804,6 @@ $.Pie = $.extend($.Chart, {
 	doConfig : function() {
 		$.Pie.superclass.doConfig.call(this);
 		$.Assert.gt(this.total,0,'this.total');
-		
 		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44;
 		
 		_.sectors = [];

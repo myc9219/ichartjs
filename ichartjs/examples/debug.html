@@ -57,80 +57,57 @@
 		}
 	</style>
 	<script type="text/javascript">
+	//先写例子，自然有文档可写
 	$(function(){
-
+		var power = {
+				"0":"°",
+				"1":"¹",
+				"2":"²",
+				"3":"³",
+				"4":"⁴",
+				"5":"⁵",
+				"6":"⁶",
+				"7":"⁷",
+				"8":"⁸",
+				"9":"⁹",
+				"(":"⁽",
+				")":"⁾",
+				"+":"⁺",
+				"-":"⁻",
+				"=":"⁼"
+			}
+		//₀ ₁ ₂ ₃ ₄ ₅ ₆ ₇ ₈ ₉ ₊ ₋ ₌ ₍ ₎
 		var data = [
-		        	{name : '1月',value : 4654,color:'#e68943'},
-		        	{name : '2月',value : 2957,color:'#ffff4d'},
-		        	{name : '3月',value : 2446,color:'#76a871'},
-		        	{name : '4月',value : 3323,color:'#ecbe33'},
-		        	{name : '5月',value : 3684,color:'#e68943'},
-		        	{name : '6月',value : 3802,color:'#ffff4d'}
+		        	{name : 'IE'+power["0"]+power["1"],value : 35.75,color:'#a5c2d5'},
+		        	{name : 'Chrome'+power["2"]+power["3"],value : 29.84,color:'#cbab4f'},
+		        	{name : 'Firefox'+power["4"]+power["5"],value : 24.88,color:'#76a871'},
+		        	{name : 'Safari'+power["6"]+power["6"],value : 6.77,color:'#9f7961'},
+		        	{name : 'Opera'+power["9"]+power["9"],value : 2.02,color:'#a56f8f'},
+		        	{name : 'Other'+power["+"]+power["-"],value : 0.73,color:'#6f83a5'}
 	        	];
-		var data = [
-		        	{name : '1月',value : 61,color:'#e68943'},
-		        	{name : '2月',value : 32,color:'#ffff4d'},
-		        	{name : '3月',value : 63,color:'#76a871'},
-		        	{name : '4月',value : 54,color:'#ecbe33'},
-		        	{name : '5月',value : 35,color:'#e68943'},
-		        	{name : '6月',value : 45,color:'#ffff4d'}
-	        	];
-		
-		var data1 = [
-		         	{
-		         		name : '产品1',
-		         		value:[2400,2400,2400],
-		         		color:'#e68943',
-		         		linewidth:1
-		         	},
-		         	{
-		         		name : '产品2',
-		         		value:[3300,3300,3300],
-		         		color:'#ffff4d',
-		         		linewidth:1
-		         	},
-		         	{
-		         		name : '产品3',
-		         		value:[2400,2400,2400],
-		         		color:'#76a871',
-		         		linewidth:1
-		         	},
-		         	{
-		         		name : '产品4',
-		         		value:[3600,3600,3600],
-		         		color:'#ecbe33',
-		         		linewidth:1
-		         	}
-		         ];
-        	
-			var w = window.innerWidth*0.6;
-	   		var h = window.innerHeight*0.6;
-	   		if(h>w){
-				h = w*0.6;
-		   	}
-    		
-//				render :'canvasDiv',
-			var chart = new iChart.Column2D({
-				render :'canvasDiv',
-				title : {text: 'Test Column2D'},
-				data: data,
-				shadow:true,
-				align:'center',
-				coordinate:{
-					width:600,
-					height:400
-				},
-				legend:{
-					enable:true
-				},
-				tip:{
-					enable:true,
-					shadow:true
-				}
-				
-			});
-			
-			chart.draw();
+    	
+		new iChart.Column2D({
+			render : 'canvasDiv',
+			data: data,
+			title : 'Top 5 Browsers from 1 to 29 Feb 2012',
+			showpercent:true,
+			decimalsnum:2,
+			width : 800,
+			height : 400,
+			coordinate:{
+				scale:[{
+					 position:'left',	
+					 start_scale:0,
+					 end_scale:40,
+					 scale_space:8,
+					 listeners:{
+						parseText:function(t,x,y){
+							return {text:t+"%"}
+						}
+					}
+				}]
+			}
+		}).draw();
 	});
 		
 	</script>
