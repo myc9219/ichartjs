@@ -164,7 +164,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		iChart.Sector.superclass.doConfig.call(this);
 
 		var _ = this._(), v = _.variable.event, f = _.get('label');
-		//alert(f);
+		
 		/**
 		 * mouseover light
 		 */
