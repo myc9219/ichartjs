@@ -39,11 +39,11 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 			 */
 			sub_option : {},
 			/**
-			 * @cfg {<link>iChart.Text</link>} Specifies option of label at bottom.
+			 * @cfg {<link>iChart.Text</link>} Specifies option of label at left.
 			 */
 			label : {}
 		});
-
+		
 		this.registerEvent();
 
 	},
