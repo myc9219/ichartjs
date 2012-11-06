@@ -3002,18 +3002,20 @@ $.Label = $.extend($.Component, {
 			
 			return this;
 		},
-		polygon : function(bg, b, bw, bc, sw, alpham, points) {
-			if (points.length < 2)
-				return;
-			this.save().strokeStyle(b,bw, bc).beginPath().fillStyle(bg).globalAlpha(alpham).shadowOn(sw).moveTo(points[0], points[1]);
-			for ( var i = 2; i < points.length; i += 2) {
-				this.lineTo(points[i], points[i + 1]);
+		polygon : function(bg, b, bw, bc, sw, alpham, p, smooth, smo,l) {
+			this.save().strokeStyle(b,bw, bc).beginPath().fillStyle(bg).globalAlpha(alpham).shadowOn(sw).moveTo(p[0].x,p[0].y);
+			if (smooth) {
+				this.moveTo(fd(bw,l[0].x),fd(bw,l[0].y)).lineTo(fd(bw, p[0].x), fd(bw, p[0].y));
+				for ( var i = 1; i < p.length; i++)
+					this.bezierCurveTo(getCurvePoint(p, p[i], i, smo));
+				this.lineTo(fd(bw,l[1].x),fd(bw,l[1].y));
+			} else {
+				for ( var i = 1; i < p.length; i++)
+					this.lineTo(fd(bw, p[i].x), fd(bw, p[i].y));
 			}
 			return this.closePath().stroke(b).fill(bg).restore();
 		},
 		lines : function(p, w, c, last) {
-			if (p.length < 4||!w)
-				return this;
 			this.save().gCo(last).beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0]), fd(w, p[1]));
 			for ( var i = 2; i < p.length - 1; i += 2) {
 				this.lineTo(fd(w, p[i]), fd(w, p[i + 1]));
@@ -3025,15 +3027,13 @@ $.Label = $.extend($.Component, {
 			return this;
 		},
 		lineArray : function(p, w, c, smooth, smo) {
-			if (p.length < 2||!w)
-				return this;
 			this.save().beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
-			if (smooth) {
-				for ( var i = 1; i < p.length; i++)
+			for ( var i = 1; i < p.length; i++){
+				if (smooth) {
 					this.bezierCurveTo(getCurvePoint(p, p[i], i, smo));
-			} else {
-				for ( var i = 1; i < p.length; i++)
+				} else {
 					this.lineTo(fd(w, p[i].x), fd(w, p[i].y));
+				}
 			}
 			return this.stroke(true).restore();
 		},
@@ -5342,7 +5342,7 @@ $.Sector = $.extend($.Component, {
 		$.Sector.superclass.doConfig.call(this);
 
 		var _ = this._(), v = _.variable.event, f = _.get('label');
-		//alert(f);
+		
 		/**
 		 * mouseover light
 		 */
@@ -6493,11 +6493,11 @@ $.Bar = $.extend($.Chart, {
 			 */
 			sub_option : {},
 			/**
-			 * @cfg {<link>$.Text</link>} Specifies option of label at bottom.
+			 * @cfg {<link>$.Text</link>} Specifies option of label at left.
 			 */
 			label : {}
 		});
-
+		
 		this.registerEvent();
 
 	},
@@ -6742,6 +6742,10 @@ $.LineSegment = $.extend($.Component, {
 			 */
 			hollow : true,
 			/**
+			 * @cfg {Boolean} If true the color of the centre of point will be hollow_color.else will be background_color.(default to true)
+			 */
+			hollow_inside:true,
+			/**
 			 * @cfg {String} Specifies the bgcolor when hollow applies true.(default to '#FEFEFE')
 			 */
 			hollow_color : '#FEFEFE',
@@ -6814,27 +6818,25 @@ $.LineSegment = $.extend($.Component, {
 	drawSegment : function() {
 		var _ = this._(),p = _.get('points'),b=_.get('f_color'),h=_.get('brushsize');
 		_.T.shadowOn(_.get('shadow'));
+		
 		if (_.get('area')) {
-			var polygons = [_.x, _.y];
-			p.each(function(q){
-				polygons.push(q.x);
-				polygons.push(q.y);
-			});
-			
-			polygons.push(_.x + _.get(_.W));
-			polygons.push(_.y);
-			
-			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'), polygons);
+			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'), p, _.get('smooth'), _.get('smoothing'),[{x:_.x,y:_.y},{x:_.x + _.get(_.W),y:_.y}]);
 		}
 		
 		_.T[_.ignored_?"manyLine":"lineArray"](p,h, b, _.get('smooth'), _.get('smoothing'));
+		
 		if (_.get('intersection')) {
-			var f = _.getPlugin('sign'),s=_.get('point_size'),j=_.get('hollow_color');
+			var f = _.getPlugin('sign'),s=_.get('point_size'),j = _.get('hollow_color');
+			if(_.get('hollow_inside')){
+				j=b;
+				b = _.get('hollow_color');
+			}
+			
 			p.each(function(q,i){
 				if(!q.ignored){
-					if(!f||!f.call(_,_.T,_.get('sign'),q.x, q.y,s,b)){
+					if(!f||!f.call(_,_.T,_.get('sign'),q.x, q.y,s,b,j)){
 						if (_.get('hollow')) {
-							_.T.round(q.x, q.y, s/2-h,b,h,_.get('hollow_color'));
+							_.T.round(q.x, q.y, s/2-h,b,h,j);
 						} else {
 							_.T.round(q.x, q.y, s/2,b);
 						}
