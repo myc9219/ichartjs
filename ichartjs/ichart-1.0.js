@@ -5971,7 +5971,6 @@ $.Pie3D = $.extend($.Pie, {
 				});
 			}
 		});
-
 		_.proxy.drawSector = function() {
 			/**
 			 * paint bottom layer
@@ -5992,6 +5991,7 @@ $.Pie3D = $.extend($.Pie, {
 				if (c ? (s < a || s > b) : (s > a && s < b)) {
 					layer.push({
 						g : s,
+						z : s==e,
 						x : f.x,
 						y : f.y,
 						a : f.a,
@@ -6004,6 +6004,7 @@ $.Pie3D = $.extend($.Pie, {
 				if (c ? (e > a && e < b) : (e < a || e > b)) {
 					layer.push({
 						g : e,
+						z : s==e,
 						x : f.x,
 						y : f.y,
 						a : f.a,
@@ -6019,7 +6020,8 @@ $.Pie3D = $.extend($.Pie, {
 			 * realtime sort
 			 */
 			layer.sor(function(p, q) {
-				return ((abs(p.g, b) - abs(q.g, b)) > 0)
+				var r = abs(p.g, b) - abs(q.g, b);
+				return r==0?p.z:r > 0;
 			});
 
 			/**
@@ -6032,7 +6034,7 @@ $.Pie3D = $.extend($.Pie, {
 					f.F.sPaint = true;
 				}
 			}, _);
-
+			
 			/**
 			 * paint outside layer
 			 */
