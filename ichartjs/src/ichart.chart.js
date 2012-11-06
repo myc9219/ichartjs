@@ -567,18 +567,20 @@
 			
 			return this;
 		},
-		polygon : function(bg, b, bw, bc, sw, alpham, points) {
-			if (points.length < 2)
-				return;
-			this.save().strokeStyle(b,bw, bc).beginPath().fillStyle(bg).globalAlpha(alpham).shadowOn(sw).moveTo(points[0], points[1]);
-			for ( var i = 2; i < points.length; i += 2) {
-				this.lineTo(points[i], points[i + 1]);
+		polygon : function(bg, b, bw, bc, sw, alpham, p, smooth, smo,l) {
+			this.save().strokeStyle(b,bw, bc).beginPath().fillStyle(bg).globalAlpha(alpham).shadowOn(sw).moveTo(p[0].x,p[0].y);
+			if (smooth) {
+				this.moveTo(fd(bw,l[0].x),fd(bw,l[0].y)).lineTo(fd(bw, p[0].x), fd(bw, p[0].y));
+				for ( var i = 1; i < p.length; i++)
+					this.bezierCurveTo(getCurvePoint(p, p[i], i, smo));
+				this.lineTo(fd(bw,l[1].x),fd(bw,l[1].y));
+			} else {
+				for ( var i = 1; i < p.length; i++)
+					this.lineTo(fd(bw, p[i].x), fd(bw, p[i].y));
 			}
 			return this.closePath().stroke(b).fill(bg).restore();
 		},
 		lines : function(p, w, c, last) {
-			if (p.length < 4||!w)
-				return this;
 			this.save().gCo(last).beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0]), fd(w, p[1]));
 			for ( var i = 2; i < p.length - 1; i += 2) {
 				this.lineTo(fd(w, p[i]), fd(w, p[i + 1]));
@@ -590,15 +592,13 @@
 			return this;
 		},
 		lineArray : function(p, w, c, smooth, smo) {
-			if (p.length < 2||!w)
-				return this;
 			this.save().beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
-			if (smooth) {
-				for ( var i = 1; i < p.length; i++)
+			for ( var i = 1; i < p.length; i++){
+				if (smooth) {
 					this.bezierCurveTo(getCurvePoint(p, p[i], i, smo));
-			} else {
-				for ( var i = 1; i < p.length; i++)
+				} else {
 					this.lineTo(fd(w, p[i].x), fd(w, p[i].y));
+				}
 			}
 			return this.stroke(true).restore();
 		},
