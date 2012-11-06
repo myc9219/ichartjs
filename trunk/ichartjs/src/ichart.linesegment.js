@@ -40,6 +40,10 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			 */
 			hollow : true,
 			/**
+			 * @cfg {Boolean} If true the color of the centre of point will be hollow_color.else will be background_color.(default to true)
+			 */
+			hollow_inside:true,
+			/**
 			 * @cfg {String} Specifies the bgcolor when hollow applies true.(default to '#FEFEFE')
 			 */
 			hollow_color : '#FEFEFE',
@@ -112,27 +116,25 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 	drawSegment : function() {
 		var _ = this._(),p = _.get('points'),b=_.get('f_color'),h=_.get('brushsize');
 		_.T.shadowOn(_.get('shadow'));
+		
 		if (_.get('area')) {
-			var polygons = [_.x, _.y];
-			p.each(function(q){
-				polygons.push(q.x);
-				polygons.push(q.y);
-			});
-			
-			polygons.push(_.x + _.get(_.W));
-			polygons.push(_.y);
-			
-			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'), polygons);
+			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'), p, _.get('smooth'), _.get('smoothing'),[{x:_.x,y:_.y},{x:_.x + _.get(_.W),y:_.y}]);
 		}
 		
 		_.T[_.ignored_?"manyLine":"lineArray"](p,h, b, _.get('smooth'), _.get('smoothing'));
+		
 		if (_.get('intersection')) {
-			var f = _.getPlugin('sign'),s=_.get('point_size'),j=_.get('hollow_color');
+			var f = _.getPlugin('sign'),s=_.get('point_size'),j = _.get('hollow_color');
+			if(_.get('hollow_inside')){
+				j=b;
+				b = _.get('hollow_color');
+			}
+			
 			p.each(function(q,i){
 				if(!q.ignored){
-					if(!f||!f.call(_,_.T,_.get('sign'),q.x, q.y,s,b)){
+					if(!f||!f.call(_,_.T,_.get('sign'),q.x, q.y,s,b,j)){
 						if (_.get('hollow')) {
-							_.T.round(q.x, q.y, s/2-h,b,h,_.get('hollow_color'));
+							_.T.round(q.x, q.y, s/2-h,b,h,j);
 						} else {
 							_.T.round(q.x, q.y, s/2,b);
 						}

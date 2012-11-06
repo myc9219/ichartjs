@@ -44,7 +44,6 @@
 		<script type="text/javascript" src="../src/ichart.linemonitor2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.points.js"></script>
 		<script type="text/javascript" src="../src/ichart.interface.js"></script>
-		<script type="text/javascript" src="ichart.customize.js"></script>
 	<style type="text/css">
 		body{
 			margin-top:10px;
@@ -59,56 +58,58 @@
 	<script type="text/javascript">
 	//先写例子，自然有文档可写
 	$(function(){
-		var power = {
-				"0":"°",
-				"1":"¹",
-				"2":"²",
-				"3":"³",
-				"4":"⁴",
-				"5":"⁵",
-				"6":"⁶",
-				"7":"⁷",
-				"8":"⁸",
-				"9":"⁹",
-				"(":"⁽",
-				")":"⁾",
-				"+":"⁺",
-				"-":"⁻",
-				"=":"⁼"
-			}
-		//₀ ₁ ₂ ₃ ₄ ₅ ₆ ₇ ₈ ₉ ₊ ₋ ₌ ₍ ₎
-		var data = [
-		        	{name : 'IE'+power["0"]+power["1"],value : 35.75,color:'#a5c2d5'},
-		        	{name : 'Chrome'+power["2"]+power["3"],value : 29.84,color:'#cbab4f'},
-		        	{name : 'Firefox'+power["4"]+power["5"],value : 24.88,color:'#76a871'},
-		        	{name : 'Safari'+power["6"]+power["6"],value : 6.77,color:'#9f7961'},
-		        	{name : 'Opera'+power["9"]+power["9"],value : 2.02,color:'#a56f8f'},
-		        	{name : 'Other'+power["+"]+power["-"],value : 0.73,color:'#6f83a5'}
-	        	];
-    	
-		new iChart.Column2D({
-			render : 'canvasDiv',
-			data: data,
-			title : 'Top 5 Browsers from 1 to 29 Feb 2012',
-			showpercent:true,
-			decimalsnum:2,
-			width : 800,
-			height : 400,
-			coordinate:{
-				scale:[{
-					 position:'left',	
-					 start_scale:0,
-					 end_scale:40,
-					 scale_space:8,
-					 listeners:{
-						parseText:function(t,x,y){
-							return {text:t+"%"}
-						}
-					}
-				}]
-			}
-		}).draw();
-	});
+						var data = [
+						         	{
+						         		name : 'PV',
+						         		value:[12,44,8,80,24,60],
+						         		color:'#0d8ecf',
+						         		linewidth:2
+						         	}
+						         ];
+						var labels = ["01","02","03","04","05","06"];
+						var line = new iChart.Area2D({
+							render : 'canvasDiv',
+							data: data,
+							align:'center',
+							title : 'ichartjs官方网站最近5天PV流量趋势',
+							subtitle : '平均18:00-22:00访问量达到最大值(单位：万)',
+							footnote : '数据来源：模拟数据',
+							width : 800,
+							height : 400,
+							sub_option:{
+								smooth : true,
+								point_size:8
+							},
+							coordinate:{
+								width:340,
+								height:160,
+								axis:{
+									color:'#9f9f9f',
+									width:[0,0,2,2]
+								},
+								grids:{
+									vertical:{
+										way:'share_alike',
+								 		value:5
+									}
+								},
+								scale:[{
+									 position:'left',	
+									 start_scale:0,
+									 end_scale:100,
+									 scale_space:10,
+									 scale_size:2,
+									 scale_color:'#9f9f9f'
+								},{
+									 position:'bottom',	
+									 labels:labels
+								}]
+							}
+						});
+					
+					//开始画图
+					line.draw();
+				});
 		
 	</script>
 	</head>
