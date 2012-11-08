@@ -53,6 +53,7 @@
 		<body>
 			<div id='canvasDiv'></div>
 			<div class='ichartjs_info'>
+				<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
@@ -65,49 +66,5 @@
 					数据均为模拟。
 				</span>
 			</div>
-<!-- the source code -->
-<div id='ichartjs_code'>
-<span class='ichartjs_keyword'>var</span> data = [
-	{
-   		name : '<span class='ichartjs_string'>DPS01A</span>',
-   		value:[45,52,54,74,90,84],
-   		color:'<span class='ichartjs_string'>#1f7e92</span>',
-   		linewidth:1
-   	},
-   	{
-   		name : '<span class='ichartjs_string'>DPS01B</span>',
-   		value:[60,80,105,125,108,120],
-   		color:'<span class='ichartjs_string'>#2b7f39</span>',
-   		linewidth:1
-   	}
- ];
-
-$(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>new</span> iChart.ColumnMulti2D({
-		render : '<span class='ichartjs_string'>canvasDiv</span>',
-		data: data,
-		labels:["<span class='ichartjs_string'>一月</span>","<span class='ichartjs_string'>二月</span>","<span class='ichartjs_string'>三月</span>","<span class='ichartjs_string'>四月</span>","<span class='ichartjs_string'>五月</span>","<span class='ichartjs_string'>六月</span>"],
-		title : '<span class='ichartjs_string'>DPS01A型号比DPS01B型号的产品更受用户喜欢</span>',
-		subtitle : '<span class='ichartjs_string'>2012上半年DPS01A型号与DPS01B型号的鼠标销售比较,单位:万台</span>',
-		footnote : '<span class='ichartjs_string'>数据来源：销售中心</span>',
-		footnote_align:'<span class='ichartjs_string'>left</span>',
-		width : 800,
-		height : 440,
-		background_color : '<span class='ichartjs_string'>#eff8ff</span>',
-		legend:{
-			enable:true,
-			background_color : '<span class='ichartjs_string'>#eff8ff</span>',
-			border : {
-				enable : <span class='ichartjs_keyword'>false</span>
-			}
-		},
-		coordinate:{
-			background_color : '<span class='ichartjs_string'>#eff8ff</span>',
-			width:600,
-			height:300
-		}
-	}).draw();
-});
-</div>
 		</body>
 </html>

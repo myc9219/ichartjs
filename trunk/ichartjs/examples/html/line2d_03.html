@@ -50,7 +50,12 @@
 							legend : {
 								enable : true
 							},
+							crosshair:{
+								enable:true,
+								line_color:'#62bce9'
+							},
 							sub_option : {
+								label:false,
 								point_hollow : false
 							},
 							coordinate:{
@@ -89,6 +94,7 @@
 		<body>
 			<div id='canvasDiv'></div>
 			<div class='ichartjs_info'>
+				<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
@@ -99,80 +105,6 @@
 					数据均为模拟。
 				</span>
 			</div>
-<!-- the source code -->
-<div id='ichartjs_code'>
-$(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>var</span> pv=[],ip=[],t;
-	for(<span class='ichartjs_keyword'>var</span> i=0;i<61;i++){
-		t = Math.floor(Math.random()*(30+((i%12)*5)))+10;
-		pv.push(t);
-		t = Math.floor(t*0.5);
-		t = t-Math.floor((Math.random()*t)/2);
-		ip.push(t);
-	}
-	<span class='ichartjs_keyword'>var</span> data = [
-	         	{
-	         		name : '<span class='ichartjs_string'>PV</span>',
-	         		value:pv,
-	         		color:'<span class='ichartjs_string'>#0d8ecf</span>',
-	         		linewidth:2
-	         	},
-	         	{
-	         		name : '<span class='ichartjs_string'>IP</span>',
-	         		value:ip,
-	         		color:'<span class='ichartjs_string'>#ef7707</span>',
-	         		linewidth:2
-	         	}
-	         ];
-	<span class='ichartjs_keyword'>var</span> labels = ["<span class='ichartjs_string'>2012-08-01</span>","<span class='ichartjs_string'>2012-08-02</span>","<span class='ichartjs_string'>2012-08-03</span>","<span class='ichartjs_string'>2012-08-04</span>","<span class='ichartjs_string'>2012-08-05</span>","<span class='ichartjs_string'>2012-08-06</span>"];
-	<span class='ichartjs_keyword'>var</span> line = new iChart.LineBasic2D({
-		render : 'canvasDiv',
-		data: data,
-		align:'center',
-		title : '<span class='ichartjs_string'>ichartjs官方网站最近5天流量趋势</span>',
-		subtitle : '<span class='ichartjs_string'>平均每个人访问2-3个页面(访问量单位：万)</span>',
-		footnote : '<span class='ichartjs_string'>数据来源：模拟数据</span>',
-		width : 800,
-		height : 400,
-		tip:{
-			enable:<span class='ichartjs_keyword'>true</span>,
-			shadow:<span class='ichartjs_keyword'>true</span>
-		},
-		legend : {
-			enable : <span class='ichartjs_keyword'>true</span>
-		},
-		sub_option : {
-			point_hollow : <span class='ichartjs_keyword'>false</span>
-		},
-		coordinate:{
-			width:640,
-			height:260,
-			axis:{
-				color:'<span class='ichartjs_string'>#9f9f9f</span>',
-				width:[0,0,2,2]
-			},
-			grids:{
-				vertical:{
-					way:'<span class='ichartjs_string'>share_alike</span>',
-			 		value:5
-				}
-			},
-			scale:[{
-				 position:'<span class='ichartjs_string'>left</span>',	
-				 start_scale:0,
-				 end_scale:100,
-				 scale_space:10,
-				 scale_size:2,
-				 scale_color:'<span class='ichartjs_string'>#9f9f9f</span>'
-			},{
-				 position:'<span class='ichartjs_string'>bottom</span>',	
-				 labels:labels
-			}]
-		}
-	});
-	line.draw();
-});
-</div>
 		</body>
 </html>
 

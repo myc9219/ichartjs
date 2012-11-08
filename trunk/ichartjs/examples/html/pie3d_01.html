@@ -47,6 +47,7 @@
 	<body>
 		<div id='canvasDiv'></div>
 		<div class='ichartjs_info'>
+				<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
@@ -57,39 +58,5 @@
 					数据来源于StatCounter。
 				</span>
 			</div>
-<!-- the source code -->
-<div id='ichartjs_code'>
-<span class='ichartjs_keyword'>var</span> data = [
-   	{name : '<span class='ichartjs_keyword'>Other</span>',value : 3.79,color:'<span class='ichartjs_keyword'>#bd355e</span>'},
-   	{name : '<span class='ichartjs_keyword'>IE</span>',value : 52.20,color:'<span class='ichartjs_keyword'>#a5c2d5</span>'},
-   	{name : '<span class='ichartjs_keyword'>360 Browser</span>',value : 26.55,color:'<span class='ichartjs_keyword'>#cbab4f</span>'},
-   	{name : '<span class='ichartjs_keyword'>Chrome</span>',value : 8.26,color:'<span class='ichartjs_keyword'>#76a871</span>'},
-   	{name : '<span class='ichartjs_keyword'>Firefox</span>',value : 4.06,color:'<span class='ichartjs_keyword'>#9f7961</span>'},
-   	{name : '<span class='ichartjs_keyword'>Maxthon</span>',value : 2.78,color:'<span class='ichartjs_keyword'>#a56f8f</span>'},
-	{name : '<span class='ichartjs_keyword'>Safari</span>',value : 2.35,color:'<span class='ichartjs_keyword'>#db9034</span>'}
- ];
-
-$(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>new</span> iChart.Pie3D({
-		render : '<span class='ichartjs_string'>canvasDiv</span>',
-		data: data,
-		title : '<span class='ichartjs_string'>2012年7月份中国浏览器市场占有率Top6</span>',
-		footnote : '<span class='ichartjs_string'>Data from StatCounter</span>',
-		legend : {
-			enable : <span class='ichartjs_keyword'>true</span>,
-			align : '<span class='ichartjs_string'>center</span>',
-			valign : '<span class='ichartjs_string'>bottom</span>',
-			row:1,
-			column:'<span class='ichartjs_string'>max</span>'
-		},
-		showpercent:<span class='ichartjs_keyword'>true</span>,
-		decimalsnum:2,
-		yHeight:80,
-		radius:180,
-		width : 800,
-		height : 500
-	}).draw();
-});
-</div>
 	</body>
 </html>

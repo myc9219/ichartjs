@@ -54,6 +54,7 @@
 	<body>
 		<div id='canvasDiv'></div>
 		<div class='ichartjs_info'>
+				<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
@@ -65,47 +66,5 @@
 					数据均为模拟。
 				</span>
 			</div>
-<!-- the source code -->
-<div id='ichartjs_code'>
-<span class='ichartjs_keyword'>var</span> data = [
-	{name : '<span class='ichartjs_string'>IE</span>',value : 35.75,color:'<span class='ichartjs_string'>#9d4a4a</span>'},
-   	{name : '<span class='ichartjs_string'>Chrome</span>',value : 29.84,color:'<span class='ichartjs_string'>#5d7f97</span>'},
-   	{name : '<span class='ichartjs_string'>Firefox</span>',value : 24.88,color:'<span class='ichartjs_string'>#97b3bc</span>'},
-   	{name : '<span class='ichartjs_string'>Safari</span>',value : 6.77,color:'<span class='ichartjs_string'>#9f7961</span>'},
-   	{name : '<span class='ichartjs_string'>Opera</span>',value : 2.02,color:'<span class='ichartjs_string'>#778088</span>'}
-   	{name : '<span class='ichartjs_string'>Other</span>',value : 0.73,color:'<span class='ichartjs_string'>#6f83a5</span>'},
- ];
-<span class='ichartjs_keyword'>var</span> tData = {
-  			IE:'<span class='ichartjs_string'>2012年2月份IE浏览器的市场份额由&lt;br/&gt;1月份的31.46%增长为2月底的35.75%，&lt;br/&gt;增长幅度达4.29%</span>',
-   			Chrome:'<span class='ichartjs_string'>Chrome的市场份额则由28.41%小幅增长1.43%，达&lt;br/&gt;到29.84%，占据浏览器市场第二位份额。</span>',
-   			Firefox:'<span class='ichartjs_string'>Firefox的市场份额涨幅0.11%，由24.77%增&lt;br/&gt;至24.88%</span>',
-   			Safari:'<span class='ichartjs_string'>Safari的市场份额为6.77%</span>',
-   			Opera:'<span class='ichartjs_string'>Opera的市场份额由1.95%增长至2.02%。</span>',
-   			Other:'<span class='ichartjs_string'>其他浏览器仍然占有很小一部分市场</span>'
- 	}
-$(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>new</span> iChart.Pie2D({
-		render : '<span class='ichartjs_string'>canvasDiv</span>',
-		data: data,
-		title : '<span class='ichartjs_string'>Top 5 Browsers from 1 to 29 Feb 2012</span>',
-		legend : {
-			enable : <span class='ichartjs_keyword'>true</span>
-		},
-		tip : {
-			enable : <span class='ichartjs_keyword'>true</span>
-		},
-		listeners:{
-			parseTipText:<span class='ichartjs_keyword'>function</span>(d,t,i){
-				<span class='ichartjs_keyword'>return</span> tData[d.name];
-			}
-		},
-		showpercent:<span class='ichartjs_keyword'>true</span>,
-		decimalsnum:2,
-		width : 800,
-		height : 500,
-		radius:140
-	}).draw();
-});
-</div>
 	</body>
 </html>
