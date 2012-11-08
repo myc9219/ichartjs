@@ -85,6 +85,7 @@
 	<body>
 		<div id='canvasDiv'></div>
 		<div class='ichartjs_info'>
+				<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
@@ -95,76 +96,5 @@
 					数据来源于StatCounter。
 				</span>
 			</div>
-<!-- the source code -->
-<div id='ichartjs_code'>
-<span class='ichartjs_keyword'>var</span> data = [
-   	{name : '<span class='ichartjs_keyword'>WinXP</span>',value : 68.34,color:'<span class='ichartjs_keyword'>#3883bd</span>'},
-   	{name : '<span class='ichartjs_keyword'>Win7</span>',value : 26.83,color:'<span class='ichartjs_keyword'>#3F5C71</span>'},
-   	{name : '<span class='ichartjs_keyword'>Other</span>',value : 4.83,color:'<span class='ichartjs_keyword'>#a6bfd2</span>'}
- ];
-
-$(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>var</span> chart = <span class='ichartjs_keyword'>new</span> iChart.Pie3D({
-		render : '<span class='ichartjs_string'>canvasDiv</span>',
-		title:{
-			text:'<span class='ichartjs_string'>中国地区2012年08月份操作系统分布情况</span>',
-			color:'#e0e5e8',
-			height:40,
-			border:{
-				enable:true,
-				width:[0,0,2,0],
-				color:'#343b3e'
-			}
-		},
-		padding:'2 10',
-		footnote:{
-			text:'StatCounter Global Stats',
-			color:'#e0e5e8',
-			height:30,
-			border:{
-				enable:true,
-				width:[2,0,0,0],
-				color:'#343b3e'
-			}
-		},
-		width : 700,
-		height : 400,
-		offsetx:-90,
-		data:data,
-		shadow:true,
-		shadow_color:'#15353a',
-		shadow_blur:8,
-		background_color : '#3b4346',
-		showpercent:true,
-		decimalsnum:2,
-		legend:{
-			enable:true,
-			padding:30,
-			color:'#e0e5e8',
-			border:{
-				width:[0,0,0,2],
-				color:'#343b3e'
-			},
-			background_color : null,
-		},
-		sector:{
-			border:{
-				enable:false
-			}
-		},
-		border:{
-			width:[0,20,0,20],
-			color:'#1e2223'
-		},
-		listeners:{
-			parseLabelText:function(d, i){
-				return d.value+"%";
-			}
-		}
-	});
-	chart.draw();
-	chart.bound(0);
-});
-</div>
 	</body>
 </html>

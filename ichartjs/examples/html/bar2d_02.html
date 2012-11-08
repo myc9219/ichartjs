@@ -54,6 +54,7 @@
 	<body>
 		<div id='canvasDiv'></div>
 		<div class='ichartjs_info'>
+				<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
@@ -64,49 +65,5 @@
 					数据均为模拟。
 				</span>
 			</div>
-<!-- the source code -->
-<div id='ichartjs_code'>
- <span class='ichartjs_keyword'>var</span> data = [
-     	{name : '<span class='ichartjs_string'>鞋区</span>',value : 6078,color:'<span class='ichartjs_string'>#97b3bc</span>'},
-     	{name : '<span class='ichartjs_string'>运动区</span>',value : 5845,color:'<span class='ichartjs_string'>#FF3333</span>'},
-     	{name : '<span class='ichartjs_string'>女装区</span>',value : 5008,color:'<span class='ichartjs_string'>#cd5c5c</span>'},
-     	{name : '<span class='ichartjs_string'>户外区</span>',value : 2662,color:'<span class='ichartjs_string'>#006666</span>'},
-     	{name : '<span class='ichartjs_string'>休闲区</span>',value : 2445,color:'<span class='ichartjs_string'>#CC3333</span>'},
-     	{name : '<span class='ichartjs_string'>皮具区</span>',value : 2389,color:'<span class='ichartjs_string'>#9d4a4a</span>'},
-     	{name : '<span class='ichartjs_string'>男装区</span>',value : 2147,color:'<span class='ichartjs_string'>#eee8aa</span>'},
-     	{name : '<span class='ichartjs_string'>内衣区</span>',value : 2135,color:'<span class='ichartjs_string'>#CCFF66</span>'},
-     	{name : '<span class='ichartjs_string'>儿童区</span>',value : 820,color:'<span class='ichartjs_string'>#5d7f97</span>'},
-     	{name : '<span class='ichartjs_string'>租赁</span>',value : 763,color:'<span class='ichartjs_string'>#33FF33</span>'},
-     	{name : '<span class='ichartjs_string'>服饰区</span>',value : 421,color:'<span class='ichartjs_string'>#330099</span>'},
-     	{name : '<span class='ichartjs_string'>家居区</span>',value : 272,color:'<span class='ichartjs_string'>#33FF99</span>'},
-     	{name : '<span class='ichartjs_string'>毛纺区</span>',value : 261,color:'<span class='ichartjs_string'>#ffdead</span>'},
-     	{name : '<span class='ichartjs_string'>羽绒服区</span>',value : 252,color:'<span class='ichartjs_string'>#CC3399</span>'}
- ];
-
-$(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>new</span> iChart.Bar2D({
-			render : '<span class='ichartjs_string'>canvasDiv</span>',
-			data: data,
-			background_color : '<span class='ichartjs_string'>#EEEEEE</span>',
-			title : '<span class='ichartjs_string'>2012上半年品类销售分析</span>',
-			subtitle : '<span class='ichartjs_string'>鞋区,运动区,女装区三大区占据销售的半壁江山</span>',
-			footnote : '<span class='ichartjs_string'>数据来源：ERP基础数据仓库   单位：万元</span>',
-			width : 800,
-			height : 520,
-			coordinate:{
-				width:640,
-				height:380,
-				scale:[{
-					 position:'<span class='ichartjs_string'>bottom</span>',	
-					 start_scale:0,
-					 end_scale:6500,
-					 scale_space:500
-				}]
-			},
-			shadow:<span class='ichartjs_keyword'>true</span>,
-			legend:{enable:<span class='ichartjs_keyword'>false</span>}
-		}).draw();
-});
-</div>
 	</body>
 </html>

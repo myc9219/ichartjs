@@ -44,6 +44,7 @@
 	<body>
 		<div id='canvasDiv'></div>
 		<div class='ichartjs_info'>
+				<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
@@ -54,39 +55,5 @@
 					数据均为模拟。
 				</span>
 			</div>
-<!-- the source code -->
-<div id='ichartjs_code'>
-<span class='ichartjs_keyword'>var</span> data = [
-	{name : '<span class='ichartjs_keyword'>IE</span>',value : 35.75,color:'<span class='ichartjs_keyword'>#a5c2d5</span>'},
-   	{name : '<span class='ichartjs_keyword'>Chrome</span>',value : 29.84,color:'<span class='ichartjs_keyword'>#cbab4f</span>'},
-   	{name : '<span class='ichartjs_keyword'>Firefox</span>',value : 24.88,color:'<span class='ichartjs_keyword'>#76a871</span>'},
-   	{name : '<span class='ichartjs_keyword'>Safari</span>',value : 6.77,color:'<span class='ichartjs_keyword'>#9f7961</span>'},
-   	{name : '<span class='ichartjs_keyword'>Opera</span>',value : 2.02,color:'<span class='ichartjs_keyword'>#a56f8f</span>'},
-   	{name : '<span class='ichartjs_keyword'>Other</span>',value : 0.73,color:'<span class='ichartjs_keyword'>#6f83a5</span>'}
- ];
-
-$(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>new</span> iChart.Pie2D({
-		render : '<span class='ichartjs_string'>canvasDiv</span>',
-		data: data,
-		title : '<span class='ichartjs_string'>Top 5 Browsers from 1 to 29 Feb 2012</span>',
-		legend : {
-			enable : <span class='ichartjs_keyword'>true</span>
-		},
-		showpercent:<span class='ichartjs_keyword'>true</span>,
-		decimalsnum:2,
-		width : 800,
-		height : 500,
-		radius:140,
-		sector:{
-			listeners:{
-				click:<span class='ichartjs_keyword'>function</span>(c,e,m){
-					alert(c.get('<span class='ichartjs_string'>name</span>'));
-				}
-			}
-		}
-	}).draw();
-});
-</div>
 	</body>
 </html>

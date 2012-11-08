@@ -68,6 +68,7 @@
 	<body>
 		<div id='canvasDiv'></div>
 		<div class='ichartjs_info'>
+				<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
@@ -78,59 +79,5 @@
 					数据来源互联网。
 				</span>
 			</div>
-<!-- the source code -->
-<div id='ichartjs_code'>
- <span class='ichartjs_keyword'>var</span> data = [
-	{name : '<span class='ichartjs_string'>天语</span>',value : 2.83,color:'<span class='ichartjs_string'>#4572a7</span>'},
-       	{name : '<span class='ichartjs_string'>苹果</span>',value : 3.44,color:'<span class='ichartjs_string'>#4572a7</span>'},
-       	{name : '<span class='ichartjs_string'>HTC</span>',value : 3.66,color:'<span class='ichartjs_string'>#4572a7</span>'},
-       	{name : '<span class='ichartjs_string'>金立</span>',value : 4.58,color:'<span class='ichartjs_string'>#4572a7</span>'},
-       	{name : '<span class='ichartjs_string'>中兴</span>',value : 6.56,color:'<span class='ichartjs_string'>#4572a7</span>'},
-       	{name : '<span class='ichartjs_string'>酷派</span>',value : 6.85,color:'<span class='ichartjs_string'>#4572a7</span>'},
-       	{name : '<span class='ichartjs_string'>诺基亚</span>',value : 9.42,color:'<span class='ichartjs_string'>#4572a7</span>'},
-       	{name : '<span class='ichartjs_string'>华为</span>',value : 9.54,color:'<span class='ichartjs_string'>#4572a7</span>'},
-       	{name : '<span class='ichartjs_string'>联想</span>',value : 11.00,color:'<span class='ichartjs_string'>#4572a7</span>'},
-       	{name : '<span class='ichartjs_string'>三星</span>',value : 15.73,color:'<span class='ichartjs_string'>#4572a7</span>'}
- ];
-
-$(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>new</span> iChart.Bar2D({
-			render : '<span class='ichartjs_string'>canvasDiv</span>',
-			background_color : '<span class='ichartjs_string'>#fcfcfc</span>',
-			data: data,
-			title : '<span class='ichartjs_string'>2012年6月中国手机市场份额TOP10</span>',
-			subtitle : '<span class='ichartjs_string'>联想手机超越诺基亚，以11%市场份额，成为中国市场第二</span>',
-			footnote : '<span class='ichartjs_string'>数据来源：赛诺</span>',
-			width : 800,
-			height : 400,
-				coordinate:{
-				width:640,
-				height:260,
-				axis:{
-					width:[0,0,1,1]
-				},
-				scale:[{
-					 position:'<span class='ichartjs_string'>bottom</span>',	
-					 start_scale:0,
-					 end_scale:18,
-					 scale_space:2
-				}]
-			},
-			shadow:<span class='ichartjs_keyword'>true</span>,
-			shadow_color:'<span class='ichartjs_string'>#8d8d8d</span>',
-			shadow_blur:2,
-			shadow_offsety:1,
-			shadow_offsetx:1,
-			rectangle:{
-				listeners:{
-					drawLabelText:<span class='ichartjs_keyword'>function</span>(r,t){
-						<span class='ichartjs_keyword'>return</span> t+"<span class='ichartjs_string'>%</span>";
-					}
-				}
-			},
-			legend:{enable:<span class='ichartjs_keyword'>false</span>}
-		}).draw();
-});
-</div>
 	</body>
 </html>

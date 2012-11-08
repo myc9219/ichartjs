@@ -53,6 +53,7 @@
 		<body>
 			<div id='canvasDiv'></div>
 			<div class='ichartjs_info'>
+				<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
@@ -63,49 +64,5 @@
 					数据来源于StatCounter。
 				</span>
 			</div>
-<!-- the source code -->
-<div id='ichartjs_code'>
-<span class='ichartjs_keyword'>var</span> data = [
-	{name : '<span class='ichartjs_keyword'>Google</span>',value : 91.17,color:'<span class='ichartjs_keyword'>#a5c2d5</span>'},
-   	{name : '<span class='ichartjs_keyword'>bing</span>',value : 3.22,color:'<span class='ichartjs_keyword'>#cbab4f</span>'},
-   	{name : '<span class='ichartjs_keyword'>Yahoo!</span>',value : 2.95,color:'<span class='ichartjs_keyword'>#76a871</span>'},
-   	{name : '<span class='ichartjs_keyword'>Babylon</span>',value : 0.54,color:'<span class='ichartjs_keyword'>#9f7961</span>'},
-   	{name : '<span class='ichartjs_keyword'>Baidu</span>',value : 0.45,color:'<span class='ichartjs_keyword'>#a56f8f</span>'},
-   	{name : '<span class='ichartjs_keyword'>Other</span>',value : 1.67,color:'<span class='ichartjs_keyword'>#6f83a5</span>'}
- ];
-
-$(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>new</span> iChart.Bar2D({
-		render : '<span class='ichartjs_string'>canvasDiv</span>',
-		data: data,
-		title : '<span class='ichartjs_string'>2012年7月份全球搜索引擎Top5</span>',
-		footnote : '<span class='ichartjs_string'>Data from StatCounter</span>',
-		width : 800,
-		height : 440,
-		coordinate:{
-			width:640,
-			height:320,
-			scale:[{
-				 position:'<span class='ichartjs_string'>bottom</span>',	
-				 start_scale:0,
-				 end_scale:100,
-				 scale_space:10,
-				 listeners:{
-					parseText:<span class='ichartjs_keyword'>function</span>(t,x,y){
-						<span class='ichartjs_keyword'>return</span> {text:t+"<span class='ichartjs_string'>%</span>"}
-					}
-				 }
-			}]
-		},
-		rectangle:{
-			listeners:{
-				drawLabelText:<span class='ichartjs_keyword'>function</span>(r,t){
-					<span class='ichartjs_keyword'>return</span> t+"<span class='ichartjs_string'>%</span>";
-				}
-			}
-		}
-	}).draw();
-});
-</div>
 		</body>
 </html>

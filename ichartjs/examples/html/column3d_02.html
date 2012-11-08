@@ -41,6 +41,7 @@
 		<body>
 			<div id='canvasDiv'></div>
 			<div class='ichartjs_info'>
+				<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
@@ -52,32 +53,5 @@
 					数据均为模拟。
 				</span>
 			</div>
-<!-- the source code -->
-<div id='ichartjs_code'>
-<span class='ichartjs_keyword'>var</span> data = [
-	{name : '<span class='ichartjs_keyword'>已服务客户数量</span>',value : 30,color:'<span class='ichartjs_keyword'>#bc6666</span>'},
-   	{name : '<span class='ichartjs_keyword'>其中已服务VIP数量</span>',value : 4,color:'<span class='ichartjs_keyword'>#6f83a5</span>'},
-   	{name : '<span class='ichartjs_keyword'>等待中数量</span>',value : 20,color:'<span class='ichartjs_keyword'>#76a871</span>'},
-   	{name : '<span class='ichartjs_keyword'>处理中数量</span>',value : 10,color:'<span class='ichartjs_keyword'>#2ba5a4</span>'}
- ];
-
-$(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>new</span> iChart.Column3D({
-		render : '<span class='ichartjs_string'>canvasDiv</span>',
-		data: data,
-		title : '<span class='ichartjs_string'>Status Of Customer Service</span>',
-		width : 800,
-		height : 400,
-		coordinate:{
-			scale:[{
-				 position:'<span class='ichartjs_string'>left</span>',	
-				 start_scale:0,
-				 end_scale:40,
-				 scale_space:4
-			}]
-		}
-	}).draw();
-});
-</div>
 		</body>
 </html>

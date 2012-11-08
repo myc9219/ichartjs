@@ -64,6 +64,7 @@
 		<body>
 			<div id='canvasDiv'></div>
 			<div class='ichartjs_info'>
+				<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
@@ -74,59 +75,5 @@
 					数据均为模拟。
 				</span>
 			</div>
-<!-- the source code -->
-<div id='ichartjs_code'>
-<span class='ichartjs_keyword'>var</span> data = [
-	{name : '<span class='ichartjs_keyword'>广州</span>',value : 4000,color:'<span class='ichartjs_keyword'>#a5c2d5</span>'},
-   	{name : '<span class='ichartjs_keyword'>上海</span>',value : 4200,color:'<span class='ichartjs_keyword'>#cbab4f</span>'},
-   	{name : '<span class='ichartjs_keyword'>南昌</span>',value : 3500,color:'<span class='ichartjs_keyword'>#76a871</span>'},
-   	{name : '<span class='ichartjs_keyword'>哈尔滨</span>',value : 3600,color:'<span class='ichartjs_keyword'>#9f7961</span>'},
-   	{name : '<span class='ichartjs_keyword'>北京</span>',value : 4150,color:'<span class='ichartjs_keyword'>#a56f8f</span>'}
- ];
-
-$(<span class='ichartjs_keyword'>function</span>(){	
-	<span class='ichartjs_keyword'>var</span> chart = <span class='ichartjs_keyword'>new</span> iChart.Column2D({
-		render : '<span class='ichartjs_string'>canvasDiv</span>',
-		data: data,
-		title : '<span class='ichartjs_string'>2012年5个城市平均工资的情况</span>',
-		width : 800,
-		height : 400,
-		coordinate:{
-			scale:[{
-				 position:'<span class='ichartjs_string'>left</span>',	
-				 start_scale:1000,
-				 end_scale:5000,
-				 scale_space:500
-			}]
-		}
-	});
-	/**
-	 *自定义组件,画平均线。
-	 */
-	chart.plugin(<span class='ichartjs_keyword'>new</span> iChart.Custom({
-			drawFn:<span class='ichartjs_keyword'>function</span>(){
-				/**
-				 *计算平均值的高度(坐标Y值)
-				 */	
-				<span class='ichartjs_keyword'>var</span> avg = chart.total/5,
-					coo = chart.getCoordinate(),
-					x = coo.get('<span class='ichartjs_string'>originx</span>'),
-					W = coo.get('<span class='ichartjs_string'>width</span>'),
-					S = coo.getScale('<span class='ichartjs_string'>left</span>'),
-					bs = coo.get('<span class='ichartjs_string'>brushsize</span>'),
-					H = coo.get('<span class='ichartjs_string'>height</span>'),
-					h = (avg - S.start) * H / S.distance,
-					y = chart.y + H - h - bs;
-				
-				chart.target.line(x,y,x+W,y,1,'<span class='ichartjs_string'>#b32c0d</span>')
-				.textAlign('<span class='ichartjs_string'>start</span>')
-				.textBaseline('<span class='ichartjs_string'>middle</span>')
-				.fillText('<span class='ichartjs_string'>avg:</span>'+avg,x+W+5,y,<span class='ichartjs_keyword'>false</span>,'<span class='ichartjs_string'>#b32c0d</span>');
-			}
-	}));
-	
-	chart.draw();
-});
-</div>
 		</body>
 </html>
