@@ -12,7 +12,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		 * invoked the super class's configuration
 		 */
 		iChart.Pie.superclass.configure.call(this);
-
+		
 		this.type = 'pie';
 
 		this.set({
@@ -176,10 +176,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		
 		f = _.get('minDistance') * f;
 		
-		var eA = _.oA, sA = eA, L = _.data.length;
+		
+		var eA = _.oA+0.1, sA = eA, L = _.data.length,PI = Math.PI-L*0.2;
 		
 		_.data.each(function(d, i) {
-			eA += (2 * d.value / _.total) * Math.PI;
+			eA += (2 * d.value / _.total) * PI;
 			if (i == (L - 1)) {
 				eA = 2 * Math.PI + _.oA;
 			}
@@ -187,7 +188,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			d.endAngle = eA;
 			d.totalAngle = eA - sA;
 			d.middleAngle = (sA + eA) / 2;
-			sA = eA;
+			sA = eA+0.1;
 		}, _);
 		
 		

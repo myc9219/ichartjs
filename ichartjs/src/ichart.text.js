@@ -87,7 +87,7 @@
 			if(_.get('box_feature'))
 			_.T.box(_.x,_.y,_.get(_.W),_.get(_.H),_.get('border'),_.get('f_color'));
 			if(_.get('text')!='')
-			_.T.text(_.get('text'),_.get('textx'),_.get('texty'),_.get(_.W),_.get('color'),_.get('textAlign'),_.get('textBaseline'),_.get('fontStyle'),0,0,_.get('shadow'),_.get('rotate'));
+			_.T.text(_.get('text'),_.get('textx'),_.get('texty'),_.get(_.W),_.get('color'),_.get('textAlign'),_.get('textBaseline'),_.get('fontStyle'),_.get('writingmode'),_.get('line_height'),_.get('shadow'),_.get('rotate'));
 		},
 		isEventValid:function(){
 			return {valid:false};
