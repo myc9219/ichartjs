@@ -57,57 +57,47 @@
 	</style>
 	<script type="text/javascript">
 
-	var data = [
-	        	{name : 'HTML5&CSS3',value : 30,color:'#fedd74'},
-	        	{name : 'JavaScript',value : 25,color:'#82d8ef'},
-	        	{name : 'Java',value : 15,color:'#f76864'},
-	        	{name : 'XML',value : 20,color:'#80bd91'},
-	        	{name : 'PhotoShop',value : 10,color:'#fd9fc1'}
-        	];
-	
-	var data = [
-	         	{
-	         		name : 'DPS01A',
-	         		value:[45,52,54],
-	         		color:'#fedd74',
-	         		linewidth:1
-	         	},
-	         	{
-	         		name : 'DPS01B',
-	         		value:[60,80,105],
-	         		color:'#82d8ef',
-	         		linewidth:1
-	         	},
-	         	{
-	         		name : 'DPS01C',
-	         		value:[55,70,65],
-	         		color:'#f76864',
-	         		linewidth:1
-	         	}
-	         ];
-	
-		$(function(){
-			new iChart.ColumnMulti3D({
-					render : 'canvasDiv',
-					data: data,
-					labels:["一月","二月","三月"],
-					title : 'DPS01A型号比DPS01B型号的产品更受用户喜欢',
-					width : 600,
-					height : 360,
-					background_color:'#f4f4f4',
-					legend : {
-						enable : false
-					},
-					sub_option:{
-						label:false
-					},
-					coordinate:{
-						background_color : '#f3f3f3',
-						width:360,
-						height:220
-					}
-			}).draw();
-		});
+	$(function(){
+		var data = [
+		        	{name : 'HTML5&CSS3',value : 30,color:'#fedd74'},
+		        	{name : 'JavaScript',value : 25,color:'#82d8ef'},
+		        	{name : 'Java',value : 15,color:'#f76864'},
+		        	{name : 'XML',value : 20,color:'#80bd91'},
+		        	{name : 'PhotoShop',value : 10,color:'#fd9fc1'}
+	        	];
+    	
+		new iChart.Pie2D({
+			render : 'canvasDiv',
+			separate_angle:60,
+			center:{
+				text:'CORE\nSKILLS',
+				shadow:true,
+				shadow_offsetx:0,
+				shadow_offsety:2,
+				shadow_blur:2,
+				shadow_color:'#b7b7b7',
+				color:'#6f6f6f'
+			},
+			data: data,
+			offsetx:-20,
+			shadow:true,
+			background_color:'#f4f4f4',
+			legend : {
+				enable : true,
+				shadow:true,
+				background_color:null,
+				border:false
+			},
+			sub_option:{
+				label:false
+			},
+			showpercent:true,
+			decimalsnum:2,
+			width : 520,
+			height : 300,
+			radius:140
+		}).draw();
+	});
 		
 	</script>
 	</head>
