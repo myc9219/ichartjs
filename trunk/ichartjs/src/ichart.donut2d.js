@@ -19,7 +19,20 @@ iChart.Donut2D = iChart.extend(iChart.Pie, {
 			/**
 			 * @cfg {Number} Specifies the width when show a donut.If the value lt 1,It will be as a percentage,value will be radius*donutwidth.only applies when it not 0.(default to 0.3)
 			 */
-			donutwidth : 0.3
+			donutwidth : 0.3,
+			/**
+			 * @cfg {Object/String} Specifies the config of Center Text details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
+			 */
+			center : {
+				text:'',
+				line_height:24,
+				offsety:-8,
+				fontweight : 'bold',
+				/**
+				 * Specifies the font-size in pixels of center text.(default to 24)
+				 */
+				fontsize : 24
+			}
 		});
 	},
 	doSector:function(){
@@ -40,6 +53,18 @@ iChart.Donut2D = iChart.extend(iChart.Pie, {
 				_.push(d,0);
 			}
 			_.push('sub_option.donutwidth',_.get(d));
+		}
+		if ($.isString(_.get('center'))) {
+			_.push('center', $.applyIf({
+				text : _.get('center')
+			}, _.default_.center));
+		}
+		
+		if (_.get('center.text') != '') {
+			_.push('center.originx',_.get(_.X));
+			_.push('center.originy',_.get(_.Y));
+			_.push('center.textBaseline','middle');
+			_.components.push(new $.Text(_.get('center'), _));
 		}
 		
 		_.data.each(function(d,i){

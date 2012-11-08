@@ -386,13 +386,12 @@
 			h = h || 16;
 			this.save().fillStyle(color).translate(x,y).rotate(inc2*ro).shadowOn(sw);
 			var T = t.split(mode == 'tb' ? "" : "\n");
-			T.each(function(t) {
+			T.each(function(t,i) {
 				try {
 					if (max)
-						this.c.fillText(t, 0,0, max);
+						this.c.fillText(t, 0,i*h, max);
 					else
-						this.c.fillText(t, 0, 0);
-					y += h;
+						this.c.fillText(t, 0, i*h);
 				} catch (e) {
 					console.log(e.message + '[' + t + ',' + x + ',' + y + ']');
 				}
