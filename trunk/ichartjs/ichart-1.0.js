@@ -5665,9 +5665,9 @@ $.Pie = $.extend($.Chart, {
 			 */
 			offset_angle : 0,
 			/**
-			 * @cfg {Number} separate angle of all sector.(default to 30)
+			 * @cfg {Number(0~90)} separate angle of all sector.(default to 0)
 			 */
-			separate_angle:30,
+			separate_angle:0,
 			/**
 			 * @cfg {String} the event's name trigger pie pop(default to 'click')
 			 */
@@ -5820,7 +5820,7 @@ $.Pie = $.extend($.Chart, {
 		
 		f = _.get('minDistance') * f;
 		
-		var L = _.data.length,sepa = $.angle2Radian(_.get('separate_angle')),PI = 2*Math.PI-sepa,sepa=sepa/L,eA = _.oA+sepa, sA = eA;
+		var L = _.data.length,sepa = $.angle2Radian($.between(0,90,_.get('separate_angle'))),PI = 2*Math.PI-sepa,sepa=sepa/L,eA = _.oA+sepa, sA = eA;
 		
 		
 		_.data.each(function(d, i) {
