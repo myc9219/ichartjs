@@ -2405,7 +2405,7 @@ $.Label = $.extend($.Component, {
 			if(_.get('box_feature'))
 			_.T.box(_.x,_.y,_.get(_.W),_.get(_.H),_.get('border'),_.get('f_color'));
 			if(_.get('text')!='')
-			_.T.text(_.get('text'),_.get('textx'),_.get('texty'),_.get(_.W),_.get('color'),_.get('textAlign'),_.get('textBaseline'),_.get('fontStyle'),0,0,_.get('shadow'),_.get('rotate'));
+			_.T.text(_.get('text'),_.get('textx'),_.get('texty'),_.get(_.W),_.get('color'),_.get('textAlign'),_.get('textBaseline'),_.get('fontStyle'),_.get('writingmode'),_.get('line_height'),_.get('shadow'),_.get('rotate'));
 		},
 		isEventValid:function(){
 			return {valid:false};
@@ -2821,13 +2821,12 @@ $.Label = $.extend($.Component, {
 			h = h || 16;
 			this.save().fillStyle(color).translate(x,y).rotate(inc2*ro).shadowOn(sw);
 			var T = t.split(mode == 'tb' ? "" : "\n");
-			T.each(function(t) {
+			T.each(function(t,i) {
 				try {
 					if (max)
-						this.c.fillText(t, 0,0, max);
+						this.c.fillText(t, 0,i*h, max);
 					else
-						this.c.fillText(t, 0, 0);
-					y += h;
+						this.c.fillText(t, 0, i*h);
 				} catch (e) {
 					console.log(e.message + '[' + t + ',' + x + ',' + y + ']');
 				}
@@ -5653,7 +5652,7 @@ $.Pie = $.extend($.Chart, {
 		 * invoked the super class's configuration
 		 */
 		$.Pie.superclass.configure.call(this);
-
+		
 		this.type = 'pie';
 
 		this.set({
@@ -5662,9 +5661,13 @@ $.Pie = $.extend($.Chart, {
 			 */
 			radius : 0,
 			/**
-			 * @cfg {Number} initial angle for first sector
+			 * @cfg {Number} initial angle for first sector.(default to 0)
 			 */
-			offsetAngle : 0,
+			offset_angle : 0,
+			/**
+			 * @cfg {Number} separate angle of all sector.(default to 30)
+			 */
+			separate_angle:30,
 			/**
 			 * @cfg {String} the event's name trigger pie pop(default to 'click')
 			 */
@@ -5809,7 +5812,7 @@ $.Pie = $.extend($.Chart, {
 		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
 		_.components.push(_.sectors);
-		_.oA = $.angle2Radian(_.get('offsetAngle'));
+		_.oA = $.angle2Radian(_.get('offset_angle'));
 		
 		//If 3D,let it bigger
 		if (_.is3D())
@@ -5817,10 +5820,11 @@ $.Pie = $.extend($.Chart, {
 		
 		f = _.get('minDistance') * f;
 		
-		var eA = _.oA, sA = eA, L = _.data.length;
+		var L = _.data.length,sepa = $.angle2Radian(_.get('separate_angle')),PI = 2*Math.PI-sepa,sepa=sepa/L,eA = _.oA+sepa, sA = eA;
+		
 		
 		_.data.each(function(d, i) {
-			eA += (2 * d.value / _.total) * Math.PI;
+			eA += (d.value / _.total) * PI;
 			if (i == (L - 1)) {
 				eA = 2 * Math.PI + _.oA;
 			}
@@ -5828,7 +5832,7 @@ $.Pie = $.extend($.Chart, {
 			d.endAngle = eA;
 			d.totalAngle = eA - sA;
 			d.middleAngle = (sA + eA) / 2;
-			sA = eA;
+			sA = eA+sepa;
 		}, _);
 		
 		
@@ -6079,7 +6083,20 @@ $.Donut2D = $.extend($.Pie, {
 			/**
 			 * @cfg {Number} Specifies the width when show a donut.If the value lt 1,It will be as a percentage,value will be radius*donutwidth.only applies when it not 0.(default to 0.3)
 			 */
-			donutwidth : 0.3
+			donutwidth : 0.3,
+			/**
+			 * @cfg {Object/String} Specifies the config of Center Text details see <link>$.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
+			 */
+			center : {
+				text:'',
+				line_height:24,
+				offsety:-8,
+				fontweight : 'bold',
+				/**
+				 * Specifies the font-size in pixels of center text.(default to 24)
+				 */
+				fontsize : 24
+			}
 		});
 	},
 	doSector:function(){
@@ -6100,6 +6117,18 @@ $.Donut2D = $.extend($.Pie, {
 				_.push(d,0);
 			}
 			_.push('sub_option.donutwidth',_.get(d));
+		}
+		if ($.isString(_.get('center'))) {
+			_.push('center', $.applyIf({
+				text : _.get('center')
+			}, _.default_.center));
+		}
+		
+		if (_.get('center.text') != '') {
+			_.push('center.originx',_.get(_.X));
+			_.push('center.originy',_.get(_.Y));
+			_.push('center.textBaseline','middle');
+			_.components.push(new $.Text(_.get('center'), _));
 		}
 		
 		_.data.each(function(d,i){
