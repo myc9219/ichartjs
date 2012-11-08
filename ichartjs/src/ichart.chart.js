@@ -454,16 +454,16 @@
 			 * styles -> top-front-right
 			 */
 			if (sw) {
-				this.polygon(bg, b, bw, bc, sw, false, [x, y, x1, y1, x1 + width, y1, x + width, y]);
-				this.polygon(bg, b, bw, bc, sw, false, [x, y, x, y + height, x + width, y + height, x + width, y]);
-				this.polygon(bg, b, bw, bc, sw, false, [x + width, y, x1 + width, y1, x1 + width, y1 + height, x + width, y + height]);
+				this.polygon(bg, b, bw, bc, sw, false, [{x:x, y:y},{x: x1, y:y1},{x: x1 + width, y:y1},{x: x + width, y:y}]);
+				this.polygon(bg, b, bw, bc, sw, false, [{x:x, y:y},{x: x, y:y + height},{x: x + width,y: y + height},{x: x + width, y:y}]);
+				this.polygon(bg, b, bw, bc, sw, false, [{x:x + width, y:y},{x: x1 + width, y:y1},{x: x1 + width, y:y1 + height},{x: x + width, y:y + height}]);
 			}
 			/**
 			 * clear the shadow on the body
 			 */
-			this.polygon($.dark(bg), b, bw, bc, false, false, [x, y, x1, y1, x1 + width, y1, x + width, y]);
-			this.polygon(bg, b, bw, bc, false, false, [x, y, x, y + height, x + width, y + height, x + width, y]);
-			this.polygon($.dark(bg), b, bw, bc, false, false, [x + width, y, x1 + width, y1, x1 + width, y1 + height, x + width, y + height]);
+			this.polygon($.dark(bg), b, bw, bc, false, false, [{x:x, y:y}, {x:x1, y:y1}, {x:x1 + width, y:y1}, {x:x + width, y:y}]);
+			this.polygon(bg, b, bw, bc, false, false, [{x:x, y:y}, {x:x, y:y + height}, {x:x + width, y:y + height}, {x:x + width,y: y}]);
+			this.polygon($.dark(bg), b, bw, bc, false, false, [{x:x + width, y:y}, {x:x1 + width, y:y1}, {x:x1 + width, y:y1 + height}, {x:x + width, y:y + height}]);
 			return this;
 		},
 		/**
@@ -519,45 +519,45 @@
 			if (rotatey < 0) {
 				if ($.isObject(styles[4]))
 					side.push($.applyIf({
-						points : [x, y - h, rotatex, rotatey - h, rotatex + w, rotatey - h, x + w, y - h]
+						points : [{x:x,y:y - h},{x:rotatex,y:rotatey - h},{x:rotatex + w, y:rotatey - h},{x: x + w, y:y - h}]
 					}, styles[4]));
 			} else {
 				if ($.isObject(styles[0]))
 					side.push($.applyIf({
-						points : [x, y, rotatex, rotatey, rotatex + w, rotatey, x + w, y]
+						points : [{x:x, y:y},{x: rotatex, y:rotatey},{x: rotatex + w, y:rotatey},{x: x + w,y:y}]
 					}, styles[0]));
 			}
 
 			if ($.isObject(styles[1]))
 				side.push($.applyIf({
-					points : [rotatex, rotatey, rotatex, rotatey - h, rotatex + w, rotatey - h, rotatex + w, rotatey]
+					points : [{x:rotatex, y:rotatey},{x: rotatex, y:rotatey - h}, {x:rotatex + w, y:rotatey - h},{x: rotatex + w,y:rotatey}]
 				}, styles[1]));
 
 			if ($.isObject(styles[2]))
 				side.push($.applyIf({
-					points : [x, y, x, y - h, rotatex, rotatey - h, rotatex, rotatey]
+					points : [{x:x, y:y}, {x:x, y:y - h},{x: rotatex, y:rotatey - h},{x: rotatex, y:rotatey}]
 				}, styles[2]));
 
 			if ($.isObject(styles[3]))
 				side.push($.applyIf({
-					points : [x + w, y, x + w, y - h, rotatex + w, rotatey - h, rotatex + w, rotatey]
+					points : [{x:x + w, y:y}, {x:x + w, y:y - h}, {x:rotatex + w, y:rotatey - h}, {x:rotatex + w, y:rotatey}]
 				}, styles[3]));
 
 			if (rotatey < 0) {
 				if ($.isObject(styles[0]))
 					side.push($.applyIf({
-						points : [x, y, rotatex, rotatey, rotatex + w, rotatey, x + w, y]
+						points : [{x:x,y: y}, {x:rotatex, y:rotatey}, {x:rotatex + w, y:rotatey}, {x:x + w, y:y}]
 					}, styles[0]));
 			} else {
 				if ($.isObject(styles[4]))
 					side.push($.applyIf({
-						points : [x, y - h, rotatex, rotatey - h, rotatex + w, rotatey - h, x + w, y - h]
+						points : [{x:x, y:y - h}, {x:rotatex, y:rotatey - h}, {x:rotatex + w, y:rotatey - h}, {x:x + w, y:y - h}]
 					}, styles[4]));
 			}
 
 			if ($.isObject(styles[5]))
 				side.push($.applyIf({
-					points : [x, y, x, y - h, x + w, y - h, x + w, y]
+					points : [{x:x, y:y}, {x:x, y:y - h}, {x:x + w, y:y - h}, {x:x + w, y:y}]
 				}, styles[5]));
 			
 			side.each(function(s) {
