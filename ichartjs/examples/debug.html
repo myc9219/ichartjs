@@ -68,19 +68,22 @@
 		new iChart.Donut2D({
 			donutwidth:0.3,
 			render : 'canvasDiv',
+			separate_angle:20,
 			center:{
 				text:'CORE\nSKILLS',
 				fontsize:20,
 				shadow:true,
 				color:'#6f6f6f',
 				shadow_offsetx:0,
-				shadow_offsety:2,
-				shadow_blur:2,
+				shadow_offsety:1,
+				shadow_blur:1,
 				shadow_color:'#b7b7b7'
 			},
 			data: data,
-			offsetx:-50,
+			align:'left',
+			offsetx:10,
 			shadow:true,
+			shadow_blur:2,
 			background_color:'#f4f4f4',
 			legend : {
 				enable : true,
@@ -93,7 +96,7 @@
 			},
 			showpercent:true,
 			decimalsnum:2,
-			width : 300,
+			width : 320,
 			height : 180,
 			radius:140
 		}).draw();

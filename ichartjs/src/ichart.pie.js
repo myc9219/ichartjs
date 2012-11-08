@@ -21,9 +21,13 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			radius : 0,
 			/**
-			 * @cfg {Number} initial angle for first sector
+			 * @cfg {Number} initial angle for first sector.(default to 0)
 			 */
-			offsetAngle : 0,
+			offset_angle : 0,
+			/**
+			 * @cfg {Number} separate angle of all sector.(default to 30)
+			 */
+			separate_angle:30,
 			/**
 			 * @cfg {String} the event's name trigger pie pop(default to 'click')
 			 */
@@ -168,7 +172,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
 		_.components.push(_.sectors);
-		_.oA = iChart.angle2Radian(_.get('offsetAngle'));
+		_.oA = iChart.angle2Radian(_.get('offset_angle'));
 		
 		//If 3D,let it bigger
 		if (_.is3D())
@@ -176,11 +180,11 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		
 		f = _.get('minDistance') * f;
 		
+		var L = _.data.length,sepa = iChart.angle2Radian(_.get('separate_angle')),PI = 2*Math.PI-sepa,sepa=sepa/L,eA = _.oA+sepa, sA = eA;
 		
-		var eA = _.oA+0.1, sA = eA, L = _.data.length,PI = Math.PI-L*0.2;
 		
 		_.data.each(function(d, i) {
-			eA += (2 * d.value / _.total) * PI;
+			eA += (d.value / _.total) * PI;
 			if (i == (L - 1)) {
 				eA = 2 * Math.PI + _.oA;
 			}
@@ -188,7 +192,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			d.endAngle = eA;
 			d.totalAngle = eA - sA;
 			d.middleAngle = (sA + eA) / 2;
-			sA = eA+0.1;
+			sA = eA+sepa;
 		}, _);
 		
 		

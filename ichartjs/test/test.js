@@ -113,7 +113,7 @@ function test(){
 			shadow:true,
 			data:data,
 			radius:140,
-			offsetAngle:45
+			offset_angle:45
 		});
 	});
 	
@@ -144,7 +144,7 @@ function test(){
 			shadow:true,
 			data:data,
 			radius:140,
-			offsetAngle:45
+			offset_angle:45
 		});
 	});
 	//4
@@ -154,7 +154,7 @@ function test(){
 			title : {text: 'Test Pie2D No Shadow'},
 			data:data,
 			radius:140,
-			offsetAngle:45
+			offset_angle:45
 		});
 	});
 	//5
