@@ -143,7 +143,9 @@ iChart.Points = iChart.extend(iChart.Component, {
 			_.tip = new iChart.Tip(_.get('tip'), _);
 		}
 		
-		var c = _.get('coordinate'),valid = function(p0, x, y) {
+		var c = _.get('coordinate'),
+		//是否进入事件范围
+		valid = function(p0, x, y) {
 			if (Math.abs(x - (p0.x)) < size &&  Math.abs(y - (p0.y)) < size) {
 				return true;
 			}

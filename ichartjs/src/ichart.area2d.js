@@ -1,35 +1,36 @@
+/**
+ * @overview this component use for abc
+ * @component#@chart#iChart.Area2D
+ * @extend#iChart.LineBasic2D
+ */
+iChart.Area2D = iChart.extend(iChart.LineBasic2D, {
 	/**
-	 * @overview this component use for abc
-	 * @component#@chart#iChart.Area2D
-	 * @extend#iChart.LineBasic2D
+	 * initialize the context for the area2d
 	 */
-	iChart.Area2D = iChart.extend(iChart.LineBasic2D,{
+	configure : function() {
 		/**
-		 * initialize the context for the area2d
+		 * invoked the super class's configuration
 		 */
-		configure:function(){
+		iChart.Area2D.superclass.configure.call(this);
+
+		this.type = 'area2d';
+
+		this.set({
 			/**
-			 * invoked the super class's  configuration
+			 * @cfg {Float} Specifies the opacity of this area.(default to 0.3)
 			 */
-			iChart.Area2D.superclass.configure.call(this);
-			
-			this.type = 'area2d';
-			
-			this.set({
-				/**
-				 * @cfg {Float} Specifies the opacity of this area.(default to 0.3)
-				 */
-				area_opacity:0.3
-			});
-			
-		},
-		doConfig:function(){
-			/**
-			 * must apply the area's config before 
-			 */
-			this.push('sub_option.area',true);
-			iChart.Area2D.superclass.doConfig.call(this);
-			
-			
-		}
-	});//@end
+			area_opacity : 0.3
+		});
+
+	},
+	doConfig : function() {
+		/**
+		 * must apply the area's config before
+		 */
+		this.push('sub_option.area', true);
+		iChart.Area2D.superclass.doConfig.call(this);
+	}
+});
+/**
+ * @end
+ */

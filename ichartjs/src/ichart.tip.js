@@ -60,6 +60,7 @@
 		follow:function(e,m){
 			var style = this.dom.style;
 			if(this.get('invokeOffsetDynamic')){
+				console.log(m);
 				if(m.hit){
 					if(iChart.isString(m.text)||iChart.isNumber(m.text)){
 						this.dom.innerHTML =  m.text;

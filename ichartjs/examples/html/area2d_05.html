@@ -11,17 +11,27 @@
 			var data = [
 			        	{
 			        		name : '上海',
-			        		value:[4,16,18,24,32,36,38,38,36,26,20,14],
+			        		value:[4,16,18,20,32,36,38,38,36,26,20,14],
 			        		color:'#dad81f'
 			        	},
 			        	{
 			        		name : '北京',
 			        		value:[2,12,14,20,28,32,34,36,33,24,14,4],
 			        		color:'#1f7e92'
+			        	},
+			        	{
+			        		name : '西安',
+			        		value:[1,12,18,20,28,34,36,34,31,27,24,6],
+			        		color:'#76a871'
+			        	},
+			        	{
+			        		name : '天津',
+			        		value:[3,13,14,20,28,32,34,36,30,24,14,4],
+			        		color:'#6f83a5'
 			        	}
 			        ];
 	        
-			var labels = ["01月","02月","03月","04月","05月","06月","07月","08月","09月","10月","11月","12月"];
+			var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 			
 			$(function(){
 				new iChart.Area2D({
@@ -30,6 +40,7 @@
 					title : 'Average Temperature Of 2012',
 					width : 800,
 					height : 400,
+					area_opacity:0.15,
 					legend : {
 						enable : true
 					},
@@ -38,11 +49,10 @@
 					},
 					listeners:{
 						parseTipText:function(d,t,i){
-							return d.name+"地区"+labels[i]+"平均温度:"+t+"℃";
+							return d.name+labels[i]+"平均温度:"+t+"℃";
 						}
 					},
 					coordinate:{
-						height:240,
 						scale:[{
 							 position:'left',	
 							 start_scale:0,
@@ -71,16 +81,18 @@
 		<body>
 			<div id='canvasDiv'></div>
 			<div class='ichartjs_info'>
-				<span class='ichartjs_author'>writen by <a title="例子的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
+			<span class='ichartjs_author'>writen by <a title="例子的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这是一个多数据面积图例子，该例子展示了北京与上海2012年中12个月的平均温度情况。此例子配置了提示、图例和个性化的值轴。
+					这是一个多数据面积图例子，该例子展示了4个城市2012年中12个月的平均温度情况。此例中对于重复的数据点的提示进行了排版处理。
+					目前最多也只能处理4个重复点的排版。同时由于有多个区域重复导致背景颜色加深，所以还设置了区域的透明度以减少区域重叠带来的颜色加深问题。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>
 					数据均为模拟。
 				</span>
 			</div>
+</div>
 </body>
 </html>

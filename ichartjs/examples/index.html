@@ -54,6 +54,7 @@
 			var quote = new RegExp("'(.*?)'","g");
 			var dQuote = new RegExp('"(.*?)"',"g");
 			var row = new RegExp("^","m");
+			var note = new RegExp("(//.*)$","m");
 			function viewCode(doc){
 				//获取最后一个script
 				var scripts = doc.getElementsByTagName("script");	
@@ -63,6 +64,7 @@
 				html = html.replace(dQuote,'"<span class=ichartjs_string>$1</span>"');	
 				html = html.replace("ichartjs_string","'ichartjs_string'");	
 				html = html.replace(keyword,"<span class='ichartjs_keyword'>$1</span>");
+				html = html.replace(note,"<span class='ichartjs_note'>$1</span>");
 				var tt = html.split(row);
 				tt.shift();//去除第一行空行
 				var number = [],j = 1;
@@ -106,8 +108,9 @@
 					<div>
 						<a target="viewport" class='ichartjs_item' href='html/area2d_01.html'>基本面积图</a>
 						<a target="viewport" class='ichartjs_item' href='html/area2d_02.html'>带有提示框与图例的面积图</a>
-						<a target="viewport" class='ichartjs_item' href='html/area2d_03.html'>多数据源的面积图</a>
-						<a target="viewport" class='ichartjs_item' href='html/area2d_04.html'>多点重合提示的面积图</a>
+						<a target="viewport" class='ichartjs_item' href='html/area2d_03.html'>第一季度订单分析</a>
+						<a target="viewport" class='ichartjs_item' href='html/area2d_04.html'>多数据源的面积图</a>
+						<a target="viewport" class='ichartjs_item' href='html/area2d_05.html'>多点重合提示的面积图</a>
 					</div>
 					<h3><a href="#">2D条形图</a></h3>
 					<div>

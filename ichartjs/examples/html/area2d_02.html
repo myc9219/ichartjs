@@ -8,21 +8,22 @@
 		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
-			var data = [
-		         	{
-		         		name : '北京',
-		         		value:[2,12,14,20,28,32,34,36,33,24,14,4],
-		         		color:'#c0abf1'
-		         	}
-	         ];	
-	         
-			var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 			
 			$(function(){
-				new iChart.Area2D({
+				var data = [
+				         	{
+				         		name : '北京',
+				         		value:[2,12,14,20,28,32,34,36,33,24,14,4],
+				         		color:'#c0abf1'
+				         	}
+			         ];	
+			         
+				var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+					
+				var chart = new iChart.Area2D({
 						render : 'canvasDiv',
 						data: data,
-						title : 'Average Temperature Of 2012',
+						title : '北京2012年平均温度情况',
 						width : 800,
 						height : 400,
 						legend : {
@@ -33,10 +34,12 @@
 						},
 						listeners:{
 							parseTipText:function(d,t,i){
+								//设置个性化提示
 								return labels[i]+"平均温度:"+t+"℃";
 							}
 						},
 						coordinate:{
+							//设置个性化的坐标轴
 							scale:[{
 								 position:'left',	
 								 start_scale:0,
@@ -49,14 +52,15 @@
 								}
 							}]
 						}
-					}).draw();
+					});
+				chart.draw();
 			});
 			</script>
 		</head>
 		<body>
 			<div id='canvasDiv'></div>
 			<div class='ichartjs_info'>
-			<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
+			<span class='ichartjs_author'>writen by <a title="例子的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
