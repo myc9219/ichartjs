@@ -2,79 +2,89 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>ichartjs 例子</title>
-		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
-		<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
+		<title>ichartjs 示例</title>
+		<meta name="Description" content="The ichartjs's gallery center,ichartjs 示例中心" />
+		<meta name="Keywords" content="ichartjs demo,Html5 demo,ichartjs例子,ichartjs示例,Html5例子,Html5示例" />
 		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
-			var data = [
-			        	{
-			        		name : '上海',
-			        		value:[4,16,18,24,32,36,38,38,36,26,20,14],
-			        		color:'#dad81f'
-			        	},
-			        	{
-			        		name : '北京',
-			        		value:[2,12,14,20,28,32,34,36,33,24,14,4],
-			        		color:'#1f7e92'
-			        	}
-			        ];
-	        
-			var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
-			
 			$(function(){
-				new iChart.Area2D({
-					render : 'canvasDiv',
-					data: data,
-					title : 'Average Temperature Of 2012',
-					width : 800,
-					height : 400,
-					legend : {
-						enable : true
-					},
-					tip:{
-						enable : true
-					},
-					listeners:{
-						parseTipText:function(d,t,i){
-							return labels[i]+"平均温度:"+t+"℃";
-						}
-					},
-					coordinate:{
-						scale:[{
-							 position:'left',	
-							 start_scale:0,
-							 end_scale:40,
-							 scale_space:5,
-							 listeners:{
-								parseText:function(t,x,y){
-									return {text:t+"℃"}
-								}
+				var data = [
+				        	{
+				        		name : 'A产品',
+				        		value:[2680,2200,1014,2590,2800,3200,2184,3456,2693,2064,2414,2044],
+				        		color:'#01acb6',
+				        		linewidth:2
+				        	}
+				       ];
+			       
+				var chart = new iChart.Area2D({
+						render : 'canvasDiv',
+						data: data,
+						title:{
+							text:'A产品第一季度订单分析',
+							color:'#eff4f8',
+							background_color:'#2c4453',
+							height:40,
+							border:{
+								enable:true,
+								width:[0,0,4,0],
+								color:'#0c222f'
 							}
-						},{
-							 position:'bottom',	
-							 start_scale:1,
-							 end_scale:12,
-							 parseText:function(t,x,y){
-								return {textY:y+10}
-							 },
-							 labels:labels
-						}]
-					}
-				}).draw();
-			
+						},
+						padding:'5 1',
+						sub_option:{
+							label:false,
+							hollow_inside:true,
+							point_size:12
+						},
+						width : 800,
+						height : 400,
+						background_color:'#0c222f',
+						gradient:true,
+						gradient_mode:'LinearGradientDownUp',
+						border:{
+							radius:5
+						},
+						coordinate:{
+							width : 600,
+							height : 260,
+							scale:[{
+								 position:'left',	
+								 label:{
+									 color:'#eff4f8',
+									 fontsize:14,
+									 fontweight:600
+								 },
+								 start_scale:0,
+								 end_scale:4000,
+								 scale_space:500
+							},{
+								 position:'bottom',	
+								 label:{
+									 color:'#506673',
+									 fontweight:600
+								 },
+								 start_scale:0,
+								 end_scale:12,
+								 scale_space:1,
+								 labels:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]
+							}]
+						}
+					});
+				
+				chart.draw();
 			});
-			</script>
+		</script>
 		</head>
 		<body>
 			<div id='canvasDiv'></div>
 			<div class='ichartjs_info'>
-				<span class='ichartjs_author'>writen by <a title="例子的的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
-				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
+				<span class='ichartjs_author'>writen by <a title="例子的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
+				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">预览代码</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这是一个多数据面积图例子，该例子展示了北京与上海2012年中12个月的平均温度情况。此例子配置了提示、图例和个性化的值轴。
+					默认情况下，两边的数据点会与坐标轴重复，这样有可能导致看不清数据点，这样
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>

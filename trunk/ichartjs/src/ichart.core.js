@@ -271,7 +271,7 @@
 		};
 
 		_.override = function(e, D) {
-			if (D) {
+			if (e&&D) {
 				var C = e.prototype;
 				_.apply(C, D);
 				if (_.isIE && D.hasOwnProperty("toString")) {

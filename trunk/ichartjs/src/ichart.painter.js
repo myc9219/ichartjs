@@ -166,10 +166,11 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		return this.dimension == iChart._3D;
 	},
 	applyGradient:function(x,y,w,h){
-		if(this.get('gradient')){
-			this.push('f_color', this.T.gradient(x||this.x||0,y||this.y||0,w||this.get(_.W),h||this.get(_.H),[this.get('dark_color'), this.get('light_color')],this.get('gradient_mode')));
-			this.push('light_color', this.T.gradient(x||this.x||0,y||this.y||0,w||this.get(_.W),h||this.get(_.H),[this.get('background_color'), this.get('light_color')],this.get('gradient_mode')));
-			this.push('f_color_',this.get('f_color'));
+		var _ = this._();
+		if(_.get('gradient')){
+			_.push('f_color', _.T.gradient(x||_.x||0,y||_.y||0,w||_.get(_.W),h||_.get(_.H),[_.get('dark_color'), _.get('light_color')],_.get('gradient_mode')));
+			_.push('light_color', _.T.gradient(x||_.x||0,y||_.y||0,w||_.get(_.W),h||_.get(_.H),[_.get('background_color'), _.get('light_color')],_.get('gradient_mode')));
+			_.push('f_color_',_.get('f_color'));
 		}
 	},
 	/**

@@ -1257,10 +1257,11 @@ $.Painter = $.extend($.Element, {
 		return this.dimension == $._3D;
 	},
 	applyGradient:function(x,y,w,h){
-		if(this.get('gradient')){
-			this.push('f_color', this.T.gradient(x||this.x||0,y||this.y||0,w||this.get(_.W),h||this.get(_.H),[this.get('dark_color'), this.get('light_color')],this.get('gradient_mode')));
-			this.push('light_color', this.T.gradient(x||this.x||0,y||this.y||0,w||this.get(_.W),h||this.get(_.H),[this.get('background_color'), this.get('light_color')],this.get('gradient_mode')));
-			this.push('f_color_',this.get('f_color'));
+		var _ = this._();
+		if(_.get('gradient')){
+			_.push('f_color', _.T.gradient(x||_.x||0,y||_.y||0,w||_.get(_.W),h||_.get(_.H),[_.get('dark_color'), _.get('light_color')],_.get('gradient_mode')));
+			_.push('light_color', _.T.gradient(x||_.x||0,y||_.y||0,w||_.get(_.W),h||_.get(_.H),[_.get('background_color'), _.get('light_color')],_.get('gradient_mode')));
+			_.push('f_color_',_.get('f_color'));
 		}
 	},
 	/**
@@ -1673,6 +1674,7 @@ $.Component = $.extend($.Painter, {
 		follow:function(e,m){
 			var style = this.dom.style;
 			if(this.get('invokeOffsetDynamic')){
+				console.log(m);
 				if(m.hit){
 					if($.isString(m.text)||$.isNumber(m.text)){
 						this.dom.innerHTML =  m.text;
@@ -6851,7 +6853,8 @@ $.LineSegment = $.extend($.Component, {
 		_.T.shadowOn(_.get('shadow'));
 		
 		if (_.get('area')) {
-			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'), p, _.get('smooth'), _.get('smoothing'),[{x:_.x,y:_.y},{x:_.x + _.get(_.W),y:_.y}]);
+			
+			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'),  _.get('smooth')?p:[{x:_.x,y:_.y}].concat(p.concat([{x:_.x + _.get(_.W),y:_.y}])), _.get('smooth'), _.get('smoothing'),[{x:_.x,y:_.y},{x:_.x + _.get(_.W),y:_.y}]);
 		}
 		
 		_.T[_.ignored_?"manyLine":"lineArray"](p,h, b, _.get('smooth'), _.get('smoothing'));
@@ -7255,39 +7258,41 @@ $.LineBasic2D = $.extend($.Line, {
  * @end
  */
 
+/**
+ * @overview this component use for abc
+ * @component#@chart#$.Area2D
+ * @extend#$.LineBasic2D
+ */
+$.Area2D = $.extend($.LineBasic2D, {
 	/**
-	 * @overview this component use for abc
-	 * @component#@chart#$.Area2D
-	 * @extend#$.LineBasic2D
+	 * initialize the context for the area2d
 	 */
-	$.Area2D = $.extend($.LineBasic2D,{
+	configure : function() {
 		/**
-		 * initialize the context for the area2d
+		 * invoked the super class's configuration
 		 */
-		configure:function(){
+		$.Area2D.superclass.configure.call(this);
+
+		this.type = 'area2d';
+
+		this.set({
 			/**
-			 * invoked the super class's  configuration
+			 * @cfg {Float} Specifies the opacity of this area.(default to 0.3)
 			 */
-			$.Area2D.superclass.configure.call(this);
-			
-			this.type = 'area2d';
-			
-			this.set({
-				/**
-				 * @cfg {Float} Specifies the opacity of this area.(default to 0.3)
-				 */
-				area_opacity:0.3
-			});
-			
-		},
-		doConfig:function(){
-			/**
-			 * must apply the area's config before 
-			 */
-			this.push('sub_option.area',true);
-			$.Area2D.superclass.doConfig.call(this);
-			
-			
-		}
-	});
+			area_opacity : 0.3
+		});
+
+	},
+	doConfig : function() {
+		/**
+		 * must apply the area's config before
+		 */
+		this.push('sub_option.area', true);
+		$.Area2D.superclass.doConfig.call(this);
+	}
+});
+/**
+ * @end
+ */
+
 })(iChart);
