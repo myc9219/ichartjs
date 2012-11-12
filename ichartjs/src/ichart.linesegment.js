@@ -118,7 +118,8 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		_.T.shadowOn(_.get('shadow'));
 		
 		if (_.get('area')) {
-			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'), p, _.get('smooth'), _.get('smoothing'),[{x:_.x,y:_.y},{x:_.x + _.get(_.W),y:_.y}]);
+			
+			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'),  _.get('smooth')?p:[{x:_.x,y:_.y}].concat(p.concat([{x:_.x + _.get(_.W),y:_.y}])), _.get('smooth'), _.get('smoothing'),[{x:_.x,y:_.y},{x:_.x + _.get(_.W),y:_.y}]);
 		}
 		
 		_.T[_.ignored_?"manyLine":"lineArray"](p,h, b, _.get('smooth'), _.get('smoothing'));

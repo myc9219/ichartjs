@@ -59,44 +59,46 @@
 
 	$(function(){
 		var data = [
-		        	{name : 'HTML5&CSS3',value : 30,color:'#fedd74'},
-		        	{name : 'JavaScript',value : 25,color:'#82d8ef'},
-		        	{name : 'Java',value : 15,color:'#f76864'},
-		        	{name : 'XML',value : 20,color:'#80bd91'},
-		        	{name : 'PhotoShop',value : 10,color:'#fd9fc1'}
-	        	];
-    	
-		new iChart.Pie2D({
-			render : 'canvasDiv',
-			separate_angle:60,
-			center:{
-				text:'CORE\nSKILLS',
-				shadow:true,
-				shadow_offsetx:0,
-				shadow_offsety:2,
-				shadow_blur:2,
-				shadow_color:'#b7b7b7',
-				color:'#6f6f6f'
-			},
-			data: data,
-			offsetx:-20,
-			shadow:true,
-			background_color:'#f4f4f4',
-			legend : {
-				enable : true,
-				shadow:true,
-				background_color:null,
-				border:false
-			},
-			sub_option:{
-				label:false
-			},
-			showpercent:true,
-			decimalsnum:2,
-			width : 520,
-			height : 300,
-			radius:140
-		}).draw();
+{
+name : '北京',
+value:[2,12,14,20,28,32,34,36,33,24,14,4],
+color:'#c0abf1'
+}
+];
+var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+$(function(){
+new iChart.Area2D({
+render : 'canvasDiv',
+data: data,
+title : 'Average Temperature Of 2012',
+width : 800,
+height : 400,
+legend : {
+enable : true
+},
+tip:{
+enable : true
+},
+listeners:{
+parseTipText:function(d,t,i){
+return labels[i]+"平均温度:"+t+"℃";
+}
+},
+coordinate:{
+scale:[{
+position:'left',
+start_scale:0,
+end_scale:40,
+scale_space:5,
+listeners:{
+parseText:function(t,x,y){
+return {text:t+"℃"}
+}
+}
+}]
+}
+}).draw();
+}); 
 	});
 		
 	</script>
