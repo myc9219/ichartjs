@@ -169,7 +169,6 @@
 		 */
 		arc : function(x, y, r, dw, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
 			var ccw = !!ccw, a2r = !!a2r&&!dw;
-			
 			this.save().gCo(last).strokeStyle(b,bw,bc).fillStyle(c).beginPath();
 			
 			if(dw){
@@ -189,7 +188,7 @@
 			if(!b){
 				this.shadowOn(sw).fill(c);
 			}else{
-				this.shadowOn(sw).stroke(b).shadowOff().fill(c);
+				this.fill(c).shadowOn(sw).stroke(b).shadowOff();
 			}
 			
 			return this.restore();
