@@ -10,6 +10,7 @@
 		<script type="text/javascript">
 			$(function(){
 				var pv=[],ip=[],t;
+				//创建随机数据
 				for(var i=0;i<61;i++){
 					t = Math.floor(Math.random()*(30+((i%12)*5)))+10;
 					pv.push(t);
@@ -17,60 +18,69 @@
 					t = t-Math.floor((Math.random()*t)/2);
 					ip.push(t);
 				}
-				//创建数据
+				
 				var data = [
 				         	{
 				         		name : 'PV',
 				         		value:pv,
-				         		color:'#0d8ecf',
+				         		color:'#aad0db',
 				         		linewidth:2
 				         	},
 				         	{
 				         		name : 'IP',
 				         		value:ip,
-				         		color:'#ef7707',
+				         		color:'#f68f70',
 				         		linewidth:2
 				         	}
 				         ];
+		         
 				//创建x轴标签文本   
-				var labels = ["2012-08-01","2012-08-02","2012-08-03","2012-08-04","2012-08-05","2012-08-06"];
+				var date = new Date()
+				date.setDate(date.getDate()-6);
+				var labels = [];
+				for(var i=0;i<6;i++){
+					date.setDate(date.getDate()+1);
+					labels.push(date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate());
+				}
 				
-				var line = new iChart.Area2D({
+				var chart = new iChart.Area2D({
 					render : 'canvasDiv',
 					data: data,
 					align:'center',
-					title : 'A网站近5天流量趋势,按照每2小时分组统计',
+					title : 'A网站近5天流量趋势,按每2小时分组统计',
 					subtitle : '平均每个人访问2-3个页面(访问量单位：万)',
 					footnote : '数据来源：模拟数据',
 					width : 800,
 					height : 400,
+					background_color:'#f4f4f4',
 					tip:{
 						enable:true,
 						shadow:true
 					},
 					legend : {
-						enable : true
+						enable : true,
+						row:1,//设置在一行上显示，与column配合使用
+						column : 'max',
+						valign:'top',
+						sign:'bar',
+						background_color:null,//设置透明背景
+						offsetx:-80,//设置x轴偏移，满足位置需要
+						border : true
 					},
 					crosshair:{
 						enable:true,
-						line_color:'#62bce9'
+						line_color:'#62bce9'//十字线的颜色
 					},
 					sub_option : {
 						label:false,
-						point_hollow : false
+						point_size:10
 					},
 					coordinate:{
 						width:640,
-						height:260,
+						height:240,
 						axis:{
-							color:'#9f9f9f',
-							width:[0,0,2,2]
-						},
-						grids:{
-							vertical:{
-								way:'share_alike',
-						 		value:5
-							}
+							color:'#dcdcdc',
+							width:1
 						},
 						scale:[{
 							 position:'left',	
@@ -87,7 +97,7 @@
 				});
 			
 			//开始画图
-			line.draw();
+			chart.draw();
 		});
 		</script>
 		</head>

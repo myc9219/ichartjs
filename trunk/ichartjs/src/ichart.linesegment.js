@@ -115,7 +115,6 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 	},
 	drawSegment : function() {
 		var _ = this._(),p = _.get('points'),b=_.get('f_color'),h=_.get('brushsize');
-		
 		if (_.get('area')) {
 			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'),  _.get('smooth')?p:[{x:_.x,y:_.y}].concat(p.concat([{x:_.x + _.get(_.W),y:_.y}])), _.get('smooth'), _.get('smoothing'),[{x:_.x,y:_.y},{x:_.x + _.get(_.W),y:_.y}]);
 		}

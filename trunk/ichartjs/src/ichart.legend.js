@@ -44,6 +44,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			 * @cfg {String} Specifies the shape of legend' sign (default to 'square') Available value are：
 			 * @Option 'round'
 			 * @Option 'square'
+			 * @Option 'bar'
 			 * @Option 'round-bar'
 			 * @Option 'square-bar'
 			 */
@@ -130,15 +131,16 @@ iChart.Legend = iChart.extend(iChart.Component, {
 	drawCell : function(x, y, text, color,n) {
 		var s = this.get('sign_size'),f = this.getPlugin('sign');
 		if(!f||!f.call(this,this.T,n,x + s / 2,y + s / 2,s,color)){
+			if(n.indexOf("bar")!=-1){
+				this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
+			}
 			if (n == 'round') {
 				this.T.round(x + s / 2, y + s / 2, s / 2, color);
 			} else if (n == 'round-bar') {
-				this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
 				this.T.round(x + s / 2, y + s / 2, s / 4, color);
 			} else if (n == 'square-bar') {
-				this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
 				this.T.box(x + s / 4, y + s / 4, s / 2, s / 2, 0, color);
-			} else {
+			}else if (n != 'bar'){
 				this.T.box(x, y, s, s, 0, color);
 			}
 		}

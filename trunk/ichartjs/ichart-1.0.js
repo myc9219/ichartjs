@@ -1674,7 +1674,6 @@ $.Component = $.extend($.Painter, {
 		follow:function(e,m){
 			var style = this.dom.style;
 			if(this.get('invokeOffsetDynamic')){
-				console.log(m);
 				if(m.hit){
 					if($.isString(m.text)||$.isNumber(m.text)){
 						this.dom.innerHTML =  m.text;
@@ -1938,6 +1937,7 @@ $.Legend = $.extend($.Component, {
 			 * @cfg {String} Specifies the shape of legend' sign (default to 'square') Available value are：
 			 * @Option 'round'
 			 * @Option 'square'
+			 * @Option 'bar'
 			 * @Option 'round-bar'
 			 * @Option 'square-bar'
 			 */
@@ -2024,15 +2024,16 @@ $.Legend = $.extend($.Component, {
 	drawCell : function(x, y, text, color,n) {
 		var s = this.get('sign_size'),f = this.getPlugin('sign');
 		if(!f||!f.call(this,this.T,n,x + s / 2,y + s / 2,s,color)){
+			if(n.indexOf("bar")!=-1){
+				this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
+			}
 			if (n == 'round') {
 				this.T.round(x + s / 2, y + s / 2, s / 2, color);
 			} else if (n == 'round-bar') {
-				this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
 				this.T.round(x + s / 2, y + s / 2, s / 4, color);
 			} else if (n == 'square-bar') {
-				this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
 				this.T.box(x + s / 4, y + s / 4, s / 2, s / 2, 0, color);
-			} else {
+			}else if (n != 'bar'){
 				this.T.box(x, y, s, s, 0, color);
 			}
 		}
@@ -2611,7 +2612,6 @@ $.Label = $.extend($.Component, {
 		 */
 		arc : function(x, y, r, dw, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
 			var ccw = !!ccw, a2r = !!a2r&&!dw;
-			
 			this.save().gCo(last).strokeStyle(b,bw,bc).fillStyle(c).beginPath();
 			
 			if(dw){
@@ -2631,7 +2631,7 @@ $.Label = $.extend($.Component, {
 			if(!b){
 				this.shadowOn(sw).fill(c);
 			}else{
-				this.shadowOn(sw).stroke(b).shadowOff().fill(c);
+				this.fill(c).shadowOn(sw).stroke(b).shadowOff();
 			}
 			
 			return this.restore();
@@ -6855,7 +6855,6 @@ $.LineSegment = $.extend($.Component, {
 	},
 	drawSegment : function() {
 		var _ = this._(),p = _.get('points'),b=_.get('f_color'),h=_.get('brushsize');
-		
 		if (_.get('area')) {
 			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'),  _.get('smooth')?p:[{x:_.x,y:_.y}].concat(p.concat([{x:_.x + _.get(_.W),y:_.y}])), _.get('smooth'), _.get('smoothing'),[{x:_.x,y:_.y},{x:_.x + _.get(_.W),y:_.y}]);
 		}
