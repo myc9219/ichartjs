@@ -271,7 +271,7 @@
 		};
 
 		_.override = function(e, D) {
-			if (D) {
+			if (e&&D) {
 				var C = e.prototype;
 				_.apply(C, D);
 				if (_.isIE && D.hasOwnProperty("toString")) {
@@ -2385,6 +2385,10 @@ $.Label = $.extend($.Component, {
 				 */
 				height:0,
 				/**
+				 * @cfg {Number} Here,specify as 0 by default
+				 */
+				padding:0,
+				/**
 				 * @cfg {String} Specifies the writing-mode of text.(default to 'lr') .
 				 * Available value are:
 				 * @Option 'lr'
@@ -2418,12 +2422,13 @@ $.Label = $.extend($.Component, {
 		},
 		doConfig:function(){
 			$.Text.superclass.doConfig.call(this);
-			var _ = this._(),x = _.x,y=_.y,w=_.get(_.W),h=_.get(_.H),a=_.get('textAlign');
-			x+=(a==_.C?w/2:(a==_.R?w:0));
+			var _ = this._(),x = _.x,y=_.y+_.get('padding_top'),w=_.get(_.W),h=_.get(_.H),a=_.get('textAlign');
+			x+=(a==_.C?w/2:(a==_.R?w-_.get('padding_right'):_.get('padding_left')));
 			if(h){
 				y+=h/2;
 				_.push('textBaseline','middle');
 			}
+			
 			_.push('textx',x);
 			_.push('texty',y);
 			_.push('box_feature',w&&h);
@@ -6850,12 +6855,12 @@ $.LineSegment = $.extend($.Component, {
 	},
 	drawSegment : function() {
 		var _ = this._(),p = _.get('points'),b=_.get('f_color'),h=_.get('brushsize');
-		_.T.shadowOn(_.get('shadow'));
 		
 		if (_.get('area')) {
-			
 			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'),  _.get('smooth')?p:[{x:_.x,y:_.y}].concat(p.concat([{x:_.x + _.get(_.W),y:_.y}])), _.get('smooth'), _.get('smoothing'),[{x:_.x,y:_.y},{x:_.x + _.get(_.W),y:_.y}]);
 		}
+		
+		_.T.shadowOn(_.get('shadow'));
 		
 		_.T[_.ignored_?"manyLine":"lineArray"](p,h, b, _.get('smooth'), _.get('smoothing'));
 		

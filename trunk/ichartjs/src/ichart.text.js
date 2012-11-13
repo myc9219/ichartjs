@@ -65,6 +65,10 @@
 				 */
 				height:0,
 				/**
+				 * @cfg {Number} Here,specify as 0 by default
+				 */
+				padding:0,
+				/**
 				 * @cfg {String} Specifies the writing-mode of text.(default to 'lr') .
 				 * Available value are:
 				 * @Option 'lr'
@@ -98,12 +102,13 @@
 		},
 		doConfig:function(){
 			iChart.Text.superclass.doConfig.call(this);
-			var _ = this._(),x = _.x,y=_.y,w=_.get(_.W),h=_.get(_.H),a=_.get('textAlign');
-			x+=(a==_.C?w/2:(a==_.R?w:0));
+			var _ = this._(),x = _.x,y=_.y+_.get('padding_top'),w=_.get(_.W),h=_.get(_.H),a=_.get('textAlign');
+			x+=(a==_.C?w/2:(a==_.R?w-_.get('padding_right'):_.get('padding_left')));
 			if(h){
 				y+=h/2;
 				_.push('textBaseline','middle');
 			}
+			
 			_.push('textx',x);
 			_.push('texty',y);
 			_.push('box_feature',w&&h);
