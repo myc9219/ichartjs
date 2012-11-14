@@ -2,52 +2,73 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>ichartjs 例子</title>
-		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
-		<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
+		<title>ichartjs 示例</title>
+		<meta name="Description" content="The ichartjs's gallery center,ichartjs 示例中心" />
+		<meta name="Keywords" content="ichartjs demo,Html5 demo,ichartjs例子,ichartjs示例,Html5例子,Html5示例" />
 		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
-				$(function(){
-					var data = [
-					        	{name : 'IE',value : 35.75,color:'#a5c2d5'},
-					        	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
-					        	{name : 'Firefox',value : 24.88,color:'#76a871'},
-					        	{name : 'Safari',value : 6.77,color:'#9f7961'},
-					        	{name : 'Opera',value : 2.02,color:'#a56f8f'},
-					        	{name : 'Other',value : 0.73,color:'#6f83a5'}
-				        	];
-		        	
-					new iChart.Column2D({
-						render : 'canvasDiv',
-						data: data,
-						title : 'Top 5 Browsers from 1 to 29 Feb 2012',
-						showpercent:true,
-						decimalsnum:2,
-						width : 800,
-						height : 400,
-						legend : {
-							enable : true
-						},
-						tip:{
-							enable : true
-						},
-						coordinate:{
-							width:580,
-							scale:[{
-								 position:'left',	
-								 start_scale:0,
-								 end_scale:40,
-								 scale_space:8,
-								 listeners:{
-									parseText:function(t,x,y){
-										return {text:t+"%"}
-									}
-								}
-							}]
+		$(function(){
+			var data = [
+			        	{name : 'Renren',value : 33.1,color:'#b5bcc5'},
+			        	{name : 'Facebook',value : 19.14,color:'#b5bcc5'},
+			        	{name : 'StumbleUpon',value : 13.97,color:'#b5bcc5'},
+			        	{name : 'reddit',value : 7.44,color:'#b5bcc5'},
+			        	{name : 'Hi5',value : 5.22,color:'#b5bcc5'},
+			        	{name : 'LinkedIn',value : 4.85,color:'#b5bcc5'},
+			        	{name : 'Twitter',value : 4.59,color:'#b5bcc5'},
+			        	{name : 'Other',value : 11.68,color:'#b5bcc5'}
+		        	];
+	    	
+			new iChart.Column2D({
+				render : 'canvasDiv',
+				data: data,
+				title : {
+					text:'StatCounter Global Stats',
+					color:'#b5bcc5'
+				},
+				subtitle : {
+					text:'Top 7 Social Media Sites in Chain from Oct 2011 to Oct 2012',
+					color:'#afb6c0'
+				},
+				footnote : 'Data from StatCounter',
+				width : 800,
+				height : 400,
+				coordinate:{
+					offsetx:20,
+					width:620,
+					height:260,
+					grid_color:'red',
+					axis:{
+						color:'#4e5464',
+						width:[0,0,8,8]
+					},
+					scale:[{
+						 position:'left',	
+						 start_scale:0,
+						 end_scale:40,
+						 scale_space:5,
+						 label:{color:'#ffffff'},
+						 listeners:{
+							parseText:function(t,x,y){
+								return {text:t+"%"}
+							}
+						 }
+					}]
+				},
+				label:{color:'#dcdcdc'},
+				background_color : '#3c4251',
+				sub_option:{
+					listeners:{
+						parseText:function(r,t){
+							return t+"%";
 						}
-					}).draw();
-			});
+					}
+				},
+				tip:{enable:true},
+				legend:{enable:false}
+			}).draw();
+		});
 				
 			</script>
 		</head>

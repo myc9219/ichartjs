@@ -30,7 +30,8 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 			y0 = _.coo.get('originy') +  H,
 			y = y0 - S.basic*H - (_.is3D()?(_.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_')):0),
 			x = _.get('hispace')+_.coo.get('originx');
-			
+			y0 = y0 + _.get('text_space') + _.coo.get('axis.width')[2];
+		
 		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
 			_.doParse(_,d, i, {
@@ -40,7 +41,7 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 				height : Math.abs(h)
 			});
 			_.rectangles.push(new iChart[_.sub](_.get('sub_option'), _));
-			_.doLabel(_,i, d.name, x + gw * i + h2, y0 + _.get('text_space'));
+			_.doLabel(_,i, d.name, x + gw * i + h2, y0);
 		}, _);
 	}
 });

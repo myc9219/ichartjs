@@ -96,7 +96,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 		var p = _.get('line_points'), ss = _.get('sign_size'), x = _.labelx + _.get('padding_left'), y = _.labely + _.get('padding_top');
 
 		_.T.lineArray(p, _.get('line_thickness'), _.get('border.color'));
-		_.T.box(_.labelx, _.labely, _.get(_.W), _.get(_.H), _.get('border'), _.get('f_color'), false, _.get('shadow'), _.get('shadow_color'), _.get('shadow_blur'), _.get('shadow_offsetx'), _.get('shadow_offsety'));
+		_.T.box(_.labelx, _.labely, _.get(_.W), _.get(_.H), _.get('border'), _.get('f_color'), false, _.get('shadow'));
 
 		_.T.textStyle(_.L, _.O, _.get('fontStyle'));
 

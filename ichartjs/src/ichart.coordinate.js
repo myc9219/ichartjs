@@ -79,7 +79,8 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			 * @cfg {String} Specifies the align against axis.(default to 'center') When the property of which set to 'h',Available value are:
 			 * @Option 'left'
 			 * @Option 'center'
-			 * @Option 'right' When the property of which set to 'v', Available value are:
+			 * @Option 'right' 
+			 * When the property of which set to 'v', Available value are:
 			 * @Option 'top'
 			 * @Option 'center'
 			 * @Option 'bottom'
@@ -204,11 +205,10 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		 */
 		_.push('distanceOne', _.get('valid_distance') / _.number);
 
-		var text, x, y, x1 = 0, y1 = 0, x0 = 0, y0 = 0, tx = 0, ty = 0, w = _.get('scale_width'), w2 = w / 2, sa = _.get('scaleAlign'), ta = _.get('textAlign'), ts = _.get('text_space'), tbl = '';
+		var text, x, y, x1 = 0, y1 = 0, x0 = 0, y0 = 0, tx = 0, ty = 0, w = _.get('scale_width'), w2 = w / 2, sa = _.get('scaleAlign'), ta = _.get('position'), ts = _.get('text_space'), tbl = '',aw = _.get('coo').get('axis.width');
 		
 		_.push('which', _.get('which').toLowerCase());
 		_.isH = _.get('which') == 'h';
-		
 		if (_.isH) {
 			if (sa == _.O) {
 				y0 = -w;
@@ -220,10 +220,10 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			}
 
 			if (ta == _.O) {
-				ty = -ts;
+				ty = -ts-aw[0];
 				tbl = _.B;
 			} else {
-				ty = ts;
+				ty = ts+aw[2];
 				tbl = _.O;
 			}
 			ta = _.C;
@@ -239,10 +239,10 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			tbl = 'middle';
 			if (ta == _.R) {
 				ta = _.L;
-				tx = ts;
+				tx = ts+aw[1];
 			} else {
 				ta = _.R;
-				tx = -ts;
+				tx = -ts-aw[3];
 			}
 		}
 		/**
@@ -562,10 +562,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 	doDraw : function(_) {
 		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), 0, _.get('f_color'));
 		if (_.get('alternate_color')) {
-			var x, y, f = false, axis = [0, 0, 0, 0], c = iChart.dark(_.get('background_color'), _.get('alternate_color_factor'));
-			if (_.get('axis.enable')) {
-				axis = _.get('axis.width');
-			}
+			var x, y, f = false, axis = _.get('axis.width'), c = iChart.dark(_.get('background_color'), _.get('alternate_color_factor'));
 		}
 		var v = _.get('alternate_direction') == 'v';
 		_.gridlines.each(function(g,i) {
@@ -590,7 +587,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			}
 		});
 		
-		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), _.get('axis'), false, _.get('shadow'));
+		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), _.get('axis'), false, _.get('shadow'),true);
 
 		_.scale.each(function(s) {
 			s.draw()
@@ -615,11 +612,13 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		if (_.get('gradient') && iChart.isString(_.get('f_color'))) {
 			_.push('f_color', _.T.avgLinearGradient(_.x, _.y, _.x, _.y + _.get(_.H), [_.get('dark_color'), _.get('light_color')]));
 		}
-
+		
 		if (_.get('axis.enable')) {
 			var aw = _.get('axis.width');
 			if (!iChart.isArray(aw))
 				_.push('axis.width', [aw, aw, aw, aw]);
+		}else{
+			_.push('axis.width', [0, 0, 0, 0]);
 		}
 
 		if (_.get('crosshair.enable')) {
@@ -646,6 +645,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			jp = jp || _.L;
 			jp = jp.toLowerCase();
 			kd[_.X] = _.x;
+			kd['coo'] = _;
 			kd[_.Y] = _.y;
 			kd['valid_x'] = _.x + sw;
 			kd['valid_y'] = _.y + sh;

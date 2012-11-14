@@ -31,7 +31,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 			text_space : 6,
 			/**
 			 * @cfg {String} Specifies the align of scale(default to 'bottom') Available value are:
-			 * @Option 'top,'bottom'
+			 * @Option 'bottom'
 			 */
 			scaleAlign : 'bottom',
 			/**
