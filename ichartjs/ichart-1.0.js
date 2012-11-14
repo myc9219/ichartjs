@@ -3627,7 +3627,6 @@ $.Label = $.extend($.Component, {
 					_.fireEvent(_, it, [_, $.Event.fix(e)]);
 				}, false);
 			});
-			
 			_.on(events[0], function(_, e) {
 				_.components.eachAll(function(C) {
 					var M = C.isMouseOver(e);
@@ -4389,6 +4388,10 @@ $.Coordinate2D = $.extend($.Component, {
 			 * @inner {String} Specifies the label on y-axis
 			 */
 			ylabel : '',
+			/**
+			 * @cfg {String} Here,specify as false to make background transparent.(default to null)
+			 */
+			background_color : 0,
 			/**
 			 * @cfg {Boolean} If True the grid background-color will be alternate.(default to true)
 			 */

@@ -55,104 +55,67 @@
 		}
 	</style>
 	<script type="text/javascript">
-
 	$(function(){
-		var pv=[],ip=[],t;
-		//创建随机数据
-		for(var i=0;i<61;i++){
-			t = Math.floor(Math.random()*(30+((i%12)*5)))+10;
-			pv.push(t);
-			t = Math.floor(t*0.5);
-			t = t-Math.floor((Math.random()*t)/2);
-			ip.push(t);
-		}
-		
 		var data = [
-		         	{
-		         		name : 'PV',
-		         		value:pv,
-		         		color:'#aad0db',
-		         		linewidth:2
-		         	},
-		         	{
-		         		name : 'IP',
-		         		value:ip,
-		         		color:'#f68f70',
-		         		linewidth:2
-		         	}
-		         ];
-         
-		//创建x轴标签文本   
-		var date = new Date()
-		date.setDate(date.getDate()-6);
-		var labels = [];
-		for(var i=0;i<6;i++){
-			date.setDate(date.getDate()+1);
-			labels.push(date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate());
-		}
-		
-		var line = new iChart.Area2D({
+		        	{name : 'Renren',value : 33.1,color:'#b5bcc5'},
+		        	{name : 'Fackbook',value : 19.14,color:'#b5bcc5'},
+		        	{name : 'StumbleUpon',value : 13.97,color:'#b5bcc5'},
+		        	{name : 'reddit',value : 7.44,color:'#b5bcc5'},
+		        	{name : 'Hi5',value : 5.22,color:'#b5bcc5'},
+		        	{name : 'LinkedIn',value : 4.85,color:'#b5bcc5'},
+		        	{name : 'Twitter',value : 4.59,color:'#b5bcc5'},
+		        	{name : 'Other',value : 11.68,color:'#b5bcc5'}
+	        	];
+    	
+		new iChart.Bar2D({
 			render : 'canvasDiv',
 			data: data,
-			align:'center',
-			title : 'A网站近5天流量趋势,按每2小时分组统计',
-			subtitle : '平均每个人访问2-3个页面(访问量单位：万)',
-			footnote : '数据来源：模拟数据',
+			title : {
+				text:'StatCounter Global Stats',
+				color:'#b5bcc5'
+			},
+			subtitle : {
+				text:'Top 7 Social Media Sites in Chain from Oct 2011 to Oct 2012',
+				color:'#afb6c0'
+			},
+			footnote : 'Data from StatCounter',
 			width : 800,
 			height : 400,
-			background_color:'#f4f4f4',
-			tip:{
-				enable:true,
-				shadow:true
-			},
-			legend : {
-				enable : true,
-				row:1,//设置在一行上显示，与column配合使用
-				column : 'max',
-				valign:'top',
-				sign:'bar',
-				background_color:null,//设置透明背景
-				offsetx:-80,//设置x轴偏移，满足位置需要
-				border : true
-			},
-			crosshair:{
-				enable:true,
-				line_color:'#62bce9'//十字线的颜色
-			},
-			sub_option : {
-				label:false,
-				point_size:10
-			},
+			offsetx:20,
 			coordinate:{
-				width:640,
-				height:240,
+				width:620,
+				height:260,
+				grid_color:'#4e5464',
 				axis:{
-					color:'#dcdcdc',
-					width:[0,0,2,2]
-				},
-				grids:{
-					vertical:{
-						way:'share_alike',
-				 		value:5
-					}
+					color:'#4e5464',
+					width:[0,0,8,1]
 				},
 				scale:[{
-					 position:'left',	
-					 start_scale:0,
-					 end_scale:100,
-					 scale_space:10,
-					 scale_size:2,
-					 scale_color:'#9f9f9f'
-				},{
 					 position:'bottom',	
-					 labels:labels
+					 start_scale:0,
+					 end_scale:40,
+					 scale_space:5,
+					 label:{color:'#ffffff'},
+					 listeners:{
+						parseText:function(t,x,y){
+							return {text:t+"%"}
+						}
+					 }
 				}]
-			}
-		});
-	
-	//开始画图
-	line.draw();
-});
+			},
+			label:{color:'#dcdcdc'},
+			background_color : '#3c4251',
+			sub_option:{
+				listeners:{
+					parseText:function(r,t){
+						return t+"%";
+					}
+				}
+			},
+			legend:{enable:false}
+		}).draw();
+	});
+		
 	</script>
 	</head>
 	<body>

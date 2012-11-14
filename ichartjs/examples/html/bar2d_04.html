@@ -10,50 +10,55 @@
 		<script type="text/javascript">
 			$(function(){
 				var data = [
-				        	{name : '天语',value : 2.83,color:'#4572a7'},
-				        	{name : '苹果',value : 3.44,color:'#4572a7'},
-				        	{name : 'HTC',value : 3.66,color:'#4572a7'},
-				        	{name : '金立',value : 4.58,color:'#4572a7'},
-				        	{name : '中兴',value : 6.56,color:'#4572a7'},
-				        	{name : '酷派',value : 6.85,color:'#4572a7'},
-				        	{name : '诺基亚',value : 9.42,color:'#4572a7'},
-				        	{name : '华为',value : 9.54,color:'#4572a7'},
-				        	{name : '联想',value : 11.00,color:'#4572a7'},
-				        	{name : '三星',value : 15.73,color:'#4572a7'}
+				        	{name : 'Renren',value : 33.1,color:'#b5bcc5'},
+				        	{name : 'Fackbook',value : 19.14,color:'#b5bcc5'},
+				        	{name : 'StumbleUpon',value : 13.97,color:'#b5bcc5'},
+				        	{name : 'reddit',value : 7.44,color:'#b5bcc5'},
+				        	{name : 'Hi5',value : 5.22,color:'#b5bcc5'},
+				        	{name : 'LinkedIn',value : 4.85,color:'#b5bcc5'},
+				        	{name : 'Twitter',value : 4.59,color:'#b5bcc5'},
+				        	{name : 'Other',value : 11.68,color:'#b5bcc5'}
 			        	];
 	        	
 				new iChart.Bar2D({
 					render : 'canvasDiv',
 					data: data,
-					title : '2012年6月中国手机市场份额TOP10',
-					subtitle : '联想手机超越诺基亚，以11%市场份额，成为中国市场第二',
-					footnote : '数据来源：赛诺',
+					title : {
+						text:'StatCounter Global Stats',
+						color:'#b5bcc5'
+					},
+					subtitle : {
+						text:'Top 7 Social Media Sites in Chain from Oct 2011 to Oct 2012',
+						color:'#afb6c0'
+					},
+					footnote : 'Data from StatCounter',
 					width : 800,
 					height : 400,
+					offsetx:20,
 					coordinate:{
-						width:640,
+						width:620,
 						height:260,
+						grid_color:'#4e5464',
 						axis:{
-							width:[0,0,1,1]
+							color:'#4e5464',
+							width:[0,0,8,1]
 						},
 						scale:[{
 							 position:'bottom',	
 							 start_scale:0,
-							 end_scale:18,
-							 scale_space:2
+							 end_scale:40,
+							 scale_space:5,
+							 label:{color:'#ffffff'},
+							 listeners:{
+								parseText:function(t,x,y){
+									return {text:t+"%"}
+								}
+							 }
 						}]
 					},
-					shadow:true,
-					shadow_color:'#8d8d8d',
-					shadow_blur:2,
-					shadow_offsety:1,
-					shadow_offsetx:1,
-					background_color : '#fcfcfc',
+					label:{color:'#dcdcdc'},
+					background_color : '#3c4251',
 					sub_option:{
-						border:{
-							enable : true,
-							color:'#fcfcfc' 
-						},
 						listeners:{
 							parseText:function(r,t){
 								return t+"%";
@@ -72,7 +77,7 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这是一个实际中的例子，例子背景为联想中国区总裁陈旭东微博透露，赛诺最新数据统计，2012年6月，联想手机超越诺基亚，以11%市场份额，成为中国市场第二；
+					
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>

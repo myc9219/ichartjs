@@ -1184,7 +1184,6 @@
 					_.fireEvent(_, it, [_, $.Event.fix(e)]);
 				}, false);
 			});
-			
 			_.on(events[0], function(_, e) {
 				_.components.eachAll(function(C) {
 					var M = C.isMouseOver(e);
