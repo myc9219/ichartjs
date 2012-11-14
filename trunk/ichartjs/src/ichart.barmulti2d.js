@@ -41,7 +41,8 @@ iChart.BarMulti2D = iChart.extend(iChart.Bar, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2,w,I = _.x+S.basic*W;
+		var S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2,w,
+		I = _.coo.get(_.X) + S.basic*W,x = _.coo.get(_.Y)-_.get('text_space')-_.coo.get('axis.width')[3],y = _.coo.get(_.Y)+ _.get(s);
 		
 		_.push('sub_option.height', bh);
 		
@@ -50,13 +51,13 @@ iChart.BarMulti2D = iChart.extend(iChart.Bar, {
 				w = (d.value - S.start) * W / S.distance;
 				_.doParse(_, d, j, {
 					id : i + '-' + j,
-					originy : _.y + _.get(s) + j * bh + i * gw,
+					originy : y + j * bh + i * gw,
 					width : Math.abs(w),
 					originx: I+(w>0?1:-Math.abs(w))
 				});
 				_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), _));
 			}, _);
-			_.doLabel(i, column.name, _.x - _.get('text_space'), _.y + _.get(s) * 0.5 + (i + 0.5) * gw);
+			_.doLabel(i, column.name, x, y - _.get(s) * 0.5 + (i + 0.5) * gw);
 		}, _);
 	}
 

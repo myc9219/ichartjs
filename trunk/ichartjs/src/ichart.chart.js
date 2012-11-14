@@ -684,17 +684,18 @@
 			this.c.globalCompositeOperation = l ? "destination-over" : "source-over";
 			return this;
 		},
-		box : function(x, y, w, h, b, bg, shadow, last) {
+		box : function(x, y, w, h, b, bg, shadow, m,last) {
 			b = b || {
 				enable : 0
 			}
 			if (b.enable) {
 				var j = b.width, c = b.color, r = b.radius, f = $.isNumber(j);
 				j = $.parsePadding(j);
-				w -= (j[1] + j[3]) / 2;
-				h -= (j[0] + j[2]) / 2;
-				x += (j[3] / 2);
-				y += (j[0] / 2);
+				m = m?1:-1;
+				w += m*(j[1] + j[3]) / 2;
+				h += m*(j[0] + j[2]) / 2;
+				x -= m*(j[3] / 2);
+				y -= m*(j[0] / 2);
 				x = floor(x);
 				y = floor(y);
 				j = f ? j[0] : j;
@@ -707,7 +708,6 @@
 			 * draw a round corners border
 			 */
 			if (r) {
-				
 				this.beginPath().moveTo(x+r[0], fd(j, y)).lineTo(x+w - r[1], fd(j, y)).arc2(x+w, fd(j, y), x+w, y+r[1], r[1]).lineTo(fd(j, x+w), y+h - r[2]).arc2(fd(j, x+w), y+h, x+w - r[2], y+h, r[2]).lineTo(x+r[3], fd(j, y+h)).arc2(x, fd(j, y+h), x, y+h - r[3], r[3]).lineTo(fd(j,x), y+r[0]).arc2(fd(j,x),
 						y, x+r[0], y, r[0]).closePath().fill(bg).stroke(j);
 			} else {
@@ -962,7 +962,7 @@
 			this.T.clearRect(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'));
 		},
 		resetCanvas : function() {
-			this.T.box(this.get('l_originx'), this.get('t_originy'), this.get('client_width')+1, this.get('client_height')+1,0,this.get('f_color'),0,true);
+			this.T.box(this.get('l_originx'), this.get('t_originy'), this.get('client_width')+1, this.get('client_height')+1,0,this.get('f_color'),0,0,true);
 		},
 		animation : function(_) {
 			/**
@@ -1311,7 +1311,7 @@
 			 */
 			_.oneways.push(new iChart.Custom({
 				drawFn:function(){
-					_.T.box(0, 0, _.width, _.height, _.get('border'), _.get('f_color'),0,true);
+					_.T.box(0, 0, _.width, _.height, _.get('border'), _.get('f_color'),0,0,true);
 				}
 			}));
 			

@@ -31,8 +31,8 @@ iChart.ColumnMulti2D = iChart.extend(iChart.Column, {
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
 		var _ = this._(), bw = _.get('colwidth'), H = _.get('coordinate.height'), S = _.coo.getScale(_.get('scaleAlign')), q = bw * (_.get('group_fator') || 0), gw = _.data.length * bw + _.get('hispace') + (_.is3D() ? (_.data.length - 1) * q : 0), h, x = _.coo.get('originx')
-				+ _.get('hispace'), y = _.coo.get('originy') - S.basic * H + H;
-
+				+ _.get('hispace'), y = _.coo.get('originy') - S.basic * H + H,y0=_.coo.get('originy') + H + _.get('text_space')+ _.coo.get('axis.width')[2];
+		
 		_.columns.each(function(column, i) {
 			column.item.each(function(d, j) {
 				h = (d.value - S.start) * H / S.distance;
@@ -45,7 +45,7 @@ iChart.ColumnMulti2D = iChart.extend(iChart.Column, {
 				_.rectangles.push(new iChart[_.sub](_.get('sub_option'), this));
 			}, _);
 
-			_.doLabel(_, i, column.name, _.x + _.get('hispace') * 0.5 + (i + 0.5) * gw, _.y + H + _.get('text_space'));
+			_.doLabel(_, i, column.name, x - _.get('hispace') * 0.5 + (i + 0.5) * gw, y0);
 		}, _);
 
 	}
