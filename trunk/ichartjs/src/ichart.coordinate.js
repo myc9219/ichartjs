@@ -480,6 +480,10 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			 */
 			ylabel : '',
 			/**
+			 * @cfg {String} Here,specify as false to make background transparent.(default to null)
+			 */
+			background_color : 0,
+			/**
 			 * @cfg {Boolean} If True the grid background-color will be alternate.(default to true)
 			 */
 			alternate_color : true,
