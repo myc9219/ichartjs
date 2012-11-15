@@ -57,28 +57,27 @@
 				 delay:200
 			});
 		},
+		position:function(t,l){
+			this.style.top =  (t<0?0:t)+"px";
+			this.style.left = (l<0?0:l)+"px";
+		},
 		follow:function(e,m){
-			var style = this.dom.style;
-			if(this.get('invokeOffsetDynamic')){
+			var _ = this._();
+			_.style.width = "";
+			if(_.get('invokeOffsetDynamic')){
 				if(m.hit){
 					if(iChart.isString(m.text)||iChart.isNumber(m.text)){
-						this.dom.innerHTML =  m.text;
+						_.dom.innerHTML =  m.text;
 					}
-					var o = this.get('invokeOffset')(this.width(),this.height(),m);
-					style.top =  o.top+"px";
-					style.left = o.left+"px";
+					var o = _.get('invokeOffset')(_.width(),_.height(),m);
+					_.position(o.top,o.left);
 				}
 			}else{
-				if(this.get('showType')=='follow'){
-					style.top = (e.y-this.height()*1.1-2)+"px";
-					style.left = (e.x+2)+"px";
-				}else if(iChart.isFunction(this.get('invokeOffset'))){
-					var o = this.get('invokeOffset')(this.width(),this.height(),m);
-					style.top =  o.top+"px";
-					style.left = o.left+"px";
+				if(_.get('showType')!='follow'&&iChart.isFunction(_.get('invokeOffset'))){
+					var o = _.get('invokeOffset')(_.width(),_.height(),m);
+					_.position(o.top,o.left);
 				}else{
-					style.top = (e.y-this.height()*1.1-2)+"px";
-					style.left = (e.x+2)+"px";
+					_.position((e.y-_.height()*1.1-2),e.x+2);
 				}
 			}
 		},
@@ -109,7 +108,7 @@
 			
 			_.css('position','absolute');
 			_.dom.innerHTML = _.get('text');
-			
+			_.style = _.dom.style;
 			_.hidden();
 			
 			if(_.get('animation')){

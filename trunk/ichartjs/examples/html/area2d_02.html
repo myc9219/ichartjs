@@ -3,68 +3,97 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>ichartjs 例子</title>
-		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
-		<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
+		<meta name="Description" content="The ichartjs's gallery center,ichartjs 示例中心" />
+		<meta name="Keywords" content="ichartjs demo,Html5 demo,ichartjs例子,ichartjs示例,Html5例子,Html5示例" />
 		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
+		$(function(){
+			var data = [
+			        	{
+			        		name : '上海',
+			        		value:[4,16,18,24,32,36,38,38,36,26,20,14],
+			        		color:'#dad81f'
+			        	},
+			        	{
+			        		name : '北京',
+			        		value:[2,12,14,20,28,32,34,36,33,24,14,4],
+			        		color:'#1f7e92'
+			        	}
+			        ];
+		    
+			var labels = ["01月","02月","03月","04月","05月","06月","07月","08月","09月","10月","11月","12月"];
 			
-			$(function(){
-				var data = [
-				         	{
-				         		name : '北京',
-				         		value:[2,12,14,20,28,32,34,36,33,24,14,4],
-				         		color:'#c0abf1'
-				         	}
-			         ];	
-			         
-				var labels = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
-					
-				var chart = new iChart.Area2D({
-						render : 'canvasDiv',
-						data: data,
-						title : '北京2012年平均温度情况',
-						width : 800,
-						height : 400,
-						legend : {
-							enable : true
-						},
-						tip:{
-							enable : true
-						},
-						listeners:{
-							parseTipText:function(d,t,i){
-								//设置个性化提示
-								return labels[i]+"平均温度:"+t+"℃";
+			var chart = new iChart.Area2D({
+				render : 'canvasDiv',
+				data: data,
+				title : '北京-上海两城市2012年平均温度情况',
+				width : 800,
+				height : 400,
+				legend : {
+					enable : true
+				},
+				tip:{
+					enable : true
+				},
+				crosshair:{
+					enable:true,
+					line_color:'#62bce9'
+				},
+				listeners:{
+					parseTipText:function(d,t,i){
+						return d.name+"地区<br/>"+labels[i]+"平均温度:"+t+"℃";
+					}
+				},
+				sub_option:{
+					label:false,
+					point_size:10 
+				},
+				coordinate:{
+					width:600,
+					valid_width:560,
+					height:240,
+					scale2grid:false,
+					grids:{
+						horizontal:{
+								way:'share_alike',
+								value:8
 							}
-						},
-						coordinate:{
-							//设置个性化的坐标轴
-							scale:[{
-								 position:'left',	
-								 start_scale:0,
-								 end_scale:40,
-								 scale_space:5,
-								 listeners:{
-									parseText:function(t,x,y){
-										return {text:t+"℃"}
-									}
-								}
-							}]
+						}, 
+					scale:[{
+						 position:'left',	
+						 start_scale:0,
+						 end_scale:40,
+						 scale_space:5,
+						 listeners:{
+							parseText:function(t,x,y){
+								return {text:t+"℃"}
+							}
 						}
-					});
-				chart.draw();
+					},{
+						 position:'bottom',	
+						 start_scale:1,
+						 end_scale:12,
+						 parseText:function(t,x,y){
+							return {textY:y+10}
+						 },
+						 labels:labels
+					}]
+				}
 			});
+			chart.draw();
+		
+		});
 			</script>
 		</head>
 		<body>
 			<div id='canvasDiv'></div>
 			<div class='ichartjs_info'>
-			<span class='ichartjs_author'>writen by <a title="例子的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
+				<span class='ichartjs_author'>writen by <a title="例子的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					在基本的面积图例子基础上，配置了提示、图例和个性化的值轴。而且改变了一下背景颜色。但是没有被指底端的值轴。
+					这是一个多数据面积图例子，该例子展示了北京与上海2012年中12个月的平均温度情况。此例子配置了提示、图例和个性化的值轴。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>

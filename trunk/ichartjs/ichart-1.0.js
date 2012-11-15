@@ -1671,28 +1671,27 @@ $.Component = $.extend($.Painter, {
 				 delay:200
 			});
 		},
+		position:function(t,l){
+			this.style.top =  (t<0?0:t)+"px";
+			this.style.left = (l<0?0:l)+"px";
+		},
 		follow:function(e,m){
-			var style = this.dom.style;
-			if(this.get('invokeOffsetDynamic')){
+			var _ = this._();
+			_.style.width = "";
+			if(_.get('invokeOffsetDynamic')){
 				if(m.hit){
 					if($.isString(m.text)||$.isNumber(m.text)){
-						this.dom.innerHTML =  m.text;
+						_.dom.innerHTML =  m.text;
 					}
-					var o = this.get('invokeOffset')(this.width(),this.height(),m);
-					style.top =  o.top+"px";
-					style.left = o.left+"px";
+					var o = _.get('invokeOffset')(_.width(),_.height(),m);
+					_.position(o.top,o.left);
 				}
 			}else{
-				if(this.get('showType')=='follow'){
-					style.top = (e.y-this.height()*1.1-2)+"px";
-					style.left = (e.x+2)+"px";
-				}else if($.isFunction(this.get('invokeOffset'))){
-					var o = this.get('invokeOffset')(this.width(),this.height(),m);
-					style.top =  o.top+"px";
-					style.left = o.left+"px";
+				if(_.get('showType')!='follow'&&$.isFunction(_.get('invokeOffset'))){
+					var o = _.get('invokeOffset')(_.width(),_.height(),m);
+					_.position(o.top,o.left);
 				}else{
-					style.top = (e.y-this.height()*1.1-2)+"px";
-					style.left = (e.x+2)+"px";
+					_.position((e.y-_.height()*1.1-2),e.x+2);
 				}
 			}
 		},
@@ -1723,7 +1722,7 @@ $.Component = $.extend($.Painter, {
 			
 			_.css('position','absolute');
 			_.dom.innerHTML = _.get('text');
-			
+			_.style = _.dom.style;
 			_.hidden();
 			
 			if(_.get('animation')){
@@ -4368,8 +4367,13 @@ $.Coordinate2D = $.extend($.Component, {
 			/**
 			 * @cfg {Object} this is grid config for custom.there has two valid property horizontal and vertical.the property's sub property is: way:the manner calculate grid-line (default to 'share_alike') Available property are:
 			 * @Option share_alike
-			 * @Option given_value value: when property way apply to 'share_alike' this property mean to the number of grid's line. when apply to 'given_value' this property mean to the distance each grid line(unit:pixel) . code will like: { horizontal: { way:'share_alike',
-			 *         value:10 } vertical: { way:'given_value', value:40 } }
+			 * @Option given_value value: when property way apply to 'share_alike' this property mean to the number of grid's line.
+			 *  when apply to 'given_value' this property mean to the distance each grid line(unit:pixel) . 
+			 *  code will like: 
+			 *  { 
+			 *   horizontal: {way:'share_alike',value:10},
+			 *   vertical: { way:'given_value', value:40 }
+			 *   }
 			 */
 			grids : undefined,
 			/**
@@ -6980,6 +6984,7 @@ $.LineSegment = $.extend($.Component, {
 				hit : true
 			};
 		};
+		
 		/**
 		 * override the default method
 		 */
@@ -7055,6 +7060,9 @@ $.Line = $.extend($.Chart, {
 			 */
 			crosshair : {
 				enable : false
+			},
+			tipMocker:function(){
+				
 			},
 			/**
 			 * @cfg {String} the align of scale.(default to 'left') Available value are:
@@ -7138,15 +7146,10 @@ $.Line = $.extend($.Chart, {
 		
 		_.push('line_start', (_.get('coordinate.width') - _.get('coordinate.valid_width')) / 2);
 		_.push('line_end', _.get('coordinate.width') - _.get('line_start'));
-
+		
 		if (_.get('proportional_spacing'))
 			_.push('label_spacing', _.get('coordinate.valid_width') / (_.get('maxItemSize') - 1));
-
-		_.push('sub_option.originx', _.get(_.X) + _.get('line_start'));
-		/**
-		 * y also has line_start and line end
-		 */
-		_.push('sub_option.originy', _.get(_.Y) + _.get('coordinate.height'));
+		
 		_.push('sub_option.width', _.get('coordinate.valid_width'));
 		_.push('sub_option.height', _.get('coordinate.valid_height'));
 		_.pushIf('sub_option.keep_with_coordinate',s);
@@ -7180,6 +7183,9 @@ $.Line = $.extend($.Chart, {
 		 * use option create a coordinate
 		 */
 		_.coo = $.Coordinate.coordinate_.call(_);
+		
+		_.push('sub_option.originx', _.coo.get(_.X) + _.get('line_start'));
+		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.get('height'));
 		
 		_.components.push(_.coo);
 		
@@ -7229,7 +7235,8 @@ $.LineBasic2D = $.extend($.Line, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), H = _.get('coordinate.valid_height'), sp = _.get('label_spacing'), points, x, y, ox = _.coo.get('originx'), oy = _.coo.get('originy') + _.coo.get('height')- S.basic*H, p;
+		var S = _.coo.getScale(_.get('scaleAlign')), H = _.get('coordinate.valid_height'), sp = _.get('label_spacing'), points, x, y, 
+		ox = _.get('sub_option.originx'), oy = _.get('sub_option.originy')- S.basic*H, p;
 		
 		_.push('sub_option.tip.showType', 'follow');
 		_.push('sub_option.coordinate', _.coo);

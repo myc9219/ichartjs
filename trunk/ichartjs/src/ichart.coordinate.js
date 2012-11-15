@@ -459,8 +459,13 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			/**
 			 * @cfg {Object} this is grid config for custom.there has two valid property horizontal and vertical.the property's sub property is: way:the manner calculate grid-line (default to 'share_alike') Available property are:
 			 * @Option share_alike
-			 * @Option given_value value: when property way apply to 'share_alike' this property mean to the number of grid's line. when apply to 'given_value' this property mean to the distance each grid line(unit:pixel) . code will like: { horizontal: { way:'share_alike',
-			 *         value:10 } vertical: { way:'given_value', value:40 } }
+			 * @Option given_value value: when property way apply to 'share_alike' this property mean to the number of grid's line.
+			 *  when apply to 'given_value' this property mean to the distance each grid line(unit:pixel) . 
+			 *  code will like: 
+			 *  { 
+			 *   horizontal: {way:'share_alike',value:10},
+			 *   vertical: { way:'given_value', value:40 }
+			 *   }
 			 */
 			grids : undefined,
 			/**
