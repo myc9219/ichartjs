@@ -34,6 +34,9 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			crosshair : {
 				enable : false
 			},
+			tipMocker:function(){
+				
+			},
 			/**
 			 * @cfg {String} the align of scale.(default to 'left') Available value are:
 			 * @Option 'left'
@@ -116,15 +119,10 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		
 		_.push('line_start', (_.get('coordinate.width') - _.get('coordinate.valid_width')) / 2);
 		_.push('line_end', _.get('coordinate.width') - _.get('line_start'));
-
+		
 		if (_.get('proportional_spacing'))
 			_.push('label_spacing', _.get('coordinate.valid_width') / (_.get('maxItemSize') - 1));
-
-		_.push('sub_option.originx', _.get(_.X) + _.get('line_start'));
-		/**
-		 * y also has line_start and line end
-		 */
-		_.push('sub_option.originy', _.get(_.Y) + _.get('coordinate.height'));
+		
 		_.push('sub_option.width', _.get('coordinate.valid_width'));
 		_.push('sub_option.height', _.get('coordinate.valid_height'));
 		_.pushIf('sub_option.keep_with_coordinate',s);
@@ -158,6 +156,9 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		 * use option create a coordinate
 		 */
 		_.coo = iChart.Coordinate.coordinate_.call(_);
+		
+		_.push('sub_option.originx', _.coo.get(_.X) + _.get('line_start'));
+		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.get('height'));
 		
 		_.components.push(_.coo);
 		

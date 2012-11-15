@@ -235,6 +235,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 				hit : true
 			};
 		};
+		
 		/**
 		 * override the default method
 		 */
