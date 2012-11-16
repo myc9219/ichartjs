@@ -1133,6 +1133,7 @@
 			shell.innerHTML = H.join("");
 			
 			_.shell = $(_.shellid);
+			
 			/**
 			 * the base canvas wrap for draw
 			 */
@@ -1399,8 +1400,7 @@
 			/**
 			 * clone config to sub_option
 			 */
-			iChart.applyIf(_.get('sub_option'), iChart.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip'], _.options));
-				
+			iChart.applyIf(_.get('sub_option'), iChart.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip'], _.options,true));
 			/**
 			 * legend
 			 */
@@ -1411,7 +1411,7 @@
 				}, _.get('legend')), _);
 				_.components.push(_.legend);
 			}
-			_.push('sub_option.tip.wrap', _.shell);
+			_.push('sub_option.tip.wrap',_.push('tip.wrap', _.shell));
 			
 		}
 	});

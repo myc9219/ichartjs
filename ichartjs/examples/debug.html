@@ -59,14 +59,13 @@
 	$(function(){
 		var data = [
 		        	{
-		        		name : '上海',
-		        		value:[4,16,18,24,32,36,38,38,36,26,20,14],
-		        		color:'#dad81f'
-		        	},
-		        	{
 		        		name : '北京',
 		        		value:[2,12,14,20,28,32,34,36,33,24,14,4],
 		        		color:'#1f7e92'
+		        	},{
+		        		name : '上海',
+		        		value:[14,16,6,24,32,36,18,38,36,26,20,34],
+		        		color:'#dad81f'
 		        	}
 		        ];
 	    
@@ -78,11 +77,16 @@
 			title : '北京-上海两城市2012年平均温度情况',
 			width : 800,
 			height : 400,
+			tipMocker:function(tips){
+				return "<div style='font-weight:600'>数据分析</div>"+tips.join("<br/>");
+			},
+			tipMockerOffset:0.2,
 			legend : {
 				enable : true
 			},
 			tip:{
-				enable : true
+				enable : true,
+				shadow:true
 			},
 			crosshair:{
 				enable:true,
@@ -95,7 +99,12 @@
 			},
 			sub_option:{
 				label:false,
-				point_size:10 
+				point_size:10,
+				listeners:{
+					//click:function(c,e,m){
+						//alert(labels[m.i]);
+					//}
+				} 
 			},
 			coordinate:{
 				width:600,
@@ -107,7 +116,7 @@
 							way:'share_alike',
 							value:8
 						}
-					}, 
+				}, 
 				scale:[{
 					 position:'left',	
 					 start_scale:0,
@@ -124,6 +133,11 @@
 					 end_scale:12,
 					 parseText:function(t,x,y){
 						return {textY:y+10}
+					 },
+					 label:{
+						 rotate:-90,
+						 textAlign:'right',
+						 textBaseline:'middle'
 					 },
 					 labels:labels
 				}]

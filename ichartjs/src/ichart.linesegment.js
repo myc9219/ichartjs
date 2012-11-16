@@ -164,8 +164,8 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		var x = this.x, y = this.y, o = this.get('tip_offset'), s = this.get('point_size') + o, _ = this;
 		return function(w, h, m) {
 			var l = m.left, t = m.top;
-			l = ((_.tipPosition < 3 && (m.left - w - x - o > 0)) || (_.tipPosition > 2 && (m.left - w - x - o < 0))) ? l - (w + o) : l + o;
-			t = _.tipPosition % 2 == 0 ? m.top + s : m.top - h - s;
+			l = ((_.tipPosition < 3 && (l - w - x - o > 0)) || (_.tipPosition > 2 && (l - w - x - o < 0))) ? l - (w + o) : l + o;
+			t = _.tipPosition % 2 == 0 ? t + s : t - h - s;
 			return {
 				left : l,
 				top : t

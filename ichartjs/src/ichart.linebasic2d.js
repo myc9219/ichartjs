@@ -41,6 +41,7 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 		_.push('sub_option.tipInvokeHeap', _.tipInvokeHeap);
 		_.push('sub_option.point_space', sp);
 		
+		
 		_.data.each(function(d, i) {
 			points = [];
 			d.value.each(function(v, j) {
@@ -60,6 +61,7 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 				points.push(p);
 			}, _);
 			
+			_.push('sub_option.name', d.name);
 			_.push('sub_option.points', points);
 			_.push('sub_option.brushsize', d.linewidth || 1);
 			_.push('sub_option.background_color', d.background_color || d.color);
