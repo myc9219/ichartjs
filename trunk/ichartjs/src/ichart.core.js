@@ -254,7 +254,7 @@
 			if (_.isArray(a)&& _.isObject(e)) {
 				for ( var i = 0; i < a.length; i++) {
 					if (deep && _.isObject(e[a[i]]))
-						d[a[i]] = _.clone(e[a[i]]);
+						d[a[i]] = _.clone(e[a[i]],deep);
 					else
 						d[a[i]] = e[a[i]];
 				}

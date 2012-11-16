@@ -128,7 +128,7 @@
 			_.T.on('mouseover',function(c,e,m){
 				_.show(e,m);	
 			}).on('mouseout',function(c,e,m){
-				_.hidden(e);	
+				//_.hidden(e);	
 			});
 			
 			if(_.get('showType')=='follow'){

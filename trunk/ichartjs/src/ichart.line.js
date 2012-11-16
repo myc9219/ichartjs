@@ -34,9 +34,16 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			crosshair : {
 				enable : false
 			},
-			tipMocker:function(){
-				
-			},
+			/**
+			 * @cfg {Function} when there has more than one linesegment,you can use tipMocker make them as a tip.(default to null)
+			 * @paramter Array tips the array of linesegment's tip
+			 * @return String
+			 */
+			tipMocker:null,
+			/**
+			 * @cfg {Number(0.0~1.0)} If null,the position there will follow the points.If given a number,there has a fixed postion,0 is top,and 1 to bottom.(default to null)
+			 */
+			tipMockerOffset:null,
 			/**
 			 * @cfg {String} the align of scale.(default to 'left') Available value are:
 			 * @Option 'left'
@@ -107,7 +114,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 	doConfig : function() {
 		iChart.Line.superclass.doConfig.call(this);
 		var _ = this._(), s = _.data.length == 1;
-
+		
 		/**
 		 * apply the coordinate feature
 		 */
@@ -134,7 +141,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 				/**
 				 * TODO how fire muti line?now fire by first line
 				 */
-				var r = _.lines[0].isEventValid(e,_.lines[0]);
+				var r = _.lines[0].isEventValid(e);
 				return r.valid ? r : false;
 			});
 		}
@@ -151,16 +158,63 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			label:_.get('label')
 		}]);
 		
-		
 		/**
 		 * use option create a coordinate
 		 */
 		_.coo = iChart.Coordinate.coordinate_.call(_);
 		
 		_.push('sub_option.originx', _.coo.get(_.X) + _.get('line_start'));
-		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.get('height'));
+		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.get(_.H));
 		
 		_.components.push(_.coo);
+		
+		if (_.get('tip.enable')){
+			if(iChart.isFunction(_.get('tipMocker'))){
+				_.push('sub_option.tip.enable', false);
+				_.push('tip.invokeOffsetDynamic', true);
+				var U,x=_.coo.get(_.X),y=_.coo.get(_.Y),H=_.coo.get(_.H),f = _.get('tipMockerOffset'),r0,r,r1;
+				f = iChart.isNumber(f)?(f<0?0:(f>1?1:f)):null;
+				_.push('tip.invokeOffset',function(w,h,m){
+					if(f!=null){
+						m.top = y+(H-h)*f;
+					}else{
+						m.top = m.maxTop-(m.maxTop-m.minTop)/3-h;
+						if(h>H||y>m.top){
+							m.top = y;
+						}
+					}
+					return {
+						left:(m.left - w - x  > 5)?m.left-w-5:m.left+5,
+						top:m.top
+					}
+				});
+				
+				var mocker = new iChart.Custom({
+					eventValid:function(e){
+						r = _.lines[0].isEventValid(e);
+						r.hit = r0 != r.i;
+						if(r.valid){
+							r0 = r.i;
+							U = [];
+							_.lines.each(function(l,i){
+								r1 = l.isEventValid(e);
+								if(i==0){
+									r.minTop = r.maxTop = r1.top;
+								}else{
+									r.minTop = Math.min(r.minTop,r1.top);
+									r.maxTop = Math.max(r.maxTop,r1.top);
+								}
+								U.push(l.isEventValid(e).text);
+							});
+							r.text = _.get('tipMocker').call(_,U)||'tipMocker not return';
+						}
+						return r.valid ? r : false;
+					}
+				});
+				new iChart.Tip(_.get('tip'),mocker);
+				_.components.push(mocker);
+			}
+		}
 		
 		/**
 		 * quick config to all linesegment
