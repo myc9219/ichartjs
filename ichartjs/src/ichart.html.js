@@ -1,7 +1,7 @@
 
 /**
  * 
- * @overview this component use for 画图的基类、其他组件要继承此组件
+ * @overview the base class use for Html componment
  * @component#iChart.Html
  * @extend#iChart.Element
  */
@@ -56,7 +56,6 @@ iChart.Html = iChart.extend(iChart.Element,{
 		this.initialize();
 	},
 	initialize:function(){
-		//the element's wrap
 		this.wrap = this.get('wrap');
 		this.dom = document.createElement("div");
 		

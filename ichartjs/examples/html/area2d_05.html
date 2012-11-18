@@ -52,10 +52,28 @@
 					footnote : '数据来源：模拟数据',
 					width : 800,
 					height : 400,
-					background_color:'#f4f4f4',
+					background_color:'#FEFEFE',
 					tip:{
 						enable:true,
-						shadow:true
+						shadow:true,
+						move_duration:400,
+						border:{
+							 enable:true,
+							 radius : 5,
+							 width:2,
+							 color:'#3f8695'
+						}
+					},
+					tipMocker:function(tips,i){
+						return "<div style='font-weight:600'>"+
+								labels[Math.floor(i/12)]+" "+//日期
+								(((i%12)*2<10?"0":"")+(i%12)*2)+":00"+//时间
+								"</div>"+tips.join("<br/>");
+					},
+					listeners:{
+						parseTipText:function(d,t,i){
+							return d.name+"访问量:"+t+"万";
+						}
 					},
 					legend : {
 						enable : true,
@@ -108,7 +126,8 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">预览代码</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					应用实例欣赏，此示例展示了A网站近5天访问流量情况，此示例中设置了多种样式，以达到所需的视觉效果。
+					应用实例欣赏，此示例展示了A网站近5天访问流量情况，此示例中设置了多种样式，以达到所需的视觉效果。<br/>
+					这里设置了tipMocker，这样可以将多组数据展示在同一Tip中。达到所需要的效果。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>

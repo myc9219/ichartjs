@@ -254,7 +254,7 @@
 			if (_.isArray(a)&& _.isObject(e)) {
 				for ( var i = 0; i < a.length; i++) {
 					if (deep && _.isObject(e[a[i]]))
-						d[a[i]] = _.clone(e[a[i]]);
+						d[a[i]] = _.clone(e[a[i]],deep);
 					else
 						d[a[i]] = e[a[i]];
 				}
@@ -1360,7 +1360,7 @@ $.Painter = $.extend($.Element, {
 
 /**
  * 
- * @overview this component use for 画图的基类、其他组件要继承此组件
+ * @overview the base class use for Html componment
  * @component#$.Html
  * @extend#$.Element
  */
@@ -1415,7 +1415,6 @@ $.Html = $.extend($.Element,{
 		this.initialize();
 	},
 	initialize:function(){
-		//the element's wrap
 		this.wrap = this.get('wrap');
 		this.dom = document.createElement("div");
 		
@@ -1654,6 +1653,14 @@ $.Component = $.extend($.Painter, {
 					 */
 				 move_duration:100,
 				 /**
+				  * ease
+				  * linear
+				  * ease-in
+				  * ease-out
+				  * ease-in-out
+				  */
+				 timing_function:'ease-out',
+				 /**
 					 * @cfg {Boolean} if calculate the position every time (default to false)
 					 */
 				 invokeOffsetDynamic:false,
@@ -1726,8 +1733,8 @@ $.Component = $.extend($.Painter, {
 			_.hidden();
 			
 			if(_.get('animation')){
-				var m =  _.get('move_duration')/1000+'s ease-in 0s';
-				_.transition('opacity '+_.get('fade_duration')/1000+'s ease-in 0s');
+				var m =  _.get('move_duration')/1000+'s '+_.get('timing_function')+' 0s';
+				_.transition('opacity '+_.get('fade_duration')/1000+'s '+_.get('timing_function')+' 0s');
 				_.transition('top '+m);
 				_.transition('left '+m);
 				_.onTransitionEnd(function(e){
@@ -1742,7 +1749,7 @@ $.Component = $.extend($.Painter, {
 			_.T.on('mouseover',function(c,e,m){
 				_.show(e,m);	
 			}).on('mouseout',function(c,e,m){
-				_.hidden(e);	
+				_.hidden(e);
 			});
 			
 			if(_.get('showType')=='follow'){
@@ -3144,27 +3151,26 @@ $.Label = $.extend($.Component, {
 				r = (!f || r == 0 || r == '0') ? 0 : $.parsePadding(r);
 			}
 			
-			this.save().shadowOn(shadow).gCo(last).fillStyle(bg).strokeStyle(f,j, c);
-
+			this.save().gCo(last).fillStyle(bg).strokeStyle(f,j, c);
 			/**
 			 * draw a round corners border
 			 */
 			if (r) {
 				this.beginPath().moveTo(x+r[0], fd(j, y)).lineTo(x+w - r[1], fd(j, y)).arc2(x+w, fd(j, y), x+w, y+r[1], r[1]).lineTo(fd(j, x+w), y+h - r[2]).arc2(fd(j, x+w), y+h, x+w - r[2], y+h, r[2]).lineTo(x+r[3], fd(j, y+h)).arc2(x, fd(j, y+h), x, y+h - r[3], r[3]).lineTo(fd(j,x), y+r[0]).arc2(fd(j,x),
-						y, x+r[0], y, r[0]).closePath().fill(bg).stroke(j);
+						y, x+r[0], y, r[0]).closePath().shadowOn(shadow).stroke(j).shadowOff().fill(bg);
 			} else {
 				if (!b.enable || f) {
-					if (b.enable)
-						this.c.strokeRect(x, y, fd(j, w), fd(j, h));
+					if (b.enable){
+						this.shadowOn(shadow).c.strokeRect(x, y, fd(j, w), fd(j, h));
+						this.shadowOff();
+					}
 					if (bg)
 						this.fillRect(x, y, w, h);
 				} else {
+					c = $.isArray(c) ? c : [c, c, c, c];
+					this.shadowOn(shadow).line(x+w, y+j[0] / 2, x+w, y+h - j[0] / 2, j[1], c[1], 0).line(x, y+j[0] / 2, x, y+h - j[0] / 2, j[3], c[3], 0).line(floor(x-j[3] / 2),y, x+w + j[1] / 2, y, j[0], c[0], 0).line(floor(x-j[3] / 2), y+h, x+w + j[1] / 2, y+h, j[2], c[2], 0).shadowOff();
 					if (bg) {
 						this.beginPath().moveTo(floor(x+j[3] / 2), floor(y+j[0] / 2)).lineTo(ceil(x+w - j[1] / 2), y+j[0] / 2).lineTo(ceil(x+w - j[1] / 2), ceil(y+h - j[2] / 2)).lineTo(floor(x+j[3] / 2), ceil(y+h - j[2] / 2)).lineTo(floor(x+j[3] / 2), floor(y+j[0] / 2)).closePath().fill(bg);
-					}
-					if (j) {
-						c = $.isArray(c) ? c : [c, c, c, c];
-						this.line(x+w, y+j[0] / 2, x+w, y+h - j[0] / 2, j[1], c[1], 0).line(x, y+j[0] / 2, x, y+h - j[0] / 2, j[3], c[3], 0).line(floor(x-j[3] / 2),y, x+w + j[1] / 2, y, j[0], c[0], 0).line(floor(x-j[3] / 2), y+h, x+w + j[1] / 2, y+h, j[2], c[2], 0);
 					}
 				}
 
@@ -3575,6 +3581,7 @@ $.Label = $.extend($.Component, {
 			shell.innerHTML = H.join("");
 			
 			_.shell = $(_.shellid);
+			
 			/**
 			 * the base canvas wrap for draw
 			 */
@@ -3841,8 +3848,7 @@ $.Label = $.extend($.Component, {
 			/**
 			 * clone config to sub_option
 			 */
-			$.applyIf(_.get('sub_option'), $.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip'], _.options));
-				
+			$.applyIf(_.get('sub_option'), $.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip'], _.options,true));
 			/**
 			 * legend
 			 */
@@ -3853,7 +3859,7 @@ $.Label = $.extend($.Component, {
 				}, _.get('legend')), _);
 				_.components.push(_.legend);
 			}
-			_.push('sub_option.tip.wrap', _.shell);
+			_.push('sub_option.tip.wrap',_.push('tip.wrap', _.shell));
 			
 		}
 	});
@@ -3906,6 +3912,9 @@ $.Label = $.extend($.Component, {
 			$.Custom.superclass.doConfig.call(this);
 		}
 });
+/**
+ * @end
+ */
 /**
  * @overview this is inner use for axis
  * @component#$.Scale
@@ -5741,7 +5750,7 @@ $.Pie = $.extend($.Chart, {
 	 * @return void
 	 */
 	toggle : function(i) {
-		this.data[i || 0].reference.toggle();
+		this.sectors[i || 0].toggle();
 	},
 	/**
 	 * @method bound sector by a specific index.
@@ -5749,7 +5758,7 @@ $.Pie = $.extend($.Chart, {
 	 * @return void
 	 */
 	bound : function(i) {
-		this.data[i || 0].reference.bound();
+		this.sectors[i || 0].bound();
 	},
 	/**
 	 * @method rebound sector by a specific index.
@@ -5757,7 +5766,7 @@ $.Pie = $.extend($.Chart, {
 	 * @return void
 	 */
 	rebound : function(i) {
-		this.data[i || 0].reference.rebound();
+		this.sectors[i || 0].rebound();
 	},
 	/**
 	 * @method Returns an array containing all sectors of this pie
@@ -6424,8 +6433,8 @@ $.ColumnMulti2D = $.extend($.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(), bw = _.get('colwidth'), H = _.get('coordinate.height'), S = _.coo.getScale(_.get('scaleAlign')), q = bw * (_.get('group_fator') || 0), gw = _.data.length * bw + _.get('hispace') + (_.is3D() ? (_.data.length - 1) * q : 0), h, x = _.coo.get('originx')
-				+ _.get('hispace'), y = _.coo.get('originy') - S.basic * H + H,y0=_.coo.get('originy') + H + _.get('text_space')+ _.coo.get('axis.width')[2];
+		var _ = this._(), bw = _.get('colwidth'), H = _.coo.get(_.H), S = _.coo.getScale(_.get('scaleAlign')), q = bw * (_.get('group_fator') || 0), gw = _.data.length * bw + _.get('hispace') + (_.is3D() ? (_.data.length - 1) * q : 0), h, x = _.coo.get(_.X)
+				+ _.get('hispace'), y = _.coo.get(_.Y) - S.basic * H + H,y0=_.coo.get(_.Y) + H + _.get('text_space')+ _.coo.get('axis.width')[2];
 		
 		_.columns.each(function(column, i) {
 			column.item.each(function(d, j) {
@@ -6723,7 +6732,7 @@ $.BarMulti2D = $.extend($.Bar, {
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
 		var S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2,w,
-		I = _.coo.get(_.X) + S.basic*W,x = _.coo.get(_.Y)-_.get('text_space')-_.coo.get('axis.width')[3],y = _.coo.get(_.Y)+ _.get(s);
+		I = _.coo.get(_.X) + S.basic*W,x = _.coo.get(_.X)-_.get('text_space')-_.coo.get('axis.width')[3],y = _.coo.get(_.Y)+ _.get(s);
 		
 		_.push('sub_option.height', bh);
 		
@@ -6913,8 +6922,8 @@ $.LineSegment = $.extend($.Component, {
 		var x = this.x, y = this.y, o = this.get('tip_offset'), s = this.get('point_size') + o, _ = this;
 		return function(w, h, m) {
 			var l = m.left, t = m.top;
-			l = ((_.tipPosition < 3 && (m.left - w - x - o > 0)) || (_.tipPosition > 2 && (m.left - w - x - o < 0))) ? l - (w + o) : l + o;
-			t = _.tipPosition % 2 == 0 ? m.top + s : m.top - h - s;
+			l = ((_.tipPosition < 3 && (l - w - x - o > 0)) || (_.tipPosition > 2 && (l - w - x - o < 0))) ? l - (w + o) : l + o;
+			t = _.tipPosition % 2 == 0 ? t + s : t - h - s;
 			return {
 				left : l,
 				top : t
@@ -7061,9 +7070,17 @@ $.Line = $.extend($.Chart, {
 			crosshair : {
 				enable : false
 			},
-			tipMocker:function(){
-				
-			},
+			/**
+			 * @cfg {Function} when there has more than one linesegment,you can use tipMocker make them as a tip.(default to null)
+			 * @paramter Array tips the array of linesegment's tip
+			 * @paramter int the index of data
+			 * @return String
+			 */
+			tipMocker:null,
+			/**
+			 * @cfg {Number(0.0~1.0)} If null,the position there will follow the points.If given a number,there has a fixed postion,0 is top,and 1 to bottom.(default to null)
+			 */
+			tipMockerOffset:null,
 			/**
 			 * @cfg {String} the align of scale.(default to 'left') Available value are:
 			 * @Option 'left'
@@ -7134,7 +7151,7 @@ $.Line = $.extend($.Chart, {
 	doConfig : function() {
 		$.Line.superclass.doConfig.call(this);
 		var _ = this._(), s = _.data.length == 1;
-
+		
 		/**
 		 * apply the coordinate feature
 		 */
@@ -7161,7 +7178,7 @@ $.Line = $.extend($.Chart, {
 				/**
 				 * TODO how fire muti line?now fire by first line
 				 */
-				var r = _.lines[0].isEventValid(e,_.lines[0]);
+				var r = _.lines[0].isEventValid(e);
 				return r.valid ? r : false;
 			});
 		}
@@ -7178,16 +7195,63 @@ $.Line = $.extend($.Chart, {
 			label:_.get('label')
 		}]);
 		
-		
 		/**
 		 * use option create a coordinate
 		 */
 		_.coo = $.Coordinate.coordinate_.call(_);
 		
 		_.push('sub_option.originx', _.coo.get(_.X) + _.get('line_start'));
-		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.get('height'));
+		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.get(_.H));
 		
 		_.components.push(_.coo);
+		
+		if (_.get('tip.enable')){
+			if($.isFunction(_.get('tipMocker'))){
+				_.push('sub_option.tip.enable', false);
+				_.push('tip.invokeOffsetDynamic', true);
+				var U,x=_.coo.get(_.X),y=_.coo.get(_.Y),H=_.coo.get(_.H),f = _.get('tipMockerOffset'),r0,r,r1;
+				f = $.isNumber(f)?(f<0?0:(f>1?1:f)):null;
+				_.push('tip.invokeOffset',function(w,h,m){
+					if(f!=null){
+						m.top = y+(H-h)*f;
+					}else{
+						m.top = m.maxTop-(m.maxTop-m.minTop)/3-h;
+						if(h>H||y>m.top){
+							m.top = y;
+						}
+					}
+					return {
+						left:(m.left - w - x  > 5)?m.left-w-5:m.left+5,
+						top:m.top
+					}
+				});
+				
+				var mocker = new $.Custom({
+					eventValid:function(e){
+						r = _.lines[0].isEventValid(e);
+						r.hit = r0 != r.i;
+						if(r.valid){
+							r0 = r.i;
+							U = [];
+							_.lines.each(function(l,i){
+								r1 = l.isEventValid(e);
+								if(i==0){
+									r.minTop = r.maxTop = r1.top;
+								}else{
+									r.minTop = Math.min(r.minTop,r1.top);
+									r.maxTop = Math.max(r.maxTop,r1.top);
+								}
+								U.push(l.isEventValid(e).text);
+							});
+							r.text = _.get('tipMocker').call(_,U,r.i)||'tipMocker not return';
+						}
+						return r.valid ? r : false;
+					}
+				});
+				new $.Tip(_.get('tip'),mocker);
+				_.components.push(mocker);
+			}
+		}
 		
 		/**
 		 * quick config to all linesegment
@@ -7243,6 +7307,7 @@ $.LineBasic2D = $.extend($.Line, {
 		_.push('sub_option.tipInvokeHeap', _.tipInvokeHeap);
 		_.push('sub_option.point_space', sp);
 		
+		
 		_.data.each(function(d, i) {
 			points = [];
 			d.value.each(function(v, j) {
@@ -7262,6 +7327,7 @@ $.LineBasic2D = $.extend($.Line, {
 				points.push(p);
 			}, _);
 			
+			_.push('sub_option.name', d.name);
 			_.push('sub_option.points', points);
 			_.push('sub_option.brushsize', d.linewidth || 1);
 			_.push('sub_option.background_color', d.background_color || d.color);

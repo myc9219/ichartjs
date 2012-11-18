@@ -87,7 +87,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @return void
 	 */
 	toggle : function(i) {
-		this.data[i || 0].reference.toggle();
+		this.sectors[i || 0].toggle();
 	},
 	/**
 	 * @method bound sector by a specific index.
@@ -95,7 +95,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @return void
 	 */
 	bound : function(i) {
-		this.data[i || 0].reference.bound();
+		this.sectors[i || 0].bound();
 	},
 	/**
 	 * @method rebound sector by a specific index.
@@ -103,7 +103,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	 * @return void
 	 */
 	rebound : function(i) {
-		this.data[i || 0].reference.rebound();
+		this.sectors[i || 0].rebound();
 	},
 	/**
 	 * @method Returns an array containing all sectors of this pie
