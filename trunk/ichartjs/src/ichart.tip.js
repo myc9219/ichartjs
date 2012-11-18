@@ -40,6 +40,14 @@
 					 */
 				 move_duration:100,
 				 /**
+				  * ease
+				  * linear
+				  * ease-in
+				  * ease-out
+				  * ease-in-out
+				  */
+				 timing_function:'ease-out',
+				 /**
 					 * @cfg {Boolean} if calculate the position every time (default to false)
 					 */
 				 invokeOffsetDynamic:false,
@@ -112,8 +120,8 @@
 			_.hidden();
 			
 			if(_.get('animation')){
-				var m =  _.get('move_duration')/1000+'s ease-in 0s';
-				_.transition('opacity '+_.get('fade_duration')/1000+'s ease-in 0s');
+				var m =  _.get('move_duration')/1000+'s '+_.get('timing_function')+' 0s';
+				_.transition('opacity '+_.get('fade_duration')/1000+'s '+_.get('timing_function')+' 0s');
 				_.transition('top '+m);
 				_.transition('left '+m);
 				_.onTransitionEnd(function(e){
@@ -128,7 +136,7 @@
 			_.T.on('mouseover',function(c,e,m){
 				_.show(e,m);	
 			}).on('mouseout',function(c,e,m){
-				//_.hidden(e);	
+				_.hidden(e);
 			});
 			
 			if(_.get('showType')=='follow'){

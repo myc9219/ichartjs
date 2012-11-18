@@ -56,95 +56,84 @@
 	</style>
 	<script type="text/javascript">
 	
-	$(function(){
-		var data = [
-		        	{
-		        		name : '北京',
-		        		value:[2,12,14,20,28,32,34,36,33,24,14,4],
-		        		color:'#1f7e92'
-		        	},{
-		        		name : '上海',
-		        		value:[14,16,6,24,32,36,18,38,36,26,20,34],
-		        		color:'#dad81f'
-		        	}
-		        ];
-	    
-		var labels = ["01月","02月","03月","04月","05月","06月","07月","08月","09月","10月","11月","12月"];
-		
-		var chart = new iChart.Area2D({
+	$(function() {
+		var data = [{
+			name : 'MISE',
+			value : 55.11,
+			color : '#4572a7'
+		}, {
+			name : 'Firefox',
+			value : 29.84,
+			color : '#aa4643'
+		}, {
+			name : 'Chrome',
+			value : 24.88,
+			color : '#89a54e'
+		}, {
+			name : 'Safari',
+			value : 6.77,
+			color : '#80699b'
+		}, {
+			name : 'Opera',
+			value : 2.02,
+			color : '#3d96ae'
+		}];
+
+		new iChart.Column2D({
 			render : 'canvasDiv',
-			data: data,
-			title : '北京-上海两城市2012年平均温度情况',
+			data : data,
+			title : {
+				text : 'Browser market share,April,2011 from 1 to 29 Feb 2012',
+				color : '#3e576f'
+			},
+			footnote : {
+				text : 'ichartjs.com',
+				color : '#909090',
+				fontsize:11,
+				padding:'0 38'
+			},
+			showpercent : true,
+			decimalsnum : 2,
 			width : 800,
 			height : 400,
-			tipMocker:function(tips){
-				return "<div style='font-weight:600'>数据分析</div>"+tips.join("<br/>");
-			},
-			tipMockerOffset:0.2,
-			legend : {
-				enable : true
-			},
-			tip:{
-				enable : true,
-				shadow:true
-			},
-			crosshair:{
-				enable:true,
-				line_color:'#62bce9'
-			},
-			listeners:{
-				parseTipText:function(d,t,i){
-					return d.name+"地区<br/>"+labels[i]+"平均温度:"+t+"℃";
+			label:{color:'#666666'},
+			shadow:true,
+			shadow_blur:2,
+			shadow_color:'#aaaaaa',
+			shadow_offsetx:1,
+			shadow_offsety:0, 
+			colwidth:62,
+			sub_option : {
+				listeners : {
+					parseText : function(r, t) {
+						return t + "%";
+					}
+				},
+				label:{color:'#4572a7'},
+				border:{
+					width:2,
+					color:'#ffffff',
+					radius:'5 5 0 0'
 				}
 			},
-			sub_option:{
-				label:false,
-				point_size:10,
-				listeners:{
-					//click:function(c,e,m){
-						//alert(labels[m.i]);
-					//}
-				} 
-			},
-			coordinate:{
-				width:600,
-				valid_width:560,
-				height:240,
-				scale2grid:false,
-				grids:{
-					horizontal:{
-							way:'share_alike',
-							value:8
-						}
-				}, 
-				scale:[{
-					 position:'left',	
-					 start_scale:0,
-					 end_scale:40,
-					 scale_space:5,
-					 listeners:{
-						parseText:function(t,x,y){
-							return {text:t+"℃"}
-						}
-					}
-				},{
-					 position:'bottom',	
-					 start_scale:1,
-					 end_scale:12,
-					 parseText:function(t,x,y){
-						return {textY:y+10}
-					 },
-					 label:{
-						 rotate:-90,
-						 textAlign:'right',
-						 textBaseline:'middle'
-					 },
-					 labels:labels
+			coordinate : {
+				background_color : null,
+				grid_color:'#c0c0c0',
+				width:700,
+				axis : {
+					color:'#c0d0e0',
+					width : [0,0,1,0]
+				},
+				scale : [{
+					position : 'left',
+					start_scale : 0,
+					end_scale : 60,
+					scale_space : 10,
+					scale_enable:false,
+					label:{color:'#666666'}
 				}]
 			}
-		});
-		chart.draw();
-	
+		}).draw();
 	});
 	
 	</script>

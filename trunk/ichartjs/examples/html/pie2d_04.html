@@ -61,23 +61,22 @@
 						},
 						background_color : null,
 					},
-					sector:{
+					sub_option:{
 						border:{
 							enable:false
+						},
+						listeners:{
+							parseText:function(d, i){
+								return d.value+"%";
+							}
 						}
 					},
 					border:{
 						width:[0,20,0,20],
 						color:'#1e2223'
-					},
-					listeners:{
-						parseLabelText:function(d, i){
-							return d.value+"%";
-						}
 					}
 				});
 				
-				chart.draw();
 				chart.bound(0);
 			});
 		</script>

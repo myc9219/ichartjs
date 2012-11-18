@@ -55,7 +55,16 @@
 					background_color:'#f4f4f4',
 					tip:{
 						enable:true,
-						shadow:true
+						shadow:true,
+						border:{
+						 enable:true,
+						 radius : 5,
+						 width:3,
+						 color:'#3f8695'
+						}
+					},
+					tipMocker:function(tips){
+						return "<div style='font-weight:600'>数据分析</div>"+tips.join("<br/>");
 					},
 					legend : {
 						enable : true,

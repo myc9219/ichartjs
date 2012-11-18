@@ -37,6 +37,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {Function} when there has more than one linesegment,you can use tipMocker make them as a tip.(default to null)
 			 * @paramter Array tips the array of linesegment's tip
+			 * @paramter int the index of data
 			 * @return String
 			 */
 			tipMocker:null,
@@ -206,7 +207,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 								}
 								U.push(l.isEventValid(e).text);
 							});
-							r.text = _.get('tipMocker').call(_,U)||'tipMocker not return';
+							r.text = _.get('tipMocker').call(_,U,r.i)||'tipMocker not return';
 						}
 						return r.valid ? r : false;
 					}

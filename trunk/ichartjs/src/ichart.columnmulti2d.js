@@ -30,8 +30,8 @@ iChart.ColumnMulti2D = iChart.extend(iChart.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(), bw = _.get('colwidth'), H = _.get('coordinate.height'), S = _.coo.getScale(_.get('scaleAlign')), q = bw * (_.get('group_fator') || 0), gw = _.data.length * bw + _.get('hispace') + (_.is3D() ? (_.data.length - 1) * q : 0), h, x = _.coo.get('originx')
-				+ _.get('hispace'), y = _.coo.get('originy') - S.basic * H + H,y0=_.coo.get('originy') + H + _.get('text_space')+ _.coo.get('axis.width')[2];
+		var _ = this._(), bw = _.get('colwidth'), H = _.coo.get(_.H), S = _.coo.getScale(_.get('scaleAlign')), q = bw * (_.get('group_fator') || 0), gw = _.data.length * bw + _.get('hispace') + (_.is3D() ? (_.data.length - 1) * q : 0), h, x = _.coo.get(_.X)
+				+ _.get('hispace'), y = _.coo.get(_.Y) - S.basic * H + H,y0=_.coo.get(_.Y) + H + _.get('text_space')+ _.coo.get('axis.width')[2];
 		
 		_.columns.each(function(column, i) {
 			column.item.each(function(d, j) {
