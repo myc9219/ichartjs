@@ -23,7 +23,7 @@
 					        	{name : 'D',value : 4,color:'#6f83a5'}
 				        	];
 		        	
-					new iChart.Column2D({
+					var chart  = new iChart.Column2D({
 						render : 'canvasDiv',
 						data: data,
 						title : 'Hello World\'s Height In Alphabet',
@@ -31,6 +31,13 @@
 						height : 400,
 						shadow:true,
 						shadow_color:'#c7c7c7',
+						sub_option : {
+							border : {
+								width : 2,
+								color : '#ffffff',
+								radius : '5 5 0 0'//上圆角设置
+							}
+						},
 						coordinate:{
 							scale:[{
 								 position:'left',	
@@ -39,12 +46,13 @@
 								 scale_space:2,
 								 listeners:{
 										parseText:function(t,x,y){
-											return {text:t+" CM"}
+											return {text:t+" cm"}
 										}
 									}
 							}]
 						}
-					}).draw();
+					});
+					chart.draw();
 			});
 				
 			</script>
