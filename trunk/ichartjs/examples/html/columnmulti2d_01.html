@@ -32,7 +32,7 @@
 								footnote : '数据来源：销售中心',
 								footnote_align:'left',
 								width : 800,
-								height : 440,
+								height : 400,
 								background_color : '#eff8ff',
 								legend:{
 									enable:true,
@@ -43,8 +43,14 @@
 								},
 								coordinate:{
 									background_color : '#eff8ff',
+									scale:[{
+										 position:'left',	
+										 start_scale:0,
+										 end_scale:140,
+										 scale_space:20
+									}],
 									width:600,
-									height:300
+									height:260
 								}
 						}).draw();
 					});
