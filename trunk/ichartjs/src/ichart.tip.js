@@ -95,18 +95,12 @@
 		beforeshow:function(e,m){
 			this.follow(e,m);
 		},
-		show:function(e,m){
-			this.beforeshow(e,m);
-			this.css('visibility','visible');
-			if(this.get('animation')){
-				this.css('opacity',1);
-			}
-		},
 		hidden:function(e){
 			if(this.get('animation')){
 				this.css('opacity',0);
 			}else{
 				this.css('visibility','hidden');
+				_.css('top','-999px');
 			}
 		},
 		initialize:function(){
@@ -127,6 +121,7 @@
 				_.onTransitionEnd(function(e){
 					if(_.css('opacity')==0){
 						_.css('visibility','hidden');
+						_.css('top','-999px');
 					}
 				},false);
 			}

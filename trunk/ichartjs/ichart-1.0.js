@@ -1458,8 +1458,11 @@ $.Html = $.extend($.Element,{
 		}
 	},
 	show:function(e,m){
-		if(this.beforeshow(e,m))
+		this.beforeshow(e,m);
 		this.css('visibility','visible');
+		if(this.get('animation')){
+			this.css('opacity',1);
+		}
 	},
 	hidden:function(e){
 		this.css('visibility','hidden');
@@ -1709,18 +1712,12 @@ $.Component = $.extend($.Painter, {
 		beforeshow:function(e,m){
 			this.follow(e,m);
 		},
-		show:function(e,m){
-			this.beforeshow(e,m);
-			this.css('visibility','visible');
-			if(this.get('animation')){
-				this.css('opacity',1);
-			}
-		},
 		hidden:function(e){
 			if(this.get('animation')){
 				this.css('opacity',0);
 			}else{
 				this.css('visibility','hidden');
+				_.css('top','-999px');
 			}
 		},
 		initialize:function(){
@@ -1741,6 +1738,7 @@ $.Component = $.extend($.Painter, {
 				_.onTransitionEnd(function(e){
 					if(_.css('opacity')==0){
 						_.css('visibility','hidden');
+						_.css('top','-999px');
 					}
 				},false);
 			}
@@ -1828,22 +1826,25 @@ $.Component = $.extend($.Painter, {
 			if(this.get('invokeOffset')){
 				var o = this.get('invokeOffset')(e,m);
 				if(o&&o.hit){
-					this.horizontal.style.top = (o.top-this.top)+"px";
-					this.vertical.style.left = (o.left-this.left)+"px";
-					return true;
+					this.position(o.top-this.top,o.left-this.left);
 				}
 				return false;
 			}else{
 				/**
 				 * set the 1px offset will make the line at the top left all the time
 				 */
-				this.horizontal.style.top = (e.y-this.top-1)+"px";
-				this.vertical.style.left = (e.x-this.left-1)+"px";
-				return true;
+				this.position(e.y-this.top-1,e.x-this.left-1);
 			}
+			return true;
+		},
+		position:function(t,l){
+			this.horizontal.style.top = t+"px";
+			this.vertical.style.left = l+"px";
 		},
 		beforeshow:function(e,m){
-			return this.follow(e,m);
+			if(!this.follow(e,m)){
+				this.position(-999,-999);
+			}
 		},
 		doCreate:function(_,w,h){
 			var d = document.createElement("div");
@@ -1974,7 +1975,6 @@ $.Legend = $.extend($.Component, {
 			 * @Option 'right'
 			 */
 			align : 'right',
-
 			/**
 			 * @cfg {String} this property specifies the vertical position of the legend in an module (defaults to 'middle'). Available value are:
 			 * @Option 'top'
@@ -2640,7 +2640,7 @@ $.Label = $.extend($.Component, {
 			if(!b){
 				this.shadowOn(sw).fill(c);
 			}else{
-				this.fill(c).shadowOn(sw).stroke(b).shadowOff();
+				this.shadowOn(sw).stroke(b).shadowOff().fill(c);
 			}
 			
 			return this.restore();
@@ -3953,6 +3953,10 @@ $.Scale = $.extend($.Component, {
 			 * @cfg {Number} Specifies value of Baseline Coordinate.(default to 0)
 			 */
 			basic_value:0,
+			/**
+			 * @cfg {Boolean} indicate whether the grid is accord with scale.(default to true)
+			 */
+			scale2grid : true,
 			/**
 			 * @inner {Number}
 			 */
@@ -6947,7 +6951,7 @@ $.LineSegment = $.extend($.Component, {
 				if(!q.ignored){
 					if(!f||!f.call(_,_.T,_.get('sign'),q.x, q.y,s,b,j)){
 						if (_.get('hollow')) {
-							_.T.round(q.x, q.y, s/2-h,b,h,j);
+							_.T.round(q.x, q.y, s/2-h,b,h+1,j);
 						} else {
 							_.T.round(q.x, q.y, s/2,b);
 						}

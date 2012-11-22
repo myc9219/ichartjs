@@ -57,22 +57,25 @@
 			if(this.get('invokeOffset')){
 				var o = this.get('invokeOffset')(e,m);
 				if(o&&o.hit){
-					this.horizontal.style.top = (o.top-this.top)+"px";
-					this.vertical.style.left = (o.left-this.left)+"px";
-					return true;
+					this.position(o.top-this.top,o.left-this.left);
 				}
 				return false;
 			}else{
 				/**
 				 * set the 1px offset will make the line at the top left all the time
 				 */
-				this.horizontal.style.top = (e.y-this.top-1)+"px";
-				this.vertical.style.left = (e.x-this.left-1)+"px";
-				return true;
+				this.position(e.y-this.top-1,e.x-this.left-1);
 			}
+			return true;
+		},
+		position:function(t,l){
+			this.horizontal.style.top = t+"px";
+			this.vertical.style.left = l+"px";
 		},
 		beforeshow:function(e,m){
-			return this.follow(e,m);
+			if(!this.follow(e,m)){
+				this.position(-999,-999);
+			}
 		},
 		doCreate:function(_,w,h){
 			var d = document.createElement("div");
@@ -115,13 +118,10 @@
 			_.wrap.appendChild(_.dom);
 			
 			_.T.on('mouseover',function(c,e,m){
-				console.log('mouseover');
 				_.show(e,m);	
 			}).on('mouseout',function(c,e,m){
-				console.log('mouseout');
 				_.hidden(e,m);	
 			}).on('mousemove',function(c,e,m){
-				console.log('mousemove');
 				_.follow(e,m);
 			});
 			

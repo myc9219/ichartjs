@@ -98,8 +98,11 @@ iChart.Html = iChart.extend(iChart.Element,{
 		}
 	},
 	show:function(e,m){
-		if(this.beforeshow(e,m))
+		this.beforeshow(e,m);
 		this.css('visibility','visible');
+		if(this.get('animation')){
+			this.css('opacity',1);
+		}
 	},
 	hidden:function(e){
 		this.css('visibility','hidden');
