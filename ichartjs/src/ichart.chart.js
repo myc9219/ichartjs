@@ -188,7 +188,7 @@
 			if(!b){
 				this.shadowOn(sw).fill(c);
 			}else{
-				this.fill(c).shadowOn(sw).stroke(b).shadowOff();
+				this.shadowOn(sw).stroke(b).shadowOff().fill(c);
 			}
 			
 			return this.restore();

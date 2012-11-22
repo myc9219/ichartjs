@@ -134,7 +134,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 				if(!q.ignored){
 					if(!f||!f.call(_,_.T,_.get('sign'),q.x, q.y,s,b,j)){
 						if (_.get('hollow')) {
-							_.T.round(q.x, q.y, s/2-h,b,h,j);
+							_.T.round(q.x, q.y, s/2-h,b,h+1,j);
 						} else {
 							_.T.round(q.x, q.y, s/2,b);
 						}
