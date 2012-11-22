@@ -120,19 +120,17 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		 * apply the coordinate feature
 		 */
 		iChart.Coordinate.coordinate.call(_);
-
+		
+		var vw = _.get('coordinate.valid_width'),vh = _.get('coordinate.valid_height');
 		_.lines = [];
 		_.lines.zIndex = _.get('z_index');
 		_.components.push(_.lines);
 		
-		_.push('line_start', (_.get('coordinate.width') - _.get('coordinate.valid_width')) / 2);
-		_.push('line_end', _.get('coordinate.width') - _.get('line_start'));
-		
 		if (_.get('proportional_spacing'))
-			_.push('label_spacing', _.get('coordinate.valid_width') / (_.get('maxItemSize') - 1));
+			_.push('label_spacing', vw / (_.get('maxItemSize') - 1));
 		
-		_.push('sub_option.width', _.get('coordinate.valid_width'));
-		_.push('sub_option.height', _.get('coordinate.valid_height'));
+		_.push('sub_option.width', vw);
+		_.push('sub_option.height', vh);
 		_.pushIf('sub_option.keep_with_coordinate',s);
 		
 		if (_.get('crosshair.enable')) {
@@ -164,7 +162,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		 */
 		_.coo = iChart.Coordinate.coordinate_.call(_);
 		
-		_.push('sub_option.originx', _.coo.get(_.X) + _.get('line_start'));
+		_.push('sub_option.originx', _.coo.get('x_start'));
 		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.get(_.H));
 		
 		_.components.push(_.coo);

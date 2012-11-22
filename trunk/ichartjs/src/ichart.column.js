@@ -100,18 +100,18 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		
 		_.labels.zIndex = _.get(z) + 1;
 		
-		var L = _.data.length, W = _.get('coordinate.width'),w_,hw,KL;
+		var L = _.data.length, W = _.get('coordinate.valid_width'),w_,hw,KL;
 		
 		if (_.dataType == 'simple') {
 			w_= Math.floor(W*2 / (L * 3 + 1));
 			hw = _.pushIf(c, w_);
 			KL = L+1;
 		}else{
-				KL = _.get('labels').length;
-				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
-				w_= Math.floor(W / (KL + 1 + L));
-				hw = _.pushIf(c,w_);
-				KL +=1;
+			KL = _.get('labels').length;
+			L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
+			w_= Math.floor(W / (KL + 1 + L));
+			hw = _.pushIf(c,w_);
+			KL +=1;
 		}
 		
 		if (hw * L > W) {
@@ -124,6 +124,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		
 		if (_.is3D()) {
 			_.push('zHeight', _.get(c) * _.get('zScale'));
+			_.push('sub_option.zHeight', _.get('zHeight'));
 			_.push('sub_option.xAngle_', _.get('xAngle_'));
 			_.push('sub_option.yAngle_', _.get('yAngle_'));
 		}
@@ -131,7 +132,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		 * use option create a coordinate
 		 */
 		_.coo = iChart.Coordinate.coordinate_.call(_);
-
+		
 		_.components.push(_.coo);
 		
 		_.push('sub_option.width', _.get(c));

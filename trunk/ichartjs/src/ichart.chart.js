@@ -1190,6 +1190,7 @@
 					if (M.valid){
 						E.click = true;
 						C.fireEvent(C,'click', [C, e, M]);
+						return !e.stopPropagation;
 					}
 				});
 				if(E.click){
@@ -1232,6 +1233,7 @@
 								cot.fireEvent(cot, 'mouseout', [cot,e, M]);
 							}
 						}
+						return !e.stopPropagation;
 				});
 				
 				if(E.mouseover){

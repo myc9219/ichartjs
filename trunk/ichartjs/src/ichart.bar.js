@@ -93,20 +93,27 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		_.components.push(_.labels);
 		_.components.push(_.rectangles);
 
+		var L = _.data.length, H = _.get('coordinate.valid_height'),h_,bh,KL;
+		
 		if (_.dataType == 'simple') {
-
-			var L = _.data.length, H = _.get('coordinate.height'),h_ = Math.floor(H*2 / (L * 3 + 1)),bh = _.pushIf(b, h_);
-			/**
-			 * bar's height
-			 */
-			if (bh * L > H) {
-				bh = _.push(b, h_);
-			}
-			/**
-			 * the space of two bar
-			 */
-			_.push('barspace', (H - bh * L) / (L + 1));
+			h_= Math.floor(H*2 / (L * 3 + 1));
+			bh = _.pushIf(b, h_);
+			KL = L+1;
+		}else{
+			KL = _.get('labels').length;
+			L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
+			h_= Math.floor(H / (KL + 1 + L));
+			bh = _.pushIf(b,h_);
+			KL +=1;
 		}
+		
+		if (bh * L > H) {
+			bh = _.push(b, h_);
+		}
+		/**
+		 * the space of two bar
+		 */
+		_.push('barspace', (H - bh * L) / KL);
 
 		if (_.is3D()) {
 

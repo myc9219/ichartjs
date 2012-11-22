@@ -823,6 +823,7 @@
 						pageY : e.pageY,
 						offsetX : e.offsetX,
 						offsetY : e.offsetY,
+						stopPropagation:false,
 						//time: new Date().getTime(),
 						event:e
 					};

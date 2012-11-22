@@ -1,6 +1,6 @@
 //expect next
 1.增加测试用例*负数的测试用例
-1.1Area图中，左侧的tip浮动会隐藏 why
+1.所有Coordinate的valid_width的问题，统一处理
 2.教程同步*
 3.示例编写*
 5.考虑插件式开发架构接口设计
