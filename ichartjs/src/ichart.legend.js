@@ -74,7 +74,6 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			 * @Option 'right'
 			 */
 			align : 'right',
-
 			/**
 			 * @cfg {String} this property specifies the vertical position of the legend in an module (defaults to 'middle'). Available value are:
 			 * @Option 'top'

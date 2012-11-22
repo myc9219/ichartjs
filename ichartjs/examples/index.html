@@ -54,21 +54,23 @@
 			var quote = new RegExp("'(.*?)'","g");
 			var dQuote = new RegExp('"(.*?)"',"g");
 			var row = new RegExp("^","m");
-			var note = new RegExp("(//.*)$","m");
+			var note = new RegExp("(//.*)","g");
+			var xml = new RegExp("<","g");
 			function viewCode(doc){
 				//获取最后一个script
 				var scripts = doc.getElementsByTagName("script");	
 				var html = scripts[scripts.length-1].innerHTML;
 				//简单的代码语法显示
+				html = html.replace(xml,"&lt;");
 				html = html.replace(quote,"'<span class=ichartjs_string>$1</span>'");	
 				html = html.replace(dQuote,'"<span class=ichartjs_string>$1</span>"');	
 				html = html.replace("ichartjs_string","'ichartjs_string'");	
 				html = html.replace(keyword,"<span class='ichartjs_keyword'>$1</span>");
-				html = html.replace(note,"<span class='ichartjs_note'>$1</span>");
 				var tt = html.split(row);
 				tt.shift();//去除第一行空行
 				var number = [],j = 1;
 				for(var i=0;i<tt.length;i++){
+					tt[i] = tt[i].replace(note,"<span class='ichartjs_note'>$1</span>");
 					tt[i] = "<div id='ichartjs_row_"+i+"'>"+tt[i]+"</div>";
 					number.push("<span class='ichartjs_number' row="+i+">"+(j++)+".</span><br/>");
 				}
@@ -126,13 +128,16 @@
 						<a target="viewport" class='ichartjs_item' href='html/column2d_02.html'>中国社交媒体网站TOP7</a>
 						<a target="viewport" class='ichartjs_item' href='html/column2d_03.html'>字母表中的Hello World</a>
 						<a target="viewport" class='ichartjs_item' href='html/column2d_04.html'>2011年4月浏览器市场份额</a>
-						<a target="viewport" class='ichartjs_item' href='html/column2d_05.html'>2011年4月浏览器市场份额</a>
+						<a target="viewport" class='ichartjs_item' href='html/column2d_05.html'>第六次全国人口普查数据</a>
+						<a target="viewport" class='ichartjs_item' href='html/column2d_06.html'>pinterest网站访问量</a>
 						<a target="viewport" class='ichartjs_item' href='html/columnmulti2d_01.html'>上半年产品销售对比</a>
 					</div>
 					<h3><a href="#">3D柱形图</a></h3>
 					<div>
 						<a target="viewport" class='ichartjs_item' href='html/column3d_01.html'>基本柱形图</a>
 						<a target="viewport" class='ichartjs_item' href='html/column3d_02.html'>自定义刻度的柱形图</a>
+						<a target="viewport" class='ichartjs_item' href='html/column3d_03.html'>2011年度销售5强</a>
+						<a target="viewport" class='ichartjs_item' href='html/columnmulti3d_01.html'>2002-2011年招生情况</a>
 					</div>
 					<h3><a href="#">折线图</a></h3>
 					<div>

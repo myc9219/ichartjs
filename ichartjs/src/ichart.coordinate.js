@@ -32,6 +32,10 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			 */
 			basic_value:0,
 			/**
+			 * @cfg {Boolean} indicate whether the grid is accord with scale.(default to true)
+			 */
+			scale2grid : true,
+			/**
 			 * @inner {Number}
 			 */
 			distance : undefined,
@@ -150,6 +154,18 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			});
 		_.labels.each(function(l) {
 			l.draw();
+		});
+	},
+	doLayout:function(x,y,_){
+		if (_.get('scale_enable'))
+			_.items.each(function(item) {
+				item.x0+=x;
+				item.y0+=y;
+				item.x1+=x;
+				item.y1+=y;
+			});
+		_.labels.each(function(l) {
+			l.doLayout(x,y,l);
 		});
 	},
 	doConfig : function() {
@@ -333,7 +349,7 @@ iChart.Coordinate = {
 		/**
 		 * calculate chart's measurement
 		 */
-		var _ = this._(), f = 0.8, _w = _.get('client_width'), _h = _.get('client_height'), w = _.pushIf('coordinate.width', Math.floor(_w * f)), h = _.pushIf('coordinate.height', Math.floor(_h * f));
+		var _ = this._(), f = 0.8, _w = _.get('client_width'), _h = _.get('client_height'), w = _.pushIf('coordinate.width', Math.floor(_w * f)), h = _.pushIf('coordinate.height', Math.floor(_h * f)), vw = _.get('coordinate.valid_width'), vh = _.get('coordinate.valid_height');
 
 		if (h > _h) {
 			h = _.push('coordinate.height', _h * f);
@@ -362,15 +378,15 @@ iChart.Coordinate = {
 
 		_.push(_.X, _.get(_.X) + _.get('offsetx'));
 		_.push(_.Y, _.get('centery') - h / 2 + _.get('offsety'));
-
-		if (!_.get('coordinate.valid_width') || _.get('coordinate.valid_width') > w) {
+		
+		if (!vw || vw > w) {
 			_.push('coordinate.valid_width', w);
 		}
-
-		if (!_.get('coordinate.valid_height') || _.get('coordinate.valid_height') > h) {
+		
+		if (!vh || vh > h) {
 			_.push('coordinate.valid_height', h);
 		}
-
+		
 		/**
 		 * originx for short
 		 */
@@ -379,9 +395,11 @@ iChart.Coordinate = {
 		 * originy for short
 		 */
 		_.y = _.get(_.Y);
-
+		_.get('coordinate.originy')
+		
 		_.push('coordinate.originx', _.x);
 		_.push('coordinate.originy', _.y);
+		
 	}
 }
 /**
@@ -638,13 +656,19 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 
 		var jp, cg = !!(_.get('gridlinesVisible') && _.get('grids')), hg = cg && !!_.get('grids.horizontal'), vg = cg && !!_.get('grids.vertical'), h = _.get(_.H), w = _.get(_.W), vw = _.get('valid_width'), vh = _.get('valid_height'), k2g = _.get('gridlinesVisible')
 				&& _.get('scale2grid') && !(hg && vg), sw = (w - vw) / 2, sh = (h - vh) / 2, axis = _.get('axis.width');
-
+		
+		_.push('x_start', _.x+(w - vw) / 2);
+		_.push('x_end', _.x + (w + vw) / 2);
+		_.push('y_start', _.y+(h - vh) / 2);
+		_.push('y_end', _.y + (h + vh) / 2);
+		
 		if (!iChart.isArray(_.get('scale'))) {
 			if (iChart.isObject(_.get('scale')))
 				_.push('scale', [_.get('scale')]);
 			else
 				_.push('scale', []);
 		}
+		
 		_.get('scale').each(function(kd, i) {
 			jp = kd['position'];
 			jp = jp || _.L;
@@ -833,6 +857,10 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 			 */
 			board_deep : 20,
 			/**
+			 * @cfg {Boolean} If true display the left board.(default to true)
+			 */
+			left_board:true,
+			/**
 			 * @cfg {Boolean} Override the default as true
 			 */
 			gradient : true,
@@ -879,7 +907,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 		});
 	},
 	doDraw : function(_) {
-		var w = _.get(_.W), h = _.get(_.H), xa = _.get('xAngle_'), ya = _.get('yAngle_'), zh = _.get('zHeight'), offx = xa * zh, offy = ya * zh;
+		var w = _.get(_.W), h = _.get(_.H), xa = _.get('xAngle_'), ya = _.get('yAngle_'), zh = _.get('zHeight'), offx = _.get('z_offx'), offy = _.get('z_offy');
 		/**
 		 * bottom
 		 */
@@ -889,20 +917,21 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 		 * board_style
 		 */
 		if(_.get('board_deep'))
-		_.T.cube3D(_.x + _.get('board_deep') * xa, _.y + h - _.get('board_deep') * ya, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('board_style'));
-
+		_.T.cube3D(_.x +offx, _.y+h - offy, xa, ya, false, w, h, _.get('board_deep'), _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('board_style'));
+		
 		_.T.cube3D(_.x, _.y + h, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('wall_style'));
-
+		
 		_.gridlines.each(function(g) {
 			if(g.solid){
+				if(_.get('left_board'))
 				_.T.line(g.x1, g.y1, g.x1 + offx, g.y1 - offy,g.width, g.color);
 				_.T.line(g.x1 + offx, g.y1 - offy, g.x2 + offx, g.y2 - offy, g.width, g.color);
 			}else{
+				if(_.get('left_board'))
 				_.T.dotted(g.x1, g.y1, g.x1 + offx, g.y1 - offy,g.width, g.color,g.size,g.fator);
 				_.T.dotted(g.x1 + offx, g.y1 - offy, g.x2 + offx, g.y2 - offy, g.width, g.color,g.size,g.fator);
 			}
 		});
-		
 		_.scale.each(function(s) {
 			s.draw()
 		});
@@ -921,7 +950,6 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 				color : c
 			}]);
 		}
-
 		var dark = ws[0].color;
 
 		/**
@@ -946,11 +974,19 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 			color : bg
 		}, false]);
 		
+		var offx = _.push('z_offx',_.get('xAngle_') * _.get('zHeight')), offy = _.push('z_offy',_.get('yAngle_') * _.get('zHeight'));
+		
+		if(!_.get('left_board')){
+			ws[2] = false;
+			_.scale.each(function(s){
+				s.doLayout(offx,-offy,s);
+			});
+		}
+		
 		/**
 		 * 下底-底-左-右-上-前
 		 */
 		if (_.get('gradient')) {
-			var offx = _.get('xAngle_') * _.get('zHeight'), offy = _.get('yAngle_') * _.get('zHeight'), bs = _.get('bottom_style');
 			if (iChart.isString(ws[0].color)) {
 				ws[0].color = _.T.avgLinearGradient(_.x, _.y + h, _.x + w, _.y + h, [dark, c1]);
 			}
@@ -960,7 +996,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 			if (iChart.isString(ws[2].color)) {
 				ws[2].color = _.T.avgLinearGradient(_.x, _.y, _.x, _.y + h, [bg, c1]);
 			}
-			bs[5].color = _.T.avgLinearGradient(_.x, _.y + h, _.x, _.y + h + _.get('pedestal_height'), [bg, c]);
+			_.get('bottom_style')[5].color = _.T.avgLinearGradient(_.x, _.y + h, _.x, _.y + h + _.get('pedestal_height'), [bg, c]);
 		}
 
 	}

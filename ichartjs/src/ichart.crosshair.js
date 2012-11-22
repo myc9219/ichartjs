@@ -115,10 +115,13 @@
 			_.wrap.appendChild(_.dom);
 			
 			_.T.on('mouseover',function(c,e,m){
+				console.log('mouseover');
 				_.show(e,m);	
 			}).on('mouseout',function(c,e,m){
+				console.log('mouseout');
 				_.hidden(e,m);	
 			}).on('mousemove',function(c,e,m){
+				console.log('mousemove');
 				_.follow(e,m);
 			});
 			

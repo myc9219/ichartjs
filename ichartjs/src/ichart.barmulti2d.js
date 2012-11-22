@@ -26,23 +26,13 @@ iChart.BarMulti2D = iChart.extend(iChart.Bar, {
 	doConfig : function() {
 		iChart.BarMulti2D.superclass.doConfig.call(this);
 
-		var _ = this._(), L = _.data.length, KL = _.get('labels').length, W = _.coo.get(_.W), H = _.coo.get(_.H), b = 'barheight', s = 'barspace', total = KL * L,
-		/**
-		 * bar's height
-		 */
-		bh = _.pushIf(b, H / (KL + 1 + total));
-		if (bh * L > H) {
-			bh = _.push(b, H / (KL + 1 + total));
-		}
-		/**
-		 * the space of two bar
-		 */
-		_.push(s, (H - bh * total) / (KL + 1));
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2,w,
-		I = _.coo.get(_.X) + S.basic*W,x = _.coo.get(_.X)-_.get('text_space')-_.coo.get('axis.width')[3],y = _.coo.get(_.Y)+ _.get(s);
+		var _ = this._(), L = _.data.length,W = _.coo.get(_.W), b = 'barheight', s = 'barspace',bh=_.get(b),
+		S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2,w,
+		I = _.coo.get(_.X) + S.basic*W,x = _.coo.get(_.X)-_.get('text_space')-_.coo.get('axis.width')[3],
+		y = _.coo.get('y_start')+ _.get(s);
 		
 		_.push('sub_option.height', bh);
 		

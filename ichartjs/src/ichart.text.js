@@ -97,6 +97,8 @@
 			return {valid:false};
 		},
 		doLayout:function(x,y,_){
+			_.x = _.push(_.X,_.x+x);
+			_.y = _.push(_.Y,_.y+y);
 			_.push('textx',_.get('textx')+x);
 			_.push('texty',_.get('texty')+y);
 		},

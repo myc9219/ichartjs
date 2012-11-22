@@ -823,6 +823,7 @@
 						pageY : e.pageY,
 						offsetX : e.offsetX,
 						offsetY : e.offsetY,
+						stopPropagation:false,
 						//time: new Date().getTime(),
 						event:e
 					};
@@ -2424,6 +2425,8 @@ $.Label = $.extend($.Component, {
 			return {valid:false};
 		},
 		doLayout:function(x,y,_){
+			_.x = _.push(_.X,_.x+x);
+			_.y = _.push(_.Y,_.y+y);
 			_.push('textx',_.get('textx')+x);
 			_.push('texty',_.get('texty')+y);
 		},
@@ -3639,6 +3642,7 @@ $.Label = $.extend($.Component, {
 					if (M.valid){
 						E.click = true;
 						C.fireEvent(C,'click', [C, e, M]);
+						return !e.stopPropagation;
 					}
 				});
 				if(E.click){
@@ -3681,6 +3685,7 @@ $.Label = $.extend($.Component, {
 								cot.fireEvent(cot, 'mouseout', [cot,e, M]);
 							}
 						}
+						return !e.stopPropagation;
 				});
 				
 				if(E.mouseover){
@@ -4069,6 +4074,18 @@ $.Scale = $.extend($.Component, {
 			l.draw();
 		});
 	},
+	doLayout:function(x,y,_){
+		if (_.get('scale_enable'))
+			_.items.each(function(item) {
+				item.x0+=x;
+				item.y0+=y;
+				item.x1+=x;
+				item.y1+=y;
+			});
+		_.labels.each(function(l) {
+			l.doLayout(x,y,l);
+		});
+	},
 	doConfig : function() {
 		$.Scale.superclass.doConfig.call(this);
 		$.Assert.isNumber(this.get('distance'), 'distance');
@@ -4250,7 +4267,7 @@ $.Coordinate = {
 		/**
 		 * calculate chart's measurement
 		 */
-		var _ = this._(), f = 0.8, _w = _.get('client_width'), _h = _.get('client_height'), w = _.pushIf('coordinate.width', Math.floor(_w * f)), h = _.pushIf('coordinate.height', Math.floor(_h * f));
+		var _ = this._(), f = 0.8, _w = _.get('client_width'), _h = _.get('client_height'), w = _.pushIf('coordinate.width', Math.floor(_w * f)), h = _.pushIf('coordinate.height', Math.floor(_h * f)), vw = _.get('coordinate.valid_width'), vh = _.get('coordinate.valid_height');
 
 		if (h > _h) {
 			h = _.push('coordinate.height', _h * f);
@@ -4279,15 +4296,15 @@ $.Coordinate = {
 
 		_.push(_.X, _.get(_.X) + _.get('offsetx'));
 		_.push(_.Y, _.get('centery') - h / 2 + _.get('offsety'));
-
-		if (!_.get('coordinate.valid_width') || _.get('coordinate.valid_width') > w) {
+		
+		if (!vw || vw > w) {
 			_.push('coordinate.valid_width', w);
 		}
-
-		if (!_.get('coordinate.valid_height') || _.get('coordinate.valid_height') > h) {
+		
+		if (!vh || vh > h) {
 			_.push('coordinate.valid_height', h);
 		}
-
+		
 		/**
 		 * originx for short
 		 */
@@ -4296,9 +4313,11 @@ $.Coordinate = {
 		 * originy for short
 		 */
 		_.y = _.get(_.Y);
-
+		_.get('coordinate.originy')
+		
 		_.push('coordinate.originx', _.x);
 		_.push('coordinate.originy', _.y);
+		
 	}
 }
 /**
@@ -4555,13 +4574,19 @@ $.Coordinate2D = $.extend($.Component, {
 
 		var jp, cg = !!(_.get('gridlinesVisible') && _.get('grids')), hg = cg && !!_.get('grids.horizontal'), vg = cg && !!_.get('grids.vertical'), h = _.get(_.H), w = _.get(_.W), vw = _.get('valid_width'), vh = _.get('valid_height'), k2g = _.get('gridlinesVisible')
 				&& _.get('scale2grid') && !(hg && vg), sw = (w - vw) / 2, sh = (h - vh) / 2, axis = _.get('axis.width');
-
+		
+		_.push('x_start', _.x+(w - vw) / 2);
+		_.push('x_end', _.x + (w + vw) / 2);
+		_.push('y_start', _.y+(h - vh) / 2);
+		_.push('y_end', _.y + (h + vh) / 2);
+		
 		if (!$.isArray(_.get('scale'))) {
 			if ($.isObject(_.get('scale')))
 				_.push('scale', [_.get('scale')]);
 			else
 				_.push('scale', []);
 		}
+		
 		_.get('scale').each(function(kd, i) {
 			jp = kd['position'];
 			jp = jp || _.L;
@@ -4750,6 +4775,10 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			 */
 			board_deep : 20,
 			/**
+			 * @cfg {Boolean} If true display the left board.(default to true)
+			 */
+			left_board:true,
+			/**
 			 * @cfg {Boolean} Override the default as true
 			 */
 			gradient : true,
@@ -4796,7 +4825,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		});
 	},
 	doDraw : function(_) {
-		var w = _.get(_.W), h = _.get(_.H), xa = _.get('xAngle_'), ya = _.get('yAngle_'), zh = _.get('zHeight'), offx = xa * zh, offy = ya * zh;
+		var w = _.get(_.W), h = _.get(_.H), xa = _.get('xAngle_'), ya = _.get('yAngle_'), zh = _.get('zHeight'), offx = _.get('z_offx'), offy = _.get('z_offy');
 		/**
 		 * bottom
 		 */
@@ -4806,20 +4835,21 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		 * board_style
 		 */
 		if(_.get('board_deep'))
-		_.T.cube3D(_.x + _.get('board_deep') * xa, _.y + h - _.get('board_deep') * ya, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('board_style'));
-
+		_.T.cube3D(_.x +offx, _.y+h - offy, xa, ya, false, w, h, _.get('board_deep'), _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('board_style'));
+		
 		_.T.cube3D(_.x, _.y + h, xa, ya, false, w, h, zh, _.get('axis.enable'), _.get('axis.width'), _.get('axis.color'), _.get('wall_style'));
-
+		
 		_.gridlines.each(function(g) {
 			if(g.solid){
+				if(_.get('left_board'))
 				_.T.line(g.x1, g.y1, g.x1 + offx, g.y1 - offy,g.width, g.color);
 				_.T.line(g.x1 + offx, g.y1 - offy, g.x2 + offx, g.y2 - offy, g.width, g.color);
 			}else{
+				if(_.get('left_board'))
 				_.T.dotted(g.x1, g.y1, g.x1 + offx, g.y1 - offy,g.width, g.color,g.size,g.fator);
 				_.T.dotted(g.x1 + offx, g.y1 - offy, g.x2 + offx, g.y2 - offy, g.width, g.color,g.size,g.fator);
 			}
 		});
-		
 		_.scale.each(function(s) {
 			s.draw()
 		});
@@ -4838,7 +4868,6 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				color : c
 			}]);
 		}
-
 		var dark = ws[0].color;
 
 		/**
@@ -4863,11 +4892,19 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			color : bg
 		}, false]);
 		
+		var offx = _.push('z_offx',_.get('xAngle_') * _.get('zHeight')), offy = _.push('z_offy',_.get('yAngle_') * _.get('zHeight'));
+		
+		if(!_.get('left_board')){
+			ws[2] = false;
+			_.scale.each(function(s){
+				s.doLayout(offx,-offy,s);
+			});
+		}
+		
 		/**
 		 * 下底-底-左-右-上-前
 		 */
 		if (_.get('gradient')) {
-			var offx = _.get('xAngle_') * _.get('zHeight'), offy = _.get('yAngle_') * _.get('zHeight'), bs = _.get('bottom_style');
 			if ($.isString(ws[0].color)) {
 				ws[0].color = _.T.avgLinearGradient(_.x, _.y + h, _.x + w, _.y + h, [dark, c1]);
 			}
@@ -4877,7 +4914,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			if ($.isString(ws[2].color)) {
 				ws[2].color = _.T.avgLinearGradient(_.x, _.y, _.x, _.y + h, [bg, c1]);
 			}
-			bs[5].color = _.T.avgLinearGradient(_.x, _.y + h, _.x, _.y + h + _.get('pedestal_height'), [bg, c]);
+			_.get('bottom_style')[5].color = _.T.avgLinearGradient(_.x, _.y + h, _.x, _.y + h + _.get('pedestal_height'), [bg, c]);
 		}
 
 	}
@@ -6264,18 +6301,18 @@ $.Column = $.extend($.Chart, {
 		
 		_.labels.zIndex = _.get(z) + 1;
 		
-		var L = _.data.length, W = _.get('coordinate.width'),w_,hw,KL;
+		var L = _.data.length, W = _.get('coordinate.valid_width'),w_,hw,KL;
 		
 		if (_.dataType == 'simple') {
 			w_= Math.floor(W*2 / (L * 3 + 1));
 			hw = _.pushIf(c, w_);
 			KL = L+1;
 		}else{
-				KL = _.get('labels').length;
-				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
-				w_= Math.floor(W / (KL + 1 + L));
-				hw = _.pushIf(c,w_);
-				KL +=1;
+			KL = _.get('labels').length;
+			L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
+			w_= Math.floor(W / (KL + 1 + L));
+			hw = _.pushIf(c,w_);
+			KL +=1;
 		}
 		
 		if (hw * L > W) {
@@ -6288,6 +6325,7 @@ $.Column = $.extend($.Chart, {
 		
 		if (_.is3D()) {
 			_.push('zHeight', _.get(c) * _.get('zScale'));
+			_.push('sub_option.zHeight', _.get('zHeight'));
 			_.push('sub_option.xAngle_', _.get('xAngle_'));
 			_.push('sub_option.yAngle_', _.get('yAngle_'));
 		}
@@ -6295,7 +6333,7 @@ $.Column = $.extend($.Chart, {
 		 * use option create a coordinate
 		 */
 		_.coo = $.Coordinate.coordinate_.call(_);
-
+		
 		_.components.push(_.coo);
 		
 		_.push('sub_option.width', _.get(c));
@@ -6329,16 +6367,18 @@ $.Column2D = $.extend($.Column, {
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
 		var _ = this._(),
+			c = _.get('colwidth'),
+			s = _.get('hispace'),
 			S = _.coo.getScale(_.get('scaleAlign')),
 			H = _.coo.get(_.H), 
-			h2 = _.get('colwidth') / 2, 
-			gw = _.get('colwidth') + _.get('hispace'), 
+			h2 = c / 2, 
+			gw = c + s, 
 			h,
-			y0 = _.coo.get('originy') +  H,
+			y0 = _.coo.get(_.Y) +  H,
 			y = y0 - S.basic*H - (_.is3D()?(_.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_')):0),
-			x = _.get('hispace')+_.coo.get('originx');
+			x = s+_.coo.get('x_start');
 			y0 = y0 + _.get('text_space') + _.coo.get('axis.width')[2];
-		
+			
 		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
 			_.doParse(_,d, i, {
@@ -6433,8 +6473,17 @@ $.ColumnMulti2D = $.extend($.Column, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(), bw = _.get('colwidth'), H = _.coo.get(_.H), S = _.coo.getScale(_.get('scaleAlign')), q = bw * (_.get('group_fator') || 0), gw = _.data.length * bw + _.get('hispace') + (_.is3D() ? (_.data.length - 1) * q : 0), h, x = _.coo.get(_.X)
-				+ _.get('hispace'), y = _.coo.get(_.Y) - S.basic * H + H,y0=_.coo.get(_.Y) + H + _.get('text_space')+ _.coo.get('axis.width')[2];
+		var _ = this._(),
+			s = _.get('hispace'),
+			bw = _.get('colwidth'), 
+			H = _.coo.get(_.H), 
+			S = _.coo.getScale(_.get('scaleAlign')), 
+			q = bw * (_.get('group_fator') || 0), 
+			gw = _.data.length * bw + s + (_.is3D() ? (_.data.length - 1) * q : 0), 
+			h,
+			x = _.coo.get('x_start') + s,
+			y = _.coo.get(_.Y) - S.basic * H + H,
+			y0=_.coo.get(_.Y) + H + _.get('text_space')+ _.coo.get('axis.width')[2];
 		
 		_.columns.each(function(column, i) {
 			column.item.each(function(d, j) {
@@ -6448,7 +6497,7 @@ $.ColumnMulti2D = $.extend($.Column, {
 				_.rectangles.push(new $[_.sub](_.get('sub_option'), this));
 			}, _);
 
-			_.doLabel(_, i, column.name, x - _.get('hispace') * 0.5 + (i + 0.5) * gw, y0);
+			_.doLabel(_, i, column.name, x - s * 0.5 + (i + 0.5) * gw, y0);
 		}, _);
 
 	}
@@ -6602,20 +6651,27 @@ $.Bar = $.extend($.Chart, {
 		_.components.push(_.labels);
 		_.components.push(_.rectangles);
 
+		var L = _.data.length, H = _.get('coordinate.valid_height'),h_,bh,KL;
+		
 		if (_.dataType == 'simple') {
-
-			var L = _.data.length, H = _.get('coordinate.height'),h_ = Math.floor(H*2 / (L * 3 + 1)),bh = _.pushIf(b, h_);
-			/**
-			 * bar's height
-			 */
-			if (bh * L > H) {
-				bh = _.push(b, h_);
-			}
-			/**
-			 * the space of two bar
-			 */
-			_.push('barspace', (H - bh * L) / (L + 1));
+			h_= Math.floor(H*2 / (L * 3 + 1));
+			bh = _.pushIf(b, h_);
+			KL = L+1;
+		}else{
+			KL = _.get('labels').length;
+			L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
+			h_= Math.floor(H / (KL + 1 + L));
+			bh = _.pushIf(b,h_);
+			KL +=1;
 		}
+		
+		if (bh * L > H) {
+			bh = _.push(b, h_);
+		}
+		/**
+		 * the space of two bar
+		 */
+		_.push('barspace', (H - bh * L) / KL);
 
 		if (_.is3D()) {
 
@@ -6666,8 +6722,17 @@ $.Bar2D = $.extend($.Bar, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(), S = _.coo.getScale(_.get('scaleAlign')), W = _.coo.get(_.W), h2 = _.get('barheight') / 2, gw = _.get('barheight') + _.get('barspace'), w, I = _.coo.get(_.X) + S.basic * W, x0 = _.coo.get(_.X) - _.get('text_space')-_.coo.get('axis.width')[3], y0 = _.coo.get(_.Y)
-				+ _.get('barspace');
+		var _ = this._(),
+			h = _.get('barheight'),
+			b = _.get('barspace'),
+			S = _.coo.getScale(_.get('scaleAlign')),
+			W = _.coo.get(_.W),
+			h2 = h / 2,
+			gw = h + b,
+			w,
+			I = _.coo.get(_.X) + S.basic * W,
+			x0 = _.coo.get(_.X) - _.get('text_space')-_.coo.get('axis.width')[3], 
+			y0 = _.coo.get('y_start')+ b;
 		
 		_.data.each(function(d, i) {
 			w = (d.value - S.start) * W / S.distance;
@@ -6716,23 +6781,13 @@ $.BarMulti2D = $.extend($.Bar, {
 	doConfig : function() {
 		$.BarMulti2D.superclass.doConfig.call(this);
 
-		var _ = this._(), L = _.data.length, KL = _.get('labels').length, W = _.coo.get(_.W), H = _.coo.get(_.H), b = 'barheight', s = 'barspace', total = KL * L,
-		/**
-		 * bar's height
-		 */
-		bh = _.pushIf(b, H / (KL + 1 + total));
-		if (bh * L > H) {
-			bh = _.push(b, H / (KL + 1 + total));
-		}
-		/**
-		 * the space of two bar
-		 */
-		_.push(s, (H - bh * total) / (KL + 1));
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2,w,
-		I = _.coo.get(_.X) + S.basic*W,x = _.coo.get(_.X)-_.get('text_space')-_.coo.get('axis.width')[3],y = _.coo.get(_.Y)+ _.get(s);
+		var _ = this._(), L = _.data.length,W = _.coo.get(_.W), b = 'barheight', s = 'barspace',bh=_.get(b),
+		S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2,w,
+		I = _.coo.get(_.X) + S.basic*W,x = _.coo.get(_.X)-_.get('text_space')-_.coo.get('axis.width')[3],
+		y = _.coo.get('y_start')+ _.get(s);
 		
 		_.push('sub_option.height', bh);
 		
@@ -7156,19 +7211,17 @@ $.Line = $.extend($.Chart, {
 		 * apply the coordinate feature
 		 */
 		$.Coordinate.coordinate.call(_);
-
+		
+		var vw = _.get('coordinate.valid_width'),vh = _.get('coordinate.valid_height');
 		_.lines = [];
 		_.lines.zIndex = _.get('z_index');
 		_.components.push(_.lines);
 		
-		_.push('line_start', (_.get('coordinate.width') - _.get('coordinate.valid_width')) / 2);
-		_.push('line_end', _.get('coordinate.width') - _.get('line_start'));
-		
 		if (_.get('proportional_spacing'))
-			_.push('label_spacing', _.get('coordinate.valid_width') / (_.get('maxItemSize') - 1));
+			_.push('label_spacing', vw / (_.get('maxItemSize') - 1));
 		
-		_.push('sub_option.width', _.get('coordinate.valid_width'));
-		_.push('sub_option.height', _.get('coordinate.valid_height'));
+		_.push('sub_option.width', vw);
+		_.push('sub_option.height', vh);
 		_.pushIf('sub_option.keep_with_coordinate',s);
 		
 		if (_.get('crosshair.enable')) {
@@ -7200,7 +7253,7 @@ $.Line = $.extend($.Chart, {
 		 */
 		_.coo = $.Coordinate.coordinate_.call(_);
 		
-		_.push('sub_option.originx', _.coo.get(_.X) + _.get('line_start'));
+		_.push('sub_option.originx', _.coo.get('x_start'));
 		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.get(_.H));
 		
 		_.components.push(_.coo);

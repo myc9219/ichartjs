@@ -22,16 +22,18 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
 		var _ = this._(),
+			c = _.get('colwidth'),
+			s = _.get('hispace'),
 			S = _.coo.getScale(_.get('scaleAlign')),
 			H = _.coo.get(_.H), 
-			h2 = _.get('colwidth') / 2, 
-			gw = _.get('colwidth') + _.get('hispace'), 
+			h2 = c / 2, 
+			gw = c + s, 
 			h,
-			y0 = _.coo.get('originy') +  H,
+			y0 = _.coo.get(_.Y) +  H,
 			y = y0 - S.basic*H - (_.is3D()?(_.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_')):0),
-			x = _.get('hispace')+_.coo.get('originx');
+			x = s+_.coo.get('x_start');
 			y0 = y0 + _.get('text_space') + _.coo.get('axis.width')[2];
-		
+			
 		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
 			_.doParse(_,d, i, {

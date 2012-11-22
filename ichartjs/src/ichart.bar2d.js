@@ -21,8 +21,17 @@ iChart.Bar2D = iChart.extend(iChart.Bar, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(), S = _.coo.getScale(_.get('scaleAlign')), W = _.coo.get(_.W), h2 = _.get('barheight') / 2, gw = _.get('barheight') + _.get('barspace'), w, I = _.coo.get(_.X) + S.basic * W, x0 = _.coo.get(_.X) - _.get('text_space')-_.coo.get('axis.width')[3], y0 = _.coo.get(_.Y)
-				+ _.get('barspace');
+		var _ = this._(),
+			h = _.get('barheight'),
+			b = _.get('barspace'),
+			S = _.coo.getScale(_.get('scaleAlign')),
+			W = _.coo.get(_.W),
+			h2 = h / 2,
+			gw = h + b,
+			w,
+			I = _.coo.get(_.X) + S.basic * W,
+			x0 = _.coo.get(_.X) - _.get('text_space')-_.coo.get('axis.width')[3], 
+			y0 = _.coo.get('y_start')+ b;
 		
 		_.data.each(function(d, i) {
 			w = (d.value - S.start) * W / S.distance;

@@ -47,11 +47,11 @@
 				render : 'canvasDiv',
 				data : data,
 				title : {
-					text : 'This is a sample spirit from HighCharts',
+					text : '全国2010年第六次全国人口普查数据',
 					color : '#3e576f'
 				},
 				subtitle : {
-					text : 'Browser market share,April,2011 from 1 to 29 Feb 2012',
+					text : '图表展示了31个省、自治区、直辖市2010年的常住人口数据，并进行排名',
 					color : '#6d869f'
 				},
 				footnote : {
@@ -85,12 +85,14 @@
 				},
 				listeners:{
 					parseTipText:function(d,t,i){
+						//将数字进行千位格式化
 						var f = new String(d.value);
 						f = f.split("").reverse().join("").replace(/(\d{3})/g,"$1,").split("").reverse();
 						if(f[0]==','){
 							f.shift();
 						}	
 						f = f.join("");
+						
 						return d.name+"人口:<br/>"+f+"人<br/>占全国比重:<br/>"+(d.value/this.total * 100).toFixed(2)+ '%';
 					}
 				},
@@ -122,20 +124,14 @@
 				}
 			});
 			
-			/**
-			 *利用自定义组件构造左侧说明文本。
-			 */
+			//利用自定义组件构造左侧说明文本
 			chart.plugin(new iChart.Custom({
 					drawFn:function(){
-						/**
-						 *计算位置
-						 */	
+						//计算位置
 						var coo = chart.getCoordinate(),
 							x = coo.get('originx'),
 							y = coo.get('originy');
-						/**
-						 *在左上侧的位置，渲染一个单位的文字。
-						 */
+						//在左上侧的位置，渲染一个单位的文字
 						chart.target.textAlign('start')
 						.textBaseline('bottom')
 						.textFont('600 11px Verdana')
