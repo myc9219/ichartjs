@@ -2,9 +2,9 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>ichartjs例子-折线图-网站最近5天流量趋势 </title>
-		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
-		<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
+		<title>ichartjs 示例</title>
+		<meta name="Description" content="The ichartjs's gallery center,ichartjs 示例中心" />
+		<meta name="Keywords" content="ichartjs demo,Html5 demo,ichartjs例子,ichartjs示例,Html5例子,Html5示例" />
 		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
@@ -48,7 +48,14 @@
 								shadow:true
 							},
 							legend : {
-								enable : true
+								enable : true,
+								row:1,//设置在一行上显示，与column配合使用
+								column : 'max',
+								valign:'top',
+								sign:'bar',
+								background_color:null,//设置透明背景
+								offsetx:-80,//设置x轴偏移，满足位置需要
+								border : true
 							},
 							crosshair:{
 								enable:true,
@@ -60,7 +67,7 @@
 							},
 							coordinate:{
 								width:640,
-								height:260,
+								height:240,
 								axis:{
 									color:'#9f9f9f',
 									width:[0,0,2,2]
