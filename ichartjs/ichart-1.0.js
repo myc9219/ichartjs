@@ -699,6 +699,10 @@
 				}
 			},
 			toRgb:toRgb,
+			toRgba:function(c,o){
+				var rgb = c2a(toRgb(c));
+				return  'rgba(' + rgb[0]+',' + rgb[1]+',' + rgb[2]+',' + o +')';
+			},
 			/**
 			 * 计算空间点坐标矢量
 			 */
@@ -2620,6 +2624,7 @@ $.Label = $.extend($.Component, {
 		 * arc
 		 */
 		arc : function(x, y, r, dw, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
+			if(!r)return this;
 			var ccw = !!ccw, a2r = !!a2r&&!dw;
 			this.save().gCo(last).strokeStyle(b,bw,bc).fillStyle(c).beginPath();
 			
@@ -2743,8 +2748,9 @@ $.Label = $.extend($.Component, {
 				this.c.fillStyle = c;
 			return this;
 		},
-		arc2 : function(x1, y1, x2, y2, radius) {
-			this.c.arcTo(x1, y1, x2, y2, radius);
+		arc2 : function(x, y, r, s, e, c) {
+			if(r)
+			this.c.arc(x, y, r, s, e, c);
 			return this;
 		},
 		textAlign : function(a) {
@@ -3159,8 +3165,16 @@ $.Label = $.extend($.Component, {
 			 * draw a round corners border
 			 */
 			if (r) {
-				this.beginPath().moveTo(x+r[0], fd(j, y)).lineTo(x+w - r[1], fd(j, y)).arc2(x+w, fd(j, y), x+w, y+r[1], r[1]).lineTo(fd(j, x+w), y+h - r[2]).arc2(fd(j, x+w), y+h, x+w - r[2], y+h, r[2]).lineTo(x+r[3], fd(j, y+h)).arc2(x, fd(j, y+h), x, y+h - r[3], r[3]).lineTo(fd(j,x), y+r[0]).arc2(fd(j,x),
-						y, x+r[0], y, r[0]).closePath().shadowOn(shadow).stroke(j).shadowOff().fill(bg);
+				this.beginPath().moveTo(x+r[0], fd(j, y))
+				.lineTo(x+w - r[1], fd(j, y))
+				.arc2(fd(j,x+w - r[1]), fd(j, y+r[1]), r[1], PI*3/2, PI2)
+				.lineTo(fd(j, x+w), y+h - r[2])
+				.arc2(fd(j,x+w - r[2]), fd(j, y+h-r[2]), r[2], 0, PI/2)
+				.lineTo(x+r[3], fd(j, y+h))
+				.arc2(fd(j,x+r[3]), fd(j, y+h-r[3]), r[3], PI/2, PI)
+				.lineTo(fd(j,x), y+r[0])
+				.arc2(fd(j,x+r[0]), fd(j, y+r[0]), r[0], PI, PI*3/2)
+				.closePath().shadowOn(shadow).stroke(j).shadowOff().fill(bg);
 			} else {
 				if (!b.enable || f) {
 					if (b.enable){
@@ -5978,9 +5992,6 @@ $.Pie3D = $.extend($.Pie, {
 		 */
 		$.Pie3D.superclass.configure.apply(this, arguments);
 
-		/**
-		 * indicate the legend's type
-		 */
 		this.type = 'pie3d';
 		this.dimension = $._3D;
 

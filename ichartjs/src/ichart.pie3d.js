@@ -10,9 +10,6 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		 */
 		iChart.Pie3D.superclass.configure.apply(this, arguments);
 
-		/**
-		 * indicate the legend's type
-		 */
 		this.type = 'pie3d';
 		this.dimension = iChart._3D;
 

@@ -699,6 +699,10 @@
 				}
 			},
 			toRgb:toRgb,
+			toRgba:function(c,o){
+				var rgb = c2a(toRgb(c));
+				return  'rgba(' + rgb[0]+',' + rgb[1]+',' + rgb[2]+',' + o +')';
+			},
 			/**
 			 * 计算空间点坐标矢量
 			 */

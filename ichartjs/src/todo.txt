@@ -1,6 +1,6 @@
 //expect next
 1.增加测试用例*负数的测试用例
-1.所有Coordinate的valid_width的问题，统一处理
+1.傲游浏览器：line2d_06.html，Opera浏览器：圆角问题
 2.教程同步*
 3.示例编写*
 5.考虑插件式开发架构接口设计
