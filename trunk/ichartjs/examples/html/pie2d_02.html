@@ -2,52 +2,72 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>ichartjs 例子</title>
-		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
-		<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
+		<title>ichartjs 示例</title>
+		<meta name="Description" content="The ichartjs's gallery center,ichartjs 示例中心" />
+		<meta name="Keywords" content="ichartjs demo,Html5 demo,ichartjs例子,ichartjs示例,Html5例子,Html5示例" />
 		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
 			$(function(){
 				var data = [
-				        	{name : 'IE',value : 35.75,color:'#9d4a4a'},
-				        	{name : 'Chrome',value : 29.84,color:'#5d7f97'},
-				        	{name : 'Firefox',value : 24.88,color:'#97b3bc'},
-				        	{name : 'Safari',value : 6.77,color:'#a5aaaa'},
-				        	{name : 'Opera',value : 2.02,color:'#778088'},
-				        	{name : 'Other',value : 0.73,color:'#6f83a5'}
+				        	{name : 'UC浏览器',value : 40.0,color:'#4572a7'},
+				        	{name : 'QQ浏览器',value : 37.1,color:'#aa4643'},
+				        	{name : '欧鹏浏览器',value : 13.8,color:'#89a54e'},
+				        	{name : '百度浏览器',value : 1.6,color:'#80699b'},
+				        	{name : '海豚浏览器',value : 1.4,color:'#92a8cd'},
+				        	{name : '天天浏览器',value : 1.2,color:'#db843d'},
+				        	{name : '其他',value : 4.9,color:'#a47d7c'}
 			        	];
+
 	        	
-	        	var tData = {
-        			IE:'2012年2月份IE浏览器的市场份额由1月份的31.46%增长为2月底的35.75%，增长幅度达4.29%',
-        			Chrome:'Chrome的市场份额则由28.41%小幅增长1.43%，达到29.84%，占据浏览器市场第二位份额。',
-        			Firefox:'Firefox的市场份额涨幅0.11%，由24.77%增至24.88%',
-        			Safari:'Safari的市场份额为6.77%',
-        			Opera:'Opera的市场份额由1.95%增长至2.02%。',
-        			Other:'其他浏览器仍然占有很小一部分市场'
-	    	    }
-	    	    
-				new iChart.Pie2D({
+				var chart = new iChart.Pie2D({
 					render : 'canvasDiv',
 					data: data,
-					title : 'Top 5 Browsers from 1 to 29 Feb 2012',
-					legend : {
-						enable : true
+					title : {
+						text : '2012年第3季度中国第三方手机浏览器市场份额',
+						color : '#3e576f'
 					},
-					tip:{
-						enable : true
+					subtitle : {
+						text : 'UC浏览器、手机QQ浏览器及欧朋浏览器的份额位列第三方手机浏览器市场前三甲',
+						color : '#6d869f'
 					},
-					listeners:{
-						parseTipText:function(d, t, i){
-							return tData[d.name];
+					footnote : {
+						text : 'ichartjs.com',
+						color : '#909090',
+						fontsize : 11,
+						padding : '0 38'
+					},
+					sub_option : {
+						label : {
+							background_color:null,
+							padding:1,
+							border:{
+								enable:false,
+								color:'#666666'
+							},
+							fontsize:11,
+							fontweight:600,
+							color : '#4572a7'
+						},
+						border : {
+							width : 2,
+							color : '#ffffff'
 						}
 					},
+					shadow : true,
+					shadow_blur : 6,
+					shadow_color : '#aaaaaa',
+					shadow_offsetx : 0,
+					shadow_offsety : 0,
+					background_color:'#fefefe',
+					offset_angle:-120,//逆时针偏移120度
 					showpercent:true,
 					decimalsnum:2,
 					width : 800,
 					height : 440,
-					radius:140
-				}).draw();
+					radius:120
+				});
+				chart.draw();
 			});
 		</script>
 	</head>
@@ -58,12 +78,11 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这是一个基本的饼状图例子，例子展示了2012年2月份市场浏览器占有的情况。此例子中，配置了默认的图例。并以百分比的形式展示数据值。
-					配置了个性化的提示框以供查看进一步的数据<br/>
+					这是一个基本的饼状图示例，展示了UC浏览器、手机QQ浏览器及欧朋浏览器分别以活跃用户市场40%、37.1%及13.8%的份额位列第三方手机浏览器市场前三甲。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>
-					数据均为模拟。
+					数据来源于网络。
 				</span>
 			</div>
 	</body>
