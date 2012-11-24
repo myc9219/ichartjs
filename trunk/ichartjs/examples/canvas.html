@@ -1,18 +1,19 @@
 <!DOCTYPE>
 <html>
 <head>
+	<meta charset="UTF-8" />
+	<title>test</title>
 </head>
 <body style = "margin:0;padding:0">
 <script>
 		function color(){
 			return '#'+('00000'+(Math.random()*0x1000000<<0).toString(16)).slice(-6);
 		}
-		
-        var canvas = document.createElement("canvas");
-        var context = canvas.getContext("2d");
-        var ctx = context;
-        canvas.width = 550, canvas.height = 400,canvas.style.border = "solid 1px black";
-        document.body.appendChild(canvas);
+        //var canvas = document.createElement("canvas");
+        //var context = canvas.getContext("2d");
+        //var ctx = context;
+        //canvas.width = 550, canvas.height = 400,canvas.style.border = "solid 1px black";
+        //document.body.appendChild(canvas);
         
         function drawScreen() {
         	context.fillStyle = "black";
@@ -46,7 +47,7 @@
         	context.closePath();
         }
      // Draw a rectangle
-     	drawScreen();
+     	//drawScreen();
 
      	/*
         ctx.rect(50,20,200,120);
@@ -56,23 +57,41 @@
         ctx.fillRect(0,0,150,100);
         */
         </script> 
-        
-
-        <span>With clip():</span>
-        <canvas id="myCanvas2" width="300" height="150" style="border:1px solid #d3d3d3;">
+        <canvas id="myCanvas2" width="500" height="300" style="border:1px solid #d3d3d3;">
         Your browser does not support the HTML5 canvas tag.</canvas>
-	
         <script>
         var c=document.getElementById("myCanvas2");
         var ctx=c.getContext("2d");
-        // Clip a rectangular area
-        ctx.rect(50,20,200,120);
+        ctx.strokeStyle = "red"; 
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(100, 150);		//在左上方开始
+        //ctx.lineTo(90,10);		//到达圆角开始点的水平线
+        //ctx.arcTo(100,10,100,20,10);	//圆角
+        //ctx.lineTo(100,100);		//到达右下方的垂直线
+        ctx.arcTo(100, 150,50, 100, 50);
+        //ctx.arcTo(100, 100, 100, 150, 50);
+        //ctx.closePath();
         ctx.stroke();
-        ctx.clip();
-        // Draw red rectangle after clip()
-        ctx.fillStyle="red";
-        ctx.fillRect(0,0,150,100);
-        
+        //ctx.rect(100, 100,100,100);
+        //ctx.stroke();
+        //				this.lineTo(x+w - r[1], fd(j, y))
+//				.arc2(fd(j, x+w), fd(j, y), fd(j, x+w), y+r[1], r[1])
+//				.lineTo(fd(j, x+w), y+h - r[2])
+//				.arc2(fd(j, x+w), y+h, x+w - r[2], y+h, r[2])
+//				.lineTo(x+r[3], fd(j, y+h))
+//				.arc2(x, fd(j, y+h), x, y+h - r[3], r[3])
+//				.lineTo(fd(j,x), y+r[0])
+//				.arc2(fd(j,x),y, x+r[0], y, r[0]);
+//				if($.isOpera){
+//					this.arc2(x+r[0], fd(j, y),fd(j, x),y+r[0], r[0])
+//					.lineTo(fd(j, x),y+h - r[3])
+//					.arc2(fd(j, x),y+h - r[3], x+r[3],fd(j, y+h), r[3])
+//					.lineTo(fd(j, x+w- r[2]),fd(j, y+h))
+//					.arc2(fd(j, x+w- r[2]), y+h, fd(j,x+w) , y+h- r[2], r[2])
+//					.lineTo(fd(j,x+w), y+r[1])
+//					.arc2(fd(j,x+w), y+r[1], x+w-r[1],fd(j,y), r[1])
+//					.lineTo(x+r[0], fd(j, y));
 </script>
 </body>
 </html>
