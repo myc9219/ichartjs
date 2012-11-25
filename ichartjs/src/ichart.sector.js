@@ -136,10 +136,9 @@ iChart.Sector = iChart.extend(iChart.Component, {
 	},
 	doDraw : function(_) {
 		if (!_.get('ignored')) {
-			_.drawSector();
-			if (_.label) {
+			if (_.label)
 				_.label.draw();
-			}
+			_.drawSector();
 		}
 	},
 	doText : function(_, x, y) {
@@ -148,13 +147,14 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		_.push('label.textBaseline', 'middle');
 		_.label = new iChart.Text(_.get('label'), _);
 	},
-	doLabel : function(_, x, y, Q, p, x0, y0) {
+	doLabel : function(_, x, y, Q, p, x0, y0,L) {
 		_.push('label.originx', x);
 		_.push('label.originy', y);
 		_.push('label.quadrantd', Q);
 		_.push('label.line_points', p);
 		_.push('label.labelx', x0);
 		_.push('label.labely', y0);
+		_.push('label.smooth', L);
 		_.label = new iChart.Label(_.get('label'), _);
 	},
 	isLabel : function() {

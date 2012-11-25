@@ -60,39 +60,35 @@
 		var data = [
 		        	{name : 'UC浏览器',value : 40.0,color:'#4572a7'},
 		        	{name : 'QQ浏览器',value : 37.1,color:'#aa4643'},
-		        	{name : '欧鹏浏览器',value : 13.8,color:'#89a54e'},
+		        	{name : '欧朋浏览器',value : 13.8,color:'#89a54e'},
 		        	{name : '百度浏览器',value : 1.6,color:'#80699b'},
 		        	{name : '海豚浏览器',value : 1.4,color:'#92a8cd'},
 		        	{name : '天天浏览器',value : 1.2,color:'#db843d'},
 		        	{name : '其他',value : 4.9,color:'#a47d7c'}
 	        	];
 
-    	//饼图偏移 事件???
     	
-		var chart = new iChart.Pie2D({
+		var chart = new iChart.Pie3D({
 			render : 'canvasDiv',
 			data: data,
 			title : {
 				text : '2012年第3季度中国第三方手机浏览器市场份额',
 				color : '#3e576f'
 			},
-			subtitle : {
-				text : 'UC浏览器、手机QQ浏览器及欧朋浏览器的份额位列第三方手机浏览器市场前三甲',
-				color : '#6d869f'
-			},
 			footnote : {
 				text : 'ichartjs.com',
-				color : '#909090',
+				color : '#486c8f',
 				fontsize : 11,
 				padding : '0 38'
 			},
 			sub_option : {
 				label : {
 					background_color:null,
-					padding:1,
+					sign:false,//设置禁用label的小图标
+					padding:'0 4',
 					border:{
 						enable:false,
-						color:'#666666'
+						color:'#4572a7'
 					},
 					fontsize:11,
 					fontweight:600,
@@ -109,13 +105,30 @@
 			shadow_offsetx : 0,
 			shadow_offsety : 0,
 			background_color:'#fefefe',
-			offset_angle:-120,//逆时针偏移120度
+			offsetx:-80,//设置向x轴负方向偏移位置60px
+			offset_angle:-60,//逆时针偏移120度
+			//mutex : true,problem
 			showpercent:true,
 			decimalsnum:2,
 			width : 800,
 			height : 440,
-			radius:120
+			radius:140
 		});
+		//利用自定义组件构造右侧说明文本
+		chart.plugin(new iChart.Custom({
+				drawFn:function(){
+					//计算位置
+					var y = chart.get('originy'),
+						w = chart.get('width');
+					
+					//在右侧的位置，渲染说明文字
+					chart.target.textAlign('start')
+					.textBaseline('middle')
+					.textFont('600 16px Verdana')
+					.fillText('UC浏览器、\n手机QQ浏览器及\n欧朋浏览器的份额\n位列第三方手机浏览器\n市场前三甲',w-220,y-40,false,'#be5985',false,20);
+				}
+		}));
+		
 		chart.draw();
 	});
 	</script>

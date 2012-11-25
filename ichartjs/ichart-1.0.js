@@ -543,7 +543,7 @@
 			return hsv2Rgb(hsv, rgb[3]);
 		},
 		topi = function(v){
-			if(v==0)return v;
+			if(v==0)return 0;
 			if(v%pi2==0)return pi2;
 			return v%pi2;
 		};
@@ -675,9 +675,14 @@
 				return u > v && l < v;
 			},
 			angleInRange : function(l, u, v) {
-				l = topi(l);
-				u = topi(u);
-				v = topi(v);
+				u = (u -l)%pi2;
+				v = (v -l)%pi2;
+				v = v<0?v+pi2:v;
+				l = 0;
+//				console.log('============');
+//				console.log(u);
+//				console.log(v);
+//				console.log(l);
 				if (u > l) {
 					return u > v && l < v;
 				}
@@ -2276,9 +2281,11 @@ $.Label = $.extend($.Component, {
 		this.push(this.W, this.T.measureText(this.get('text')) + this.get('hpadding') + this.get('sign_size') + this.get('sign_space'));
 	},
 	localizer : function(_) {
-		var Q = _.get('quadrantd');
-		_.labelx = (Q >= 1 && Q <= 2) ? (_.get('labelx') - _.get(_.W)) : _.get('labelx');
-		_.labely = Q >= 2 ? (_.get('labely') - _.get(_.H)) : _.get('labely');
+		var Q = _.get('quadrantd'),p = _.get('line_points'),m=_.get('smooth'),Q=(Q >= 1 && Q <= 2),x=_.get('labelx'),y=_.get('labely');
+		_.labelx = x+(Q ? - _.get(_.W)-m : m);
+		_.labely = y-_.get(_.H)/2;
+		p[2] = {x:x,y:y};
+		p[3] = {x:p[2].x+(Q ? -m : m),y:p[2].y};
 	},
 	doLayout : function(x, y,_) {
 		_.push('labelx', _.get('labelx') + x);
@@ -2287,12 +2294,13 @@ $.Label = $.extend($.Component, {
 			p.x += x;
 			p.y += y;
 		}, _);
+		_.localizer(_);
 	},
 	doDraw : function(_){
-		_.localizer(_);
 		var p = _.get('line_points'), ss = _.get('sign_size'), x = _.labelx + _.get('padding_left'), y = _.labely + _.get('padding_top');
-
-		_.T.lineArray(p, _.get('line_thickness'), _.get('border.color'));
+		
+		_.T.label(p, _.get('line_thickness'), _.get('border.color'));
+		
 		_.T.box(_.labelx, _.labely, _.get(_.W), _.get(_.H), _.get('border'), _.get('f_color'), false, _.get('shadow'));
 
 		_.T.textStyle(_.L, _.O, _.get('fontStyle'));
@@ -2303,7 +2311,7 @@ $.Label = $.extend($.Component, {
 		}
 		if (_.get('sign') == 'square') {
 			_.T.box(x, y, ss, ss, 0, _.get('scolor'));
-		} else {
+		} else if(_.get('sign')){
 			_.T.round(x + ss / 2, y + ss / 2, ss / 2, _.get('scolor'));
 		}
 		_.T.fillText(_.get('text'), x + ss + _.get('sign_space'), y, _.get('textwidth'), textcolor);
@@ -2317,7 +2325,10 @@ $.Label = $.extend($.Component, {
 		if (_.get('fontsize') > _.get('line_height')) {
 			_.push('line_height', _.get('fontsize'));
 		}
-
+		if(!_.get('sign')){
+			_.push('sign_size',0);
+			_.push('sign_space',0);
+		}
 		_.push(_.H, _.get('line_height') + _.get('vpadding'));
 
 		_.text();
@@ -3046,6 +3057,15 @@ $.Label = $.extend($.Component, {
 		bezierCurveTo : function(r) {
 			this.c.bezierCurveTo(r[0], r[1], r[2], r[3], r[4], r[5]);
 			return this;
+		},
+		label : function(p, w, c) {
+			return this.save()
+				.beginPath()
+				.strokeStyle(true,w, c)
+				.moveTo(fd(w, p[0].x), fd(w, p[0].y))
+				.bezierCurveTo([p[1].x,p[1].y,p[2].x,p[2].y,p[3].x,p[3].y])
+				.stroke(true)
+				.restore();
 		},
 		lineArray : function(p, w, c, smooth, smo) {
 			this.save().beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
@@ -5391,10 +5411,9 @@ $.Sector = $.extend($.Component, {
 	},
 	doDraw : function(_) {
 		if (!_.get('ignored')) {
-			_.drawSector();
-			if (_.label) {
+			if (_.label)
 				_.label.draw();
-			}
+			_.drawSector();
 		}
 	},
 	doText : function(_, x, y) {
@@ -5403,13 +5422,14 @@ $.Sector = $.extend($.Component, {
 		_.push('label.textBaseline', 'middle');
 		_.label = new $.Text(_.get('label'), _);
 	},
-	doLabel : function(_, x, y, Q, p, x0, y0) {
+	doLabel : function(_, x, y, Q, p, x0, y0,L) {
 		_.push('label.originx', x);
 		_.push('label.originy', y);
 		_.push('label.quadrantd', Q);
 		_.push('label.line_points', p);
 		_.push('label.labelx', x0);
 		_.push('label.labely', y0);
+		_.push('label.smooth', L);
 		_.label = new $.Label(_.get('label'), _);
 	},
 	isLabel : function() {
@@ -5541,7 +5561,6 @@ $.Sector = $.extend($.Component, {
 				if(_.r<r||(b&&(_.r-b)>r)){
 					return {valid:false};
 				}
-				
 				if($.angleInRange(_.get('startAngle'),_.get('endAngle'),$.atan2Radian(_.x,_.y,e.x,e.y))){
 					return {valid:true};
 				}
@@ -5570,19 +5589,23 @@ $.Sector = $.extend($.Component, {
 			}
 			_.applyGradient(_.x-_.r,_.y-_.r,2*_.r,2*_.r);
 			
-			_.pushIf('increment',$.lowTo(5,_.r/10));
 			
-			var A = _.get('middleAngle'),L = _.get('increment');
+			
+			var A = _.get('middleAngle'),L = _.pushIf('increment',$.lowTo(5,_.r/10)),p2;
 			_.push('inc_x',L * Math.cos(2 * Math.PI -A));
 			_.push('inc_y',L * Math.sin(2 * Math.PI - A));
+			
+			L *=2;
 			if(_.get('label')){
-				var P2 = $.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
 				if(_.get('mini_label')){
+					P2 = $.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
 					_.doText(_,P2.x,P2.y);
 				}else{
 					var Q  = $.quadrantd(A),
-						P = $.p2Point(_.x,_.y,A,_.r + L);
-					_.doLabel(_,P2.x,P2.y,Q,[{x:P2.x,y:P2.y},{x:P.x,y:P.y}],P.x,P.y);
+						P = $.p2Point(_.x,_.y,A,_.r + L),
+						C1 = $.p2Point(_.x,_.y,A,_.r + L*0.6);
+						P2 = $.p2Point(_.x,_.y,A,_.r);
+					_.doLabel(_,P2.x,P2.y,Q,[{x:P2.x,y:P2.y},{x:C1.x,y:C1.y},{x:P.x,y:P.y}],P.x,P.y,L*0.4);
 				}
 			}
 		}
@@ -5686,16 +5709,15 @@ $.Sector = $.extend($.Component, {
 			$.Assert.gt(_.a,0);
 			$.Assert.gt(_.b,0);
 			
-			_.pushIf('increment',$.lowTo(5,_.a/8));
 			
 			var toAngle = function(A){
-				return $.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A)));
+				return Math.abs($.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A))))*(A>0?1:-1);
 			},
-			L = _.get('increment');
-			
+			L = _.pushIf('increment',$.lowTo(5,_.a/8));
 			_.sA = toAngle.call(_,_.get('startAngle'));
 			_.eA = toAngle.call(_,_.get('endAngle'));
 			_.mA = toAngle.call(_,mA);
+			//console.log(_.sA+','+_.eA+'=='+_.get('startAngle')+','+_.get('endAngle'));
 			
 			_.push('inc_x',L * Math.cos(2 * Math.PI -_.mA));
 			_.push('inc_y',L * Math.sin(2 * Math.PI - _.mA));
@@ -5706,9 +5728,11 @@ $.Sector = $.extend($.Component, {
 					_.doText(_,P3.x,P3.y);
 				}else{
 					var Q  = $.quadrantd(mA),
-						P = _.p2p(_.x,_.y,mA,L/_.a+1),
+						P =  _.p2p(_.x,_.y,mA,L/_.a+1),
+						C1 = _.p2p(_.x,_.y,mA,L*0.6/_.a+1),
 						P2 = _.p2p(_.x,_.y,mA,1);
-					_.doLabel(_,P2.x,P2.y,Q,[{x:P2.x,y:P2.y},{x:P.x,y:P.y}],P.x,P.y);
+						_.doLabel(_,P2.x,P2.y,Q,[{x:P2.x,y:P2.y},{x:C1.x,y:C1.y},{x:P.x,y:P.y}],P.x,P.y,L*0.4);
+					
 				}
 			}
 		}
@@ -5759,9 +5783,9 @@ $.Pie = $.extend($.Chart, {
 			 */
 			intellectLayout : true,
 			/**
-			 * @cfg {Number} Specifies the distance in pixels when two label is incompatible with each other.(default 6),
+			 * @cfg {Number} Specifies the distance in pixels when two label is incompatible with each other.(default 4),
 			 */
-			layout_distance : 6,
+			layout_distance : 4,
 			/**
 			 * @inner {Boolean} if it has animate when a piece popd (default to false)
 			 */
@@ -5856,7 +5880,6 @@ $.Pie = $.extend($.Chart, {
 			if ((la.labely <= y && (y - la.labely-1) < la.get(_.H)) || (la.labely > y && (la.labely - y-1) < l.get(_.H))) {
 				if ((la.labelx < x && (x - la.labelx) < la.get(_.W)) || (la.labelx > x && (la.labelx - x) < l.get(_.W))) {
 					la.push('labely', (la.get('labely')+ y - la.labely) + (la.get(_.H)  + d)*((la.get('quadrantd') == 2)?-1:1));
-					la.push('line_points', la.get('line_points').concat({x:la.get('labelx'),y:la.get('labely')}));
 					la.localizer(la);
 				}
 			}
@@ -5890,8 +5913,7 @@ $.Pie = $.extend($.Chart, {
 		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
 		_.components.push(_.sectors);
-		_.oA = $.angle2Radian(_.get('offset_angle'));
-		
+		_.oA = $.angle2Radian(_.get('offset_angle'))%(2*Math.PI);
 		//If 3D,let it bigger
 		if (_.is3D())
 			f += 0.06;
@@ -6165,7 +6187,6 @@ $.Donut2D = $.extend($.Pie, {
 			center : {
 				text:'',
 				line_height:24,
-				offsety:-8,
 				fontweight : 'bold',
 				/**
 				 * Specifies the font-size in pixels of center text.(default to 24)
