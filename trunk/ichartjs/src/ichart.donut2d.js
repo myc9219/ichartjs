@@ -26,7 +26,6 @@ iChart.Donut2D = iChart.extend(iChart.Pie, {
 			center : {
 				text:'',
 				line_height:24,
-				offsety:-8,
 				fontweight : 'bold',
 				/**
 				 * Specifies the font-size in pixels of center text.(default to 24)

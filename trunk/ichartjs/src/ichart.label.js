@@ -79,9 +79,11 @@ iChart.Label = iChart.extend(iChart.Component, {
 		this.push(this.W, this.T.measureText(this.get('text')) + this.get('hpadding') + this.get('sign_size') + this.get('sign_space'));
 	},
 	localizer : function(_) {
-		var Q = _.get('quadrantd');
-		_.labelx = (Q >= 1 && Q <= 2) ? (_.get('labelx') - _.get(_.W)) : _.get('labelx');
-		_.labely = Q >= 2 ? (_.get('labely') - _.get(_.H)) : _.get('labely');
+		var Q = _.get('quadrantd'),p = _.get('line_points'),m=_.get('smooth'),Q=(Q >= 1 && Q <= 2),x=_.get('labelx'),y=_.get('labely');
+		_.labelx = x+(Q ? - _.get(_.W)-m : m);
+		_.labely = y-_.get(_.H)/2;
+		p[2] = {x:x,y:y};
+		p[3] = {x:p[2].x+(Q ? -m : m),y:p[2].y};
 	},
 	doLayout : function(x, y,_) {
 		_.push('labelx', _.get('labelx') + x);
@@ -90,12 +92,12 @@ iChart.Label = iChart.extend(iChart.Component, {
 			p.x += x;
 			p.y += y;
 		}, _);
+		_.localizer(_);
 	},
 	doDraw : function(_){
-		_.localizer(_);
 		var p = _.get('line_points'), ss = _.get('sign_size'), x = _.labelx + _.get('padding_left'), y = _.labely + _.get('padding_top');
-
-		_.T.lineArray(p, _.get('line_thickness'), _.get('border.color'));
+		
+		_.T.label(p, _.get('line_thickness'), _.get('border.color'));
 		
 		_.T.box(_.labelx, _.labely, _.get(_.W), _.get(_.H), _.get('border'), _.get('f_color'), false, _.get('shadow'));
 
@@ -107,7 +109,7 @@ iChart.Label = iChart.extend(iChart.Component, {
 		}
 		if (_.get('sign') == 'square') {
 			_.T.box(x, y, ss, ss, 0, _.get('scolor'));
-		} else {
+		} else if(_.get('sign')){
 			_.T.round(x + ss / 2, y + ss / 2, ss / 2, _.get('scolor'));
 		}
 		_.T.fillText(_.get('text'), x + ss + _.get('sign_space'), y, _.get('textwidth'), textcolor);
@@ -121,7 +123,10 @@ iChart.Label = iChart.extend(iChart.Component, {
 		if (_.get('fontsize') > _.get('line_height')) {
 			_.push('line_height', _.get('fontsize'));
 		}
-
+		if(!_.get('sign')){
+			_.push('sign_size',0);
+			_.push('sign_space',0);
+		}
 		_.push(_.H, _.get('line_height') + _.get('vpadding'));
 
 		_.text();

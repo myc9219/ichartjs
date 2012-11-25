@@ -48,7 +48,6 @@
 				if(_.r<r||(b&&(_.r-b)>r)){
 					return {valid:false};
 				}
-				
 				if(iChart.angleInRange(_.get('startAngle'),_.get('endAngle'),iChart.atan2Radian(_.x,_.y,e.x,e.y))){
 					return {valid:true};
 				}
@@ -77,19 +76,23 @@
 			}
 			_.applyGradient(_.x-_.r,_.y-_.r,2*_.r,2*_.r);
 			
-			_.pushIf('increment',iChart.lowTo(5,_.r/10));
 			
-			var A = _.get('middleAngle'),L = _.get('increment');
+			
+			var A = _.get('middleAngle'),L = _.pushIf('increment',iChart.lowTo(5,_.r/10)),p2;
 			_.push('inc_x',L * Math.cos(2 * Math.PI -A));
 			_.push('inc_y',L * Math.sin(2 * Math.PI - A));
+			
+			L *=2;
 			if(_.get('label')){
-				var P2 = iChart.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
 				if(_.get('mini_label')){
+					P2 = iChart.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
 					_.doText(_,P2.x,P2.y);
 				}else{
 					var Q  = iChart.quadrantd(A),
-						P = iChart.p2Point(_.x,_.y,A,_.r + L);
-					_.doLabel(_,P2.x,P2.y,Q,[{x:P2.x,y:P2.y},{x:P.x,y:P.y}],P.x,P.y);
+						P = iChart.p2Point(_.x,_.y,A,_.r + L),
+						C1 = iChart.p2Point(_.x,_.y,A,_.r + L*0.6);
+						P2 = iChart.p2Point(_.x,_.y,A,_.r);
+					_.doLabel(_,P2.x,P2.y,Q,[{x:P2.x,y:P2.y},{x:C1.x,y:C1.y},{x:P.x,y:P.y}],P.x,P.y,L*0.4);
 				}
 			}
 		}

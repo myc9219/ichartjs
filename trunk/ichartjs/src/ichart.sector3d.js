@@ -94,16 +94,15 @@
 			iChart.Assert.gt(_.a,0);
 			iChart.Assert.gt(_.b,0);
 			
-			_.pushIf('increment',iChart.lowTo(5,_.a/8));
 			
 			var toAngle = function(A){
-				return iChart.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A)));
+				return Math.abs(iChart.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A))))*(A>0?1:-1);
 			},
-			L = _.get('increment');
-			
+			L = _.pushIf('increment',iChart.lowTo(5,_.a/8));
 			_.sA = toAngle.call(_,_.get('startAngle'));
 			_.eA = toAngle.call(_,_.get('endAngle'));
 			_.mA = toAngle.call(_,mA);
+			//console.log(_.sA+','+_.eA+'=='+_.get('startAngle')+','+_.get('endAngle'));
 			
 			_.push('inc_x',L * Math.cos(2 * Math.PI -_.mA));
 			_.push('inc_y',L * Math.sin(2 * Math.PI - _.mA));
@@ -114,9 +113,11 @@
 					_.doText(_,P3.x,P3.y);
 				}else{
 					var Q  = iChart.quadrantd(mA),
-						P = _.p2p(_.x,_.y,mA,L/_.a+1),
+						P =  _.p2p(_.x,_.y,mA,L/_.a+1),
+						C1 = _.p2p(_.x,_.y,mA,L*0.6/_.a+1),
 						P2 = _.p2p(_.x,_.y,mA,1);
-					_.doLabel(_,P2.x,P2.y,Q,[{x:P2.x,y:P2.y},{x:P.x,y:P.y}],P.x,P.y);
+						_.doLabel(_,P2.x,P2.y,Q,[{x:P2.x,y:P2.y},{x:C1.x,y:C1.y},{x:P.x,y:P.y}],P.x,P.y,L*0.4);
+					
 				}
 			}
 		}

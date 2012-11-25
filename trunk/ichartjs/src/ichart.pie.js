@@ -41,9 +41,9 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			 */
 			intellectLayout : true,
 			/**
-			 * @cfg {Number} Specifies the distance in pixels when two label is incompatible with each other.(default 6),
+			 * @cfg {Number} Specifies the distance in pixels when two label is incompatible with each other.(default 4),
 			 */
-			layout_distance : 6,
+			layout_distance : 4,
 			/**
 			 * @inner {Boolean} if it has animate when a piece popd (default to false)
 			 */
@@ -138,7 +138,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			if ((la.labely <= y && (y - la.labely-1) < la.get(_.H)) || (la.labely > y && (la.labely - y-1) < l.get(_.H))) {
 				if ((la.labelx < x && (x - la.labelx) < la.get(_.W)) || (la.labelx > x && (la.labelx - x) < l.get(_.W))) {
 					la.push('labely', (la.get('labely')+ y - la.labely) + (la.get(_.H)  + d)*((la.get('quadrantd') == 2)?-1:1));
-					la.push('line_points', la.get('line_points').concat({x:la.get('labelx'),y:la.get('labely')}));
 					la.localizer(la);
 				}
 			}
@@ -172,8 +171,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
 		_.components.push(_.sectors);
-		_.oA = iChart.angle2Radian(_.get('offset_angle'));
-		
+		_.oA = iChart.angle2Radian(_.get('offset_angle'))%(2*Math.PI);
 		//If 3D,let it bigger
 		if (_.is3D())
 			f += 0.06;

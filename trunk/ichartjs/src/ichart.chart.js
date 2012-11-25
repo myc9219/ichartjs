@@ -591,6 +591,15 @@
 			this.c.bezierCurveTo(r[0], r[1], r[2], r[3], r[4], r[5]);
 			return this;
 		},
+		label : function(p, w, c) {
+			return this.save()
+				.beginPath()
+				.strokeStyle(true,w, c)
+				.moveTo(fd(w, p[0].x), fd(w, p[0].y))
+				.bezierCurveTo([p[1].x,p[1].y,p[2].x,p[2].y,p[3].x,p[3].y])
+				.stroke(true)
+				.restore();
+		},
 		lineArray : function(p, w, c, smooth, smo) {
 			this.save().beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
 			for ( var i = 1; i < p.length; i++){

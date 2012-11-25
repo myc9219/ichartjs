@@ -543,7 +543,7 @@
 			return hsv2Rgb(hsv, rgb[3]);
 		},
 		topi = function(v){
-			if(v==0)return v;
+			if(v==0)return 0;
 			if(v%pi2==0)return pi2;
 			return v%pi2;
 		};
@@ -675,9 +675,14 @@
 				return u > v && l < v;
 			},
 			angleInRange : function(l, u, v) {
-				l = topi(l);
-				u = topi(u);
-				v = topi(v);
+				u = (u -l)%pi2;
+				v = (v -l)%pi2;
+				v = v<0?v+pi2:v;
+				l = 0;
+//				console.log('============');
+//				console.log(u);
+//				console.log(v);
+//				console.log(l);
 				if (u > l) {
 					return u > v && l < v;
 				}
