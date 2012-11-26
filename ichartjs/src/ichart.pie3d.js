@@ -36,14 +36,11 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		var _ = this._(), z = _.get('zRotate');
 		_.push('zRotate', iChart.between(0, 90, 90 - z));
 		_.push('cylinder_height', _.get('yHeight') * Math.cos(iChart.angle2Radian(z)));
-		_.push('sub_option.semi_major_axis', _.r);
-		_.push('sub_option.semi_minor_axis', _.r * z / 90);
-		_.push('sub_option.semi_major_axis', _.r);
+		_.a = _.push('sub_option.semi_major_axis', _.r);
+		_.b = _.push('sub_option.semi_minor_axis', _.r * z / 90);
 		_.push('sub_option.originy', _.get(_.Y) - _.get('yHeight') / 2);
-
-		_.data.each(function(d, i) {
-			_.doParse(_,d, i);
-		}, _);
+		
+		_.parse(_);
 
 		var layer = [], L = [], PI = Math.PI, PI2 = PI * 2, a = PI / 2, b = PI * 1.5, c = _.get('counterclockwise'), abs = function(n, f) {
 			n = Math.abs(n - f);
