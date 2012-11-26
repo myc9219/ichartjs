@@ -85,12 +85,14 @@ iChart.Label = iChart.extend(iChart.Component, {
 		p[2] = {x:x,y:y};
 		p[3] = {x:p[2].x+(Q ? -m : m),y:p[2].y};
 	},
-	doLayout : function(x, y,_) {
-		_.push('labelx', _.get('labelx') + x);
-		_.push('labely', _.get('labely') + y);
-		_.get('line_points').each(function(p) {
+	doLayout : function(x, y,n,_) {
+		_.push('labelx', _.get('labelx') + x/n);
+		_.push('labely', _.get('labely') + y/n);
+		
+		_.get('line_points').each(function(p,i) {
 			p.x += x;
 			p.y += y;
+			return i==1;
 		}, _);
 		_.localizer(_);
 	},

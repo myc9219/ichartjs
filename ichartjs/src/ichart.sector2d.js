@@ -77,11 +77,9 @@
 			_.applyGradient(_.x-_.r,_.y-_.r,2*_.r,2*_.r);
 			
 			
-			
 			var A = _.get('middleAngle'),L = _.pushIf('increment',iChart.lowTo(5,_.r/10)),p2;
 			_.push('inc_x',L * Math.cos(2 * Math.PI -A));
 			_.push('inc_y',L * Math.sin(2 * Math.PI - A));
-			
 			L *=2;
 			if(_.get('label')){
 				if(_.get('mini_label')){

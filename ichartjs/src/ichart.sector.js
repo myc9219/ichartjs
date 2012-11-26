@@ -155,6 +155,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		_.push('label.labelx', x0);
 		_.push('label.labely', y0);
 		_.push('label.smooth', L);
+		_.push('label.angle', _.get('middleAngle')%(Math.PI*2));
 		_.label = new iChart.Label(_.get('label'), _);
 	},
 	isLabel : function() {
@@ -217,7 +218,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 			if (v.status != _.expanded) {
 				_.fireEvent(_, 'changed', [_, _.expanded]);
 				if (f)
-					_.label.doLayout(_.get('inc_x') * (_.expanded ? 1 : -1), -_.get('inc_y') * (_.expanded ? 1 : -1),_.label);
+					_.label.doLayout(_.get('inc_x') * (_.expanded ? 1 : -1), -_.get('inc_y') * (_.expanded ? 1 : -1),2,_.label);
 			}
 			v.status = _.expanded;
 			if (_.expanded) {
