@@ -5869,6 +5869,12 @@ $.Pie = $.extend($.Chart, {
 			_.proxy.drawSector();
 		}
 	},
+	parse : function(_) {
+		_.data.each(function(d,i){
+			_.doParse(_,d,i);
+		},_);
+		_.localizer(_);
+	},
 	doParse : function(_,d, i) {
 		var t = d.name + ' ' +_.getPercent(d.value);
 		
@@ -5884,10 +5890,9 @@ $.Pie = $.extend($.Chart, {
 		});
 		_.sectors.push(_.doSector(d));
 	},
-	test : function(_,l,d,Q) {
-		var x = l.get('labelx'),y=l.get('labely')+l.get(_.H)/2*(Q<2?-1:1),
-			r = $.distanceP2P(_.get(_.X),_.get(_.Y),x,y),y=_.get(_.Y)-y;
-		if(r<_.r){
+	dolayout : function(_,x,y,l,d,Q) {
+		if(_.is3D()?$.inEllipse(_.get(_.X) - x,_.get(_.Y)-y,_.a,_.b):$.distanceP2P(_.get(_.X),_.get(_.Y),x,y)<_.r){
+			y=_.get(_.Y)-y;
 			l.push('labelx',_.get(_.X)+(Math.sqrt(_.r*_.r-y*y)*2+d)*(Q==0||Q==3?1:-1));
 			l.localizer(l);
 		}
@@ -5900,6 +5905,7 @@ $.Pie = $.extend($.Chart, {
 				if(f.isLabel())
 				unlayout.push(f.label);
 			});
+			
 			var pi=Math.PI,abs =function(n,Q){
 				while(n<0){
 					n+=(pi*2);
@@ -5928,7 +5934,7 @@ $.Pie = $.extend($.Chart, {
 							Q = la.get('quadrantd');
 							la.push('labely', (la.get('labely')+ y - la.labely) + (la.get(_.H)  + d)*(Q>1?-1:1));
 							la.localizer(la);
-							_.test(_,la,d,Q);
+							_.dolayout(_,la.get('labelx'),la.get('labely')+la.get(_.H)/2*(Q<2?-1:1),la,d,Q);
 						}
 					}
 				}, _);
@@ -6022,13 +6028,7 @@ $.Pie2D = $.extend($.Pie, {
 		 * quick config to all rectangle
 		 */
 		_.push('sub_option.radius',_.r)
-		
-		_.data.each(function(d,i){
-			_.doParse(_,d,i);
-		},_);
-		
-		_.localizer(_);
-		
+		_.parse(_);
 		
 		
 	}
@@ -6074,14 +6074,11 @@ $.Pie3D = $.extend($.Pie, {
 		var _ = this._(), z = _.get('zRotate');
 		_.push('zRotate', $.between(0, 90, 90 - z));
 		_.push('cylinder_height', _.get('yHeight') * Math.cos($.angle2Radian(z)));
-		_.push('sub_option.semi_major_axis', _.r);
-		_.push('sub_option.semi_minor_axis', _.r * z / 90);
-		_.push('sub_option.semi_major_axis', _.r);
+		_.a = _.push('sub_option.semi_major_axis', _.r);
+		_.b = _.push('sub_option.semi_minor_axis', _.r * z / 90);
 		_.push('sub_option.originy', _.get(_.Y) - _.get('yHeight') / 2);
-
-		_.data.each(function(d, i) {
-			_.doParse(_,d, i);
-		}, _);
+		
+		_.parse(_);
 
 		var layer = [], L = [], PI = Math.PI, PI2 = PI * 2, a = PI / 2, b = PI * 1.5, c = _.get('counterclockwise'), abs = function(n, f) {
 			n = Math.abs(n - f);
