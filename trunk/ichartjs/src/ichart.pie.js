@@ -127,22 +127,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			_.proxy.drawSector();
 		}
 	},
-	localizer : function(la) {
-		var _ = this._(),d = _.get('layout_distance');
-		/**
-		 * Did the code optimal?,did need to enhance so that the label can fit the continar?
-		 */
-		_.sectors.each(function(s, i) {
-			if(!s.isLabel())return;
-			var l = s.label, x = l.labelx, y = l.labely;
-			if ((la.labely <= y && (y - la.labely-1) < la.get(_.H)) || (la.labely > y && (la.labely - y-1) < l.get(_.H))) {
-				if ((la.labelx < x && (x - la.labelx) < la.get(_.W)) || (la.labelx > x && (la.labelx - x) < l.get(_.W))) {
-					la.push('labely', (la.get('labely')+ y - la.labely) + (la.get(_.H)  + d)*((la.get('quadrantd') == 2)?-1:1));
-					la.localizer(la);
-				}
-			}
-		}, _);
-	},
 	doParse : function(_,d, i) {
 		var t = d.name + ' ' +_.getPercent(d.value);
 		
@@ -156,12 +140,59 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		_.push('sub_option.listeners.changed', function(se, st, i) {
 			_.fireEvent(_, st ? 'bound' : 'rebound', [_, se.get('name')]);
 		});
-		
-		var s = _.doSector(d);
-		if (s.isLabel() && _.get('intellectLayout')) {
-			_.localizer(s.label);
+		_.sectors.push(_.doSector(d));
+	},
+	test : function(_,l,d,Q) {
+		var x = l.get('labelx'),y=l.get('labely')+l.get(_.H)/2*(Q<2?-1:1),
+			r = iChart.distanceP2P(_.get(_.X),_.get(_.Y),x,y),y=_.get(_.Y)-y;
+		if(r<_.r){
+			l.push('labelx',_.get(_.X)+(Math.sqrt(_.r*_.r-y*y)*2+d)*(Q==0||Q==3?1:-1));
+			l.localizer(l);
 		}
-		_.sectors.push(s);
+	},
+	localizer:function(_){
+		if (_.get('intellectLayout')) {
+			var unlayout = [],layouted = [],d = _.get('layout_distance'),Q;
+			
+			_.sectors.each(function(f, i) {
+				if(f.isLabel())
+				unlayout.push(f.label);
+			});
+			var pi=Math.PI,abs =function(n,Q){
+				while(n<0){
+					n+=(pi*2);
+				}
+				if(Q==0){
+					return n;
+				}
+				if(Q==1){
+					return pi-n;
+				}
+				if(Q==2){
+					return n-pi;
+				}
+				if(Q==3){
+					return pi*2-n;
+				}
+			}
+			unlayout.sor(function(p, q) {
+				return (abs(p.get('angle'),p.get('quadrantd')) - abs(q.get('angle'),q.get('quadrantd')))>0;
+			});
+			unlayout.each(function(la) {
+				layouted.each(function(l) {
+					var x = l.labelx, y = l.labely;
+					if ((la.labely <= y && (y - la.labely-1) < la.get(_.H)) || (la.labely > y && (la.labely - y-1) < l.get(_.H))) {
+						if ((la.labelx < x && (x - la.labelx) < la.get(_.W)) || (la.labelx > x && (la.labelx - x) < l.get(_.W))) {
+							Q = la.get('quadrantd');
+							la.push('labely', (la.get('labely')+ y - la.labely) + (la.get(_.H)  + d)*(Q>1?-1:1));
+							la.localizer(la);
+							_.test(_,la,d,Q);
+						}
+					}
+				}, _);
+				layouted.push(la);
+			});
+		}
 	},
 	doConfig : function() {
 		iChart.Pie.superclass.doConfig.call(this);

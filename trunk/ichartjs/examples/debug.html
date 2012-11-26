@@ -55,20 +55,14 @@
 		}
 	</style>
 	<script type="text/javascript">
+	var colors = ["#4572a7","#aa4643","#89a54e","#80699b","#92a8cd","#db843d"];
+	var data = [];
+	for(var i=0;i<24;i++){
+		data.push({name : 'UC浏览器'+i,value : 10,color:colors[i%6]});
+	}
 	
-	$(function(){
-		var data = [
-		        	{name : 'UC浏览器',value : 40.0,color:'#4572a7'},
-		        	{name : 'QQ浏览器',value : 37.1,color:'#aa4643'},
-		        	{name : '欧朋浏览器',value : 13.8,color:'#89a54e'},
-		        	{name : '百度浏览器',value : 1.6,color:'#80699b'},
-		        	{name : '海豚浏览器',value : 1.4,color:'#92a8cd'},
-		        	{name : '天天浏览器',value : 1.2,color:'#db843d'},
-		        	{name : '其他',value : 4.9,color:'#a47d7c'}
-	        	];
-
-    	
-		var chart = new iChart.Pie3D({
+	function test(offset){
+		return new iChart.Pie2D({
 			render : 'canvasDiv',
 			data: data,
 			title : {
@@ -106,34 +100,32 @@
 			shadow_offsety : 0,
 			background_color:'#fefefe',
 			offsetx:-80,//设置向x轴负方向偏移位置60px
-			offset_angle:-60,//逆时针偏移120度
+			offset_angle:offset,//逆时针偏移120度
 			//mutex : true,problem
 			showpercent:true,
 			decimalsnum:2,
 			width : 800,
-			height : 440,
-			radius:140
+			height : 640,
+			radius:100
 		});
-		//利用自定义组件构造右侧说明文本
-		chart.plugin(new iChart.Custom({
-				drawFn:function(){
-					//计算位置
-					var y = chart.get('originy'),
-						w = chart.get('width');
-					
-					//在右侧的位置，渲染说明文字
-					chart.target.textAlign('start')
-					.textBaseline('middle')
-					.textFont('600 16px Verdana')
-					.fillText('UC浏览器、\n手机QQ浏览器及\n欧朋浏览器的份额\n位列第三方手机浏览器\n市场前三甲',w-220,y-40,false,'#be5985',false,20);
-				}
-		}));
-		
-		chart.draw();
+	}
+	var offsetA = 0;
+	$(function(){
+		test(offsetA).draw();
 	});
+	function change(){
+		offsetA+=10;
+		test(offsetA).draw();
+	}
+	function change1(){
+		offsetA-=10;
+		test(offsetA).draw();
+	}
 	</script>
 	</head>
 	<body>
 		<div id='canvasDiv' ></div>
+		<input type="button" value="test1" onclick="change()"/> 
+		<input type="button" value="test2" onclick="change1()"/> 
 	</body>
 </html>

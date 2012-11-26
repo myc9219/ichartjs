@@ -102,11 +102,10 @@
 			_.sA = toAngle.call(_,_.get('startAngle'));
 			_.eA = toAngle.call(_,_.get('endAngle'));
 			_.mA = toAngle.call(_,mA);
-			//console.log(_.sA+','+_.eA+'=='+_.get('startAngle')+','+_.get('endAngle'));
 			
 			_.push('inc_x',L * Math.cos(2 * Math.PI -_.mA));
 			_.push('inc_y',L * Math.sin(2 * Math.PI - _.mA));
-			
+			L *=2;
 			if(_.get('label')){
 				if(_.get('mini_label')){
 					var P3 = _.p2p(_.x,_.y,mA,0.5);

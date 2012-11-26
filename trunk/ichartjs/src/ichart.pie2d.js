@@ -31,6 +31,9 @@ iChart.Pie2D = iChart.extend(iChart.Pie, {
 			_.doParse(_,d,i);
 		},_);
 		
+		_.localizer(_);
+		
+		
 		
 	}
 });

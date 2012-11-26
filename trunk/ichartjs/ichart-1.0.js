@@ -2287,12 +2287,14 @@ $.Label = $.extend($.Component, {
 		p[2] = {x:x,y:y};
 		p[3] = {x:p[2].x+(Q ? -m : m),y:p[2].y};
 	},
-	doLayout : function(x, y,_) {
-		_.push('labelx', _.get('labelx') + x);
-		_.push('labely', _.get('labely') + y);
-		_.get('line_points').each(function(p) {
+	doLayout : function(x, y,n,_) {
+		_.push('labelx', _.get('labelx') + x/n);
+		_.push('labely', _.get('labely') + y/n);
+		
+		_.get('line_points').each(function(p,i) {
 			p.x += x;
 			p.y += y;
+			return i==1;
 		}, _);
 		_.localizer(_);
 	},
@@ -4567,7 +4569,7 @@ $.Coordinate2D = $.extend($.Component, {
 		});
 		
 		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), _.get('axis'), false, _.get('shadow'),true);
-
+		console.log(_.get('axis'));
 		_.scale.each(function(s) {
 			s.draw()
 		});
@@ -5430,6 +5432,7 @@ $.Sector = $.extend($.Component, {
 		_.push('label.labelx', x0);
 		_.push('label.labely', y0);
 		_.push('label.smooth', L);
+		_.push('label.angle', _.get('middleAngle')%(Math.PI*2));
 		_.label = new $.Label(_.get('label'), _);
 	},
 	isLabel : function() {
@@ -5492,7 +5495,7 @@ $.Sector = $.extend($.Component, {
 			if (v.status != _.expanded) {
 				_.fireEvent(_, 'changed', [_, _.expanded]);
 				if (f)
-					_.label.doLayout(_.get('inc_x') * (_.expanded ? 1 : -1), -_.get('inc_y') * (_.expanded ? 1 : -1),_.label);
+					_.label.doLayout(_.get('inc_x') * (_.expanded ? 1 : -1), -_.get('inc_y') * (_.expanded ? 1 : -1),2,_.label);
 			}
 			v.status = _.expanded;
 			if (_.expanded) {
@@ -5590,11 +5593,9 @@ $.Sector = $.extend($.Component, {
 			_.applyGradient(_.x-_.r,_.y-_.r,2*_.r,2*_.r);
 			
 			
-			
 			var A = _.get('middleAngle'),L = _.pushIf('increment',$.lowTo(5,_.r/10)),p2;
 			_.push('inc_x',L * Math.cos(2 * Math.PI -A));
 			_.push('inc_y',L * Math.sin(2 * Math.PI - A));
-			
 			L *=2;
 			if(_.get('label')){
 				if(_.get('mini_label')){
@@ -5717,11 +5718,10 @@ $.Sector = $.extend($.Component, {
 			_.sA = toAngle.call(_,_.get('startAngle'));
 			_.eA = toAngle.call(_,_.get('endAngle'));
 			_.mA = toAngle.call(_,mA);
-			//console.log(_.sA+','+_.eA+'=='+_.get('startAngle')+','+_.get('endAngle'));
 			
 			_.push('inc_x',L * Math.cos(2 * Math.PI -_.mA));
 			_.push('inc_y',L * Math.sin(2 * Math.PI - _.mA));
-			
+			L *=2;
 			if(_.get('label')){
 				if(_.get('mini_label')){
 					var P3 = _.p2p(_.x,_.y,mA,0.5);
@@ -5869,22 +5869,6 @@ $.Pie = $.extend($.Chart, {
 			_.proxy.drawSector();
 		}
 	},
-	localizer : function(la) {
-		var _ = this._(),d = _.get('layout_distance');
-		/**
-		 * Did the code optimal?,did need to enhance so that the label can fit the continar?
-		 */
-		_.sectors.each(function(s, i) {
-			if(!s.isLabel())return;
-			var l = s.label, x = l.labelx, y = l.labely;
-			if ((la.labely <= y && (y - la.labely-1) < la.get(_.H)) || (la.labely > y && (la.labely - y-1) < l.get(_.H))) {
-				if ((la.labelx < x && (x - la.labelx) < la.get(_.W)) || (la.labelx > x && (la.labelx - x) < l.get(_.W))) {
-					la.push('labely', (la.get('labely')+ y - la.labely) + (la.get(_.H)  + d)*((la.get('quadrantd') == 2)?-1:1));
-					la.localizer(la);
-				}
-			}
-		}, _);
-	},
 	doParse : function(_,d, i) {
 		var t = d.name + ' ' +_.getPercent(d.value);
 		
@@ -5898,12 +5882,59 @@ $.Pie = $.extend($.Chart, {
 		_.push('sub_option.listeners.changed', function(se, st, i) {
 			_.fireEvent(_, st ? 'bound' : 'rebound', [_, se.get('name')]);
 		});
-		
-		var s = _.doSector(d);
-		if (s.isLabel() && _.get('intellectLayout')) {
-			_.localizer(s.label);
+		_.sectors.push(_.doSector(d));
+	},
+	test : function(_,l,d,Q) {
+		var x = l.get('labelx'),y=l.get('labely')+l.get(_.H)/2*(Q<2?-1:1),
+			r = $.distanceP2P(_.get(_.X),_.get(_.Y),x,y),y=_.get(_.Y)-y;
+		if(r<_.r){
+			l.push('labelx',_.get(_.X)+(Math.sqrt(_.r*_.r-y*y)*2+d)*(Q==0||Q==3?1:-1));
+			l.localizer(l);
 		}
-		_.sectors.push(s);
+	},
+	localizer:function(_){
+		if (_.get('intellectLayout')) {
+			var unlayout = [],layouted = [],d = _.get('layout_distance'),Q;
+			
+			_.sectors.each(function(f, i) {
+				if(f.isLabel())
+				unlayout.push(f.label);
+			});
+			var pi=Math.PI,abs =function(n,Q){
+				while(n<0){
+					n+=(pi*2);
+				}
+				if(Q==0){
+					return n;
+				}
+				if(Q==1){
+					return pi-n;
+				}
+				if(Q==2){
+					return n-pi;
+				}
+				if(Q==3){
+					return pi*2-n;
+				}
+			}
+			unlayout.sor(function(p, q) {
+				return (abs(p.get('angle'),p.get('quadrantd')) - abs(q.get('angle'),q.get('quadrantd')))>0;
+			});
+			unlayout.each(function(la) {
+				layouted.each(function(l) {
+					var x = l.labelx, y = l.labely;
+					if ((la.labely <= y && (y - la.labely-1) < la.get(_.H)) || (la.labely > y && (la.labely - y-1) < l.get(_.H))) {
+						if ((la.labelx < x && (x - la.labelx) < la.get(_.W)) || (la.labelx > x && (la.labelx - x) < l.get(_.W))) {
+							Q = la.get('quadrantd');
+							la.push('labely', (la.get('labely')+ y - la.labely) + (la.get(_.H)  + d)*(Q>1?-1:1));
+							la.localizer(la);
+							_.test(_,la,d,Q);
+						}
+					}
+				}, _);
+				layouted.push(la);
+			});
+		}
 	},
 	doConfig : function() {
 		$.Pie.superclass.doConfig.call(this);
@@ -5995,6 +6026,9 @@ $.Pie2D = $.extend($.Pie, {
 		_.data.each(function(d,i){
 			_.doParse(_,d,i);
 		},_);
+		
+		_.localizer(_);
+		
 		
 		
 	}
