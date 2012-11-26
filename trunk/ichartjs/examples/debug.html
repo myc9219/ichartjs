@@ -55,14 +55,15 @@
 		}
 	</style>
 	<script type="text/javascript">
-	var colors = ["#4572a7","#aa4643","#89a54e","#80699b","#92a8cd","#db843d"];
-	var data = [];
-	for(var i=0;i<24;i++){
-		data.push({name : 'UC浏览器'+i,value : 10,color:colors[i%6]});
-	}
-	
-	function test(offset){
-		return new iChart.Pie2D({
+	$(function(){
+		var colors = ["#4572a7","#aa4643","#89a54e","#80699b","#92a8cd","#db843d"];
+		var data = [];
+		for(var i=0;i<24;i++){
+			data.push({name : 'UC浏览器'+i,value : 10,color:colors[i%6]});
+		}
+		
+    	
+		var chart = new iChart.Pie3D({
 			render : 'canvasDiv',
 			data: data,
 			title : {
@@ -82,11 +83,11 @@
 					padding:'0 4',
 					border:{
 						enable:false,
-						color:'#4572a7'
+						color:'#be5985'
 					},
 					fontsize:11,
 					fontweight:600,
-					color : '#4572a7'
+					color : '#be5985'
 				},
 				border : {
 					width : 2,
@@ -99,28 +100,32 @@
 			shadow_offsetx : 0,
 			shadow_offsety : 0,
 			background_color:'#fefefe',
-			offsetx:-80,//设置向x轴负方向偏移位置60px
-			offset_angle:offset,//逆时针偏移120度
+			offsetx:60,//设置向x轴负方向偏移位置60px
+			//offset_angle:60,//逆时针偏移120度
 			//mutex : true,problem
 			showpercent:true,
 			decimalsnum:2,
 			width : 800,
-			height : 640,
-			radius:100
+			height : 440,
+			radius:160
 		});
-	}
-	var offsetA = 0;
-	$(function(){
-		test(offsetA).draw();
+		//利用自定义组件构造右侧说明文本
+		chart.plugin(new iChart.Custom({
+				drawFn:function(){
+					//计算位置
+					var y = chart.get('originy'),
+						w = chart.get('width');
+					
+					//在右侧的位置，渲染说明文字
+					chart.target.textAlign('start')
+					.textBaseline('middle')
+					.textFont('600 16px Verdana')
+					.fillText('UC浏览器、\n手机QQ浏览器及\n欧朋浏览器的份额\n位列第三方手机浏览器\n市场前三甲',60,y-40,false,'#3e576f',false,20);
+				}
+		}));
+		
+		chart.draw();
 	});
-	function change(){
-		offsetA+=10;
-		test(offsetA).draw();
-	}
-	function change1(){
-		offsetA-=10;
-		test(offsetA).draw();
-	}
 	</script>
 	</head>
 	<body>

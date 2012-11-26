@@ -26,13 +26,7 @@ iChart.Pie2D = iChart.extend(iChart.Pie, {
 		 * quick config to all rectangle
 		 */
 		_.push('sub_option.radius',_.r)
-		
-		_.data.each(function(d,i){
-			_.doParse(_,d,i);
-		},_);
-		
-		_.localizer(_);
-		
+		_.parse(_);
 		
 		
 	}
