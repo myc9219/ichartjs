@@ -203,25 +203,24 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	doConfig : function() {
 		iChart.Pie.superclass.doConfig.call(this);
 		iChart.Assert.gt(this.total,0,'this.total');
-		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44;
+		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44,pi2=Math.PI*2;
 		
 		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
 		_.components.push(_.sectors);
-		_.oA = iChart.angle2Radian(_.get('offset_angle'))%(2*Math.PI);
+		_.oA = iChart.angle2Radian(_.get('offset_angle'))%pi2;
 		//If 3D,let it bigger
 		if (_.is3D())
 			f += 0.06;
 		
 		f = _.get('minDistance') * f;
 		
-		var L = _.data.length,sepa = iChart.angle2Radian(iChart.between(0,90,_.get('separate_angle'))),PI = 2*Math.PI-sepa,sepa=sepa/L,eA = _.oA+sepa, sA = eA;
-		
+		var L = _.data.length,sepa = iChart.angle2Radian(iChart.between(0,90,_.get('separate_angle'))),PI = pi2-sepa,sepa=sepa/L,eA = _.oA+sepa, sA = eA;
 		
 		_.data.each(function(d, i) {
 			eA += (d.value / _.total) * PI;
 			if (i == (L - 1)) {
-				eA = 2 * Math.PI + _.oA;
+				eA = pi2 + _.oA;
 			}
 			d.startAngle = sA;
 			d.endAngle = eA;

@@ -66,9 +66,7 @@ iChart.Donut2D = iChart.extend(iChart.Pie, {
 			_.components.push(new $.Text(_.get('center'), _));
 		}
 		
-		_.data.each(function(d,i){
-			_.doParse(_,d,i);
-		},_);
+		_.parse(_);
 	}
 });
 /**

@@ -592,9 +592,9 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			if (_.get('alternate_color')) {
 				if (f) {
 					if (v)
-						_.T.box(g.x1 + axis[3], g.y1 + g.width, g.x2 - g.x1 - axis[3] - axis[1], y - g.y1 - g.width, 0, c);
+						_.T.box(g.x1, g.y1 + g.width, g.x2 - g.x1, y - g.y1 - g.width, 0, c);
 					else
-						_.T.box(x + g.width, g.y2 + axis[0], g.x1 - x, g.y1 - g.y2 - axis[0] - axis[2], 0, c);
+						_.T.box(x + g.width, g.y2, g.x1 - x, g.y1 - g.y2, 0, c);
 				}
 				x = g.x1;
 				y = g.y1;
@@ -611,7 +611,6 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		});
 		
 		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), _.get('axis'), false, _.get('shadow'),true);
-		console.log(_.get('axis'));
 		_.scale.each(function(s) {
 			s.draw()
 		});

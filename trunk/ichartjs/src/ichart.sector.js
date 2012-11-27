@@ -164,7 +164,7 @@ iChart.Sector = iChart.extend(iChart.Component, {
 	doConfig : function() {
 		iChart.Sector.superclass.doConfig.call(this);
 
-		var _ = this._(), v = _.variable.event, f = _.get('label');
+		var _ = this._(), v = _.variable.event, f = _.get('label'),event=_.get('bound_event'),g;
 		
 		/**
 		 * mouseover light
@@ -205,29 +205,34 @@ iChart.Sector = iChart.extend(iChart.Component, {
 		/**
 		 *need test profile/time
 		 */
-		_.on(_.get('bound_event'), function() {
+		_.on(event, function() {
 			v.poped = true;
 			_.expanded = !_.expanded;
-			_.redraw();
+			_.redraw(event);
 			v.poped = false;
 		});
 		
-		_.on('beforedraw', function() {
-			_.x = _.get(_.X);
-			_.y = _.get(_.Y);
-			if (v.status != _.expanded) {
-				_.fireEvent(_, 'changed', [_, _.expanded]);
-				if (f)
-					_.label.doLayout(_.get('inc_x') * (_.expanded ? 1 : -1), -_.get('inc_y') * (_.expanded ? 1 : -1),2,_.label);
-			}
-			v.status = _.expanded;
-			if (_.expanded) {
-				if (_.get('mutex') && !v.poped) {
-					_.expanded = false;
-				} else {
-					_.x += _.get('inc_x');
-					_.y -= _.get('inc_y');
+		_.on('beforedraw', function(a,b) {
+			if(b==event){
+				g = false;
+				_.x = _.get(_.X);
+				_.y = _.get(_.Y);
+				if (_.expanded) {
+					if (_.get('mutex') && !v.poped) {
+						_.expanded = false;
+						g = true;
+					} else {
+						_.x += _.get('inc_x');
+						_.y -= _.get('inc_y');
+					}
 				}
+				if (v.status != _.expanded) {
+					_.fireEvent(_, 'changed', [_, _.expanded]);
+					g = true;
+					v.status = _.expanded;
+				}
+				if (f&&g)
+					_.label.doLayout(_.get('inc_x') * (_.expanded ? 1 : -1), -_.get('inc_y') * (_.expanded ? 1 : -1),2,_.label);
 			}
 			return true;
 		});

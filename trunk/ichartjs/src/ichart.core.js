@@ -585,6 +585,7 @@
 					t.plugin(m, f);
 			},
 			parsePadding : function(s, d) {
+				s = s || 0;
 				if (_.isNumber(s))
 					return new Array(s, s, s, s);
 				if (_.isArray(s))
@@ -675,21 +676,13 @@
 				return u > v && l < v;
 			},
 			angleInRange : function(l, u, v) {
-				u = (u -l)%pi2;
-				v = (v -l)%pi2;
+				v = (v -l);
 				v = v<0?v+pi2:v;
-				l = 0;
-//				console.log('============');
-//				console.log(u);
-//				console.log(v);
-//				console.log(l);
-				if (u > l) {
-					return u > v && l < v;
-				}
-				if (u < l) {
-					return v > l || v < u;
-				}
-				return v == u;
+				v = v %pi2;
+				return (u -l) > v;
+			},
+			angleZInRange : function(l, u, v) {
+				return u > l?u > v && l < v:(v > l || v < u);
 			},
 			inRangeClosed : function(l, u, v) {
 				return u >= v && l <= v;

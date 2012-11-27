@@ -2,9 +2,9 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>ichartjs 例子</title>
-		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
-		<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
+		<title>ichartjs 示例</title>
+		<meta name="Description" content="The ichartjs's gallery center,ichartjs 示例中心" />
+		<meta name="Keywords" content="ichartjs demo,Html5 demo,ichartjs例子,ichartjs示例,Html5例子,Html5示例" />
 		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
@@ -38,9 +38,8 @@
 							color:'#343b3e'
 						}
 					},
-					width : 700,
+					width : 800,
 					height : 400,
-					offsetx:-90,
 					data:data,
 					shadow:true,
 					shadow_color:'#15353a',
@@ -65,9 +64,23 @@
 						border:{
 							enable:false
 						},
+						label : {
+							background_color:'#fefefe',
+							sign:false,//设置禁用label的小图标
+							line_height:10,
+							padding:4,
+							border:{
+								enable:true,
+								radius : 4,//圆角设置
+								color:'#e0e5e8'
+							},
+							fontsize:11,
+							fontweight:600,
+							color : '#444444'
+						},
 						listeners:{
-							parseText:function(d, i){
-								return d.value+"%";
+							parseText:function(d, t){
+								return d.get('value')+"%";
 							}
 						}
 					},

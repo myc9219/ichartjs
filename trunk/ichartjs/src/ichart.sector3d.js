@@ -61,7 +61,7 @@
 				if(!iChart.inEllipse(e.x - _.x,e.y-_.y,_.a,_.b)){
 					return {valid:false};
 				}
-				if(iChart.angleInRange(_.sA,_.eA,iChart.atan2Radian(_.x,_.y,e.x,e.y))){
+				if(iChart.angleZInRange(_.sA,_.eA,iChart.atan2Radian(_.x,_.y,e.x,e.y))){
 					return {valid:true};
 				}
 			}
@@ -95,16 +95,17 @@
 			iChart.Assert.gt(_.b,0);
 			
 			
-			var toAngle = function(A){
-				return Math.abs(iChart.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A))))*(A>0?1:-1);
+			var pi2 = 2 * Math.PI,toAngle = function(A){
+				while(A<0)A+=pi2;
+				return Math.abs(iChart.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A))));
 			},
-			L = _.pushIf('increment',iChart.lowTo(5,_.a/8));
+			L = _.pushIf('increment',iChart.lowTo(5,_.a/10));
 			_.sA = toAngle.call(_,_.get('startAngle'));
 			_.eA = toAngle.call(_,_.get('endAngle'));
 			_.mA = toAngle.call(_,mA);
 			
-			_.push('inc_x',L * Math.cos(2 * Math.PI -_.mA));
-			_.push('inc_y',L * Math.sin(2 * Math.PI - _.mA));
+			_.push('inc_x',L * Math.cos(pi2 -_.mA));
+			_.push('inc_y',L * Math.sin(pi2 - _.mA));
 			L *=2;
 			if(_.get('label')){
 				if(_.get('mini_label')){

@@ -106,9 +106,8 @@ iChart.Component = iChart.extend(iChart.Painter, {
 	isMouseOver : function(e) {
 		return this.isEventValid(e,this);
 	},
-	redraw : function() {
-
-		this.container.draw();
+	redraw : function(e) {
+		this.container.draw(e);
 	},
 	commonDraw : function(_) {
 		/**
