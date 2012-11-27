@@ -146,7 +146,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		_.push('sub_option.listeners.changed', function(se, st, i) {
 			_.fireEvent(_, st ? 'bound' : 'rebound', [_, se.get('name')]);
 		});
-		_.sectors.push(_.doSector(d));
+		_.sectors.push(_.doSector(_,d));
 	},
 	dolayout : function(_,x,y,l,d,Q) {
 		if(_.is3D()?iChart.inEllipse(_.get(_.X) - x,_.get(_.Y)-y,_.a,_.b):iChart.distanceP2P(_.get(_.X),_.get(_.Y),x,y)<_.r){
@@ -204,7 +204,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		iChart.Pie.superclass.doConfig.call(this);
 		iChart.Assert.gt(this.total,0,'this.total');
 		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44,pi2=Math.PI*2;
-		
+		_.sub = _.is3D()?'Sector3D':'Sector2D';
 		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
 		_.components.push(_.sectors);
