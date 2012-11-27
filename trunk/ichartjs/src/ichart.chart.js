@@ -378,15 +378,20 @@
 		},
 		text : function(t, x, y, max, color, align, line, font, mode, h,sw,ro) {
 			if(t=='')return this;
-			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw,ro).restore();
+			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw,ro,line).restore();
 		},
-		fillText : function(t, x, y, max, color, mode, h,sw,ro) {
+		fillText : function(t, x, y, max, color, mode, h,sw,ro,line) {
 			t = t.toString();
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
-			this.save().fillStyle(color).translate(x,y).rotate(inc2*ro).shadowOn(sw);
 			var T = t.split(mode == 'tb' ? "" : "\n");
+			if(line=='middle'){
+				y = y - (T.length-1)*h/2;
+			}else if(line=='bottom'){
+				y = y - (T.length-1)*h;
+			}
+			this.save().fillStyle(color).translate(x,y).rotate(inc2*ro).shadowOn(sw);
 			T.each(function(t,i) {
 				try {
 					if (max)

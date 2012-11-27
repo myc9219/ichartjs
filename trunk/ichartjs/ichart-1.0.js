@@ -2836,15 +2836,20 @@ $.Label = $.extend($.Component, {
 		},
 		text : function(t, x, y, max, color, align, line, font, mode, h,sw,ro) {
 			if(t=='')return this;
-			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw,ro).restore();
+			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw,ro,line).restore();
 		},
-		fillText : function(t, x, y, max, color, mode, h,sw,ro) {
+		fillText : function(t, x, y, max, color, mode, h,sw,ro,line) {
 			t = t.toString();
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
-			this.save().fillStyle(color).translate(x,y).rotate(inc2*ro).shadowOn(sw);
 			var T = t.split(mode == 'tb' ? "" : "\n");
+			if(line=='middle'){
+				y = y - (T.length-1)*h/2;
+			}else if(line=='bottom'){
+				y = y - (T.length-1)*h;
+			}
+			this.save().fillStyle(color).translate(x,y).rotate(inc2*ro).shadowOn(sw);
 			T.each(function(t,i) {
 				try {
 					if (max)
@@ -5885,7 +5890,7 @@ $.Pie = $.extend($.Chart, {
 		_.push('sub_option.listeners.changed', function(se, st, i) {
 			_.fireEvent(_, st ? 'bound' : 'rebound', [_, se.get('name')]);
 		});
-		_.sectors.push(_.doSector(d));
+		_.sectors.push(_.doSector(_,d));
 	},
 	dolayout : function(_,x,y,l,d,Q) {
 		if(_.is3D()?$.inEllipse(_.get(_.X) - x,_.get(_.Y)-y,_.a,_.b):$.distanceP2P(_.get(_.X),_.get(_.Y),x,y)<_.r){
@@ -5943,7 +5948,7 @@ $.Pie = $.extend($.Chart, {
 		$.Pie.superclass.doConfig.call(this);
 		$.Assert.gt(this.total,0,'this.total');
 		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44,pi2=Math.PI*2;
-		
+		_.sub = _.is3D()?'Sector3D':'Sector2D';
 		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
 		_.components.push(_.sectors);
@@ -6014,8 +6019,8 @@ $.Pie2D = $.extend($.Pie, {
 		this.type = 'pie2d';
 
 	},
-	doSector:function(){
-		return  new $.Sector2D(this.get('sub_option'), this);
+	doSector:function(_){
+		return  new $[_.sub](_.get('sub_option'), _);
 	},
 	doConfig : function() {
 		$.Pie2D.superclass.doConfig.call(this);
@@ -6059,9 +6064,9 @@ $.Pie3D = $.extend($.Pie, {
 		});
 
 	},
-	doSector : function(d) {
-		this.push('sub_option.cylinder_height', (d.cylinder_height ? d.cylinder_height * Math.cos($.angle2Radian(this.get('zRotate'))) : this.get('cylinder_height')));
-		var s = new $.Sector3D(this.get('sub_option'), this);
+	doSector : function(_,d) {
+		_.push('sub_option.cylinder_height', (d.cylinder_height ? d.cylinder_height * Math.cos($.angle2Radian(_.get('zRotate'))) : _.get('cylinder_height')));
+		var s = new $[_.sub](_.get('sub_option'), _);
 		s.proxy = true;
 		return s;
 	},

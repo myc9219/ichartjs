@@ -25,9 +25,9 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		});
 
 	},
-	doSector : function(d) {
-		this.push('sub_option.cylinder_height', (d.cylinder_height ? d.cylinder_height * Math.cos(iChart.angle2Radian(this.get('zRotate'))) : this.get('cylinder_height')));
-		var s = new iChart.Sector3D(this.get('sub_option'), this);
+	doSector : function(_,d) {
+		_.push('sub_option.cylinder_height', (d.cylinder_height ? d.cylinder_height * Math.cos(iChart.angle2Radian(_.get('zRotate'))) : _.get('cylinder_height')));
+		var s = new iChart[_.sub](_.get('sub_option'), _);
 		s.proxy = true;
 		return s;
 	},
