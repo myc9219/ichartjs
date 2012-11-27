@@ -585,6 +585,7 @@
 					t.plugin(m, f);
 			},
 			parsePadding : function(s, d) {
+				s = s || 0;
 				if (_.isNumber(s))
 					return new Array(s, s, s, s);
 				if (_.isArray(s))
@@ -3170,7 +3171,7 @@ $.Label = $.extend($.Component, {
 				x = floor(x);
 				y = floor(y);
 				j = f ? j[0] : j;
-				r = (!f || r == 0 || r == '0') ? 0 : $.parsePadding(r);
+				r = (!f ||!r|| r == 0 || r == '0') ? 0 : $.parsePadding(r);
 			}
 			
 			this.save().gCo(last).fillStyle(bg).strokeStyle(f,j, c);
