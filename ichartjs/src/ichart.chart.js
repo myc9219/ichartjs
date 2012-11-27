@@ -702,6 +702,9 @@
 			if (b.enable) {
 				var j = b.width, c = b.color, r = b.radius, f = $.isNumber(j);
 				j = $.parsePadding(j);
+				if(j[0]==j[1]&&j[1]==j[2]&&j[2]==j[3]){
+					f = true;
+				}
 				m = m?1:-1;
 				w += m*(j[1] + j[3]) / 2;
 				h += m*(j[0] + j[2]) / 2;
@@ -710,7 +713,7 @@
 				x = floor(x);
 				y = floor(y);
 				j = f ? j[0] : j;
-				r = (!f || r == 0 || r == '0') ? 0 : $.parsePadding(r);
+				r = (!f ||!r|| r == 0 || r == '0') ? 0 : $.parsePadding(r);
 			}
 			
 			this.save().gCo(last).fillStyle(bg).strokeStyle(f,j, c);
@@ -763,10 +766,10 @@
 			e.highlight = false;
 			_.on('mouseover',function(){
 				e.highlight = true;
-				_.redraw();
+				_.redraw('mouseover');
 			}).on('mouseout',function(){
 				e.highlight = false;
-				_.redraw();
+				_.redraw('mouseout');
 			}).on('beforedraw',function(){
 				_.push('f_color',e.highlight?_.get('light_color'):_.get('f_color_'));
 				return true;
@@ -1019,7 +1022,7 @@
 			this.components.sor(function(p, q){
 				return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
-		commonDraw : function(_) {
+		commonDraw : function(_,e) {
 			$.Assert.isTrue(_.RENDERED, _.type + ' has not rendered.');
 			$.Assert.isTrue(_.initialization, _.type + ' has initialize failed.');
 			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty.');
@@ -1041,7 +1044,7 @@
 			_.segmentRect();
 
 			_.components.eachAll(function(c) {
-				c.draw();
+				c.draw(e);
 			});
 			
 			_.resetCanvas();
@@ -1360,7 +1363,7 @@
 			
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
-
+			
 			var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.get(_.W) - _.get('hpadding'))), h;
 
 			if ($.isString(_.get('title'))) {

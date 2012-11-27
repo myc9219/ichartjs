@@ -167,12 +167,11 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		}
 	},
 	doDraw : function(_) {
-		//_.push('border.radius',5); ??
 		_.T.box(_.x, _.y, _.width, _.height, _.get('border'), _.get('f_color'), false, _.get('shadow'));
 		_.T.textStyle(_.L, 'middle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
 
 		var x = _.x + _.get('padding_left'), y = _.y + _.get('padding_top'), text, c = _.get('column'), r = _.get('row');
-
+		
 		for ( var i = 0; i < r; i++) {
 			_.drawRow(i * c, x, y);
 			y += _.get('line_height');
@@ -267,7 +266,6 @@ iChart.Legend = iChart.extend(iChart.Component, {
 
 		_.width = w;
 		_.height = h = _.push(_.H, r * _.get('line_height') + _.get('vpadding'));
-
 		if (_.get('valign') == _.O) {
 			_.y = g.get('t_originy');
 		} else if (_.get('valign') == _.B) {
@@ -275,7 +273,6 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		} else {
 			_.y = g.get('centery') - h / 2;
 		}
-
 		if (_.get('align') == _.L) {
 			_.x = g.get('l_originx');
 		} else if (_.get('align') == _.C) {
@@ -283,7 +280,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		} else {
 			_.x = g.get('r_originx') - w;
 		}
-
+		
 		_.x = _.push(_.X, _.x + _.get('offsetx'));
 		_.y = _.push(_.Y, _.y + _.get('offsety'));
 

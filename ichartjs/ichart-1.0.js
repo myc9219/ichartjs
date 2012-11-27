@@ -675,21 +675,13 @@
 				return u > v && l < v;
 			},
 			angleInRange : function(l, u, v) {
-				u = (u -l)%pi2;
-				v = (v -l)%pi2;
+				v = (v -l);
 				v = v<0?v+pi2:v;
-				l = 0;
-//				console.log('============');
-//				console.log(u);
-//				console.log(v);
-//				console.log(l);
-				if (u > l) {
-					return u > v && l < v;
-				}
-				if (u < l) {
-					return v > l || v < u;
-				}
-				return v == u;
+				v = v %pi2;
+				return (u -l) > v;
+			},
+			angleZInRange : function(l, u, v) {
+				return u > l?u > v && l < v:(v > l || v < u);
 			},
 			inRangeClosed : function(l, u, v) {
 				return u >= v && l <= v;
@@ -1279,22 +1271,22 @@ $.Painter = $.extend($.Element, {
 	 * this is a abstract method.Currently known,both <link>$.Chart</link> and <link>$.Component</link> implement this method.
 	 * @return void
 	 */
-	draw : function() {
+	draw : function(e) {
 		/**
 		 * fire the beforedraw event
 		 */
-		if (!this.fireEvent(this, 'beforedraw', [this])) {
+		if (!this.fireEvent(this, 'beforedraw', [this,e])) {
 			return this;
 		}
 		/**
 		 * execute the commonDraw() that the subClass implement
 		 */
-		this.commonDraw(this,this);
+		this.commonDraw(this,e);
 
 		/**
 		 * fire the draw event
 		 */
-		this.fireEvent(this, 'draw', [this]);
+		this.fireEvent(this, 'draw', [this,e]);
 	},
 	fireString : function(socpe, name, args, s) {
 		var t = this.fireEvent(socpe, name, args);
@@ -1601,9 +1593,8 @@ $.Component = $.extend($.Painter, {
 	isMouseOver : function(e) {
 		return this.isEventValid(e,this);
 	},
-	redraw : function() {
-
-		this.container.draw();
+	redraw : function(e) {
+		this.container.draw(e);
 	},
 	commonDraw : function(_) {
 		/**
@@ -2077,12 +2068,11 @@ $.Legend = $.extend($.Component, {
 		}
 	},
 	doDraw : function(_) {
-		//_.push('border.radius',5); ??
 		_.T.box(_.x, _.y, _.width, _.height, _.get('border'), _.get('f_color'), false, _.get('shadow'));
 		_.T.textStyle(_.L, 'middle', $.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
 
 		var x = _.x + _.get('padding_left'), y = _.y + _.get('padding_top'), text, c = _.get('column'), r = _.get('row');
-
+		
 		for ( var i = 0; i < r; i++) {
 			_.drawRow(i * c, x, y);
 			y += _.get('line_height');
@@ -2177,7 +2167,6 @@ $.Legend = $.extend($.Component, {
 
 		_.width = w;
 		_.height = h = _.push(_.H, r * _.get('line_height') + _.get('vpadding'));
-
 		if (_.get('valign') == _.O) {
 			_.y = g.get('t_originy');
 		} else if (_.get('valign') == _.B) {
@@ -2185,7 +2174,6 @@ $.Legend = $.extend($.Component, {
 		} else {
 			_.y = g.get('centery') - h / 2;
 		}
-
 		if (_.get('align') == _.L) {
 			_.x = g.get('l_originx');
 		} else if (_.get('align') == _.C) {
@@ -2193,7 +2181,7 @@ $.Legend = $.extend($.Component, {
 		} else {
 			_.x = g.get('r_originx') - w;
 		}
-
+		
 		_.x = _.push(_.X, _.x + _.get('offsetx'));
 		_.y = _.push(_.Y, _.y + _.get('offsety'));
 
@@ -3171,6 +3159,9 @@ $.Label = $.extend($.Component, {
 			if (b.enable) {
 				var j = b.width, c = b.color, r = b.radius, f = $.isNumber(j);
 				j = $.parsePadding(j);
+				if(j[0]==j[1]&&j[1]==j[2]&&j[2]==j[3]){
+					f = true;
+				}
 				m = m?1:-1;
 				w += m*(j[1] + j[3]) / 2;
 				h += m*(j[0] + j[2]) / 2;
@@ -3232,10 +3223,10 @@ $.Label = $.extend($.Component, {
 			e.highlight = false;
 			_.on('mouseover',function(){
 				e.highlight = true;
-				_.redraw();
+				_.redraw('mouseover');
 			}).on('mouseout',function(){
 				e.highlight = false;
-				_.redraw();
+				_.redraw('mouseout');
 			}).on('beforedraw',function(){
 				_.push('f_color',e.highlight?_.get('light_color'):_.get('f_color_'));
 				return true;
@@ -3488,7 +3479,7 @@ $.Label = $.extend($.Component, {
 			this.components.sor(function(p, q){
 				return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
-		commonDraw : function(_) {
+		commonDraw : function(_,e) {
 			$.Assert.isTrue(_.RENDERED, _.type + ' has not rendered.');
 			$.Assert.isTrue(_.initialization, _.type + ' has initialize failed.');
 			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty.');
@@ -3510,7 +3501,7 @@ $.Label = $.extend($.Component, {
 			_.segmentRect();
 
 			_.components.eachAll(function(c) {
-				c.draw();
+				c.draw(e);
 			});
 			
 			_.resetCanvas();
@@ -3829,7 +3820,7 @@ $.Label = $.extend($.Component, {
 			
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
-
+			
 			var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.get(_.W) - _.get('hpadding'))), h;
 
 			if ($.isString(_.get('title'))) {
@@ -4550,9 +4541,9 @@ $.Coordinate2D = $.extend($.Component, {
 			if (_.get('alternate_color')) {
 				if (f) {
 					if (v)
-						_.T.box(g.x1 + axis[3], g.y1 + g.width, g.x2 - g.x1 - axis[3] - axis[1], y - g.y1 - g.width, 0, c);
+						_.T.box(g.x1, g.y1 + g.width, g.x2 - g.x1, y - g.y1 - g.width, 0, c);
 					else
-						_.T.box(x + g.width, g.y2 + axis[0], g.x1 - x, g.y1 - g.y2 - axis[0] - axis[2], 0, c);
+						_.T.box(x + g.width, g.y2, g.x1 - x, g.y1 - g.y2, 0, c);
 				}
 				x = g.x1;
 				y = g.y1;
@@ -4569,7 +4560,6 @@ $.Coordinate2D = $.extend($.Component, {
 		});
 		
 		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), _.get('axis'), false, _.get('shadow'),true);
-		console.log(_.get('axis'));
 		_.scale.each(function(s) {
 			s.draw()
 		});
@@ -5441,7 +5431,7 @@ $.Sector = $.extend($.Component, {
 	doConfig : function() {
 		$.Sector.superclass.doConfig.call(this);
 
-		var _ = this._(), v = _.variable.event, f = _.get('label');
+		var _ = this._(), v = _.variable.event, f = _.get('label'),event=_.get('bound_event'),g;
 		
 		/**
 		 * mouseover light
@@ -5482,29 +5472,34 @@ $.Sector = $.extend($.Component, {
 		/**
 		 *need test profile/time
 		 */
-		_.on(_.get('bound_event'), function() {
+		_.on(event, function() {
 			v.poped = true;
 			_.expanded = !_.expanded;
-			_.redraw();
+			_.redraw(event);
 			v.poped = false;
 		});
 		
-		_.on('beforedraw', function() {
-			_.x = _.get(_.X);
-			_.y = _.get(_.Y);
-			if (v.status != _.expanded) {
-				_.fireEvent(_, 'changed', [_, _.expanded]);
-				if (f)
-					_.label.doLayout(_.get('inc_x') * (_.expanded ? 1 : -1), -_.get('inc_y') * (_.expanded ? 1 : -1),2,_.label);
-			}
-			v.status = _.expanded;
-			if (_.expanded) {
-				if (_.get('mutex') && !v.poped) {
-					_.expanded = false;
-				} else {
-					_.x += _.get('inc_x');
-					_.y -= _.get('inc_y');
+		_.on('beforedraw', function(a,b) {
+			if(b==event){
+				g = false;
+				_.x = _.get(_.X);
+				_.y = _.get(_.Y);
+				if (_.expanded) {
+					if (_.get('mutex') && !v.poped) {
+						_.expanded = false;
+						g = true;
+					} else {
+						_.x += _.get('inc_x');
+						_.y -= _.get('inc_y');
+					}
 				}
+				if (v.status != _.expanded) {
+					_.fireEvent(_, 'changed', [_, _.expanded]);
+					g = true;
+					v.status = _.expanded;
+				}
+				if (f&&g)
+					_.label.doLayout(_.get('inc_x') * (_.expanded ? 1 : -1), -_.get('inc_y') * (_.expanded ? 1 : -1),2,_.label);
 			}
 			return true;
 		});
@@ -5677,7 +5672,7 @@ $.Sector = $.extend($.Component, {
 				if(!$.inEllipse(e.x - _.x,e.y-_.y,_.a,_.b)){
 					return {valid:false};
 				}
-				if($.angleInRange(_.sA,_.eA,$.atan2Radian(_.x,_.y,e.x,e.y))){
+				if($.angleZInRange(_.sA,_.eA,$.atan2Radian(_.x,_.y,e.x,e.y))){
 					return {valid:true};
 				}
 			}
@@ -5711,16 +5706,17 @@ $.Sector = $.extend($.Component, {
 			$.Assert.gt(_.b,0);
 			
 			
-			var toAngle = function(A){
-				return Math.abs($.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A))))*(A>0?1:-1);
+			var pi2 = 2 * Math.PI,toAngle = function(A){
+				while(A<0)A+=pi2;
+				return Math.abs($.atan2Radian(0,0,_.a*Math.cos(A),ccw?(-_.b*Math.sin(A)):(_.b*Math.sin(A))));
 			},
-			L = _.pushIf('increment',$.lowTo(5,_.a/8));
+			L = _.pushIf('increment',$.lowTo(5,_.a/10));
 			_.sA = toAngle.call(_,_.get('startAngle'));
 			_.eA = toAngle.call(_,_.get('endAngle'));
 			_.mA = toAngle.call(_,mA);
 			
-			_.push('inc_x',L * Math.cos(2 * Math.PI -_.mA));
-			_.push('inc_y',L * Math.sin(2 * Math.PI - _.mA));
+			_.push('inc_x',L * Math.cos(pi2 -_.mA));
+			_.push('inc_y',L * Math.sin(pi2 - _.mA));
 			L *=2;
 			if(_.get('label')){
 				if(_.get('mini_label')){
@@ -5945,25 +5941,24 @@ $.Pie = $.extend($.Chart, {
 	doConfig : function() {
 		$.Pie.superclass.doConfig.call(this);
 		$.Assert.gt(this.total,0,'this.total');
-		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44;
+		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44,pi2=Math.PI*2;
 		
 		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
 		_.components.push(_.sectors);
-		_.oA = $.angle2Radian(_.get('offset_angle'))%(2*Math.PI);
+		_.oA = $.angle2Radian(_.get('offset_angle'))%pi2;
 		//If 3D,let it bigger
 		if (_.is3D())
 			f += 0.06;
 		
 		f = _.get('minDistance') * f;
 		
-		var L = _.data.length,sepa = $.angle2Radian($.between(0,90,_.get('separate_angle'))),PI = 2*Math.PI-sepa,sepa=sepa/L,eA = _.oA+sepa, sA = eA;
-		
+		var L = _.data.length,sepa = $.angle2Radian($.between(0,90,_.get('separate_angle'))),PI = pi2-sepa,sepa=sepa/L,eA = _.oA+sepa, sA = eA;
 		
 		_.data.each(function(d, i) {
 			eA += (d.value / _.total) * PI;
 			if (i == (L - 1)) {
-				eA = 2 * Math.PI + _.oA;
+				eA = pi2 + _.oA;
 			}
 			d.startAngle = sA;
 			d.endAngle = eA;
@@ -6258,9 +6253,7 @@ $.Donut2D = $.extend($.Pie, {
 			_.components.push(new $.Text(_.get('center'), _));
 		}
 		
-		_.data.each(function(d,i){
-			_.doParse(_,d,i);
-		},_);
+		_.parse(_);
 	}
 });
 /**
