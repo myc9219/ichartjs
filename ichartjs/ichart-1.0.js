@@ -504,7 +504,7 @@
 			return 'rgb' + (a ? 'a' : '') + '(' + round(r * 255) + ',' + round(g * 255) + ',' + round(b * 255) + (a ? ',' + a + ')' : ')');
 		},
 		// the increment of s(v) of hsv model
-		s_inc = 0, v_inc = 0.14,
+		s_inc = 0.05, v_inc = 0.14,
 		/**
 		 * 当目标值>0.1时:以增量iv为上限、随着目标值的减小增量减小 当目标值<=0.1时:若指定的增量大于目标值则直接返回其1/2、否则返回增量值
 		 */
@@ -530,7 +530,8 @@
 				return rgb;
 			rgb = c2a(toRgb(rgb));
 			var hsv = toHsv(rgb);
-			hsv[1] -= is || s_inc;
+			is = is!=0?(is || s_inc):is;
+			hsv[1] -= is;
 			if (d) {
 				hsv[2] -= inc(hsv[2], iv);
 				hsv[1] = _.upTo(hsv[1], 1);
@@ -1315,7 +1316,7 @@ $.Painter = $.extend($.Element, {
 	},
 	doConfig : function() {
 		
-		var _ = this._(), p = $.parsePadding(_.get('padding')), b = _.get('border.enable'), b = b ? $.parsePadding(_.get('border.width')) : [0, 0, 0, 0], bg = $.toRgb(_.get('background_color')), f = _.get('color_factor');
+		var _ = this._(), p = $.parsePadding(_.get('padding')), b = _.get('border.enable'), b = b ? $.parsePadding(_.get('border.width')) : [0, 0, 0, 0], bg = $.toRgb(_.get('background_color')), f = _.get('color_factor'),g=_.get('gradient')?0:null;
 		
 		_.set({
 			border_top:b[0],
@@ -1344,9 +1345,9 @@ $.Painter = $.extend($.Element, {
 		
 		_.push('f_color', bg);
 		_.push('f_color_', bg);
-		_.push("light_color", $.light(bg, f));
-		_.push("dark_color", $.dark(bg, f*0.8));
-		_.push("light_color2", $.light(bg, f * 2));
+		_.push("light_color", $.light(bg, f,g));
+		_.push("dark_color", $.dark(bg, f*0.8,g));
+		_.push("light_color2", $.light(bg, f * 2,g));
 		
 		_.id = _.get('id');
 		
@@ -4540,7 +4541,7 @@ $.Coordinate2D = $.extend($.Component, {
 	doDraw : function(_) {
 		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), 0, _.get('f_color'));
 		if (_.get('alternate_color')) {
-			var x, y, f = false, axis = _.get('axis.width'), c = $.dark(_.get('background_color'), _.get('alternate_color_factor'));
+			var x, y, f = false, axis = _.get('axis.width'), c = $.dark(_.get('background_color'), _.get('alternate_color_factor'),0);
 		}
 		var v = _.get('alternate_direction') == 'v';
 		_.gridlines.each(function(g,i) {
@@ -4831,9 +4832,9 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			 */
 			alternate_color : false,
 			/**
-			 * @cfg {String} Override the default as '#7a8d44'.
+			 * @cfg {String} Override the default as '#a4ad96'.
 			 */
-			grid_color : '#7a8d44',
+			grid_color : '#a4ad96',
 			/**
 			 * @cfg {String} Override the default as '#d6dbd2'.
 			 */
