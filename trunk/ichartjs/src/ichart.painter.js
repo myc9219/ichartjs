@@ -221,7 +221,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	},
 	doConfig : function() {
 		
-		var _ = this._(), p = iChart.parsePadding(_.get('padding')), b = _.get('border.enable'), b = b ? iChart.parsePadding(_.get('border.width')) : [0, 0, 0, 0], bg = iChart.toRgb(_.get('background_color')), f = _.get('color_factor');
+		var _ = this._(), p = iChart.parsePadding(_.get('padding')), b = _.get('border.enable'), b = b ? iChart.parsePadding(_.get('border.width')) : [0, 0, 0, 0], bg = iChart.toRgb(_.get('background_color')), f = _.get('color_factor'),g=_.get('gradient')?0:null;
 		
 		_.set({
 			border_top:b[0],
@@ -250,9 +250,9 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		
 		_.push('f_color', bg);
 		_.push('f_color_', bg);
-		_.push("light_color", iChart.light(bg, f));
-		_.push("dark_color", iChart.dark(bg, f*0.8));
-		_.push("light_color2", iChart.light(bg, f * 2));
+		_.push("light_color", iChart.light(bg, f,g));
+		_.push("dark_color", iChart.dark(bg, f*0.8,g));
+		_.push("light_color2", iChart.light(bg, f * 2,g));
 		
 		_.id = _.get('id');
 		

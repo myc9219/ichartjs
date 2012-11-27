@@ -326,9 +326,6 @@
 
 		// *******************Math************************
 		var sin = Math.sin, cos = Math.cos, atan = Math.atan, tan = Math.tan, acos = Math.acos, sqrt = Math.sqrt, abs = Math.abs, pi = Math.PI, pi2 = 2 * pi, ceil = Math.ceil, round = Math.round, floor = Math.floor, max = Math.max, min = Math.min, pF = parseFloat,
-		/**
-		 * 如果是纯整数或者纯小数,返回靠近其最小数量级(1/5)的数 若有整数和小数,则按照整数部分确定parseInt(value)==value
-		 */
 		factor = function(v, w) {
 			if (v == 0)
 				return v;
@@ -503,11 +500,10 @@
 			}
 			return 'rgb' + (a ? 'a' : '') + '(' + round(r * 255) + ',' + round(g * 255) + ',' + round(b * 255) + (a ? ',' + a + ')' : ')');
 		},
-		// the increment of s(v) of hsv model
-		s_inc = 0, v_inc = 0.14,
 		/**
-		 * 当目标值>0.1时:以增量iv为上限、随着目标值的减小增量减小 当目标值<=0.1时:若指定的增量大于目标值则直接返回其1/2、否则返回增量值
-		 */
+		 * the increment of s(v) of hsv model
+		 */ 
+		s_inc = 0.05, v_inc = 0.14,
 		inc = function(v, iv) {
 			iv = iv || v_inc;
 			if (v > 0.5) {
@@ -522,15 +518,16 @@
 		 * @method anole,make color darker or lighter
 		 * @param {Boolean} d true:dark,false:light
 		 * @param {Object} rgb:color
-		 * @param {Number} iv 明度(0-1)
-		 * @param {Number} is 纯度(0-1)
+		 * @param {Number} iv (0-1)
+		 * @param {Number} is (0-1)
 		 */
 		anole = function(d, rgb, iv, is) {
 			if (!rgb)
 				return rgb;
 			rgb = c2a(toRgb(rgb));
 			var hsv = toHsv(rgb);
-			hsv[1] -= is || s_inc;
+			is = is!=0?(is || s_inc):is;
+			hsv[1] -= is;
 			if (d) {
 				hsv[2] -= inc(hsv[2], iv);
 				hsv[1] = _.upTo(hsv[1], 1);
@@ -702,7 +699,7 @@
 				return  'rgba(' + rgb[0]+',' + rgb[1]+',' + rgb[2]+',' + o +')';
 			},
 			/**
-			 * 计算空间点坐标矢量
+			 * vector point
 			 */
 			vectorP2P : function(x, y, radian) {
 				if (!radian) {
@@ -729,15 +726,9 @@
 				}
 				return v;
 			},
-			/**
-			 * 返回向上靠近一个数量级的数
-			 */
 			ceil : function(max) {
 				return factor(max,1);
 			},
-			/**
-			 * 返回向下靠近一个数量级的数
-			 */
 			floor : function(max, f) {
 				return factor(max,-1);
 			},

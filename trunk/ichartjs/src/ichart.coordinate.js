@@ -585,7 +585,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 	doDraw : function(_) {
 		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), 0, _.get('f_color'));
 		if (_.get('alternate_color')) {
-			var x, y, f = false, axis = _.get('axis.width'), c = iChart.dark(_.get('background_color'), _.get('alternate_color_factor'));
+			var x, y, f = false, axis = _.get('axis.width'), c = iChart.dark(_.get('background_color'), _.get('alternate_color_factor'),0);
 		}
 		var v = _.get('alternate_direction') == 'v';
 		_.gridlines.each(function(g,i) {
@@ -876,9 +876,9 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 			 */
 			alternate_color : false,
 			/**
-			 * @cfg {String} Override the default as '#7a8d44'.
+			 * @cfg {String} Override the default as '#a4ad96'.
 			 */
-			grid_color : '#7a8d44',
+			grid_color : '#a4ad96',
 			/**
 			 * @cfg {String} Override the default as '#d6dbd2'.
 			 */
