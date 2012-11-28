@@ -326,9 +326,6 @@
 
 		// *******************Math************************
 		var sin = Math.sin, cos = Math.cos, atan = Math.atan, tan = Math.tan, acos = Math.acos, sqrt = Math.sqrt, abs = Math.abs, pi = Math.PI, pi2 = 2 * pi, ceil = Math.ceil, round = Math.round, floor = Math.floor, max = Math.max, min = Math.min, pF = parseFloat,
-		/**
-		 * 如果是纯整数或者纯小数,返回靠近其最小数量级(1/5)的数 若有整数和小数,则按照整数部分确定parseInt(value)==value
-		 */
 		factor = function(v, w) {
 			if (v == 0)
 				return v;
@@ -503,11 +500,10 @@
 			}
 			return 'rgb' + (a ? 'a' : '') + '(' + round(r * 255) + ',' + round(g * 255) + ',' + round(b * 255) + (a ? ',' + a + ')' : ')');
 		},
-		// the increment of s(v) of hsv model
-		s_inc = 0.05, v_inc = 0.14,
 		/**
-		 * 当目标值>0.1时:以增量iv为上限、随着目标值的减小增量减小 当目标值<=0.1时:若指定的增量大于目标值则直接返回其1/2、否则返回增量值
-		 */
+		 * the increment of s(v) of hsv model
+		 */ 
+		s_inc = 0.05, v_inc = 0.14,
 		inc = function(v, iv) {
 			iv = iv || v_inc;
 			if (v > 0.5) {
@@ -522,8 +518,8 @@
 		 * @method anole,make color darker or lighter
 		 * @param {Boolean} d true:dark,false:light
 		 * @param {Object} rgb:color
-		 * @param {Number} iv 明度(0-1)
-		 * @param {Number} is 纯度(0-1)
+		 * @param {Number} iv (0-1)
+		 * @param {Number} is (0-1)
 		 */
 		anole = function(d, rgb, iv, is) {
 			if (!rgb)
@@ -703,7 +699,7 @@
 				return  'rgba(' + rgb[0]+',' + rgb[1]+',' + rgb[2]+',' + o +')';
 			},
 			/**
-			 * 计算空间点坐标矢量
+			 * vector point
 			 */
 			vectorP2P : function(x, y, radian) {
 				if (!radian) {
@@ -730,15 +726,9 @@
 				}
 				return v;
 			},
-			/**
-			 * 返回向上靠近一个数量级的数
-			 */
 			ceil : function(max) {
 				return factor(max,1);
 			},
-			/**
-			 * 返回向下靠近一个数量级的数
-			 */
 			floor : function(max, f) {
 				return factor(max,-1);
 			},
@@ -3174,8 +3164,6 @@ $.Label = $.extend($.Component, {
 				h += m*(j[0] + j[2]) / 2;
 				x -= m*(j[3] / 2);
 				y -= m*(j[0] / 2);
-				x = floor(x);
-				y = floor(y);
 				j = f ? j[0] : j;
 				r = (!f ||!r|| r == 0 || r == '0') ? 0 : $.parsePadding(r);
 			}
@@ -3185,27 +3173,29 @@ $.Label = $.extend($.Component, {
 			 * draw a round corners border
 			 */
 			if (r) {
-				this.beginPath().moveTo(x+r[0], fd(j, y))
-				.lineTo(x+w - r[1], fd(j, y))
+				this.beginPath().moveTo(fd(j,x+r[0]), fd(j, y))
+				.lineTo(fd(j,x+w - r[1]), fd(j, y))
 				.arc2(fd(j,x+w - r[1]), fd(j, y+r[1]), r[1], PI*3/2, PI2)
-				.lineTo(fd(j, x+w), y+h - r[2])
+				.lineTo(fd(j, x+w), fd(j,y+h - r[2]))
 				.arc2(fd(j,x+w - r[2]), fd(j, y+h-r[2]), r[2], 0, PI/2)
-				.lineTo(x+r[3], fd(j, y+h))
+				.lineTo(fd(j,x+r[3]), fd(j, y+h))
 				.arc2(fd(j,x+r[3]), fd(j, y+h-r[3]), r[3], PI/2, PI)
-				.lineTo(fd(j,x), y+r[0])
+				.lineTo(fd(j,x), fd(j,y+r[0]))
 				.arc2(fd(j,x+r[0]), fd(j, y+r[0]), r[0], PI, PI*3/2)
 				.closePath().shadowOn(shadow).stroke(j).shadowOff().fill(bg);
 			} else {
 				if (!b.enable || f) {
-					if (b.enable){
-						this.shadowOn(shadow).c.strokeRect(x, y, fd(j, w), fd(j, h));
+					if (j&&b.enable){
+						this.shadowOn(shadow).c.strokeRect(x, y, w, h);
 						this.shadowOff();
 					}
 					if (bg)
 						this.fillRect(x, y, w, h);
 				} else {
-					c = $.isArray(c) ? c : [c, c, c, c];
-					this.shadowOn(shadow).line(x+w, y+j[0] / 2, x+w, y+h - j[0] / 2, j[1], c[1], 0).line(x, y+j[0] / 2, x, y+h - j[0] / 2, j[3], c[3], 0).line(floor(x-j[3] / 2),y, x+w + j[1] / 2, y, j[0], c[0], 0).line(floor(x-j[3] / 2), y+h, x+w + j[1] / 2, y+h, j[2], c[2], 0).shadowOff();
+					if(j){
+						c = $.isArray(c) ? c : [c, c, c, c];
+						this.shadowOn(shadow).line(x+w, y+j[0] / 2, x+w, y+h - j[0] / 2, j[1], c[1], 0).line(x, y+j[0] / 2, x, y+h - j[0] / 2, j[3], c[3], 0).line(floor(x-j[3] / 2),y, x+w + j[1] / 2, y, j[0], c[0], 0).line(floor(x-j[3] / 2), y+h, x+w + j[1] / 2, y+h, j[2], c[2], 0).shadowOff();
+					}
 					if (bg) {
 						this.beginPath().moveTo(floor(x+j[3] / 2), floor(y+j[0] / 2)).lineTo(ceil(x+w - j[1] / 2), y+j[0] / 2).lineTo(ceil(x+w - j[1] / 2), ceil(y+h - j[2] / 2)).lineTo(floor(x+j[3] / 2), ceil(y+h - j[2] / 2)).lineTo(floor(x+j[3] / 2), floor(y+j[0] / 2)).closePath().fill(bg);
 					}
@@ -4565,7 +4555,6 @@ $.Coordinate2D = $.extend($.Component, {
 				}
 			}
 		});
-		
 		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), _.get('axis'), false, _.get('shadow'),true);
 		_.scale.each(function(s) {
 			s.draw()
@@ -6757,8 +6746,6 @@ $.Bar = $.extend($.Chart, {
 		_.push('sub_option.height', bh);
 		_.push('sub_option.valueAlign', _.R);
 		_.push('sub_option.tipAlign', _.R);
-		_.push('sub_option.originx',_.x+1);
-
 	}
 
 });
@@ -6807,7 +6794,7 @@ $.Bar2D = $.extend($.Bar, {
 				id : i,
 				originy : y0 + i * gw,
 				width : Math.abs(w),
-				originx : I + (w > 0 ? 1 : -Math.abs(w))
+				originx : I + (w > 0 ? 0 : -Math.abs(w))
 			});
 
 			_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
@@ -6865,7 +6852,7 @@ $.BarMulti2D = $.extend($.Bar, {
 					id : i + '-' + j,
 					originy : y + j * bh + i * gw,
 					width : Math.abs(w),
-					originx: I+(w>0?1:-Math.abs(w))
+					originx: I+(w>0?0:-Math.abs(w))
 				});
 				_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
 			}, _);
