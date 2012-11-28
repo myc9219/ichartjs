@@ -43,7 +43,7 @@ iChart.BarMulti2D = iChart.extend(iChart.Bar, {
 					id : i + '-' + j,
 					originy : y + j * bh + i * gw,
 					width : Math.abs(w),
-					originx: I+(w>0?1:-Math.abs(w))
+					originx: I+(w>0?0:-Math.abs(w))
 				});
 				_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), _));
 			}, _);

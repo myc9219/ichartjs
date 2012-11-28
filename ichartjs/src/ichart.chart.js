@@ -715,8 +715,6 @@
 				h += m*(j[0] + j[2]) / 2;
 				x -= m*(j[3] / 2);
 				y -= m*(j[0] / 2);
-				x = floor(x);
-				y = floor(y);
 				j = f ? j[0] : j;
 				r = (!f ||!r|| r == 0 || r == '0') ? 0 : $.parsePadding(r);
 			}
@@ -726,27 +724,29 @@
 			 * draw a round corners border
 			 */
 			if (r) {
-				this.beginPath().moveTo(x+r[0], fd(j, y))
-				.lineTo(x+w - r[1], fd(j, y))
+				this.beginPath().moveTo(fd(j,x+r[0]), fd(j, y))
+				.lineTo(fd(j,x+w - r[1]), fd(j, y))
 				.arc2(fd(j,x+w - r[1]), fd(j, y+r[1]), r[1], PI*3/2, PI2)
-				.lineTo(fd(j, x+w), y+h - r[2])
+				.lineTo(fd(j, x+w), fd(j,y+h - r[2]))
 				.arc2(fd(j,x+w - r[2]), fd(j, y+h-r[2]), r[2], 0, PI/2)
-				.lineTo(x+r[3], fd(j, y+h))
+				.lineTo(fd(j,x+r[3]), fd(j, y+h))
 				.arc2(fd(j,x+r[3]), fd(j, y+h-r[3]), r[3], PI/2, PI)
-				.lineTo(fd(j,x), y+r[0])
+				.lineTo(fd(j,x), fd(j,y+r[0]))
 				.arc2(fd(j,x+r[0]), fd(j, y+r[0]), r[0], PI, PI*3/2)
 				.closePath().shadowOn(shadow).stroke(j).shadowOff().fill(bg);
 			} else {
 				if (!b.enable || f) {
-					if (b.enable){
-						this.shadowOn(shadow).c.strokeRect(x, y, fd(j, w), fd(j, h));
+					if (j&&b.enable){
+						this.shadowOn(shadow).c.strokeRect(x, y, w, h);
 						this.shadowOff();
 					}
 					if (bg)
 						this.fillRect(x, y, w, h);
 				} else {
-					c = $.isArray(c) ? c : [c, c, c, c];
-					this.shadowOn(shadow).line(x+w, y+j[0] / 2, x+w, y+h - j[0] / 2, j[1], c[1], 0).line(x, y+j[0] / 2, x, y+h - j[0] / 2, j[3], c[3], 0).line(floor(x-j[3] / 2),y, x+w + j[1] / 2, y, j[0], c[0], 0).line(floor(x-j[3] / 2), y+h, x+w + j[1] / 2, y+h, j[2], c[2], 0).shadowOff();
+					if(j){
+						c = $.isArray(c) ? c : [c, c, c, c];
+						this.shadowOn(shadow).line(x+w, y+j[0] / 2, x+w, y+h - j[0] / 2, j[1], c[1], 0).line(x, y+j[0] / 2, x, y+h - j[0] / 2, j[3], c[3], 0).line(floor(x-j[3] / 2),y, x+w + j[1] / 2, y, j[0], c[0], 0).line(floor(x-j[3] / 2), y+h, x+w + j[1] / 2, y+h, j[2], c[2], 0).shadowOff();
+					}
 					if (bg) {
 						this.beginPath().moveTo(floor(x+j[3] / 2), floor(y+j[0] / 2)).lineTo(ceil(x+w - j[1] / 2), y+j[0] / 2).lineTo(ceil(x+w - j[1] / 2), ceil(y+h - j[2] / 2)).lineTo(floor(x+j[3] / 2), ceil(y+h - j[2] / 2)).lineTo(floor(x+j[3] / 2), floor(y+j[0] / 2)).closePath().fill(bg);
 					}

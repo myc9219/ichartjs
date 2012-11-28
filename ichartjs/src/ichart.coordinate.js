@@ -609,7 +609,6 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 				}
 			}
 		});
-		
 		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), _.get('axis'), false, _.get('shadow'),true);
 		_.scale.each(function(s) {
 			s.draw()

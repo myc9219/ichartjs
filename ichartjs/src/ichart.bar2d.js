@@ -39,7 +39,7 @@ iChart.Bar2D = iChart.extend(iChart.Bar, {
 				id : i,
 				originy : y0 + i * gw,
 				width : Math.abs(w),
-				originx : I + (w > 0 ? 1 : -Math.abs(w))
+				originx : I + (w > 0 ? 0 : -Math.abs(w))
 			});
 
 			_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), _));
