@@ -56,102 +56,48 @@
 	</style>
 	<script type="text/javascript">
 	$(function(){
-		var flow=[];
-		for(var i=0;i<25;i++){
-			flow.push(Math.floor(Math.random()*(10+((i%16)*5)))+10);
-		}
-		
 		var data = [
-		         	{
-		         		name : 'PV',
-		         		value:flow,
-		         		color:'#ec4646',
-		         		linewidth:2
-		         	}
-		         ];
-        
-		var labels = ["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24"];
-		
-		var chart = new iChart.LineBasic2D({
+		        	{name : 'IE',value : 35.75,color:'#a5c2d5'},
+		        	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
+		        	{name : 'Firefox',value : 24.88,color:'#76a871'},
+		        	{name : 'Safari',value : 6.77,color:'#9f7961'},
+		        	{name : 'Opera',value : 2.02,color:'#a56f8f'},
+		        	{name : 'Other',value : 0.73,color:'#6f83a5'}
+	        	];
+    	
+		new iChart.Column2D({
 			render : 'canvasDiv',
 			data: data,
-			align:'center',
-			title : {
-				text:'ichartjs官方网站上一日PV流量',
-				font : '微软雅黑',
-				fontsize:24,
-				color:'#b4b4b4'
-			},
-			subtitle : {
-				text:'14:00-16:00访问量达到最大值',
-				font : '微软雅黑',
-				color:'#b4b4b4'
-			},
-			footnote : {
-				text:'ichartjs.com',
-				font : '微软雅黑',
-				fontsize:11,
-				fontweight:600,
-				padding:'0 28',
-				color:'#b4b4b4'
-			},
+			title : 'Top 5 Browsers from 1 to 29 Feb 2012',
+			showpercent:true,
+			decimalsnum:2,
 			width : 800,
 			height : 400,
-			shadow:true,
-			shadow_color : '#202020',
-			shadow_blur : 8,
-			shadow_offsetx : 0,
-			shadow_offsety : 0,
-			background_color:'#2e2e2e',
-			tip:{
-				enable:true,
-				shadow:true
-			},
-			listeners:{
-				parseTipText:function(d,t,i){
-					return "<span style='color:#005268;font-size:12px;'>"+labels[i]+":00访问量约:<br/>"+
-							"</span><span style='color:#005268;font-size:20px;'>"+t+"万</span>";
-				}
-			},
-			crosshair:{
-				enable:true,
-				line_color:'#ec4646'
-			},
-			sub_option : {
-				smooth : true,
-				label:false,
-				hollow:false,
-				hollow_inside:false,
-				point_size:8
+			animation:true,
+			duration_animation_duration:500,//500ms完成动画
+			gradient:true,//开启背景渐变
+			color_factor:0.25,//渐变因子
+			gradient_mode:'LinearGradientUpDown',//渐变模式
+			sub_option:{
+				gradient:true,//开启柱子渐变
+				color_factor:0.3,//渐变因子
+				gradient_mode:'LinearGradientDownUp'//渐变模式
 			},
 			coordinate:{
-				width:640,
-				height:260,
-				striped_factor : 0.18,
-				grid_color:'#4e4e4e',
-				axis:{
-					color:'#252525',
-					width:[0,0,4,4]
-				},
+				background_color:'#fefefe',
 				scale:[{
 					 position:'left',	
 					 start_scale:0,
-					 end_scale:100,
-					 scale_space:10,
-					 scale_size:2,
-					 scale_enable : false,
-					 label : {color:'#9d987a',font : '微软雅黑',fontsize:11,fontweight:600},
-					 scale_color:'#9f9f9f'
-				},{
-					 position:'bottom',	
-					 label : {color:'#9d987a',font : '微软雅黑',fontsize:11,fontweight:600},
-					 scale_enable : false,
-					 labels:labels
+					 end_scale:40,
+					 scale_space:8,
+					 listeners:{
+						parseText:function(t,x,y){
+							return {text:t+"%"}
+						}
+					}
 				}]
 			}
-		});
-	//开始画图
-	chart.draw();
+		}).draw();
 });
 	</script>
 	</head>
