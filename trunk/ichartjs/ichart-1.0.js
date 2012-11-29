@@ -3449,7 +3449,11 @@ $.Label = $.extend($.Component, {
 			 * doAnimation of implement
 			 */
 			_.doAnimation(_.variable.animation.time, _.duration,_);
-			
+			/**
+			 * draw plugins
+			 */
+			if(_.legend)
+			_.legend.draw();
 			/**
 			 * draw plugins
 			 */
