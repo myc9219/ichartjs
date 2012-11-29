@@ -2,9 +2,9 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>移动客户端预览-产品对比</title>
-		<meta http-equiv="keywords" content="ichartjs demo,Html5 demo,ichart demo"></meta>
-		<meta http-equiv="description" content="The ichartjs's gallery center,ichartjs 示例中心"></meta>
+		<title>ichartjs 示例</title>
+		<meta name="Description" content="The ichartjs's gallery center,ichartjs 示例中心" />
+		<meta name="Keywords" content="ichartjs demo,Html5 demo,ichartjs例子,ichartjs示例,Html5例子,Html5示例" />
 		<script type="text/javascript" src="../../ichart-1.0.min.js"></script>
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<style type="text/css">
@@ -13,58 +13,118 @@
 			}
 		</style>
 		<script type="text/javascript">
-				var data = [
-				         	{
-				         		name : 'DPS01A',
-				         		value:[45,52,54,74,90,84],
-				         		color:'#1f7e92',
-				         		linewidth:1
-				         	},
-				         	{
-				         		name : 'DPS01B',
-				         		value:[60,80,105,125,108,120],
-				         		color:'#2b7f39',
-				         		linewidth:1
-				         	}
-				         ];
-					$(function(){
-					   // var isMobile = !!navigator.userAgent.toLowerCase().match( /ipod|ipad|iphone|android/gi );
-						//var w = isMobile?window.innerWidth:800;
-					    //var h = isMobile?window.innerHeight:440;
-
-					    var w = window.innerWidth-2;
-					    var h = window.innerHeight-2;
-					    if(h>w){
-							h = Math.floor(w*0.6);
+			$(function(){
+				         
+			    var data = [
+							{name : 'MISE',value : 55.11,color : '#4572a7'},
+							{name : 'Firefox',value : 29.84,color : '#aa4643'},
+							{name : 'Chrome',value : 24.88,color : '#89a54e'},
+							{name : 'Safari',value : 6.77,color : '#80699b'},
+							{name : 'Opera',value : 2.02,color : '#3d96ae'}
+						];
+			    var w = window.innerWidth;
+			    var h = window.innerHeight;
+		
+				var chart = new iChart.Column2D({
+					render : 'canvasDiv',
+					data : data,
+					title : {
+						text : 'This is a sample spirit from HighCharts',
+						color : '#3e576f',
+						height:40,
+						fontsize:30
+					},
+					subtitle : {
+						text : 'Browser market share,April,2011 from 1 to 29 Feb 2012',
+						color : '#6d869f',
+						fontsize:22
+					},
+					footnote : {
+						text : 'ichartjs.com',
+						color : '#909090',
+						fontsize : 11,
+						padding : '0 38'
+					},
+					fit:true,
+					label : {
+						fontsize:16,
+						fontweight:600,
+						color : '#666666'
+					},
+					shadow : true,
+					shadow_blur : 2,
+					shadow_color : '#aaaaaa',
+					shadow_offsetx : 1,
+					shadow_offsety : 0,
+					colwidth : Math.floor(w*0.07),
+					sub_option : {
+						listeners : {
+							parseText : function(r, t) {
+								return t + "%";
+							}
+						},
+						label : {
+							fontsize:16,
+							fontweight:600,
+							color : '#4572a7'
+						},
+						border : {
+							width : 2,
+							color : '#ffffff'
 						}
-						new iChart.ColumnMulti2D({
-								render : 'canvasDiv',
-								data: data,
-								labels:["一月","二月","三月","四月","五月","六月"],
-								title : 'DPS01A型号比DPS01B型号的产品更受用户喜欢',
-								subtitle : '2012上半年DPS01A型号与DPS01B型号的鼠标销售比较,单位:万台',
-								footnote : '数据来源：销售中心',
-								footnote_align:'left',
-								width : w,
-								height : h,
-								background_color : '#eff8ff',
-								legend:{
-									enable:true,
-									background_color : '#eff8ff',
-									border : {
-										enable : false
-									}
-								},
-								coordinate:{
-									background_color : '#eff8ff',
-									width:Math.floor(w*0.75),
-									height:Math.floor(h*0.7)
-								}
-						}).draw();
-					});
-			</script>
-		</head>
-		<body>
-			<div id='canvasDiv'></div>
-		</body>
+					},
+					coordinate : {
+						background_color : null,
+						grid_color : '#c0c0c0',
+						width : Math.floor(w*0.7),
+						height : Math.floor(h*0.6),
+						axis : {
+							color : '#c0d0e0',
+							width : [0, 0, 1, 0]
+						},
+						scale : [{
+							position : 'left',
+							start_scale : 0,
+							end_scale : 60,
+							scale_space : 10,
+							scale_enable : false,
+							label : {
+								fontsize:16,
+								fontweight:600,
+								color : '#666666'
+							}
+						}]
+					}
+				});
+				
+				/**
+				 *利用自定义组件构造左侧说明文本。
+				 */
+				chart.plugin(new iChart.Custom({
+						drawFn:function(){
+							/**
+							 *计算位置
+							 */	
+							var coo = chart.getCoordinate(),
+								x = coo.get('originx'),
+								y = coo.get('originy'),
+								H = coo.get('height');
+							/**
+							 *在左侧的位置，设置逆时针90度的旋转，渲染文字。
+							 */
+							chart.target.textAlign('center')
+							.textBaseline('middle')
+							.textFont('600 20px Verdana')
+							.fillText('Total percent market share',x-60,y+H/2,false,'#6d869f', false,false,false,-90);
+							
+						}
+				}));
+				
+				chart.draw();
+			});
+	</script>
+</head>
+<body>
+	<div id='canvasDiv'></div>
+</body>
 </html>
