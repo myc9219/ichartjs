@@ -96,7 +96,7 @@
 		isEventValid:function(){
 			return {valid:false};
 		},
-		doLayout:function(x,y,_){
+		doLayout:function(x,y,n,_){
 			_.x = _.push(_.X,_.x+x);
 			_.y = _.push(_.Y,_.y+y);
 			_.push('textx',_.get('textx')+x);

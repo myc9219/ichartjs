@@ -507,19 +507,19 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			 */
 			background_color : 0,
 			/**
-			 * @cfg {Boolean} If True the grid background-color will be alternate.(default to true)
+			 * @cfg {Boolean} True to stripe the axis.(default to true)
 			 */
-			alternate_color : true,
+			striped : true,
 			/**
-			 * @cfg {String} Specifies the direction apply alternate color.(default to 'v')Available value are:
+			 * @cfg {String} Specifies the direction apply striped color.(default to 'v')Available value are:
 			 * @Option 'h' horizontal
 			 * @Option 'v' vertical
 			 */
-			alternate_direction : 'v',
+			striped_direction : 'v',
 			/**
-			 * @cfg {float(0.01 - 0.5)} Specifies the factor make color dark alternate_color,relative to background-color,the bigger the value you set,the larger the color changed.(defaults to '0.01')
+			 * @cfg {float(0.01 - 0.5)} Specifies the factor make color dark striped,relative to background-color,the bigger the value you set,the larger the color changed.(defaults to '0.01')
 			 */
-			alternate_color_factor : 0.01,
+			striped_factor : 0.01,
 			/**
 			 * @cfg {Object} Specifies config crosshair.(default enable to false).For details see <link>iChart.CrossHair</link> Note:this has a extra property named 'enable',indicate whether crosshair available(default to false)
 			 */
@@ -584,12 +584,12 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 	},
 	doDraw : function(_) {
 		_.T.box(_.x, _.y, _.get(_.W), _.get(_.H), 0, _.get('f_color'));
-		if (_.get('alternate_color')) {
-			var x, y, f = false, axis = _.get('axis.width'), c = iChart.dark(_.get('background_color'), _.get('alternate_color_factor'),0);
+		if (_.get('striped')) {
+			var x, y, f = false, axis = _.get('axis.width'), c = iChart.dark(_.get('background_color'), _.get('striped_factor'),0);
 		}
-		var v = _.get('alternate_direction') == 'v';
+		var v = (_.get('striped_direction') == 'v');
 		_.gridlines.each(function(g,i) {
-			if (_.get('alternate_color')) {
+			if (_.get('striped')) {
 				if (f) {
 					if (v)
 						_.T.box(g.x1, g.y1 + g.width, g.x2 - g.x1, y - g.y1 - g.width, 0, c);
@@ -873,7 +873,7 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 			/**
 			 * @cfg {Boolean} Override the default as false.
 			 */
-			alternate_color : false,
+			striped : false,
 			/**
 			 * @cfg {String} Override the default as '#a4ad96'.
 			 */

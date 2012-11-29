@@ -136,9 +136,13 @@ iChart.Sector = iChart.extend(iChart.Component, {
 	},
 	doDraw : function(_) {
 		if (!_.get('ignored')) {
-			if (_.label)
+			if (_.label&&!_.get('mini_label')){
 				_.label.draw();
+			}
 			_.drawSector();
+			if (_.label&&_.get('mini_label')){
+				_.label.draw();
+			}
 		}
 	},
 	doText : function(_, x, y) {
