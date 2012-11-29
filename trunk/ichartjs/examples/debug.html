@@ -56,79 +56,103 @@
 	</style>
 	<script type="text/javascript">
 	$(function(){
+		var flow=[];
+		for(var i=0;i<25;i++){
+			flow.push(Math.floor(Math.random()*(10+((i%16)*5)))+10);
+		}
+		
 		var data = [
-		        	{name : 'UC浏览器',value : 40.0,color:'#4572a7'},
-		        	{name : 'QQ浏览器',value : 37.1,color:'#aa4643'},
-		        	{name : '欧朋浏览器',value : 13.8,color:'#89a54e'},
-		        	{name : '百度浏览器',value : 1.6,color:'#80699b'},
-		        	{name : '海豚浏览器',value : 1.4,color:'#92a8cd'},
-		        	{name : '天天浏览器',value : 1.2,color:'#db843d'},
-		        	{name : '其他',value : 4.9,color:'#a47d7c'}
-	        	];
-
-    	
-		var chart = new iChart.Pie2D({
+		         	{
+		         		name : 'PV',
+		         		value:flow,
+		         		color:'#ec4646',
+		         		linewidth:2
+		         	}
+		         ];
+        
+		var labels = ["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24"];
+		
+		var chart = new iChart.LineBasic2D({
 			render : 'canvasDiv',
 			data: data,
+			align:'center',
 			title : {
-				text : '2012年第3季度中国第三方手机浏览器市场份额',
-				color : '#3e576f'
+				text:'ichartjs官方网站上一日PV流量',
+				font : '微软雅黑',
+				fontsize:24,
+				color:'#b4b4b4'
+			},
+			subtitle : {
+				text:'14:00-16:00访问量达到最大值',
+				font : '微软雅黑',
+				color:'#b4b4b4'
 			},
 			footnote : {
-				text : 'ichartjs.com',
-				color : '#486c8f',
-				fontsize : 11,
-				padding : '0 38'
+				text:'ichartjs.com',
+				font : '微软雅黑',
+				fontsize:11,
+				fontweight:600,
+				padding:'0 28',
+				color:'#b4b4b4'
 			},
-			sub_option : {
-				label : {
-					background_color:null,
-					sign:false,//设置禁用label的小图标
-					padding:'0 4',
-					border:{
-						enable:false,
-						color:'#666666'
-					},
-					fontsize:11,
-					fontweight:600,
-					color : '#4572a7'
-				},
-				border : {
-					width : 2,
-					color : '#ffffff'
-				}
-			},
-			shadow : true,
-			shadow_blur : 6,
-			shadow_color : '#aaaaaa',
+			width : 800,
+			height : 400,
+			shadow:true,
+			shadow_color : '#202020',
+			shadow_blur : 8,
 			shadow_offsetx : 0,
 			shadow_offsety : 0,
-			background_color:'#fefefe',
-			offsetx:-60,//设置向x轴负方向偏移位置60px
-			offset_angle:-120,//逆时针偏移120度
-			showpercent:true,
-			decimalsnum:2,
-			width : 800,
-			height : 440,
-			radius:120
-		});
-		//利用自定义组件构造右侧说明文本
-		chart.plugin(new iChart.Custom({
-				drawFn:function(){
-					//计算位置
-					var y = chart.get('originy'),
-						w = chart.get('width');
-					
-					//在右侧的位置，渲染说明文字
-					chart.target.textAlign('start')
-					.textBaseline('middle')
-					.textFont('600 16px Verdana')
-					.fillText('UC浏览器、\n手机QQ浏览器及\n欧朋浏览器的份额\n位列第三方手机浏览器\n市场前三甲',w-220,y-40,false,'#be5985',false,20);
+			background_color:'#2e2e2e',
+			tip:{
+				enable:true,
+				shadow:true
+			},
+			listeners:{
+				parseTipText:function(d,t,i){
+					return "<span style='color:#005268;font-size:12px;'>"+labels[i]+":00访问量约:<br/>"+
+							"</span><span style='color:#005268;font-size:20px;'>"+t+"万</span>";
 				}
-		}));
-		
-		chart.draw();
-	});
+			},
+			crosshair:{
+				enable:true,
+				line_color:'#ec4646'
+			},
+			sub_option : {
+				smooth : true,
+				label:false,
+				hollow:false,
+				hollow_inside:false,
+				point_size:8
+			},
+			coordinate:{
+				width:640,
+				height:260,
+				striped_factor : 0.18,
+				grid_color:'#4e4e4e',
+				axis:{
+					color:'#252525',
+					width:[0,0,4,4]
+				},
+				scale:[{
+					 position:'left',	
+					 start_scale:0,
+					 end_scale:100,
+					 scale_space:10,
+					 scale_size:2,
+					 scale_enable : false,
+					 label : {color:'#9d987a',font : '微软雅黑',fontsize:11,fontweight:600},
+					 scale_color:'#9f9f9f'
+				},{
+					 position:'bottom',	
+					 label : {color:'#9d987a',font : '微软雅黑',fontsize:11,fontweight:600},
+					 scale_enable : false,
+					 labels:labels
+				}]
+			}
+		});
+	//开始画图
+	chart.draw();
+});
 	</script>
 	</head>
 	<body>
