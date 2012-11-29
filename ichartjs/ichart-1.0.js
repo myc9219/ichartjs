@@ -3449,6 +3449,20 @@ $.Label = $.extend($.Component, {
 			 * doAnimation of implement
 			 */
 			_.doAnimation(_.variable.animation.time, _.duration,_);
+			
+			/**
+			 * draw plugins
+			 */
+			_.plugins.each(function(p){
+				if(p.A_draw){
+					p.variable.animation.animating =true;
+					p.variable.animation.time =_.variable.animation.time;
+					p.variable.animation.duration =_.duration;
+					p.draw();
+					p.variable.animation.animating =false;
+				}
+			});
+			
 			/**
 			 * fill the background
 			 */
@@ -3916,6 +3930,7 @@ $.Label = $.extend($.Component, {
 			this.type = 'custom';
 			
 			this.set({
+				
 				/**
 				 * @cfg {Function} Specifies the customize function.(default to emptyFn)
 				 */
@@ -3923,7 +3938,11 @@ $.Label = $.extend($.Component, {
 				/**
 				 * @cfg {Function} Specifies the customize event valid function.(default to undefined)
 				 */
-				eventValid:undefined	
+				eventValid:undefined,
+				/**
+				 * @cfg {Boolean} If true when chart animating it also invoke darw.(default to true)
+				 */
+				animating_draw:true
 			});
 			
 			this.registerEvent();
@@ -3939,6 +3958,12 @@ $.Label = $.extend($.Component, {
 		},
 		doConfig:function(){
 			$.Custom.superclass.doConfig.call(this);
+			this.A_draw = this.get('animating_draw');
+			this.variable.animation = {
+				animating:false,	
+				time : 0,
+				duration:0
+			};
 		}
 });
 /**

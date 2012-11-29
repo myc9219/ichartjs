@@ -16,6 +16,7 @@
 			this.type = 'custom';
 			
 			this.set({
+				
 				/**
 				 * @cfg {Function} Specifies the customize function.(default to emptyFn)
 				 */
@@ -23,7 +24,11 @@
 				/**
 				 * @cfg {Function} Specifies the customize event valid function.(default to undefined)
 				 */
-				eventValid:undefined	
+				eventValid:undefined,
+				/**
+				 * @cfg {Boolean} If true when chart animating it also invoke darw.(default to true)
+				 */
+				animating_draw:true
 			});
 			
 			this.registerEvent();
@@ -39,6 +44,12 @@
 		},
 		doConfig:function(){
 			iChart.Custom.superclass.doConfig.call(this);
+			this.A_draw = this.get('animating_draw');
+			this.variable.animation = {
+				animating:false,	
+				time : 0,
+				duration:0
+			};
 		}
 });
 /**

@@ -1000,6 +1000,20 @@
 			 * doAnimation of implement
 			 */
 			_.doAnimation(_.variable.animation.time, _.duration,_);
+			
+			/**
+			 * draw plugins
+			 */
+			_.plugins.each(function(p){
+				if(p.A_draw){
+					p.variable.animation.animating =true;
+					p.variable.animation.time =_.variable.animation.time;
+					p.variable.animation.duration =_.duration;
+					p.draw();
+					p.variable.animation.animating =false;
+				}
+			});
+			
 			/**
 			 * fill the background
 			 */
