@@ -205,7 +205,8 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			return this.events[name][0].apply(socpe, args);
 		var r = true;
 		for ( var i = 0; i < L; i++) {
-			r = this.events[name][i].apply(socpe, args);
+			if(!this.events[name][i].apply(socpe, args))
+				r  = false;
 		}
 		return r;
 	},
