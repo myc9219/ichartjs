@@ -18,6 +18,10 @@ iChart.Column3D = iChart.extend(iChart.Column2D, {
 
 		this.set({
 			/**
+			 * @cfg {<link>iChart.Coordinate3D</link>} the option for coordinate.
+			 */
+			coordinate : {},
+			/**
 			 * @cfg {Number(0~90)} Three-dimensional rotation X in degree(angle).(default to 60)
 			 */
 			xAngle : 60,
