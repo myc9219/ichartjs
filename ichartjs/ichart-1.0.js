@@ -4141,7 +4141,7 @@ $.Scale = $.extend($.Component, {
 				item.y1+=y;
 			});
 		_.labels.each(function(l) {
-			l.doLayout(x,y,l);
+			l.doLayout(x,y,0,l);
 		});
 	},
 	doConfig : function() {
