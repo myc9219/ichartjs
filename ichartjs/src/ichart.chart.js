@@ -484,13 +484,13 @@
 		 * @param {Number}
 		 *            rotatey y旋转值,默认角度为单位
 		 * @param {Number}
-		 *            width 宽度
+		 *            width
 		 * @param {Number}
-		 *            height 高度
+		 *            height
 		 * @param {Number}
-		 *            zh z轴长
+		 *            zh
 		 * @param {Number}
-		 *            border 边框
+		 *            border
 		 * @param {Number}
 		 *            linewidth
 		 * @param {String}
@@ -501,7 +501,7 @@
 		 */
 		cube3D : function(x, y, rotatex, rotatey, angle, w, h, zh, b, bw, bc, styles) {
 			/**
-			 * styles -> 下底-底-左-右-上-前
+			 * styles -> lowerBottom-bottom-left-right-top-front
 			 */
 			x = fd(bw, x);
 			y = fd(bw, y);

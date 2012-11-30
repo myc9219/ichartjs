@@ -1,7 +1,5 @@
 //expect next
-1.傲游浏览器：line2d_06.html
-2.教程同步*
-3.示例编写*
+1.中文全部去掉
 5.考虑插件式开发架构接口设计
 7.suport hsl,hsla model
 9.十字指针还是放到各自组件中,方便管理
@@ -15,21 +13,4 @@
 line shadow-copy coordinate
 draw a ipad,then draw charts on ipad
 
-
 //simple effective amazed
-
-Animation cost of firefox8.0(avg/estimated value):
-coloumn2d:30ms
-coloumn3d:40ms
-pie2d:25ms
-pie3d:25ms
-baseline2d:20ms-50ms(lie on the number of points)
-area2d:25ms-55ms(lie on the number of points)
-
-Animation cost of Opera11.62(avg/estimated value):
-coloumn2d:30ms
-coloumn3d:50ms
-pie2d:30ms
-pie3d:800ms because of 'destination-over'
-baseline2d:20ms-40ms(lie on the number of points)
-area2d:25ms-55ms(lie on the number of points)

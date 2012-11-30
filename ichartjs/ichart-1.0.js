@@ -2934,13 +2934,13 @@ $.Label = $.extend($.Component, {
 		 * @param {Number}
 		 *            rotatey y旋转值,默认角度为单位
 		 * @param {Number}
-		 *            width 宽度
+		 *            width
 		 * @param {Number}
-		 *            height 高度
+		 *            height
 		 * @param {Number}
-		 *            zh z轴长
+		 *            zh
 		 * @param {Number}
-		 *            border 边框
+		 *            border
 		 * @param {Number}
 		 *            linewidth
 		 * @param {String}
@@ -2951,7 +2951,7 @@ $.Label = $.extend($.Component, {
 		 */
 		cube3D : function(x, y, rotatex, rotatey, angle, w, h, zh, b, bw, bc, styles) {
 			/**
-			 * styles -> 下底-底-左-右-上-前
+			 * styles -> lowerBottom-bottom-left-right-top-front
 			 */
 			x = fd(bw, x);
 			y = fd(bw, y);
@@ -4867,7 +4867,8 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			 */
 			shadow_offsety : 2,
 			/**
-			 * @cfg {Array} Specifies the style of board(wall) of this coordinate. the array length must be 3 and each object option has two property. Available property are:
+			 * @cfg {Array} Specifies the style of board(wall) of this coordinate. 
+			 * the length of array will be 6,if less than 6,it will instead of <link>background_color</link>.and each object option has two property. Available property are:
 			 * @Option color the color of wall
 			 * @Option alpha the opacity of wall
 			 */
@@ -4907,72 +4908,71 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			}
 		});
 		_.scale.each(function(s) {
-			s.draw()
+			s.draw();
 		});
 	},
 	doConfig : function() {
 		$.Coordinate3D.superclass.doConfig.call(this);
 
-		var _ = this._(), ws = _.get('wall_style'), bg = _.get('background_color'), c = $.dark(bg, 0.1), c1 = _.get('dark_color'), h = _.get(_.H), w = _.get(_.W);
-
-		if (ws.length < 3) {
-			ws = _.push('wall_style', [{
-				color : c
-			}, {
-				color : bg
-			}, {
-				color : c
+		var _ = this._(),
+			ws = _.get('wall_style'),
+			bg = _.get('background_color'),
+			h = _.get(_.H),
+			w = _.get(_.W),
+			f = _.get('color_factor'),
+			offx = _.push('z_offx',_.get('xAngle_') * _.get('zHeight')),
+			offy = _.push('z_offy',_.get('yAngle_') * _.get('zHeight'));
+			/**
+			 * bottom-lower bottom-left
+			 */
+			while(ws.length < 6){
+				ws.push({color : bg});
+			}
+			if(!_.get('left_board')){
+				ws[2] = false;
+				_.scale.each(function(s){
+					s.doLayout(offx,-offy,s);
+				});
+			}
+			
+			/**
+			 * right-front
+			 */
+			_.push('bottom_style', [{
+				color : _.get('shadow_color'),
+				shadow : _.get('shadow')
+			}, false, false, {
+				color : ws[3].color
+			},false, {
+				color : ws[3].color
 			}]);
-		}
-		var dark = ws[0].color;
-
-		/**
-		 * 右-前
-		 */
-		_.push('bottom_style', [{
-			shadow : _.get('shadow')
-		}, false, false, {
-			color : dark
-		}, {
-			color : dark
-		}, {
-			color : dark
-		}]);
-
-		/**
-		 * 上-右
-		 */
-		_.push('board_style', [false, false, false, {
-			color : dark
-		}, {
-			color : bg
-		}, false]);
-		
-		var offx = _.push('z_offx',_.get('xAngle_') * _.get('zHeight')), offy = _.push('z_offy',_.get('yAngle_') * _.get('zHeight'));
-		
-		if(!_.get('left_board')){
-			ws[2] = false;
-			_.scale.each(function(s){
-				s.doLayout(offx,-offy,s);
-			});
-		}
-		
-		/**
-		 * 下底-底-左-右-上-前
-		 */
-		if (_.get('gradient')) {
-			if ($.isString(ws[0].color)) {
-				ws[0].color = _.T.avgLinearGradient(_.x, _.y + h, _.x + w, _.y + h, [dark, c1]);
+			
+			/**
+			 * right-top
+			 */
+			_.push('board_style', [false, false, false,{
+				color : ws[4].color
+			},{
+				color : ws[5].color
+			}, false]);
+			
+			/**
+			 * lowerBottom-bottom-left-right-top-front
+			 */
+			if (_.get('gradient')) {
+				if ($.isString(ws[0].color)) {
+					ws[0].color = _.T.avgLinearGradient(_.x, _.y + h, _.x + w, _.y + h, [$.dark(ws[0].color,f/2+0.06),$.dark(ws[0].color,f/2+0.06)]);
+				}
+				if ($.isString(ws[1].color)) {
+					ws[1].color = _.T.avgLinearGradient(_.x + offx, _.y - offy, _.x + offx, _.y + h - offy, [$.dark(ws[1].color,f),$.light(ws[1].color,f)]);
+				}
+				if ($.isString(ws[2].color)) {
+					ws[2].color = _.T.avgLinearGradient(_.x, _.y, _.x, _.y + h, [$.light(ws[2].color,f/3),$.dark(ws[2].color,f)]);
+				}
+				_.get('bottom_style')[5].color = _.T.avgLinearGradient(_.x, _.y + h, _.x, _.y + h + _.get('pedestal_height'), [$.light(ws[3].color,f/2+0.06),$.dark(ws[3].color,f/2,0)]);
 			}
-			if ($.isString(ws[1].color)) {
-				ws[1].color = _.T.avgLinearGradient(_.x + offx, _.y - offy, _.x + offx, _.y + h - offy, [c1, _.get('light_color')]);
-			}
-			if ($.isString(ws[2].color)) {
-				ws[2].color = _.T.avgLinearGradient(_.x, _.y, _.x, _.y + h, [bg, c1]);
-			}
-			_.get('bottom_style')[5].color = _.T.avgLinearGradient(_.x, _.y + h, _.x, _.y + h + _.get('pedestal_height'), [bg, c]);
-		}
-
+			_.push('wall_style', [ws[0],ws[1],ws[2]]);
+			
 	}
 });
 /*
@@ -6504,6 +6504,10 @@ $.Column3D = $.extend($.Column2D, {
 		this.dimension = $._3D;
 
 		this.set({
+			/**
+			 * @cfg {<link>$.Coordinate3D</link>} the option for coordinate.
+			 */
+			coordinate : {},
 			/**
 			 * @cfg {Number(0~90)} Three-dimensional rotation X in degree(angle).(default to 60)
 			 */
