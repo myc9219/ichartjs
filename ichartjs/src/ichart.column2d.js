@@ -42,7 +42,7 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 				originy : y  - (h>0? h :0),
 				height : Math.abs(h)
 			});
-			_.rectangles.push(new iChart[_.sub](_.get('sub_option'), _));
+			//_.rectangles.push(new iChart[_.sub](_.get('sub_option'), _));
 			_.doLabel(_,i, d.name, x + gw * i + h2, y0);
 		}, _);
 	}
