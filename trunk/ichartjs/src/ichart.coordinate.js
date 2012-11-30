@@ -891,7 +891,8 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 			 */
 			shadow_offsety : 2,
 			/**
-			 * @cfg {Array} Specifies the style of board(wall) of this coordinate. the array length must be 3 and each object option has two property. Available property are:
+			 * @cfg {Array} Specifies the style of board(wall) of this coordinate. 
+			 * the length of array will be 6,if less than 6,it will instead of <link>background_color</link>.and each object option has two property. Available property are:
 			 * @Option color the color of wall
 			 * @Option alpha the opacity of wall
 			 */
@@ -931,72 +932,71 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 			}
 		});
 		_.scale.each(function(s) {
-			s.draw()
+			s.draw();
 		});
 	},
 	doConfig : function() {
 		iChart.Coordinate3D.superclass.doConfig.call(this);
 
-		var _ = this._(), ws = _.get('wall_style'), bg = _.get('background_color'), c = iChart.dark(bg, 0.1), c1 = _.get('dark_color'), h = _.get(_.H), w = _.get(_.W);
-
-		if (ws.length < 3) {
-			ws = _.push('wall_style', [{
-				color : c
-			}, {
-				color : bg
-			}, {
-				color : c
+		var _ = this._(),
+			ws = _.get('wall_style'),
+			bg = _.get('background_color'),
+			h = _.get(_.H),
+			w = _.get(_.W),
+			f = _.get('color_factor'),
+			offx = _.push('z_offx',_.get('xAngle_') * _.get('zHeight')),
+			offy = _.push('z_offy',_.get('yAngle_') * _.get('zHeight'));
+			/**
+			 * bottom-lower bottom-left
+			 */
+			while(ws.length < 6){
+				ws.push({color : bg});
+			}
+			if(!_.get('left_board')){
+				ws[2] = false;
+				_.scale.each(function(s){
+					s.doLayout(offx,-offy,s);
+				});
+			}
+			
+			/**
+			 * right-front
+			 */
+			_.push('bottom_style', [{
+				color : _.get('shadow_color'),
+				shadow : _.get('shadow')
+			}, false, false, {
+				color : ws[3].color
+			},false, {
+				color : ws[3].color
 			}]);
-		}
-		var dark = ws[0].color;
-
-		/**
-		 * 右-前
-		 */
-		_.push('bottom_style', [{
-			shadow : _.get('shadow')
-		}, false, false, {
-			color : dark
-		}, {
-			color : dark
-		}, {
-			color : dark
-		}]);
-
-		/**
-		 * 上-右
-		 */
-		_.push('board_style', [false, false, false, {
-			color : dark
-		}, {
-			color : bg
-		}, false]);
-		
-		var offx = _.push('z_offx',_.get('xAngle_') * _.get('zHeight')), offy = _.push('z_offy',_.get('yAngle_') * _.get('zHeight'));
-		
-		if(!_.get('left_board')){
-			ws[2] = false;
-			_.scale.each(function(s){
-				s.doLayout(offx,-offy,s);
-			});
-		}
-		
-		/**
-		 * 下底-底-左-右-上-前
-		 */
-		if (_.get('gradient')) {
-			if (iChart.isString(ws[0].color)) {
-				ws[0].color = _.T.avgLinearGradient(_.x, _.y + h, _.x + w, _.y + h, [dark, c1]);
+			
+			/**
+			 * right-top
+			 */
+			_.push('board_style', [false, false, false,{
+				color : ws[4].color
+			},{
+				color : ws[5].color
+			}, false]);
+			
+			/**
+			 * lowerBottom-bottom-left-right-top-front
+			 */
+			if (_.get('gradient')) {
+				if (iChart.isString(ws[0].color)) {
+					ws[0].color = _.T.avgLinearGradient(_.x, _.y + h, _.x + w, _.y + h, [iChart.dark(ws[0].color,f/2+0.06),iChart.dark(ws[0].color,f/2+0.06)]);
+				}
+				if (iChart.isString(ws[1].color)) {
+					ws[1].color = _.T.avgLinearGradient(_.x + offx, _.y - offy, _.x + offx, _.y + h - offy, [iChart.dark(ws[1].color,f),iChart.light(ws[1].color,f)]);
+				}
+				if (iChart.isString(ws[2].color)) {
+					ws[2].color = _.T.avgLinearGradient(_.x, _.y, _.x, _.y + h, [iChart.light(ws[2].color,f/3),iChart.dark(ws[2].color,f)]);
+				}
+				_.get('bottom_style')[5].color = _.T.avgLinearGradient(_.x, _.y + h, _.x, _.y + h + _.get('pedestal_height'), [iChart.light(ws[3].color,f/2+0.06),iChart.dark(ws[3].color,f/2,0)]);
 			}
-			if (iChart.isString(ws[1].color)) {
-				ws[1].color = _.T.avgLinearGradient(_.x + offx, _.y - offy, _.x + offx, _.y + h - offy, [c1, _.get('light_color')]);
-			}
-			if (iChart.isString(ws[2].color)) {
-				ws[2].color = _.T.avgLinearGradient(_.x, _.y, _.x, _.y + h, [bg, c1]);
-			}
-			_.get('bottom_style')[5].color = _.T.avgLinearGradient(_.x, _.y + h, _.x, _.y + h + _.get('pedestal_height'), [bg, c]);
-		}
-
+			_.push('wall_style', [ws[0],ws[1],ws[2]]);
+			
 	}
 });
 /*

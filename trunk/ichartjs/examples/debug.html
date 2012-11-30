@@ -97,7 +97,7 @@
 			},
 			sub_option:{
 				label : {
-					color : '#4c4f48'
+					color : '#2c2e2a'
 				},
 				listeners:{
 					parseText:function(r,t){
@@ -108,7 +108,7 @@
 			},
 			text_space : 16,//坐标系下方的label距离坐标系的距离。
 			coordinate:{
-				background_color : '#d5d8d1',
+				background_color : '#333333',
 				grid_color : '#a4ad96',
 				color_factor : 0.24,
 				board_deep:10,
@@ -116,6 +116,20 @@
 				left_board:false,//取消左侧面板
 				width:580,
 				valid_width:560,
+				shadow:true,//底座的阴影效果
+				wall_style:[{//坐标系的各个面样式
+					color : '#333333'
+				},{
+					color : '#b2b2d3'
+				}, {
+					color : '#a6a6cb'
+				},{
+					color : '#333333'
+				},{
+					color : '#74749b'
+				},{
+					color : '#a6a6cb'
+				}],
 				scale:[{
 					 position:'left',	
 					 start_scale:0,
