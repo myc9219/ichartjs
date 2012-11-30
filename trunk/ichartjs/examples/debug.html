@@ -57,11 +57,11 @@
 	<script type="text/javascript">
 	$(function(){	
 		var data = [
-		        	{name : 'Alex',value : 25,color:'#849fb4'},
-		        	{name : 'Mark',value : 35,color:'#bf9d32'},
-		        	{name : 'David',value : 42.3,color:'#728f1b'},
-		        	{name : 'Graham',value : 35.3,color:'#bf784c'},
-		        	{name : 'John',value : 31.3,color:'#2f8586'}
+		        	{name : 'Alex',value : 25,color:iChart.toRgba('#849fb4',0.2)},
+		        	{name : 'Mark',value : 35,color:iChart.toRgba('#bf9d32',0.2)},
+		        	{name : 'David',value : 42.3,color:iChart.toRgba('#728f1b',0.2)},
+		        	{name : 'Graham',value : 35.3,color:iChart.toRgba('#bf784c',0.2)},
+		        	{name : 'John',value : 31.3,color:iChart.toRgba('#2f8586',0.2)}
 	        	];
     	
 		var chart = new iChart.Column3D({
@@ -113,11 +113,10 @@
 				color_factor : 0.24,
 				board_deep:10,
 				pedestal_height:10,
-				left_board:false,//取消左侧面板
 				width:580,
 				valid_width:560,
 				shadow:true,//底座的阴影效果
-				wall_style:[{//坐标系的各个面样式
+				wall_style:[{
 					color : '#333333'
 				},{
 					color : '#b2b2d3'
@@ -160,7 +159,7 @@
 					chart.target.textAlign('center')
 					.textBaseline('middle')
 					.textFont('600 13px Verdana')
-					.fillText('Sales Figure',x-40,y+H/2,false,'#6d869f', false,false,false,-90);
+					.fillText('Sales Figure',x-60,y+H/2,false,'#6d869f', false,false,false,-90);
 					
 				}
 		}));
