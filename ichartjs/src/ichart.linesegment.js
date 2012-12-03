@@ -176,19 +176,18 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		iChart.LineSegment.superclass.doConfig.call(this);
 		iChart.Assert.gt(this.get('point_space'),0,'point_space');
 
-		var _ = this._(),L = !!_.get('label'),ps = _.get('point_size') * 3 / 2,sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points');
+		var _ = this._(),L = !!_.get('label'),ps = _.get('point_size') * 3 / 2,sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points'),N=_.get('name');
 		
 		_.labels = [];
 		
 		p.each(function(q){
 			q.x_ = q.x;
 			q.y_ = q.y;
-			q.value = _.fireString(_, 'parseText', [_, q.value],q.value);
 			if(q.ignored)_.ignored_ = true;
 			if(!q.ignored&&L){
 				_.push('label.originx', q.x);
 				_.push('label.originy', q.y-ps);
-				_.push('label.text',q.value);
+				_.push('label.text',_.fireString(_, 'parseText', [_, q.value],q.value));
 				iChart.applyIf(_.get('label'),{
 					textBaseline : 'bottom',
 					color:_.get('f_color')
@@ -227,8 +226,9 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		}, to = function(i) {
 			return {
 				valid : true,
-				text : p[i].text,
+				name : N,
 				value : p[i].value,
+				text : p[i].text,
 				top : p[i].y,
 				left : p[i].x,
 				i:i,

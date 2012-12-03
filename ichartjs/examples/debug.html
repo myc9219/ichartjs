@@ -55,24 +55,24 @@
 		}
 	</style>
 	<script type="text/javascript">
-	$(function(){	
+	$(function() {
 		var data = [
-		        	{name : 'Alex',value : 25,color:iChart.toRgba('#849fb4',0.2)},
-		        	{name : 'Mark',value : 35,color:iChart.toRgba('#bf9d32',0.2)},
-		        	{name : 'David',value : 42.3,color:iChart.toRgba('#728f1b',0.2)},
-		        	{name : 'Graham',value : 35.3,color:iChart.toRgba('#bf784c',0.2)},
-		        	{name : 'John',value : 31.3,color:iChart.toRgba('#2f8586',0.2)}
-	        	];
-    	
-		var chart = new iChart.Column3D({
+					{name : 'MISE',value : 55.11,color : '#4572a7'},
+					{name : 'Firefox',value : 29.84,color : '#aa4643'},
+					{name : 'Chrome',value : 24.88,color : '#89a54e'},
+					{name : 'Safari',value : 6.77,color : '#80699b'},
+					{name : 'Opera',value : 2.02,color : '#3d96ae'}
+				];
+
+		var chart = new iChart.Column2D({
 			render : 'canvasDiv',
-			data: data,
+			data : data,
 			title : {
-				text : 'This is a sample spirit from FusionCharts',
+				text : 'This is a sample spirit from HighCharts',
 				color : '#3e576f'
 			},
 			subtitle : {
-				text : 'Top 5 Sales Person,2011',
+				text : 'Browser market share,April,2011 from 1 to 29 Feb 2012',
 				color : '#6d869f'
 			},
 			footnote : {
@@ -83,83 +83,81 @@
 			},
 			width : 800,
 			height : 400,
+			label : {
+				fontsize:11,
+				color : '#666666'
+			},
 			shadow : true,
 			shadow_blur : 2,
 			shadow_color : '#aaaaaa',
 			shadow_offsetx : 1,
 			shadow_offsety : 0,
-			colwidth : 98,
-			zScale:0.5,
-			xAngle : 50,
-			bottom_scale:1.1,
-			label:{
-				color:'#4c4f48'
-			},
-			sub_option:{
-				label : {
-					color : '#2c2e2a'
+			colwidth : 62,
+			sub_option : {
+				listeners : {
+					parseText : function(r, t) {
+						return t + "%";
+					}
 				},
+				label : {
+					fontsize:11,
+					fontweight:600,
+					color : '#4572a7'
+				},
+				border : {
+					width : 2,
+					color : '#ffffff'
+				}
+			},
+			tip:{
+				enable:true,
 				listeners:{
-					parseText:function(r,t){
-						//自定义柱形图上方label的格式。
-						return '$'+t+'k';
+					parseText:function(tip,name,value,text){
+						return name+":"+(value/this.get('total') * 100).toFixed(2)+ "%<br/>点击进入"+name+"详情";
 					}
 				}
 			},
-			text_space : 16,//坐标系下方的label距离坐标系的距离。
-			coordinate:{
-				background_color : '#333333',
-				grid_color : '#a4ad96',
-				color_factor : 0.24,
-				board_deep:10,
-				pedestal_height:10,
-				width:580,
-				valid_width:560,
-				shadow:true,//底座的阴影效果
-				wall_style:[{
-					color : '#333333'
-				},{
-					color : '#b2b2d3'
-				}, {
-					color : '#a6a6cb'
-				},{
-					color : '#333333'
-				},{
-					color : '#74749b'
-				},{
-					color : '#a6a6cb'
-				}],
-				scale:[{
-					 position:'left',	
-					 start_scale:0,
-					 end_scale:50,
-					 scale_space:10,
-					 label:{
-						color:'#4c4f48'
-					 },
-					 listeners:{
-						parseText:function(t,x,y){
-						//自定义左侧坐标系刻度文本的格式。
-							return {text:'$'+t+'k'}
-						}
-					 }
+			coordinate : {
+				background_color : null,
+				grid_color : '#c0c0c0',
+				width : 660,
+				axis : {
+					color : '#c0d0e0',
+					width : [0, 0, 1, 0]
+				},
+				scale : [{
+					position : 'left',
+					start_scale : 0,
+					end_scale : 60,
+					scale_space : 10,
+					scale_enable : false,
+					label : {
+						fontsize:11,
+						color : '#666666'
+					}
 				}]
 			}
 		});
-
-		 //利用自定义组件构造左侧说明文本。
+		
+		/**
+		 *利用自定义组件构造左侧说明文本。
+		 */
 		chart.plugin(new iChart.Custom({
 				drawFn:function(){
-					 //计算位置
+					/**
+					 *计算位置
+					 */	
 					var coo = chart.getCoordinate(),
 						x = coo.get('originx'),
 						y = coo.get('originy'),
 						H = coo.get('height');
-					//在左侧的位置，渲染说明文字。
+					/**
+					 *在左侧的位置，设置逆时针90度的旋转，渲染文字。
+					 */
 					chart.target.textAlign('center')
 					.textBaseline('middle')
 					.textFont('600 13px Verdana')
-					.fillText('Sales Figure',x-60,y+H/2,false,'#6d869f', false,false,false,-90);
+					.fillText('Total percent market share',x-40,y+H/2,false,'#6d869f', false,false,false,-90);
 					
 				}
 		}));

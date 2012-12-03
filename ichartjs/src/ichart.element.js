@@ -1,5 +1,5 @@
 /**
- * @overview This is base class of all element.All must extend this so that has ability for configuration
+ * @overview This is base class of all element.All must extend this so that has ability for configuration and event
  * this class include some base attribute
  * @component#iChart.Element
  * @extend#Object
@@ -93,7 +93,13 @@ iChart.Element = function(config) {
 		'mousedown':[],
 		'dblclick':[]
 	};
-	
+	this.registerEvent(
+			/**
+			 * @event Fires after the element initializing is finished this is for test
+			 * @paramter iChart.Painter#this
+			 */
+			'initialize');
+			
 	_.initialization = false;
 	
 	/**
@@ -115,6 +121,52 @@ iChart.Element = function(config) {
 
 iChart.Element.prototype = {
 	_:function(){return this},	
+	afterConfiguration : function() {
+		/**
+		 * register customize event
+		 */
+		if (iChart.isObject(this.get('listeners'))) {
+			for ( var e in this.get('listeners')) {
+				this.on(e, this.get('listeners')[e]);
+			}
+		}
+		this.initialize();
+		
+		/**
+		 * fire the initialize event,this probable use to unit test
+		 */
+		this.fireEvent(this, 'initialize', [this]);
+	},
+	registerEvent : function() {
+		for ( var i = 0; i < arguments.length; i++) {
+			this.events[arguments[i]] = [];
+		}
+	},
+	fireString : function(socpe, name, args, s) {
+		var t = this.fireEvent(socpe, name, args);
+		return iChart.isString(t) ? t : (t!==true&&iChart.isDefined(t)?t.toString():s);
+	},
+	fireEvent : function(socpe, name, args) {
+		var L = this.events[name].length;
+		if (L == 1)
+			return this.events[name][0].apply(socpe, args);
+		var r = true;
+		for ( var i = 0; i < L; i++) {
+			if(!this.events[name][i].apply(socpe, args))
+				r  = false;
+		}
+		return r;
+	},
+	on : function(n, fn) {
+		if(iChart.isString(n)){
+			if (!this.events[n])
+				throw new Error('['+this.type+"] invalid event:'" + n + "'");
+			this.events[n].push(fn);
+		}else if(iChart.isArray(n)){
+			n.each(function(c){this.on(c, fn)},this);
+		}
+		return this;
+	},
 	getPlugin:function(n){
 		return this.constructor.plugin_[n];
 	},

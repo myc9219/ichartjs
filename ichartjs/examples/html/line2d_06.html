@@ -58,12 +58,13 @@
 				background_color:'#2e2e2e',
 				tip:{
 					enable:true,
-					shadow:true
-				},
-				listeners:{
-					parseTipText:function(d,t,i){
-						return "<span style='color:#005268;font-size:12px;'>"+labels[i]+":00访问量约:<br/>"+
-								"</span><span style='color:#005268;font-size:20px;'>"+t+"万</span>";
+					shadow:true,
+					listeners:{
+						 //tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
+						parseText:function(tip,name,value,text,i){
+							return "<span style='color:#005268;font-size:12px;'>"+labels[i]+":00访问量约:<br/>"+
+							"</span><span style='color:#005268;font-size:20px;'>"+value+"万</span>";
+						}
 					}
 				},
 				crosshair:{

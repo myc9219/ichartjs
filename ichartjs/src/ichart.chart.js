@@ -956,13 +956,6 @@
 			 */
 			this.registerEvent(
 			/**
-			 * @event Fires when parse this tip's data.Return value will override existing. Only valid when tip is available
-			 * @paramter Object#data this tip's data item
-			 * @paramter int#value the value of item
-			 * @paramter int#i the index of item
-			 */
-			'parseTipText',
-			/**
 			 * @event Fires before this element Animation.Only valid when <link>animation</link> is true
 			 * @paramter iChart.Chart#this
 			 */
@@ -1319,7 +1312,10 @@
 			_.pushIf('sub_option.background_color', d.color);
 			
 			if (_.get('sub_option.tip.enable')){
-				_.push('sub_option.tip.text', _.fireString(_, 'parseTipText', [d,d.value,i],(t || (d.name + ' ' +_.getPercent(d.value)))));
+				_.push('sub_option.tip.text',t || (d.name + ' ' +_.getPercent(d.value)));
+				_.push('sub_option.tip.name',d.name);
+				_.push('sub_option.tip.value',d.value);
+				_.push('sub_option.tip.total',_.total);
 			}
 			
 		},
