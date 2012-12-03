@@ -62,12 +62,12 @@
 							point_size:10
 						},
 						tip:{
-							enable:true
-						},
-						listeners:{
-							parseTipText:function(d,t,i){
-								//设置个性化提示
-								return labels[i]+"订单数:<span style='color:red'>"+t+"</span>万件";
+							enable:true,
+							listeners:{
+								 //tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
+								parseText:function(tip,name,value,text,i){
+									return labels[i]+"订单数:<span style='color:red'>"+value+"</span>万件";
+								}
 							}
 						},
 						width : 800,

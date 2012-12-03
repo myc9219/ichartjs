@@ -17,6 +17,8 @@
 			this.type = 'tip';
 			
 			this.set({
+				name:'',
+				value:'',
 				/**
 				 * @cfg {String} Specifies the text want to disply.(default to '')
 				 */
@@ -64,6 +66,16 @@
 				 },
 				 delay:200
 			});
+			this.registerEvent(
+					/**
+					 * @event Fires when parse this tip's text.Return value will override existing.
+					 * @paramter <link>iChart.Tip</link>#tip
+					 * @paramter string#name the current tip's name
+					 * @paramter string#value the current tip's value
+					 * @paramter string#text the current tip's text
+					 * @paramter int#index index of data,if there was a line
+					 */
+					'parseText');
 		},
 		position:function(t,l){
 			this.style.top =  (t<0?0:t)+"px";
@@ -75,7 +87,7 @@
 			if(_.get('invokeOffsetDynamic')){
 				if(m.hit){
 					if(iChart.isString(m.text)||iChart.isNumber(m.text)){
-						_.dom.innerHTML =  m.text;
+						_.text(m.name,m.value,m.text,m.i,_);
 					}
 					var o = _.get('invokeOffset')(_.width(),_.height(),m);
 					_.position(o.top,o.left);
@@ -89,8 +101,8 @@
 				}
 			}
 		},
-		text:function(text){
-			this.dom.innerHTML = text;
+		text:function(n,v,t,i,_){
+			_.dom.innerHTML = _.fireString(_, 'parseText', [_,n,v,t,i],t);
 		},
 		beforeshow:function(e,m){
 			this.follow(e,m);
@@ -100,7 +112,6 @@
 				this.css('opacity',0);
 			}else{
 				this.css('visibility','hidden');
-				_.css('top','-999px');
 			}
 		},
 		initialize:function(){
@@ -109,7 +120,9 @@
 			var _ = this._();
 			
 			_.css('position','absolute');
-			_.dom.innerHTML = _.get('text');
+			
+			_.text(_.get('name'),_.get('value'),_.get('text'),0,_);
+			
 			_.style = _.dom.style;
 			_.hidden();
 			
@@ -121,7 +134,6 @@
 				_.onTransitionEnd(function(e){
 					if(_.css('opacity')==0){
 						_.css('visibility','hidden');
-						_.css('top','-999px');
 					}
 				},false);
 			}

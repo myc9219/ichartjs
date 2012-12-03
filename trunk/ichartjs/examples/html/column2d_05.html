@@ -69,7 +69,23 @@
 					rotate:-45,
 					color : '#666666'
 				},
-				tip:{enable:true},
+				tip:{
+					enable:true,
+					listeners:{
+						 //tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
+						parseText:function(tip,name,value,text,i){
+							//将数字进行千位格式化
+							var f = new String(value);
+							f = f.split("").reverse().join("").replace(/(\d{3})/g,"$1,").split("").reverse();
+							if(f[0]==','){
+								f.shift();
+							}	
+							f = f.join("");
+							
+							return name+"人口:<br/>"+f+"人<br/>占全国比重:<br/>"+(value/this.get('total') * 100).toFixed(2)+ '%';
+						}
+					}
+				},
 				shadow : true,
 				shadow_blur : 2,
 				shadow_color : '#aaaaaa',
@@ -81,19 +97,6 @@
 					border : {
 						width : 2,
 						color : '#ffffff'
-					}
-				},
-				listeners:{
-					parseTipText:function(d,t,i){
-						//将数字进行千位格式化
-						var f = new String(d.value);
-						f = f.split("").reverse().join("").replace(/(\d{3})/g,"$1,").split("").reverse();
-						if(f[0]==','){
-							f.shift();
-						}	
-						f = f.join("");
-						
-						return d.name+"人口:<br/>"+f+"人<br/>占全国比重:<br/>"+(d.value/this.total * 100).toFixed(2)+ '%';
 					}
 				},
 				coordinate : {

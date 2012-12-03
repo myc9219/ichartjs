@@ -51,13 +51,9 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 					x : ox + x,
 					y : oy - y,
 					value : v,
-					text : v
+					text : d.name+' '+v
 				};
 				iChart.merge(p, _.fireEvent(_, 'parsePoint', [d, v, x, y, j]));
-				
-				if (_.get('tip.enable'))
-					p.text = _.fireString(_, 'parseTipText', [d, v, j], v);
-				
 				points.push(p);
 			}, _);
 			

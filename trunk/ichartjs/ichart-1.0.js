@@ -923,7 +923,7 @@
 
 ;(function($){
 /**
- * @overview This is base class of all element.All must extend this so that has ability for configuration
+ * @overview This is base class of all element.All must extend this so that has ability for configuration and event
  * this class include some base attribute
  * @component#$.Element
  * @extend#Object
@@ -1017,7 +1017,13 @@ $.Element = function(config) {
 		'mousedown':[],
 		'dblclick':[]
 	};
-	
+	this.registerEvent(
+			/**
+			 * @event Fires after the element initializing is finished this is for test
+			 * @paramter $.Painter#this
+			 */
+			'initialize');
+			
 	_.initialization = false;
 	
 	/**
@@ -1039,6 +1045,52 @@ $.Element = function(config) {
 
 $.Element.prototype = {
 	_:function(){return this},	
+	afterConfiguration : function() {
+		/**
+		 * register customize event
+		 */
+		if ($.isObject(this.get('listeners'))) {
+			for ( var e in this.get('listeners')) {
+				this.on(e, this.get('listeners')[e]);
+			}
+		}
+		this.initialize();
+		
+		/**
+		 * fire the initialize event,this probable use to unit test
+		 */
+		this.fireEvent(this, 'initialize', [this]);
+	},
+	registerEvent : function() {
+		for ( var i = 0; i < arguments.length; i++) {
+			this.events[arguments[i]] = [];
+		}
+	},
+	fireString : function(socpe, name, args, s) {
+		var t = this.fireEvent(socpe, name, args);
+		return $.isString(t) ? t : (t!==true&&$.isDefined(t)?t.toString():s);
+	},
+	fireEvent : function(socpe, name, args) {
+		var L = this.events[name].length;
+		if (L == 1)
+			return this.events[name][0].apply(socpe, args);
+		var r = true;
+		for ( var i = 0; i < L; i++) {
+			if(!this.events[name][i].apply(socpe, args))
+				r  = false;
+		}
+		return r;
+	},
+	on : function(n, fn) {
+		if($.isString(n)){
+			if (!this.events[n])
+				throw new Error('['+this.type+"] invalid event:'" + n + "'");
+			this.events[n].push(fn);
+		}else if($.isArray(n)){
+			n.each(function(c){this.on(c, fn)},this);
+		}
+		return this;
+	},
 	getPlugin:function(n){
 		return this.constructor.plugin_[n];
 	},
@@ -1084,7 +1136,7 @@ $.Element.prototype = {
 
 
 /**
- * @overview The interface this class defined include draw and event,so the sub class has must capability to draw and aware of event. this class is a abstract class,so you should not try to initialize it.
+ * @overview The interface this class defined d,so the sub class has must capability to draw and aware of event. this class is a abstract class,so you should not try to initialize it.
  * @component#$.Painter
  * @extend#$.Element
  */
@@ -1184,11 +1236,6 @@ $.Painter = $.extend($.Element, {
 		 */
 		this.registerEvent(
 		/**
-		 * @event Fires after the element initializing is finished this is for test
-		 * @paramter $.Painter#this
-		 */
-		'initialize',
-		/**
 		 * @event Fires when this element is clicked
 		 * @paramter $.Painter#this
 		 * @paramter EventObject#e The click event object
@@ -1226,27 +1273,6 @@ $.Painter = $.extend($.Element, {
 		
 		
 	},
-	afterConfiguration : function() {
-		/**
-		 * register customize event
-		 */
-		if ($.isObject(this.get('listeners'))) {
-			for ( var e in this.get('listeners')) {
-				this.on(e, this.get('listeners')[e]);
-			}
-		}
-		this.initialize();
-		
-		/**
-		 * fire the initialize event,this probable use to unit test
-		 */
-		this.fireEvent(this, 'initialize', [this]);
-	},
-	registerEvent : function() {
-		for ( var i = 0; i < arguments.length; i++) {
-			this.events[arguments[i]] = [];
-		}
-	},
 	is3D : function() {
 		return this.dimension == $._3D;
 	},
@@ -1279,31 +1305,6 @@ $.Painter = $.extend($.Element, {
 		 * fire the draw event
 		 */
 		this.fireEvent(this, 'draw', [this,e]);
-	},
-	fireString : function(socpe, name, args, s) {
-		var t = this.fireEvent(socpe, name, args);
-		return $.isString(t) ? t : (t!==true&&$.isDefined(t)?t.toString():s);
-	},
-	fireEvent : function(socpe, name, args) {
-		var L = this.events[name].length;
-		if (L == 1)
-			return this.events[name][0].apply(socpe, args);
-		var r = true;
-		for ( var i = 0; i < L; i++) {
-			if(!this.events[name][i].apply(socpe, args))
-				r  = false;
-		}
-		return r;
-	},
-	on : function(n, fn) {
-		if($.isString(n)){
-			if (!this.events[n])
-				throw new Error('['+this.type+"] invalid event:'" + n + "'");
-			this.events[n].push(fn);
-		}else if($.isArray(n)){
-			n.each(function(c){this.on(c, fn)},this);
-		}
-		return this;
 	},
 	doConfig : function() {
 		
@@ -1405,9 +1406,6 @@ $.Html = $.extend($.Element,{
 		
 		
 		this.transitions = "";
-	},
-	afterConfiguration:function(){
-		this.initialize();
 	},
 	initialize:function(){
 		this.wrap = this.get('wrap');
@@ -1627,6 +1625,8 @@ $.Component = $.extend($.Painter, {
 			this.type = 'tip';
 			
 			this.set({
+				name:'',
+				value:'',
 				/**
 				 * @cfg {String} Specifies the text want to disply.(default to '')
 				 */
@@ -1674,6 +1674,16 @@ $.Component = $.extend($.Painter, {
 				 },
 				 delay:200
 			});
+			this.registerEvent(
+					/**
+					 * @event Fires when parse this tip's text.Return value will override existing.
+					 * @paramter <link>$.Tip</link>#tip
+					 * @paramter string#name the current tip's name
+					 * @paramter string#value the current tip's value
+					 * @paramter string#text the current tip's text
+					 * @paramter int#index index of data,if there was a line
+					 */
+					'parseText');
 		},
 		position:function(t,l){
 			this.style.top =  (t<0?0:t)+"px";
@@ -1685,7 +1695,7 @@ $.Component = $.extend($.Painter, {
 			if(_.get('invokeOffsetDynamic')){
 				if(m.hit){
 					if($.isString(m.text)||$.isNumber(m.text)){
-						_.dom.innerHTML =  m.text;
+						_.text(m.name,m.value,m.text,m.i,_);
 					}
 					var o = _.get('invokeOffset')(_.width(),_.height(),m);
 					_.position(o.top,o.left);
@@ -1699,8 +1709,8 @@ $.Component = $.extend($.Painter, {
 				}
 			}
 		},
-		text:function(text){
-			this.dom.innerHTML = text;
+		text:function(n,v,t,i,_){
+			_.dom.innerHTML = _.fireString(_, 'parseText', [_,n,v,t,i],t);
 		},
 		beforeshow:function(e,m){
 			this.follow(e,m);
@@ -1710,7 +1720,6 @@ $.Component = $.extend($.Painter, {
 				this.css('opacity',0);
 			}else{
 				this.css('visibility','hidden');
-				_.css('top','-999px');
 			}
 		},
 		initialize:function(){
@@ -1719,7 +1728,9 @@ $.Component = $.extend($.Painter, {
 			var _ = this._();
 			
 			_.css('position','absolute');
-			_.dom.innerHTML = _.get('text');
+			
+			_.text(_.get('name'),_.get('value'),_.get('text'),0,_);
+			
 			_.style = _.dom.style;
 			_.hidden();
 			
@@ -1731,7 +1742,6 @@ $.Component = $.extend($.Painter, {
 				_.onTransitionEnd(function(e){
 					if(_.css('opacity')==0){
 						_.css('visibility','hidden');
-						_.css('top','-999px');
 					}
 				},false);
 			}
@@ -3406,13 +3416,6 @@ $.Label = $.extend($.Component, {
 			 */
 			this.registerEvent(
 			/**
-			 * @event Fires when parse this tip's data.Return value will override existing. Only valid when tip is available
-			 * @paramter Object#data this tip's data item
-			 * @paramter int#value the value of item
-			 * @paramter int#i the index of item
-			 */
-			'parseTipText',
-			/**
 			 * @event Fires before this element Animation.Only valid when <link>animation</link> is true
 			 * @paramter $.Chart#this
 			 */
@@ -3769,7 +3772,10 @@ $.Label = $.extend($.Component, {
 			_.pushIf('sub_option.background_color', d.color);
 			
 			if (_.get('sub_option.tip.enable')){
-				_.push('sub_option.tip.text', _.fireString(_, 'parseTipText', [d,d.value,i],(t || (d.name + ' ' +_.getPercent(d.value)))));
+				_.push('sub_option.tip.text',t || (d.name + ' ' +_.getPercent(d.value)));
+				_.push('sub_option.tip.name',d.name);
+				_.push('sub_option.tip.value',d.value);
+				_.push('sub_option.tip.total',_.total);
 			}
 			
 		},
@@ -7081,19 +7087,18 @@ $.LineSegment = $.extend($.Component, {
 		$.LineSegment.superclass.doConfig.call(this);
 		$.Assert.gt(this.get('point_space'),0,'point_space');
 
-		var _ = this._(),L = !!_.get('label'),ps = _.get('point_size') * 3 / 2,sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points');
+		var _ = this._(),L = !!_.get('label'),ps = _.get('point_size') * 3 / 2,sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points'),N=_.get('name');
 		
 		_.labels = [];
 		
 		p.each(function(q){
 			q.x_ = q.x;
 			q.y_ = q.y;
-			q.value = _.fireString(_, 'parseText', [_, q.value],q.value);
 			if(q.ignored)_.ignored_ = true;
 			if(!q.ignored&&L){
 				_.push('label.originx', q.x);
 				_.push('label.originy', q.y-ps);
-				_.push('label.text',q.value);
+				_.push('label.text',_.fireString(_, 'parseText', [_, q.value],q.value));
 				$.applyIf(_.get('label'),{
 					textBaseline : 'bottom',
 					color:_.get('f_color')
@@ -7132,8 +7137,9 @@ $.LineSegment = $.extend($.Component, {
 		}, to = function(i) {
 			return {
 				valid : true,
-				text : p[i].text,
+				name : N,
 				value : p[i].value,
+				text : p[i].text,
 				top : p[i].y,
 				left : p[i].x,
 				i:i,
@@ -7370,7 +7376,12 @@ $.Line = $.extend($.Chart, {
 						top:m.top
 					}
 				});
-				
+				/**
+				 * proxy the event parseText
+				 */
+				var p = _.get('tip.listeners.parseText');
+				if(p)
+				delete _.get('tip.listeners').parseText;
 				var mocker = new $.Custom({
 					eventValid:function(e){
 						r = _.lines[0].isEventValid(e);
@@ -7386,7 +7397,7 @@ $.Line = $.extend($.Chart, {
 									r.minTop = Math.min(r.minTop,r1.top);
 									r.maxTop = Math.max(r.maxTop,r1.top);
 								}
-								U.push(l.isEventValid(e).text);
+								U.push(p?p(null,r1.name,r1.value,r1.text,r1.i):(r1.name+' '+r1.value));
 							});
 							r.text = _.get('tipMocker').call(_,U,r.i)||'tipMocker not return';
 						}
@@ -7462,13 +7473,9 @@ $.LineBasic2D = $.extend($.Line, {
 					x : ox + x,
 					y : oy - y,
 					value : v,
-					text : v
+					text : d.name+' '+v
 				};
 				$.merge(p, _.fireEvent(_, 'parsePoint', [d, v, x, y, j]));
-				
-				if (_.get('tip.enable'))
-					p.text = _.fireString(_, 'parseTipText', [d, v, j], v);
-				
 				points.push(p);
 			}, _);
 			

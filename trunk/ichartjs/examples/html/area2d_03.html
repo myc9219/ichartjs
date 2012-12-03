@@ -45,7 +45,13 @@
 						enable : true
 					},
 					tip:{
-						enable : true
+						enable : true,
+						listeners:{
+							 //tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
+							parseText:function(tip,name,value,text,i){
+								return name+"平均温度:"+value+"℃";
+							}
+						}
 					},
 					sub_option:{
 						label:false
@@ -53,11 +59,6 @@
 					crosshair:{
 						enable:true,
 						line_color:'#62bce9'
-					},
-					listeners:{
-						parseTipText:function(d,t,i){
-							return d.name+"<br/>平均温度:"+t+"℃";
-						}
 					},
 					coordinate:{
 						width:600,

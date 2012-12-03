@@ -1,5 +1,5 @@
 /**
- * @overview The interface this class defined include draw and event,so the sub class has must capability to draw and aware of event. this class is a abstract class,so you should not try to initialize it.
+ * @overview The interface this class defined d,so the sub class has must capability to draw and aware of event. this class is a abstract class,so you should not try to initialize it.
  * @component#iChart.Painter
  * @extend#iChart.Element
  */
@@ -99,11 +99,6 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		 */
 		this.registerEvent(
 		/**
-		 * @event Fires after the element initializing is finished this is for test
-		 * @paramter iChart.Painter#this
-		 */
-		'initialize',
-		/**
 		 * @event Fires when this element is clicked
 		 * @paramter iChart.Painter#this
 		 * @paramter EventObject#e The click event object
@@ -141,27 +136,6 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		
 		
 	},
-	afterConfiguration : function() {
-		/**
-		 * register customize event
-		 */
-		if (iChart.isObject(this.get('listeners'))) {
-			for ( var e in this.get('listeners')) {
-				this.on(e, this.get('listeners')[e]);
-			}
-		}
-		this.initialize();
-		
-		/**
-		 * fire the initialize event,this probable use to unit test
-		 */
-		this.fireEvent(this, 'initialize', [this]);
-	},
-	registerEvent : function() {
-		for ( var i = 0; i < arguments.length; i++) {
-			this.events[arguments[i]] = [];
-		}
-	},
 	is3D : function() {
 		return this.dimension == iChart._3D;
 	},
@@ -194,31 +168,6 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		 * fire the draw event
 		 */
 		this.fireEvent(this, 'draw', [this,e]);
-	},
-	fireString : function(socpe, name, args, s) {
-		var t = this.fireEvent(socpe, name, args);
-		return iChart.isString(t) ? t : (t!==true&&iChart.isDefined(t)?t.toString():s);
-	},
-	fireEvent : function(socpe, name, args) {
-		var L = this.events[name].length;
-		if (L == 1)
-			return this.events[name][0].apply(socpe, args);
-		var r = true;
-		for ( var i = 0; i < L; i++) {
-			if(!this.events[name][i].apply(socpe, args))
-				r  = false;
-		}
-		return r;
-	},
-	on : function(n, fn) {
-		if(iChart.isString(n)){
-			if (!this.events[n])
-				throw new Error('['+this.type+"] invalid event:'" + n + "'");
-			this.events[n].push(fn);
-		}else if(iChart.isArray(n)){
-			n.each(function(c){this.on(c, fn)},this);
-		}
-		return this;
 	},
 	doConfig : function() {
 		

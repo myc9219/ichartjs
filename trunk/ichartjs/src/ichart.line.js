@@ -187,7 +187,12 @@ iChart.Line = iChart.extend(iChart.Chart, {
 						top:m.top
 					}
 				});
-				
+				/**
+				 * proxy the event parseText
+				 */
+				var p = _.get('tip.listeners.parseText');
+				if(p)
+				delete _.get('tip.listeners').parseText;
 				var mocker = new iChart.Custom({
 					eventValid:function(e){
 						r = _.lines[0].isEventValid(e);
@@ -203,7 +208,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 									r.minTop = Math.min(r.minTop,r1.top);
 									r.maxTop = Math.max(r.maxTop,r1.top);
 								}
-								U.push(l.isEventValid(e).text);
+								U.push(p?p(null,r1.name,r1.value,r1.text,r1.i):(r1.name+' '+r1.value));
 							});
 							r.text = _.get('tipMocker').call(_,U,r.i)||'tipMocker not return';
 						}

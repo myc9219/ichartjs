@@ -52,9 +52,6 @@ iChart.Html = iChart.extend(iChart.Element,{
 		
 		this.transitions = "";
 	},
-	afterConfiguration:function(){
-		this.initialize();
-	},
 	initialize:function(){
 		this.wrap = this.get('wrap');
 		this.dom = document.createElement("div");
