@@ -145,7 +145,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		};
 	},
 	/**
-	 * 按照从左自右,从上至下原则
+	 * from left to right,top to bottom
 	 */
 	doDraw : function(_) {
 		if (_.get('scale_enable'))
@@ -262,7 +262,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			}
 		}
 		/**
-		 * 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
+		 * valid width only applies when there is h,then valid_height only applies when there is v
 		 */
 		for ( var i = 0; i <= _.number; i++) {
 			text = customL ? _.get('labels')[i] : (s_space * i + start_scale).toFixed(_.get('decimalsnum'));
@@ -310,25 +310,46 @@ iChart.Scale = iChart.extend(iChart.Component, {
  */
 iChart.Coordinate = {
 	coordinate_ : function() {
-		var _ = this._(),scale = _.get('coordinate.scale');
+		var _ = this._(),scale = _.get('coordinate.scale'),li=_.get('scaleAlign'),f=true;
 		if(iChart.isObject(scale)){
 			scale = [scale];
 		}
 		if(iChart.isArray(scale)){
 			scale.each(function(s){
-				if(s.position ==_.get('scaleAlign')){
+				if(s.position ==li){
+					f  = false;
+					return false;
+				}
+			});
+			if(f){
+				if(li==_.L){
+					li = _.R;
+				}else if(li==_.R){
+					li = _.L;
+				}else if(li==_.O){
+					li = _.B;
+				}else{
+					li = _.O;
+				}
+				_.push('scaleAlign',li);
+			}
+			scale.each(function(s){
+				if(s.position ==li){
 					if(!s.start_scale)
 						s.min_scale = _.get('minValue');
 					if(!s.end_scale)
 						s.max_scale = _.get('maxValue');
-					
 					return false;
 				}
 			});
+			
+			
+			
+			
 		}else{
 			_.push('coordinate.scale',{
-				position : _.get('scaleAlign'),
-				scaleAlign : _.get('scaleAlign'),
+				position : li,
+				scaleAlign : li,
 				max_scale : _.get('maxValue'),
 				min_scale : _.get('minValue')
 			});
@@ -550,9 +571,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 				width : 1
 			}
 		});
-
-		this.registerEvent();
-
+		
 		this.scale = [];
 		this.gridlines = [];
 	},
