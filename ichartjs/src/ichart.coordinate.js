@@ -342,10 +342,6 @@ iChart.Coordinate = {
 					return false;
 				}
 			});
-			
-			
-			
-			
 		}else{
 			_.push('coordinate.scale',{
 				position : li,
@@ -370,14 +366,25 @@ iChart.Coordinate = {
 		/**
 		 * calculate chart's measurement
 		 */
-		var _ = this._(), f = 0.8, _w = _.get('client_width'), _h = _.get('client_height'), w = _.pushIf('coordinate.width', Math.floor(_w * f)), h = _.pushIf('coordinate.height', Math.floor(_h * f)), vw = _.get('coordinate.valid_width'), vh = _.get('coordinate.valid_height');
-
-		if (h > _h) {
-			h = _.push('coordinate.height', _h * f);
+		var _ = this._(), f = 0.8, 
+			_w = _.get('client_width'), 
+			_h = _.get('client_height'), 
+			w = _.push('coordinate.width',iChart.parsePercent(_.get('coordinate.width'),_w)), 
+			h = _.push('coordinate.height',iChart.parsePercent(_.get('coordinate.height'),_h)), 
+			vw = _.get('coordinate.valid_width'), 
+			vh = _.get('coordinate.valid_height');
+		
+		if (!h || h > _h) {
+			h = _.push('coordinate.height', Math.floor(_h * f));
 		}
-		if (w > _w) {
-			w = _.push('coordinate.width', _w * f);
+		
+		if (!w || w > _w) {
+			w = _.push('coordinate.width', Math.floor(_w * f));
 		}
+		
+		vw = _.push('coordinate.valid_width',iChart.parsePercent(vw,w));
+		vh = _.push('coordinate.valid_height',iChart.parsePercent(vh,h));
+		
 		if (_.is3D()) {
 			var a = _.get('coordinate.pedestal_height');
 			var b = _.get('coordinate.board_deep');
@@ -454,13 +461,21 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			 */
 			scale : [],
 			/**
-			 * @cfg {Number} Specifies the valid width,less than the width of coordinate.(default same as width)
+			 * @cfg {String} Here,specify as '80%' relative to client width.(default to '80%')
 			 */
-			valid_width : undefined,
+			width:'80%',
 			/**
-			 * @cfg {Number} Specifies the valid height,less than the height of coordinate.(default same as height)
+			 * @cfg {String} Here,specify as '80%' relative to client height.(default to '80%')
 			 */
-			valid_height : undefined,
+			height:'80%',
+			/**
+			 * @cfg {Number} Specifies the valid width,less than the width of coordinate.you can applies a percent value relative to width.(default to '100%')
+			 */
+			valid_width : '100%',
+			/**
+			 * @cfg {Number} Specifies the valid height,less than the height of coordinate.you can applies a percent value relative to width.(default to '100%')
+			 */
+			valid_height : '100%',
 			/**
 			 * @cfg {Number} Specifies the linewidth of the grid.(default to 1)
 			 */

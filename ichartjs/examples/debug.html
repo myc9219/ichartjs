@@ -55,49 +55,87 @@
 		}
 	</style>
 	<script type="text/javascript">
-	$(function(){
-		
-		var data = [
-		        	{name : 'H',value : 7,color:'#a5c2d5'},
-		        	{name : 'E',value : 5,color:'#cbab4f'},
-		        	{name : 'L',value : 12,color:'#76a871'},
-		        	{name : 'L',value : 12,color:'#76a871'},
-		        	{name : 'O',value : 15,color:'#a56f8f'},
-		        	{name : 'W',value : 13,color:'#c12c44'},
-		        	{name : 'O',value : 15,color:'#a56f8f'},
-		        	{name : 'R',value : 18,color:'#9f7961'},
-		        	{name : 'L',value : 12,color:'#76a871'},
-		        	{name : 'D',value : 4,color:'#6f83a5'}
-	        	];
-    	
-		var chart  = new iChart.Column2D({
-			render : 'canvasDiv',
-			data: data,
-			title : 'Hello World\'s Height In Alphabet',
-			width : 800,
-			height : 400,
-			shadow:true,
-			shadow_color:'#c7c7c7',
-			coordinate:{
-				scale:[{
-					 position:'right',	
-					 start_scale:0,
-					 end_scale:26,
-					 scale_space:2,
-					 listeners:{
-							parseText:function(t,x,y){
-								return {text:t+" cm"}
-							}
-						}
-				}]
-			}
-		});
-		chart.draw();
-});
+	var data = [
+	    		{name : 'H',value : 7,color:'#a5c2d5'},
+	    	   	{name : 'E',value : 5,color:'#cbab4f'},
+	    	   	{name : 'L',value : 12,color:'#76a871'},
+	    	   	{name : 'L',value : 12,color:'#76a871'},
+	    	   	{name : 'O',value : 15,color:'#a56f8f'},
+	    	   	{name : 'W',value : 13,color:'#c12c44'},
+	    	   	{name : 'O',value : 15,color:'#a56f8f'}
+	    	 ];
+	    	 $(function(){	
+	    		var chart = new iChart.Pie2D({
+	    			render :'canvasDiv' ,//'canvasDiv',//渲染的Dom目标,canvasDiv为Dom的ID
+	    			data: data,//绑定数据
+	    			//图表的标题
+	    			title : 'html5 canvas example',//'Hello World\'s Height In Alphabet',//设置标题主标题
+	    			title_align:'center',//设置标题的对齐方式
+	    			//animation:true,//是否开启过度动画效果
+	    			//layout_distance:70,
+	    			background_color:iChart.toRgba('#7F7EFE',0.5),//'#7F7EFE',
+	    			decimalsnum:2,
+	    			//阴影设置
+	    			shadow:true,
+	    			shadow_blur:6,
+	    			shadow_color:'red',
+	    			shadow_offsetx:5,
+	    			shadow_offsety:5,
+	    			width : 800,
+	    			height : 400,
+	    			sub_option:{
+	    				label:{
+	    					sign:false,//是否显示标签中小图标
+	    					background_color:iChart.toRgba('#7F7EFE',0),//background_color,
+	    					color:'#ff0000',
+	    					font:'Verdana',
+	    					fontsize:20,
+	    					border:{
+	    						enable:false,
+	    						color:'#000000'
+	    					}
+	    				},
+	    				listeners:{
+	    					parseText:function(d, t){
+	    						var showInfo=d.get('name')+','+d.get('value');
+	    						return showInfo;
+	    					}
+	    				},
+	    				border : {//饼图的边框
+	    					width:10,
+	    					radius:90,
+	    					color:iChart.toRgba('#ffffff',1)//将颜色转换为rgba的格式设置透明度
+	    				}
+	    			},
+	    			border:{
+	    				enable:true,
+	    				color:'ff0000',
+	    				width:10,
+	    				radius:6
+	    			},
+	    			tip:{
+	    					enable:true,//表示启用提示框
+	    					showType:'follow',//开启提示框的模型
+	    					fade_duration:100,
+	    					move_duration:100,//设置提示框渐入渐出的效果代码
+	    					border:{color:'black',width:1,radius:1},
+	    					style:"background-color:#ffffff",
+	    					listeners:{//格式化提示框信息
+	    						//tip,name,value,text,i
+	    						parseText:function(tip,name,value,text,i){
+
+	    							return text;
+	    						}
+	    					}
+	    			}
+	    			
+	    		});
+	    		//调用绘图方法开始绘图
+	    		chart.draw();
+	    	});
 	</script>
 	</head>
 	<body>
 		<div id='canvasDiv' ></div>
-		<div id='canvasDiv1' ></div>
 	</body>
 </html>
