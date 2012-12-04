@@ -718,11 +718,20 @@
 			toPercent : function(v, d) {
 				return (v * 100).toFixed(d) + '%';
 			},
+			parsePercent:function(v,f){
+				if(_.isString(v)){
+					v = v.match(/(.*)%/);
+					if(v){
+						return f?floor(pF(v[1])*f/100):v[1]/100;
+					}
+				}
+				return v;
+			},
 			parseFloat : function(v, d) {
 				if (!_.isNumber(v)) {
 					v = pF(v);
 					if (!_.isNumber(v))
-						throw new Error("'" + d + "'is not a valid number.");
+						throw new Error("[" + d +"]=" +v + "is not a valid number.");
 				}
 				return v;
 			},
