@@ -4127,7 +4127,7 @@ $.Scale = $.extend($.Component, {
 		};
 	},
 	/**
-	 * 按照从左自右,从上至下原则
+	 * from left to right,top to bottom
 	 */
 	doDraw : function(_) {
 		if (_.get('scale_enable'))
@@ -4244,7 +4244,7 @@ $.Scale = $.extend($.Component, {
 			}
 		}
 		/**
-		 * 有效宽度仅对水平刻度有效、有效高度仅对垂直高度有效
+		 * valid width only applies when there is h,then valid_height only applies when there is v
 		 */
 		for ( var i = 0; i <= _.number; i++) {
 			text = customL ? _.get('labels')[i] : (s_space * i + start_scale).toFixed(_.get('decimalsnum'));
@@ -4292,25 +4292,46 @@ $.Scale = $.extend($.Component, {
  */
 $.Coordinate = {
 	coordinate_ : function() {
-		var _ = this._(),scale = _.get('coordinate.scale');
+		var _ = this._(),scale = _.get('coordinate.scale'),li=_.get('scaleAlign'),f=true;
 		if($.isObject(scale)){
 			scale = [scale];
 		}
 		if($.isArray(scale)){
 			scale.each(function(s){
-				if(s.position ==_.get('scaleAlign')){
+				if(s.position ==li){
+					f  = false;
+					return false;
+				}
+			});
+			if(f){
+				if(li==_.L){
+					li = _.R;
+				}else if(li==_.R){
+					li = _.L;
+				}else if(li==_.O){
+					li = _.B;
+				}else{
+					li = _.O;
+				}
+				_.push('scaleAlign',li);
+			}
+			scale.each(function(s){
+				if(s.position ==li){
 					if(!s.start_scale)
 						s.min_scale = _.get('minValue');
 					if(!s.end_scale)
 						s.max_scale = _.get('maxValue');
-					
 					return false;
 				}
 			});
+			
+			
+			
+			
 		}else{
 			_.push('coordinate.scale',{
-				position : _.get('scaleAlign'),
-				scaleAlign : _.get('scaleAlign'),
+				position : li,
+				scaleAlign : li,
 				max_scale : _.get('maxValue'),
 				min_scale : _.get('minValue')
 			});
@@ -4532,9 +4553,7 @@ $.Coordinate2D = $.extend($.Component, {
 				width : 1
 			}
 		});
-
-		this.registerEvent();
-
+		
 		this.scale = [];
 		this.gridlines = [];
 	},
@@ -6474,7 +6493,6 @@ $.Column2D = $.extend($.Column, {
 			y = y0 - S.basic*H - (_.is3D()?(_.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_')):0),
 			x = s+_.coo.get('x_start');
 			y0 = y0 + _.get('text_space') + _.coo.get('axis.width')[2];
-			
 		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
 			_.doParse(_,d, i, {
