@@ -3675,15 +3675,27 @@ $.Label = $.extend($.Component, {
 			}
 		},
 		/**
+		 * @method turn off the event listener
+		 * @return void
+		 */
+		eventOff:function(){this.stopEvent = true},
+		/**
+		 * @method turn on the event listener
+		 * @return void
+		 */
+		eventOn:function(){this.stopEvent = false},
+		/**
 		 * this method only invoked once
 		 */
 		oneWay:function(_){
 			
 			var E = _.variable.event,tot=!_.get('turn_off_touchmove'), mCSS = !$.touch&&_.get('default_mouseover_css'), O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
 			
+			_.stopEvent = false;
+			
 			events.each(function(it) {
 				_.T.addEvent(it, function(e) {
-					if (_.processAnimation)
+					if (_.processAnimation||_.stopEvent)
 						return;
 					if(e.targetTouches&&e.targetTouches.length!=1){
 						return;

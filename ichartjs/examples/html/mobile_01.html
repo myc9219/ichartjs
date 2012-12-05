@@ -22,9 +22,7 @@
 							{name : 'Safari',value : 6.77,color : '#80699b'},
 							{name : 'Opera',value : 2.02,color : '#3d96ae'}
 						];
-			    var w = window.innerWidth;
-			    var h = window.innerHeight;
-		
+						
 				var chart = new iChart.Column2D({
 					render : 'canvasDiv',
 					data : data,
@@ -56,7 +54,6 @@
 					shadow_color : '#aaaaaa',
 					shadow_offsetx : 1,
 					shadow_offsety : 0,
-					colwidth : Math.floor(w*0.07),
 					sub_option : {
 						listeners : {
 							parseText : function(r, t) {
@@ -76,8 +73,8 @@
 					coordinate : {
 						background_color : null,
 						grid_color : '#c0c0c0',
-						width : Math.floor(w*0.7),
-						height : Math.floor(h*0.6),
+						width : '75%',
+						height : '65%',
 						axis : {
 							color : '#c0d0e0',
 							width : [0, 0, 1, 0]

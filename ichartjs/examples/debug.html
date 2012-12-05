@@ -55,84 +55,108 @@
 		}
 	</style>
 	<script type="text/javascript">
-	var data = [
-	    		{name : 'H',value : 7,color:'#a5c2d5'},
-	    	   	{name : 'E',value : 5,color:'#cbab4f'},
-	    	   	{name : 'L',value : 12,color:'#76a871'},
-	    	   	{name : 'L',value : 12,color:'#76a871'},
-	    	   	{name : 'O',value : 15,color:'#a56f8f'},
-	    	   	{name : 'W',value : 13,color:'#c12c44'},
-	    	   	{name : 'O',value : 15,color:'#a56f8f'}
-	    	 ];
-	    	 $(function(){	
-	    		var chart = new iChart.Pie2D({
-	    			render :'canvasDiv' ,//'canvasDiv',//渲染的Dom目标,canvasDiv为Dom的ID
-	    			data: data,//绑定数据
-	    			//图表的标题
-	    			title : 'html5 canvas example',//'Hello World\'s Height In Alphabet',//设置标题主标题
-	    			title_align:'center',//设置标题的对齐方式
-	    			//animation:true,//是否开启过度动画效果
-	    			//layout_distance:70,
-	    			background_color:iChart.toRgba('#7F7EFE',0.5),//'#7F7EFE',
-	    			decimalsnum:2,
-	    			//阴影设置
-	    			shadow:true,
-	    			shadow_blur:6,
-	    			shadow_color:'red',
-	    			shadow_offsetx:5,
-	    			shadow_offsety:5,
-	    			width : 800,
-	    			height : 400,
-	    			sub_option:{
-	    				label:{
-	    					sign:false,//是否显示标签中小图标
-	    					background_color:iChart.toRgba('#7F7EFE',0),//background_color,
-	    					color:'#ff0000',
-	    					font:'Verdana',
-	    					fontsize:20,
-	    					border:{
-	    						enable:false,
-	    						color:'#000000'
-	    					}
-	    				},
-	    				listeners:{
-	    					parseText:function(d, t){
-	    						var showInfo=d.get('name')+','+d.get('value');
-	    						return showInfo;
-	    					}
-	    				},
-	    				border : {//饼图的边框
-	    					width:10,
-	    					radius:90,
-	    					color:iChart.toRgba('#ffffff',1)//将颜色转换为rgba的格式设置透明度
-	    				}
-	    			},
-	    			border:{
-	    				enable:true,
-	    				color:'ff0000',
-	    				width:10,
-	    				radius:6
-	    			},
-	    			tip:{
-	    					enable:true,//表示启用提示框
-	    					showType:'follow',//开启提示框的模型
-	    					fade_duration:100,
-	    					move_duration:100,//设置提示框渐入渐出的效果代码
-	    					border:{color:'black',width:1,radius:1},
-	    					style:"background-color:#ffffff",
-	    					listeners:{//格式化提示框信息
-	    						//tip,name,value,text,i
-	    						parseText:function(tip,name,value,text,i){
+	$(function() {
+		var data = [
+					{name : 'MISE',value : 55.11,color : '#4572a7'},
+					{name : 'Firefox',value : 29.84,color : '#aa4643'},
+					{name : 'Chrome',value : 24.88,color : '#89a54e'},
+					{name : 'Safari',value : 6.77,color : '#80699b'},
+					{name : 'Opera',value : 2.02,color : '#3d96ae'}
+				];
 
-	    							return text;
-	    						}
-	    					}
-	    			}
-	    			
-	    		});
-	    		//调用绘图方法开始绘图
-	    		chart.draw();
-	    	});
+		var chart = new iChart.Column2D({
+			render : 'canvasDiv',
+			data : data,
+			title : {
+				text : 'This is a sample spirit from HighCharts',
+				color : '#3e576f'
+			},
+			subtitle : {
+				text : 'Browser market share,April,2011 from 1 to 29 Feb 2012',
+				color : '#6d869f'
+			},
+			footnote : {
+				text : 'ichartjs.com',
+				color : '#909090',
+				fontsize : 11,
+				padding : '0 38'
+			},
+			width : 800,
+			height : 400,
+			label : {
+				fontsize:11,
+				color : '#666666'
+			},
+			shadow : true,
+			shadow_blur : 2,
+			shadow_color : '#aaaaaa',
+			shadow_offsetx : 1,
+			shadow_offsety : 0,
+			colwidth : 62,
+			sub_option : {
+				listeners : {
+					parseText : function(r, t) {
+						return t + "%";
+					}
+				},
+				label : {
+					fontsize:11,
+					fontweight:600,
+					color : '#4572a7'
+				},
+				border : {
+					width : 2,
+					//radius : '5 5 0 0',//上圆角设置
+					color : '#ffffff'
+				}
+			},
+			coordinate : {
+				background_color : null,
+				grid_color : '#c0c0c0',
+				width : 680,
+				axis : {
+					color : '#c0d0e0',
+					width : [0, 0, 1, 0]
+				},
+				scale : [{
+					position : 'left',
+					start_scale : 0,
+					end_scale : 60,
+					scale_space : 10,
+					scale_enable : false,
+					label : {
+						fontsize:11,
+						color : '#666666'
+					}
+				}]
+			}
+		});
+		
+		/**
+		 *利用自定义组件构造左侧说明文本。
+		 */
+		chart.plugin(new iChart.Custom({
+				drawFn:function(){
+					/**
+					 *计算位置
+					 */	
+					var coo = chart.getCoordinate(),
+						x = coo.get('originx'),
+						y = coo.get('originy'),
+						H = coo.get('height');
+					/**
+					 *在左侧的位置，设置逆时针90度的旋转，渲染文字。
+					 */
+					chart.target.textAlign('center')
+					.textBaseline('middle')
+					.textFont('600 13px Verdana')
+					.fillText('Total percent market share',x-40,y+H/2,false,'#6d869f', false,false,false,-90);
+					
+				}
+		}));
+		
+		chart.draw();
+	});
 	</script>
 	</head>
 	<body>
