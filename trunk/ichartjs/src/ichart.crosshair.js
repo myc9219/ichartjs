@@ -69,12 +69,12 @@
 			return true;
 		},
 		position:function(t,l){
-			this.horizontal.style.top = t+"px";
-			this.vertical.style.left = l+"px";
+			this.horizontal.style.top = (t-this.size)+"px";
+			this.vertical.style.left = (l-this.size)+"px";
 		},
 		beforeshow:function(e,m){
 			if(!this.follow(e,m)){
-				this.position(-999,-999);
+				this.position(-99,-99);
 			}
 		},
 		doCreate:function(_,w,h){
@@ -109,7 +109,7 @@
 			
 			_.horizontal = _.doCreate(_,_.get('hcross')?iChart.toPixel(_.get(_.W)):"0px",L);
 			_.vertical = _.doCreate(_,L,_.get('vcross')?iChart.toPixel(_.get(_.H)):"0px");
-			
+			_.size = _.get('line_width')/2;
 			
 			if(_.get('shadow')){
 				_.dom.style.boxShadow = _.get('shadowStyle');

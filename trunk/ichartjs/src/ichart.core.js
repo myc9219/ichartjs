@@ -653,6 +653,11 @@
 					}
 				}
 			},
+			toPI2 : function(a) {
+				while(a<0)
+					a+=pi2;
+				return a%pi2;
+			},
 			quadrantd : function(a) {
 				if(a==0)return 0;
 				if(a % pi2==0)return 3;
