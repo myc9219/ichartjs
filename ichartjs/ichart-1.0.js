@@ -653,6 +653,11 @@
 					}
 				}
 			},
+			toPI2 : function(a) {
+				while(a<0)
+					a+=pi2;
+				return a%pi2;
+			},
 			quadrantd : function(a) {
 				if(a==0)return 0;
 				if(a % pi2==0)return 3;
@@ -1850,12 +1855,12 @@ $.Component = $.extend($.Painter, {
 			return true;
 		},
 		position:function(t,l){
-			this.horizontal.style.top = t+"px";
-			this.vertical.style.left = l+"px";
+			this.horizontal.style.top = (t-this.size)+"px";
+			this.vertical.style.left = (l-this.size)+"px";
 		},
 		beforeshow:function(e,m){
 			if(!this.follow(e,m)){
-				this.position(-999,-999);
+				this.position(-99,-99);
 			}
 		},
 		doCreate:function(_,w,h){
@@ -1890,7 +1895,7 @@ $.Component = $.extend($.Painter, {
 			
 			_.horizontal = _.doCreate(_,_.get('hcross')?$.toPixel(_.get(_.W)):"0px",L);
 			_.vertical = _.doCreate(_,L,_.get('vcross')?$.toPixel(_.get(_.H)):"0px");
-			
+			_.size = _.get('line_width')/2;
 			
 			if(_.get('shadow')){
 				_.dom.style.boxShadow = _.get('shadowStyle');
@@ -6166,10 +6171,28 @@ $.Pie3D = $.extend($.Pie, {
 		
 		_.parse(_);
 
-		var layer = [], L = [], PI = Math.PI, PI2 = PI * 2, a = PI / 2, b = PI * 1.5, c = _.get('counterclockwise'), abs = function(n, f) {
-			n = Math.abs(n - f);
-			return n > PI ? PI2 - n : n;
-		}, t = 'startAngle', d = 'endAngle';
+		var layer = [], L = [], PI = Math.PI, PI2 = PI * 2, c = _.get('counterclockwise'), abs = function(n) {
+			return Math.abs($.toPI2(n) - PI * 1.5);
+		}, t = 'startAngle', d = 'endAngle',Q,
+		/**
+		 * If the inside layer visibile
+		 */
+		lay =function(C,g,z,f){
+			Q = $.quadrantd(g);
+			if (C ? (Q ==0 || Q ==3) : 3>Q>0) {
+				layer.push({
+					g : g,
+					z : g==z,
+					x : f.x,
+					y : f.y,
+					a : f.a,
+					b : f.b,
+					color : $.dark(f.get('background_color')),
+					h : f.h,
+					F : f
+				});
+			}
+		};
 
 		_.proxy = new $.Custom({
 			z_index : _.get('z_index') + 1,
@@ -6194,7 +6217,7 @@ $.Pie3D = $.extend($.Pie, {
 			 * paint bottom layer
 			 */
 			_.sectors.each(function(s, i) {
-				_.T.ellipse(s.x, s.y + s.h, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), s.get('shadow'), c, true);
+				_.T.ellipse(s.x, s.y + s.h, s.a, s.b, s.get(t), s.get(d), 0, s.get('border.enable'), s.get('border.width'), s.get('border.color'), s.get('shadow'), c, true);
 			}, _);
 
 			layer = [];
@@ -6202,43 +6225,16 @@ $.Pie3D = $.extend($.Pie, {
 			/**
 			 * sort layer
 			 */
-			_.sectors.each(function(f, i) {
-				f.sPaint = false;
-				s = f.get(t);
-				e = f.get(d), fc = $.dark(f.get('background_color'));
-				if (c ? (s < a || s > b) : (s > a && s < b)) {
-					layer.push({
-						g : s,
-						z : s==e,
-						x : f.x,
-						y : f.y,
-						a : f.a,
-						b : f.b,
-						color : fc,
-						h : f.h,
-						F : f
-					});
-				}
-				if (c ? (e > a && e < b) : (e < a || e > b)) {
-					layer.push({
-						g : e,
-						z : s==e,
-						x : f.x,
-						y : f.y,
-						a : f.a,
-						b : f.b,
-						color : fc,
-						h : f.h,
-						F : f
-					});
-				}
+			_.sectors.each(function(f) {
+				lay(c,f.get(t),f.get(d),f);
+				lay(!c,f.get(d),f.get(t),f);
 			}, _);
 
 			/**
 			 * realtime sort
 			 */
 			layer.sor(function(p, q) {
-				var r = abs(p.g, b) - abs(q.g, b);
+				var r = abs(p.g) - abs(q.g);
 				return r==0?p.z:r > 0;
 			});
 
@@ -6247,18 +6243,13 @@ $.Pie3D = $.extend($.Pie, {
 			 */
 			layer.each(function(f, i) {
 				_.T.sector3D.layerDraw.call(_.T, f.x, f.y, f.a + 0.5, f.b + 0.5, c, f.h, f.g, f.color);
-				if (!f.F.sPaint) {
-					_.T.sector3D.sPaint.call(_.T, f.F.x, f.F.y, f.F.a, f.F.b, f.F.get(t), f.F.get(d), false, f.F.h, f.color);
-					f.F.sPaint = true;
-				}
 			}, _);
 			
 			/**
 			 * paint outside layer
 			 */
 			_.sectors.each(function(s, i) {
-				if (!s.sPaint)
-					_.T.sector3D.sPaint.call(_.T, s.x, s.y, s.a, s.b, s.get(t), s.get(d), false, s.h, s.get('f_color'));
+				_.T.sector3D.sPaint.call(_.T, s.x, s.y, s.a, s.b, s.get(t), s.get(d), false, s.h, s.get('f_color'));
 			}, _);
 
 			/**
