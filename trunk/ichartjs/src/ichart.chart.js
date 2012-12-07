@@ -378,18 +378,20 @@
 		},
 		text : function(t, x, y, max, color, align, line, font, mode, h,sw,ro) {
 			if(t=='')return this;
-			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw,ro,line).restore();
+			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw,ro).restore();
 		},
-		fillText : function(t, x, y, max, color, mode, h,sw,ro,line) {
+		fillText : function(t, x, y, max, color, mode, h,sw,ro) {
 			t = t.toString();
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
 			var T = t.split(mode == 'tb' ? "" : "\n");
-			if(line=='middle'){
-				y = y - (T.length-1)*h/2;
-			}else if(line=='bottom'){
-				y = y - (T.length-1)*h;
+			if(T.length>1){
+				if(this.c.textBaseline=='middle'){
+					y = y - (T.length-1)*h/2;
+				}else if(this.c.textBaseline=='bottom'){
+					y = y - (T.length-1)*h;
+				}
 			}
 			this.save().fillStyle(color).translate(x,y).rotate(inc2*ro).shadowOn(sw);
 			T.each(function(t,i) {
@@ -609,7 +611,7 @@
 			this.save().beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
 			for ( var i = 1; i < p.length; i++){
 				if (smooth) {
-					this.bezierCurveTo(getCurvePoint(p, p[i], i, smo));
+					this.bezierCurveTo(getCurvePoint(p, p[i], i, smo || 1.5));
 				} else {
 					this.lineTo(fd(w, p[i].x), fd(w, p[i].y));
 				}
@@ -618,6 +620,7 @@
 		},
 		manyLine : function(p, w, c, smooth, smo) {
 			var T = [],Q  = false;
+			smo = smo || 1.5;
 			p.each(function(p0){
 				if(p0.ignored&&Q){
 					this.lineArray(T, w, c, smooth, smo);
@@ -755,7 +758,7 @@
 			}
 			return this.restore();
 		},
-		toImageURL : function(g) {
+		toDataURL : function(g) {
 			return this.canvas.toDataURL(g || "image/png");
 		},
 		addEvent : function(type, fn, useCapture) {
