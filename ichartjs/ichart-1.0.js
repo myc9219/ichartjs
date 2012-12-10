@@ -2108,7 +2108,7 @@ $.Legend = $.extend($.Component, {
 		if (_.get('line_height') < ss) {
 			_.push('line_height', ss + ss / 5);
 		}
-
+		
 		/**
 		 * if the position is incompatible,rectify it.
 		 */
@@ -2171,11 +2171,10 @@ $.Legend = $.extend($.Component, {
 			_.columnwidth[i] = width;
 			maxwidth += width;
 		}
-
+		
 		if (wauto) {
 			w = _.push(_.W, maxwidth + _.get('hpadding') + _.get('signwidth') * c + (c - 1) * _.get('legend_space'));
 		}
-
 		if (w > _.get('maxwidth')) {
 			w = _.push(_.W, _.get('maxwidth'));
 		}
@@ -2194,7 +2193,7 @@ $.Legend = $.extend($.Component, {
 		if (_.get('align') == _.L) {
 			_.x = g.get('l_originx');
 		} else if (_.get('align') == _.C) {
-			_.x = g.get('centerx') - _.get('textwidth') / 2;
+			_.x = g.get('centerx') - w / 2;
 		} else {
 			_.x = g.get('r_originx') - w;
 		}
