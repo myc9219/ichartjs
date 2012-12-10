@@ -129,7 +129,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 
 		this.registerEvent(
 		/**
-		 * @event Fires the event when parse text、you can return a object like this:{text:'',originx:100,originy:100} to override the given.
+		 * @event Fires the event when parse text,you can return a object like this:{text:'',originx:100,originy:100} to override the given.
 		 * @paramter string#text item's text
 		 * @paramter int#originx coordinate-x of item's text
 		 * @paramter int#originy coordinate-y of item's text

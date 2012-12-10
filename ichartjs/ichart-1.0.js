@@ -2948,33 +2948,6 @@ $.Label = $.extend($.Component, {
 			this.polygon($.dark(bg), b, bw, bc, false, false, [{x:x + width, y:y}, {x:x1 + width, y:y1}, {x:x1 + width, y:y1 + height}, {x:x + width, y:y + height}]);
 			return this;
 		},
-		/**
-		 * cube3D
-		 * 
-		 * @param {Number}
-		 *            x 左下角前面x坐标
-		 * @param {Number}
-		 *            y 左下角前面y坐标
-		 * @param {Number}
-		 *            rotatex x旋转值,默认角度为单位
-		 * @param {Number}
-		 *            rotatey y旋转值,默认角度为单位
-		 * @param {Number}
-		 *            width
-		 * @param {Number}
-		 *            height
-		 * @param {Number}
-		 *            zh
-		 * @param {Number}
-		 *            border
-		 * @param {Number}
-		 *            linewidth
-		 * @param {String}
-		 *            bcolor
-		 * @param {Array}
-		 *            styles 立方体各个面样式,包含:{alpha,color},共六个面
-		 * @return this
-		 */
 		cube3D : function(x, y, rotatex, rotatey, angle, w, h, zh, b, bw, bc, styles) {
 			/**
 			 * styles -> lowerBottom-bottom-left-right-top-front
@@ -3370,13 +3343,6 @@ $.Label = $.extend($.Component, {
 					height : 20
 				},
 				/**
-				 * @inner {String} Specifies how align footnote horizontally Available value are:
-				 * @Option 'left'
-				 * @Option 'center'
-				 * @Option 'right'
-				 */
-				footnote_align : 'right',
-				/**
 				 * @inner {String} Specifies how align title horizontally Available value are:
 				 * @Option 'left'
 				 * @Option 'center'
@@ -3705,6 +3671,7 @@ $.Label = $.extend($.Component, {
 				_.T.addEvent(it, function(e) {
 					if (_.processAnimation||_.stopEvent)
 						return;
+					
 					if(e.targetTouches&&e.targetTouches.length!=1){
 						return;
 					}
@@ -4140,7 +4107,7 @@ $.Scale = $.extend($.Component, {
 
 		this.registerEvent(
 		/**
-		 * @event Fires the event when parse text、you can return a object like this:{text:'',originx:100,originy:100} to override the given.
+		 * @event Fires the event when parse text,you can return a object like this:{text:'',originx:100,originy:100} to override the given.
 		 * @paramter string#text item's text
 		 * @paramter int#originx coordinate-x of item's text
 		 * @paramter int#originy coordinate-y of item's text
