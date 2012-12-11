@@ -15,19 +15,6 @@
 		Linear : function(t, b, c, d) {
 			return c * t / d + b;
 		},
-		Quad : {
-			easeIn : function(t, b, c, d) {
-				return c * (t /= d) * t + b;
-			},
-			easeOut : function(t, b, c, d) {
-				return -c * (t /= d) * (t - 2) + b;
-			},
-			easeInOut : function(t, b, c, d) {
-				if ((t /= d / 2) < 1)
-					return c / 2 * t * t + b;
-				return -c / 2 * ((--t) * (t - 2) - 1) + b;
-			}
-		},
 		Cubic : {
 			easeIn : function(t, b, c, d) {
 				return c * (t /= d) * t * t + b;
@@ -39,32 +26,6 @@
 				if ((t /= d / 2) < 1)
 					return c / 2 * t * t * t + b;
 				return c / 2 * ((t -= 2) * t * t + 2) + b;
-			}
-		},
-		Quart : {
-			easeIn : function(t, b, c, d) {
-				return c * (t /= d) * t * t * t + b;
-			},
-			easeOut : function(t, b, c, d) {
-				return -c * ((t = t / d - 1) * t * t * t - 1) + b;
-			},
-			easeInOut : function(t, b, c, d) {
-				if ((t /= d / 2) < 1)
-					return c / 2 * t * t * t * t + b;
-				return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
-			}
-		},
-		Bounce : {
-			easeOut : function(t, b, c, d) {
-				if ((t /= d) < (1 / 2.75)) {
-					return c * (7.5625 * t * t) + b;
-				} else if (t < (2 / 2.75)) {
-					return c * (7.5625 * (t -= (1.5 / 2.75)) * t + .75) + b;
-				} else if (t < (2.5 / 2.75)) {
-					return c * (7.5625 * (t -= (2.25 / 2.75)) * t + .9375) + b;
-				} else {
-					return c * (7.5625 * (t -= (2.625 / 2.75)) * t + .984375) + b;
-				}
 			}
 		}
 	};
@@ -565,10 +526,8 @@
 			getAA : function(tf) {
 				if (tf == 'linear')
 					return arithmetic.Linear;
-				if (tf == 'bounce')
-					return arithmetic.Bounce.easeOut;
 				if (tf == 'easeInOut' || tf == 'easeIn' || tf == 'easeOut')
-					return arithmetic[_.DefaultAA][tf];
+					return arithmetic.Cubic[tf];
 				return arithmetic.Linear;
 			},
 			/**
@@ -772,8 +731,7 @@
 			isGecko : isGecko,
 			isMobile : isMobile,
 			touch: "ontouchend" in document,
-			FRAME : isMobile ? 30 : 60,
-			DefaultAA : 'Cubic'
+			FRAME : isMobile ? 30 : 60
 		});
 		
 		_.Assert = {
@@ -1540,14 +1498,11 @@ $.Component = $.extend($.Painter, {
 		 */
 		this.proxy = false;
 		this.inject(c);
-
-		this.final_parameter = {};
-
 	},
 	initialize : function() {
 		$.DefineAbstract('isEventValid', this);
 		$.DefineAbstract('doDraw', this);
-
+		
 		this.doConfig();
 		this.initialization = true;
 	},
@@ -1804,7 +1759,6 @@ $.Component = $.extend($.Painter, {
 			this.type = 'crosshair';
 			
 			this.set({
-				yAngle_ : undefined,
 				/**
 				 * @inner {Number} Specifies the position top,normally this will given by chart.(default to 0)
 				 */
@@ -3416,8 +3370,8 @@ $.Label = $.extend($.Component, {
 			this.oneways = [];
 			this.total = 0;
 		},
-		toImageURL : function() {
-			return this.T.toImageURL();
+		toDataURL : function(g) {
+			return this.T.toDataURL(g);
 		},
 		segmentRect : function() {
 			this.T.clearRect(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'));
@@ -3485,9 +3439,6 @@ $.Label = $.extend($.Component, {
 			$.Assert.isTrue(_.initialization, _.type + ' has initialize failed.');
 			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty.');
 			
-			/**
-			 * console.time('Test for draw');
-			 */
 			if (!_.redraw) {
 				_.doSort();
 				_.oneways.eachAll(function(o) {o.draw()});
@@ -3506,9 +3457,6 @@ $.Label = $.extend($.Component, {
 			});
 			
 			_.resetCanvas();
-			/**
-			 * console.timeEnd('Test for draw');
-			 */
 
 		},
 		/**
@@ -3573,9 +3521,9 @@ $.Label = $.extend($.Component, {
 			 * fit the window
 			 */
 			if(_.get('fit')){
-				var w = window.innerWidth;
-			    var h = window.innerHeight;
-			    var style = $.getDoc().body.style;
+				var w = window.innerWidth,
+			    	h = window.innerHeight,
+			    	style = $.getDoc().body.style;
 			    style.padding = "0px";
 			    style.margin = "0px";
 			    style.overflow = "hidden";
@@ -3622,12 +3570,11 @@ $.Label = $.extend($.Component, {
 		},
 		initialize : function() {
 			
-			var _ = this._(),d = _.get('data');
+			var _ = this._(),d = _.get('data'),r = _.get('render');
 			/**
 			 * create dom
 			 */
 			if (!_.RENDERED) {
-				var r = _.get('render');
 				if (typeof r == "string" && $(r))
 					_.create(_,$(r));
 				else if (typeof r == 'object')
@@ -3636,7 +3583,7 @@ $.Label = $.extend($.Component, {
 			/**
 			 * set up
 			 */
-			if (d.length > 0 && _.RENDERED && !_.initialization) {
+			if (d.length > 0 && _.RENDERED && !_.initialization){
 				if(_.dataType=='simple'){
 					simple.call(_,d);
 				}else if(_.dataType=='complex'){
@@ -3711,7 +3658,6 @@ $.Label = $.extend($.Component, {
 							}
 							
 							if (!cE.mouseover) {
-								//console.log(cot.type+"mouseover");
 								cE.mouseover = true;
 								cot.fireEvent(cot, 'mouseover', [cot,e, M]);
 							}
@@ -3721,7 +3667,6 @@ $.Label = $.extend($.Component, {
 							}
 						} else {
 							if (cE.mouseover) {
-								//console.log(cot.type+"mouseout");
 								cE.mouseover = false;
 								cot.fireEvent(cot, 'mouseout', [cot,e, M]);
 							}
@@ -4273,12 +4218,6 @@ $.Scale = $.extend($.Component, {
 			 * maxwidth = Math.max(maxwidth, _.T.measureText(text));
 			 */
 		}
-
-		/**
-		 * what does follow code doing? _.left = _.right = _.top = _.bottom = 0; var ts = _.get('text_space'), ta = _.get('textAlign'), sa = _.get('scaleAlign'), w = _.get('scale_width'), w2 = w / 2; if (_.isH) { if (sa == _.O) { _.top = w; } else if (sa == _.C) { _.top =
-		 * w2; } else { _.top = 0; } _.bottom = w - _.top; if (ta == _.O) { _.top += _.get('text_height') + ts; } else { _.bottom += _.get('text_height') + ts; } } else { if (sa == 'left') { _.left = w; } else if (sa == _.C) { _.left = w2; } else { _.left = 0; } _.right =
-		 * w - _.left; if (ta == 'left') { _.left += maxwidth + ts; } else { _.right += maxwidth + ts; } }
-		 */
 	}
 });
 
@@ -6715,9 +6654,6 @@ $.Bar = $.extend($.Chart, {
 			 */
 			label : {}
 		});
-		
-		this.registerEvent();
-
 	},
 	/**
 	 * @method Returns the coordinate of this element.
@@ -6787,10 +6723,6 @@ $.Bar = $.extend($.Chart, {
 		 */
 		_.push('barspace', (H - bh * L) / KL);
 
-		if (_.is3D()) {
-
-		}
-		
 		/**
 		 * use option create a coordinate
 		 */
@@ -6900,8 +6832,6 @@ $.BarMulti2D = $.extend($.Bar, {
 		S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2,w,
 		I = _.coo.get(_.X) + S.basic*W,x = _.coo.get(_.X)-_.get('text_space')-_.coo.get('axis.width')[3],
 		y = _.coo.get('y_start')+ _.get(s);
-		
-		_.push('sub_option.height', bh);
 		
 		_.columns.each(function(column, i) {
 			column.item.each(function(d, j) {

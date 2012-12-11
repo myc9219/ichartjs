@@ -34,8 +34,6 @@ iChart.BarMulti2D = iChart.extend(iChart.Bar, {
 		I = _.coo.get(_.X) + S.basic*W,x = _.coo.get(_.X)-_.get('text_space')-_.coo.get('axis.width')[3],
 		y = _.coo.get('y_start')+ _.get(s);
 		
-		_.push('sub_option.height', bh);
-		
 		_.columns.each(function(column, i) {
 			column.item.each(function(d, j) {
 				w = (d.value - S.start) * W / S.distance;
