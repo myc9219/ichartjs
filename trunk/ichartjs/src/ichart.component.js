@@ -48,14 +48,11 @@ iChart.Component = iChart.extend(iChart.Painter, {
 		 */
 		this.proxy = false;
 		this.inject(c);
-
-		this.final_parameter = {};
-
 	},
 	initialize : function() {
 		iChart.DefineAbstract('isEventValid', this);
 		iChart.DefineAbstract('doDraw', this);
-
+		
 		this.doConfig();
 		this.initialization = true;
 	},

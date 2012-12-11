@@ -296,12 +296,6 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			 * maxwidth = Math.max(maxwidth, _.T.measureText(text));
 			 */
 		}
-
-		/**
-		 * what does follow code doing? _.left = _.right = _.top = _.bottom = 0; var ts = _.get('text_space'), ta = _.get('textAlign'), sa = _.get('scaleAlign'), w = _.get('scale_width'), w2 = w / 2; if (_.isH) { if (sa == _.O) { _.top = w; } else if (sa == _.C) { _.top =
-		 * w2; } else { _.top = 0; } _.bottom = w - _.top; if (ta == _.O) { _.top += _.get('text_height') + ts; } else { _.bottom += _.get('text_height') + ts; } } else { if (sa == 'left') { _.left = w; } else if (sa == _.C) { _.left = w2; } else { _.left = 0; } _.right =
-		 * w - _.left; if (ta == 'left') { _.left += maxwidth + ts; } else { _.right += maxwidth + ts; } }
-		 */
 	}
 });
 

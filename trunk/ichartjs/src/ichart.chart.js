@@ -943,8 +943,8 @@
 			this.oneways = [];
 			this.total = 0;
 		},
-		toImageURL : function() {
-			return this.T.toImageURL();
+		toDataURL : function(g) {
+			return this.T.toDataURL(g);
 		},
 		segmentRect : function() {
 			this.T.clearRect(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'));
@@ -1012,9 +1012,6 @@
 			$.Assert.isTrue(_.initialization, _.type + ' has initialize failed.');
 			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty.');
 			
-			/**
-			 * console.time('Test for draw');
-			 */
 			if (!_.redraw) {
 				_.doSort();
 				_.oneways.eachAll(function(o) {o.draw()});
@@ -1033,9 +1030,6 @@
 			});
 			
 			_.resetCanvas();
-			/**
-			 * console.timeEnd('Test for draw');
-			 */
 
 		},
 		/**
@@ -1100,9 +1094,9 @@
 			 * fit the window
 			 */
 			if(_.get('fit')){
-				var w = window.innerWidth;
-			    var h = window.innerHeight;
-			    var style = $.getDoc().body.style;
+				var w = window.innerWidth,
+			    	h = window.innerHeight,
+			    	style = $.getDoc().body.style;
 			    style.padding = "0px";
 			    style.margin = "0px";
 			    style.overflow = "hidden";
@@ -1149,12 +1143,11 @@
 		},
 		initialize : function() {
 			
-			var _ = this._(),d = _.get('data');
+			var _ = this._(),d = _.get('data'),r = _.get('render');
 			/**
 			 * create dom
 			 */
 			if (!_.RENDERED) {
-				var r = _.get('render');
 				if (typeof r == "string" && $(r))
 					_.create(_,$(r));
 				else if (typeof r == 'object')
@@ -1163,7 +1156,7 @@
 			/**
 			 * set up
 			 */
-			if (d.length > 0 && _.RENDERED && !_.initialization) {
+			if (d.length > 0 && _.RENDERED && !_.initialization){
 				if(_.dataType=='simple'){
 					simple.call(_,d);
 				}else if(_.dataType=='complex'){
@@ -1238,7 +1231,6 @@
 							}
 							
 							if (!cE.mouseover) {
-								//console.log(cot.type+"mouseover");
 								cE.mouseover = true;
 								cot.fireEvent(cot, 'mouseover', [cot,e, M]);
 							}
@@ -1248,7 +1240,6 @@
 							}
 						} else {
 							if (cE.mouseover) {
-								//console.log(cot.type+"mouseout");
 								cE.mouseover = false;
 								cot.fireEvent(cot, 'mouseout', [cot,e, M]);
 							}

@@ -18,7 +18,6 @@
 			this.type = 'crosshair';
 			
 			this.set({
-				yAngle_ : undefined,
 				/**
 				 * @inner {Number} Specifies the position top,normally this will given by chart.(default to 0)
 				 */

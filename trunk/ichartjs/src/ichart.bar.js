@@ -43,9 +43,6 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 			 */
 			label : {}
 		});
-		
-		this.registerEvent();
-
 	},
 	/**
 	 * @method Returns the coordinate of this element.
@@ -115,10 +112,6 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		 */
 		_.push('barspace', (H - bh * L) / KL);
 
-		if (_.is3D()) {
-
-		}
-		
 		/**
 		 * use option create a coordinate
 		 */
