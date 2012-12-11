@@ -398,8 +398,8 @@ iChart.Coordinate = {
 			_.push(_.X, _.get('centerx') - w / 2);
 		}
 
-		_.push(_.X, _.get(_.X) + _.get('offsetx'));
-		_.push(_.Y, _.get('centery') - h / 2 + _.get('offsety'));
+		_.x = _.push(_.X, _.get(_.X) + _.get('offsetx'));
+		_.y = _.push(_.Y, _.get('centery') - h / 2 + _.get('offsety'));
 		
 		if (!vw || vw > w) {
 			_.push('coordinate.valid_width', w);
@@ -408,16 +408,6 @@ iChart.Coordinate = {
 		if (!vh || vh > h) {
 			_.push('coordinate.valid_height', h);
 		}
-		
-		/**
-		 * originx for short
-		 */
-		_.x = _.get(_.X);
-		/**
-		 * originy for short
-		 */
-		_.y = _.get(_.Y);
-		_.get('coordinate.originy')
 		
 		_.push('coordinate.originx', _.x);
 		_.push('coordinate.originy', _.y);
@@ -455,19 +445,19 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			 */
 			scale : [],
 			/**
-			 * @cfg {String} Here,specify as '80%' relative to client width.(default to '80%')
+			 * @cfg {String/Number} Here,specify as '80%' relative to client width.(default to '80%')
 			 */
 			width:'80%',
 			/**
-			 * @cfg {String} Here,specify as '80%' relative to client height.(default to '80%')
+			 * @cfg {String/Number} Here,specify as '80%' relative to client height.(default to '80%')
 			 */
 			height:'80%',
 			/**
-			 * @cfg {Number} Specifies the valid width,less than the width of coordinate.you can applies a percent value relative to width.(default to '100%')
+			 * @cfg {String/Number} Specifies the valid width,less than the width of coordinate.you can applies a percent value relative to width.(default to '100%')
 			 */
 			valid_width : '100%',
 			/**
-			 * @cfg {Number} Specifies the valid height,less than the height of coordinate.you can applies a percent value relative to width.(default to '100%')
+			 * @cfg {String/Number} Specifies the valid height,less than the height of coordinate.you can applies a percent value relative to width.(default to '100%')
 			 */
 			valid_height : '100%',
 			/**

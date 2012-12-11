@@ -21,7 +21,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			 */
 			data : undefined,
 			/**
-			 * @cfg {Number} Specifies the width.Note if set to 'auto' will be fit the actual width.(default to 'auto')
+			 * @inner {Number} Specifies the width.Note if set to 'auto' will be fit the actual width.(default to 'auto')
 			 */
 			width : 'auto',
 			/**
@@ -96,18 +96,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		 * @paramter int#i the index of data
 		 * @return string
 		 */
-		'parse',
-		/**
-		 * @event Fires after raw was drawed
-		 * @paramter iChart.Chart#this
-		 * @paramter int#i the index of legend
-		 */
-		'drawRaw',
-		/**
-		 * @event Fires after a cell was drawed
-		 * @paramter iChart.Chart#this
-		 */
-		'drawCell');
+		'parse');
 
 	},
 	isEventValid : function(e,_) {
@@ -122,149 +111,100 @@ iChart.Legend = iChart.extend(iChart.Component, {
 						index : i,
 						target : d
 					}
+					return false;
 				}
 			}, _);
 		}
 		return r;
 	},
-	drawCell : function(x, y, text, color,n) {
-		var s = this.get('sign_size'),f = this.getPlugin('sign');
-		if(!f||!f.call(this,this.T,n,x + s / 2,y + s / 2,s,color)){
+	drawCell : function(x, y, text, color,n,_) {
+		var s = _.get('sign_size'),f = _.getPlugin('sign');
+		if(!f||!f.call(_,_.T,n,x + s / 2,y,s,color)){
 			if(n.indexOf("bar")!=-1){
-				this.T.box(x, y + s * 5 / 12, s, s / 6, 0, color);
+				_.T.box(x, y - s / 12, s, s / 6, 0, color);
 			}
-			if (n == 'round') {
-				this.T.round(x + s / 2, y + s / 2, s / 2, color);
-			} else if (n == 'round-bar') {
-				this.T.round(x + s / 2, y + s / 2, s / 4, color);
-			} else if (n == 'square-bar') {
-				this.T.box(x + s / 4, y + s / 4, s / 2, s / 2, 0, color);
-			}else if (n != 'bar'){
-				this.T.box(x, y, s, s, 0, color);
+			if(n=='round'){
+				_.T.round(x + s / 2, y, s / 2, color);
+			}else if(n=='round-bar'){
+				_.T.round(x + s / 2, y, s / 4, color);
+			}else if (n == 'square-bar') {
+				_.T.box(x + s / 4, y - s / 4, s / 2, s / 2, 0, color);
+			}else if (n == 'square'){
+				_.T.box(x, y-s/2, s, s, 0, color);
 			}
 		}
-		
-		var textcolor = this.get('color');
-
-		if (this.get('text_with_sign_color')) {
-			textcolor = color;
-		}
-		this.T.fillText(text, x + this.get('signwidth'), y + s / 2, this.get('textwidth'), textcolor);
-
-	},
-	drawRow : function(suffix, x, y) {
-		var d;
-		for ( var j = 0; j < this.get('column'); j++) {
-			d = this.data[suffix];
-			if (suffix < this.data.length) {
-				this.fireEvent(this, 'drawCell', [this,d]);
-				this.drawCell(x, y, d.text, d.color,d.sign || this.get('sign'));
-				d.x = x;
-				d.y = y;
-			}
-			x += this.columnwidth[j] + this.get('signwidth') + this.get('legend_space');
-			suffix++;
-		}
+		_.T.fillText(text, x + _.get('signwidth'), y, 0, _.get('text_with_sign_color')?color:_.get('color'),'lr',_.get('line_height'));
 	},
 	doDraw : function(_) {
 		_.T.box(_.x, _.y, _.width, _.height, _.get('border'), _.get('f_color'), false, _.get('shadow'));
 		_.T.textStyle(_.L, 'middle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
-
-		var x = _.x + _.get('padding_left'), y = _.y + _.get('padding_top'), text, c = _.get('column'), r = _.get('row');
-		
-		for ( var i = 0; i < r; i++) {
-			_.drawRow(i * c, x, y);
-			y += _.get('line_height');
-			_.fireEvent(_, 'drawRaw', [_, i * c]);
-		}
+		_.data.each(function(d) {
+			_.drawCell(d.x, d.y, d.text, d.color,d.sign,_);
+		});
 	},
-	doConfig : function() {
-		iChart.Legend.superclass.doConfig.call(this);
+	doLayout:function(_,g){
+		var ss = _.get('sign_size'),
+			w = 0,
+			h=0, 
+			temp = 0, 
+			c = _.get('column'),
+			r = _.get('row'),
+			L = _.data.length;
 		
-		var _ = this._(),ss = _.get('sign_size'), g = _.container;
-
 		_.T.textFont(_.get('fontStyle'));
-
-		_.push('signwidth', (ss + _.get('sign_space')));
-
+		
 		if (_.get('line_height') < ss) {
 			_.push('line_height', ss + ss / 5);
 		}
-		
-		/**
-		 * if the position is incompatible,rectify it.
-		 */
-		if (_.get('align') == _.C && _.get('valign') == 'middle') {
-			_.push('valign', _.O);
-		}
-
-		/**
-		 * if this position incompatible with container,rectify it.
-		 */
-		if (g.get('align') == _.L) {
-			if (_.get('valign') == 'middle') {
-				_.push('align', _.R);
-			}
-		}
-
-		var suffix = 0, maxwidth = w = _.get(_.W), width = 0, wauto = (w == 'auto'), c = iChart.isNumber(_.get('column')), r = iChart.isNumber(_.get('row')), L = _.data.length, d, h;
-		
-		if (!c && !r)
-			c = 1;
-		
-		if (c && !r)
-			_.push('row', Math.ceil(L / _.get('column')));
-		if (!c && r)
-			_.push('column', Math.ceil(L / _.get('row')));
-
-		c = _.get('column');
-		r = _.get('row');
-
-		if (L > r * c) {
-			r += Math.ceil((L - r * c) / c);
-			_.push('row', r);
-		}
-
-		_.columnwidth = new Array(c);
-
-		if (wauto) {
-			maxwidth = 0;
-		}
-
+		_.push('signwidth', (ss + _.get('sign_space')));
 		/**
 		 * calculate the width each item will used
 		 */
-		_.data.each(function(d, i) {
-			iChart.merge(d, _.fireEvent(_, 'parse', [_, d.name, i]));
-			d.text = d.text || d.name;
+		_.data.each(function(d) {
 			d.width_ = _.T.measureText(d.text);
 		}, _);
-
+		
 		/**
 		 * calculate the each column's width it will used
 		 */
 		for ( var i = 0; i < c; i++) {
-			width = 0;
-			suffix = i;
-			while (suffix < L) {
-				width = Math.max(width, _.data[suffix].width_);
-				suffix += c;
+			temp = 0;
+			for ( var j = i; j < L; j+=c) {
+				temp = Math.max(temp, _.data[j].width_);
 			}
-			_.columnwidth[i] = width;
-			maxwidth += width;
+			_.columnwidth[i] = temp;
+			w += temp;
+		}
+		/**
+		 * calculate the each row's height it will used
+		 */
+		for ( var i = 0; i < r; i++) {
+			temp =0;
+			for ( var j = i*c; j < L; j++) {
+				temp = Math.max(temp, _.data[j].text.split("\n").length);
+			}
+			_.columnheight[i] = temp;
+			h+=temp;
 		}
 		
-		if (wauto) {
-			w = _.push(_.W, maxwidth + _.get('hpadding') + _.get('signwidth') * c + (c - 1) * _.get('legend_space'));
-		}
+		w = _.push(_.W, w + _.get('hpadding') + _.get('signwidth') * c + (c - 1) * _.get('legend_space'));
+		
 		if (w > _.get('maxwidth')) {
-			w = _.push(_.W, _.get('maxwidth'));
+			var f = _.get('maxwidth')/w,l2=iChart.lowTo,o=Math.floor;
+			_.push('fontsize', l2(6,o(_.get('fontsize')*f)));
+			_.push('sign_size', l2(6,o(ss*f)));
+			_.push('sign_space', l2(4,o(_.get('sign_space')*f)));
+			_.push('legend_space', l2(4,o(_.get('legend_space')*f)));
+			_.push('fontStyle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
+			_.doLayout(_,g);
+			return;
 		}
-
-		_.push('textwidth', w - _.get('hpadding') - _.get('signwidth'));
-
+		
+		var d,x,y,y2;
 		_.width = w;
-		_.height = h = _.push(_.H, r * _.get('line_height') + _.get('vpadding'));
+		
+		_.height = h = _.push(_.H, h * _.get('line_height') + _.get('vpadding'));
+		
 		if (_.get('valign') == _.O) {
 			_.y = g.get('t_originy');
 		} else if (_.get('valign') == _.B) {
@@ -282,6 +222,73 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		
 		_.x = _.push(_.X, _.x + _.get('offsetx'));
 		_.y = _.push(_.Y, _.y + _.get('offsety'));
+		
+		y = _.y + _.get('padding_top');
+		
+		ss = _.get('legend_space')+_.get('signwidth');
+		/**
+		 * calculate the each cell's coordinate point
+		 */
+		for ( var i = 0; i < r; i++) {
+			x = _.x + _.get('padding_left');
+			y2=(_.columnheight[i]/2)*_.get('line_height');
+			y+=y2;
+			for ( var j = 0; j < c&&i*c+j<L; j++) {
+				d = _.data[i*c+j];
+				d.y = y;
+				d.x = x;
+				x += _.columnwidth[j] + ss;
+			}
+			y+=y2;
+		}
+	},
+	doConfig : function() {
+		iChart.Legend.superclass.doConfig.call(this);
+		
+		var _ = this._(),g = _.container,c = iChart.isNumber(_.get('column')),r = iChart.isNumber(_.get('row')), L = _.data.length;
+		/**
+		 * if the position is incompatible,rectify it.
+		 */
+		if (_.get('align') == _.C && _.get('valign') == 'middle') {
+			_.push('valign', _.O);
+		}
 
+		/**
+		 * if this position incompatible with container,rectify it.
+		 */
+		if (g.get('align') == _.L) {
+			if (_.get('valign') == 'middle') {
+				_.push('align', _.R);
+			}
+		}
+		
+		/**
+		 * calculate the width each item will used
+		 */
+		_.data.each(function(d, i) {
+			iChart.merge(d, _.fireEvent(_, 'parse', [_, d.name, i]));
+			d.text = d.text || d.name;
+			d.sign = d.sign || _.get('sign')
+		}, _);
+		
+		if (!c && !r)
+			c = _.push('column',1);
+		if (c && !r)
+			r = _.push('row', Math.ceil(L / _.get('column')));
+		if (!c && r)
+			c = _.push('column', Math.ceil(L / _.get('row')));
+
+		c = _.get('column');
+		r = _.get('row');
+		
+		if (L > r * c) {
+			r += Math.ceil((L - r * c) / c);
+			r = _.push('row', r);
+		}
+		_.columnwidth = new Array(c);
+		_.columnheight = new Array(r);
+		
+		_.doLayout(_,g);
+		
 	}
 });/** @end */

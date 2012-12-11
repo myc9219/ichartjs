@@ -17,9 +17,9 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 
 		this.set({
 			/**
-			 * @cfg {Float (0~)} Specifies the pie's radius.(default to calculate by the size of chart)
+			 * @cfg {Float/String} Specifies the pie's radius.If given a percentage,it will relative to minDistance.(default to '100%')
 			 */
-			radius : 0,
+			radius : '100%',
 			/**
 			 * @cfg {Number} initial angle for first sector.(default to 0)
 			 */
@@ -213,7 +213,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		if (_.is3D())
 			f += 0.06;
 		
-		f = _.get('minDistance') * f;
+		f = Math.floor(_.get('minDistance') * f);
 		
 		var L = _.data.length,sepa = iChart.angle2Radian(iChart.between(0,90,_.get('separate_angle'))),PI = pi2-sepa,sepa=sepa/L,eA = _.oA+sepa, sA = eA;
 		
@@ -229,14 +229,13 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			sA = eA+sepa;
 		}, _);
 		
-		
+		r = iChart.parsePercent(r,f);
 		/**
 		 * calculate pie chart's radius
 		 */
 		if (r <= 0 || r > f) {
-			r = _.push('radius', Math.floor(f));
+			r = _.push('radius',f);
 		}
-		
 		_.r = r;
 		
 		/**
