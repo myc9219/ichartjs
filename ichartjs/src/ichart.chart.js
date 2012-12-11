@@ -407,8 +407,13 @@
 			
 			return this.restore();
 		},
-		measureText : function(text) {
-			return this.c.measureText(text).width;
+		measureText : function(t){
+			t = t.split("\n");
+			var m=0;
+			t.each(function(o){
+				m = max(this.measureText(o).width,m);
+			},this.c);
+			return m;
 		},
 		moveTo : function(x, y) {
 			x = x || 0;

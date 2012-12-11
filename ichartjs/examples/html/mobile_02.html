@@ -30,12 +30,6 @@
 			        	{name : '9月',value : 4,color:'#b4cfe4'}
 		        	];
 	    	
-				var w = window.innerWidth;
-		   		var h = window.innerHeight;
-		   		var radius = w;
-		   		if(w>h){
-		   			radius = h;
-			   	}
 				var chart = new iChart.Pie3D({
 					render : 'canvasDiv',
 					data: data,
@@ -48,7 +42,7 @@
 					},
 					padding:5,
 					yHeight:50,
-					radius:radius*0.32,
+					radius:'80%',//设置半径为最小有效区域的80%
 					align:'center',
 					fit:true,
 					zRotate : 60,
