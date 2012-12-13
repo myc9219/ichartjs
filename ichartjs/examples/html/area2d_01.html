@@ -12,8 +12,9 @@
 				var data = [
 				        	{
 				        		name : '北京',
-				        		value:[2,12,14,20,28,32,34,36,33,24,14,4],
-				        		color:'#1f7e92'
+				        		value:[-9,1,12,20,26,30,32,29,22,12,0,-6],
+				        		color:'#1f7e92',
+				        		line_width:2
 				        	}
 				       ];
 			       
@@ -23,6 +24,11 @@
 						title : '北京2012年平均温度情况',
 						width : 800,
 						height : 400,
+						coordinate:{width:'90%',height:'80%',background_color:'#edf8fa'},
+						sub_option:{
+							hollow_inside:false,//设置一个点的亮色在外环的效果
+							point_size:10
+						},
 						labels:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]
 					});
 				
@@ -37,7 +43,7 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">预览代码</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这是一个面积图示例，该示例展示了北京2012年的平均温度情况。配置上除了像标题、长宽的基本属性外基本上都是默认的。
+					这是一个面积图示例，该示例展示了北京2012年的平均温度情况。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
 				<span class='ichartjs_details'>

@@ -80,8 +80,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 * {Object} the option for legend.
 			 */
 			legend : {
-				sign : 'round-bar',
-				sign_size : 14
+				sign : 'bar'
 			},
 			/**
 			 * @cfg {<link>iChart.Text</link>} Specifies option of label at bottom.

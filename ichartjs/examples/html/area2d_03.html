@@ -37,7 +37,7 @@
 				var chart = new iChart.Area2D({
 					render : 'canvasDiv',
 					data: data,
-					title : 'Average Temperature Of 2012',
+					title : '四城市2012年平均温度情况',
 					width : 800,
 					height : 400,
 					area_opacity:0.15,
@@ -49,7 +49,8 @@
 						listeners:{
 							 //tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
 							parseText:function(tip,name,value,text,i){
-								return name+"平均温度:"+value+"℃";
+								return "<span style='color:#005268;font-size:11px;font-weight:600;'>"+name+
+										"</span>&nbsp;<span style='color:#005268;font-size:20px;font-weight:600;'>"+value+"℃</span>";
 							}
 						}
 					},
@@ -61,8 +62,13 @@
 						line_color:'#62bce9'
 					},
 					coordinate:{
-						width:600,
-						valid_width:560,
+						axis : {
+							width : [0, 0, 2, 0]
+						},
+						background_color:'#ffffff',
+						width:'80%',
+						height:'75%',
+						valid_width:'94%',
 						height : 260,
 						scale2grid:false,
 						grids:{

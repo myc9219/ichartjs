@@ -19,7 +19,7 @@
 			         		name : 'PV',
 			         		value:flow,
 			         		color:'#ec4646',
-			         		linewidth:4
+			         		line_width:4
 			         	}
 			         ];
 	        
@@ -67,8 +67,8 @@
 					listeners:{
 						 //tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
 						parseText:function(tip,name,value,text,i){
-							return "<span style='color:#005268;font-size:28px;'>"+labels[i]+":00访问量约:<br/>"+
-							"</span><span style='color:#005268;font-size:34px;'>"+value+"万</span>";
+							return "<span style='color:#005268;font-size:24px;font-weight:600;'>"+labels[i]+":00访问量约:<br/>"+
+							"</span><span style='color:#005268;font-size:34px;font-weight:600;'>"+value+"万</span>";
 						}
 					}
 				},
