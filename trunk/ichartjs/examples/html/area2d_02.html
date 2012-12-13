@@ -13,12 +13,14 @@
 			        	{
 			        		name : '上海',
 			        		value:[4,16,18,24,32,36,38,38,36,26,20,14],
-			        		color:'#dad81f'
+			        		color:'#aad0db',
+			        		line_width:2
 			        	},
 			        	{
 			        		name : '北京',
-			        		value:[2,12,14,20,28,32,34,36,33,24,14,4],
-			        		color:'#1f7e92'
+			        		value:[-9,1,12,20,26,30,32,29,22,12,0,-6],
+			        		color:'#f68f70',
+			        		line_width:2
 			        	}
 			        ];
 		    
@@ -31,7 +33,13 @@
 				width : 800,
 				height : 400,
 				legend : {
-					enable : true
+					enable : true,
+					row:1,//设置在一行上显示，与column配合使用
+					column : 'max',
+					valign:'top',
+					background_color:null,//设置透明背景
+					offsetx:-30,//设置x轴偏移，满足位置需要
+					border : false 
 				},
 				tip:{
 					enable : true,
@@ -44,28 +52,25 @@
 				},
 				crosshair:{
 					enable:true,
-					line_color:'#62bce9'
+					line_color:'#62bce9',
+					line_width:2
 				},
 				sub_option:{
 					label:false,
 					point_size:10 
 				},
+				background_color:'#f2f2f2',
 				coordinate:{
-					width:600,
-					valid_width:560,
-					height:240,
-					scale2grid:false,
-					grids:{
-						horizontal:{
-								way:'share_alike',
-								value:8
-							}
-						}, 
+					axis : {
+						width : [0, 0, 2, 0]
+					},
+					background_color:'#ffffff',
+					width:'90%',
+					height:'75%',
 					scale:[{
 						 position:'left',	
-						 start_scale:0,
-						 end_scale:40,
 						 scale_space:5,
+						 scale_enable:false,//禁用小横线
 						 listeners:{
 							parseText:function(t,x,y){
 								return {text:t+"℃"}
