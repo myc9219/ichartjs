@@ -6081,14 +6081,18 @@ $.Pie3D = $.extend($.Pie, {
 		_.parse(_);
 
 		var layer = [], L = [], PI = Math.PI, PI2 = PI * 2, c = _.get('counterclockwise'), abs = function(n) {
-			return Math.abs($.toPI2(n) - PI * 1.5);
+			n = $.toPI2(n);
+			if(n<PI/2){
+				n+=PI2;
+			}
+			return Math.abs(n - PI * 1.5);
 		}, t = 'startAngle', d = 'endAngle',Q,
 		/**
 		 * If the inside layer visibile
 		 */
 		lay =function(C,g,z,f){
 			Q = $.quadrantd(g);
-			if (C ? (Q ==0 || Q ==3) : 3>Q>0) {
+			if (C &&(Q ==0 || Q ==3) || (!C && (Q ==2 || Q ==1))) {
 				layer.push({
 					g : g,
 					z : g==z,
@@ -6131,6 +6135,7 @@ $.Pie3D = $.extend($.Pie, {
 
 			layer = [];
 			var s, e;
+			
 			/**
 			 * sort layer
 			 */
@@ -6138,7 +6143,6 @@ $.Pie3D = $.extend($.Pie, {
 				lay(c,f.get(t),f.get(d),f);
 				lay(!c,f.get(d),f.get(t),f);
 			}, _);
-
 			/**
 			 * realtime sort
 			 */
