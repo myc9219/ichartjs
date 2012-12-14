@@ -38,17 +38,22 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		_.push('cylinder_height', _.get('yHeight') * Math.cos(iChart.angle2Radian(z)));
 		_.a = _.push('sub_option.semi_major_axis', _.r);
 		_.b = _.push('sub_option.semi_minor_axis', _.r * z / 90);
-		_.push('sub_option.originy', _.get(_.Y) - _.get('yHeight') / 2);
+		_.topY = _.push('sub_option.originy', _.get(_.Y) - _.get('yHeight') / 2);
 		
 		_.parse(_);
 
-		var layer = [], L = [], PI = Math.PI, PI2 = PI * 2, c = _.get('counterclockwise'), abs = function(n) {
+		var layer,spaint,L = [], pi = Math.PI, pi2 = pi * 2, c = _.get('counterclockwise'), abs = function(n,M) {
 			n = iChart.toPI2(n);
-			if(n<PI/2){
-				n+=PI2;
+			if(M){
+				n -= (pi/2);
+			}else{
+				if(n<pi/2){
+					n+=pi2;
+				}
+				n -= (pi * 1.5);
 			}
-			return Math.abs(n - PI * 1.5);
-		}, t = 'startAngle', d = 'endAngle',Q,
+			return Math.abs(n);
+		}, t = 'startAngle', d = 'endAngle',Q,s,e
 		/**
 		 * If the inside layer visibile
 		 */
@@ -94,17 +99,17 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 			_.sectors.each(function(s, i) {
 				_.T.ellipse(s.x, s.y + s.h, s.a, s.b, s.get(t), s.get(d), 0, s.get('border.enable'), s.get('border.width'), s.get('border.color'), s.get('shadow'), c, true);
 			}, _);
-
 			layer = [];
-			var s, e;
-			
+			spaint = [];
 			/**
 			 * sort layer
 			 */
 			_.sectors.each(function(f) {
 				lay(c,f.get(t),f.get(d),f);
 				lay(!c,f.get(d),f.get(t),f);
+				spaint = spaint.concat(iChart.visible(f.get(t),f.get(d),f));
 			}, _);
+			
 			/**
 			 * realtime sort
 			 */
@@ -120,11 +125,19 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 				_.T.sector3D.layerDraw.call(_.T, f.x, f.y, f.a + 0.5, f.b + 0.5, c, f.h, f.g, f.color);
 			}, _);
 			
+			if(!_.processAnimation){	
+				/**
+				 * realtime sort
+				 */
+				spaint.sor(function(p, q) {
+					return abs((p.s+p.e)/2,1) - abs((q.s+q.e)/2,1)<0;
+				});
+			}
 			/**
 			 * paint outside layer
 			 */
-			_.sectors.each(function(s, i) {
-				_.T.sector3D.sPaint.call(_.T, s.x, s.y, s.a, s.b, s.get(t), s.get(d), false, s.h, s.get('f_color'));
+			spaint.each(function(s, i) {
+				_.T.sector3D.sPaint.call(_.T, s.f.x, s.f.y, s.f.a, s.f.b, s.s, s.e, c, s.f.h, s.f.get('f_color'));
 			}, _);
 
 			/**

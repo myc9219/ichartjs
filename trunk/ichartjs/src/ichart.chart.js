@@ -152,17 +152,17 @@
 		 * draw ellipse API
 		 */
 		ellipse : function(x, y, a, b, s, e, c, bo, bow, boc, sw, ccw, a2r, last) {
-			var angle = s, ccw = !!ccw, a2r = !!a2r;
+			var angle = s,a2r = !!a2r;
 			this.save().gCo(last).strokeStyle(bo,bow, boc).shadowOn(sw).fillStyle(c).moveTo(x, y).beginPath();
 			
 			if (a2r)
 				this.moveTo(x, y);
 			
 			while (angle <= e) {
-				this.lineTo(x + a * cos(angle), y + (ccw ? (-b * sin(angle)) : (b * sin(angle))));
+				this.lineTo(x + a * cos(angle), y + (b * sin(angle)));
 				angle += inc;
 			}
-			return this.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e)))).closePath().stroke(bo).fill(c).restore();
+			return this.lineTo(x + a * cos(e), y + (b * sin(e))).closePath().stroke(bo).fill(c).restore();
 		},
 		/**
 		 * arc
@@ -203,44 +203,35 @@
 			return this.arc(x, y, r, dw, s, e, c, b, bw, bc, false, ccw, true);
 		},
 		sector3D : function() {
-			var x0, y0, sPaint = function(x, y, a, b, s, e, ccw, h, c) {
-				var q1 = $.quadrantd(s),q2 = $.quadrantd(e);
-				if((q1==2||q1==3)&&(q2==2||q2==3))return;
-				
+			var x0, y0,sPaint = function(x, y, a, b, s, e, ccw, h, c) {
 				var Lo = function(A, h) {
-					this.lineTo(x + a * cos(A), y + (h || 0) + (ccw ? (-b * sin(A)) : (b * sin(A))));
-				};
-				
-				s = ccw && e > PI && s < PI ? PI : s;
-				e = !ccw && s < PI && e > PI ? PI : e;
-				
-				var angle = s;
-				this.fillStyle($.dark(c)).moveTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).beginPath();
+					this.lineTo(x + a * cos(A), y + (h || 0) + (b * sin(A)));
+				},
+				angle = s;
+				this.fillStyle($.dark(c)).moveTo(x + a * cos(s), y + (b * sin(s))).beginPath();
 				while (angle <= e) {
 					Lo.call(this, angle);
 					angle = angle + inc;
 				}
 				Lo.call(this, e);
-				this.lineTo(x + a * cos(e), (y + h) + (ccw ? (-b * sin(e)) : (b * sin(e))));
+				this.lineTo(x + a * cos(e), (y + h) + (b * sin(e)));
 				angle = e;
 				while (angle >= s) {
 					Lo.call(this, angle, h);
 					angle = angle - inc;
 				}
 				Lo.call(this, s, h);
-				this.lineTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).closePath().fill(true);
+				this.lineTo(x + a * cos(s), y + (b * sin(s))).closePath().fill(true);
 			}, layerDraw = function(x, y, a, b, ccw, h, A, c) {
 				var x0 = x + a * cos(A);
-				var y0 = y + h + (ccw ? (-b * sin(A)) : (b * sin(A)));
+				var y0 = y + h + (b * sin(A));
 				this.moveTo(x, y).beginPath().fillStyle(c).lineTo(x, y + h).lineTo(x0, y0).lineTo(x0, y0 - h).lineTo(x, y).closePath().fill(true);
 			}, layerPaint = function(x, y, a, b, s, e, ccw, h, c) {
-				var ds = ccw ? (s < PI / 2 || s > 1.5 * PI) : (s > PI / 2 && s < 1.5 * PI), de = ccw ? (e > PI / 2 && e < 1.5 * PI) : (e < PI / 2 || e > 1.5 * PI);
-				if (!ds && !de)
-					return false;
+				var q1 = $.quadrantd(s),q2 = $.quadrantd(e);
 				c = $.dark(c);
-				if (ds)
+				if (q1==1||q1==2)
 					layerDraw.call(this, x, y, a, b, ccw, h, s, c);
-				if (de)
+				if (q2==0||q2==3)
 					layerDraw.call(this, x, y, a, b, ccw, h, e, c);
 			};
 			var s3 = function(x, y, a, b, s, e, h, c, bo, bow, boc, sw, ccw, isw) {
@@ -261,6 +252,8 @@
 				 * paint outside layer
 				 */
 				sPaint.call(this, x, y, a, b, s, e, ccw, h, c);
+				
+				
 				return this;
 			}
 			s3.layerPaint = layerPaint;
