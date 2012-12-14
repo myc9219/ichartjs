@@ -625,7 +625,7 @@
 				e = $.toPI2(e);
 				if(e<s){e+=pi2;}
 				if(s > pi){s = pi2;}
-				if(e>pi2){
+				else if(e>pi2){
 					return [{s:s,e:pi,f:f},{s:pi2,e:e,f:f}]
 				}else if(e>pi){
 					e = pi;
