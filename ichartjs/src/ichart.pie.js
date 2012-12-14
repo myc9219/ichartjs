@@ -131,6 +131,9 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		_.data.each(function(d,i){
 			_.doParse(_,d,i);
 		},_);
+		/**
+		 * layout the label
+		 */
 		_.localizer(_);
 	},
 	doParse : function(_,d, i) {
@@ -149,8 +152,8 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		_.sectors.push(_.doSector(_,d));
 	},
 	dolayout : function(_,x,y,l,d,Q) {
-		if(_.is3D()?iChart.inEllipse(_.get(_.X) - x,_.get(_.Y)-y,_.a,_.b):iChart.distanceP2P(_.get(_.X),_.get(_.Y),x,y)<_.r){
-			y=_.get(_.Y)-y;
+		if(_.is3D()?iChart.inEllipse(_.get(_.X) - x,_.topY-y,_.a,_.b):iChart.distanceP2P(_.get(_.X),_.topY,x,y)<_.r){
+			y=_.topY-y;
 			l.push('labelx',_.get(_.X)+(Math.sqrt(_.r*_.r-y*y)*2+d)*(Q==0||Q==3?1:-1));
 			l.localizer(l);
 		}
@@ -165,9 +168,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			});
 			
 			var pi=Math.PI,abs =function(n,Q){
-				while(n<0){
-					n+=(pi*2);
-				}
+				n = iChart.toPI2(n);
 				if(Q==0){
 					return n;
 				}
@@ -248,7 +249,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		} else {
 			_.push(_.X, _.get('centerx') + _.get('offsetx'));
 		}
-		_.push(_.Y, _.get('centery') + _.get('offsety'));
+		_.topY = _.push(_.Y, _.get('centery') + _.get('offsety'));
 		
 		iChart.apply(_.get('sub_option'),iChart.clone([_.X, _.Y, 'bound_event','mutex','increment'], _.options));
 		

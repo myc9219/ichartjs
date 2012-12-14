@@ -617,6 +617,21 @@
 					a+=pi2;
 				return a%pi2;
 			},
+			visible:function(s, e, f){
+				if(s>e)return [];
+				var q1 = _.quadrantd(s),q2 = _.quadrantd(e);
+				if((q1==2||q1==3)&&(q2==2||q2==3)&&((e-s)<pi))return[];
+				s = $.toPI2(s);
+				e = $.toPI2(e);
+				if(e<s){e+=pi2;}
+				if(s > pi){s = pi2;}
+				if(e>pi2){
+					return [{s:s,e:pi,f:f},{s:pi2,e:e,f:f}]
+				}else if(e>pi){
+					e = pi;
+				}
+				return {s:s,e:e,f:f};
+			},
 			quadrantd : function(a) {
 				if(a==0)return 0;
 				if(a % pi2==0)return 3;

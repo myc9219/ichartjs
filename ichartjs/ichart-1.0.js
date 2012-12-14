@@ -617,6 +617,21 @@
 					a+=pi2;
 				return a%pi2;
 			},
+			visible:function(s, e, f){
+				if(s>e)return [];
+				var q1 = _.quadrantd(s),q2 = _.quadrantd(e);
+				if((q1==2||q1==3)&&(q2==2||q2==3)&&((e-s)<pi))return[];
+				s = $.toPI2(s);
+				e = $.toPI2(e);
+				if(e<s){e+=pi2;}
+				if(s > pi){s = pi2;}
+				if(e>pi2){
+					return [{s:s,e:pi,f:f},{s:pi2,e:e,f:f}]
+				}else if(e>pi){
+					e = pi;
+				}
+				return {s:s,e:e,f:f};
+			},
 			quadrantd : function(a) {
 				if(a==0)return 0;
 				if(a % pi2==0)return 3;
@@ -2586,17 +2601,17 @@ $.Label = $.extend($.Component, {
 		 * draw ellipse API
 		 */
 		ellipse : function(x, y, a, b, s, e, c, bo, bow, boc, sw, ccw, a2r, last) {
-			var angle = s, ccw = !!ccw, a2r = !!a2r;
+			var angle = s,a2r = !!a2r;
 			this.save().gCo(last).strokeStyle(bo,bow, boc).shadowOn(sw).fillStyle(c).moveTo(x, y).beginPath();
 			
 			if (a2r)
 				this.moveTo(x, y);
 			
 			while (angle <= e) {
-				this.lineTo(x + a * cos(angle), y + (ccw ? (-b * sin(angle)) : (b * sin(angle))));
+				this.lineTo(x + a * cos(angle), y + (b * sin(angle)));
 				angle += inc;
 			}
-			return this.lineTo(x + a * cos(e), y + (ccw ? (-b * sin(e)) : (b * sin(e)))).closePath().stroke(bo).fill(c).restore();
+			return this.lineTo(x + a * cos(e), y + (b * sin(e))).closePath().stroke(bo).fill(c).restore();
 		},
 		/**
 		 * arc
@@ -2637,44 +2652,35 @@ $.Label = $.extend($.Component, {
 			return this.arc(x, y, r, dw, s, e, c, b, bw, bc, false, ccw, true);
 		},
 		sector3D : function() {
-			var x0, y0, sPaint = function(x, y, a, b, s, e, ccw, h, c) {
-				var q1 = $.quadrantd(s),q2 = $.quadrantd(e);
-				if((q1==2||q1==3)&&(q2==2||q2==3))return;
-				
+			var x0, y0,sPaint = function(x, y, a, b, s, e, ccw, h, c) {
 				var Lo = function(A, h) {
-					this.lineTo(x + a * cos(A), y + (h || 0) + (ccw ? (-b * sin(A)) : (b * sin(A))));
-				};
-				
-				s = ccw && e > PI && s < PI ? PI : s;
-				e = !ccw && s < PI && e > PI ? PI : e;
-				
-				var angle = s;
-				this.fillStyle($.dark(c)).moveTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).beginPath();
+					this.lineTo(x + a * cos(A), y + (h || 0) + (b * sin(A)));
+				},
+				angle = s;
+				this.fillStyle($.dark(c)).moveTo(x + a * cos(s), y + (b * sin(s))).beginPath();
 				while (angle <= e) {
 					Lo.call(this, angle);
 					angle = angle + inc;
 				}
 				Lo.call(this, e);
-				this.lineTo(x + a * cos(e), (y + h) + (ccw ? (-b * sin(e)) : (b * sin(e))));
+				this.lineTo(x + a * cos(e), (y + h) + (b * sin(e)));
 				angle = e;
 				while (angle >= s) {
 					Lo.call(this, angle, h);
 					angle = angle - inc;
 				}
 				Lo.call(this, s, h);
-				this.lineTo(x + a * cos(s), y + (ccw ? (-b * sin(s)) : (b * sin(s)))).closePath().fill(true);
+				this.lineTo(x + a * cos(s), y + (b * sin(s))).closePath().fill(true);
 			}, layerDraw = function(x, y, a, b, ccw, h, A, c) {
 				var x0 = x + a * cos(A);
-				var y0 = y + h + (ccw ? (-b * sin(A)) : (b * sin(A)));
+				var y0 = y + h + (b * sin(A));
 				this.moveTo(x, y).beginPath().fillStyle(c).lineTo(x, y + h).lineTo(x0, y0).lineTo(x0, y0 - h).lineTo(x, y).closePath().fill(true);
 			}, layerPaint = function(x, y, a, b, s, e, ccw, h, c) {
-				var ds = ccw ? (s < PI / 2 || s > 1.5 * PI) : (s > PI / 2 && s < 1.5 * PI), de = ccw ? (e > PI / 2 && e < 1.5 * PI) : (e < PI / 2 || e > 1.5 * PI);
-				if (!ds && !de)
-					return false;
+				var q1 = $.quadrantd(s),q2 = $.quadrantd(e);
 				c = $.dark(c);
-				if (ds)
+				if (q1==1||q1==2)
 					layerDraw.call(this, x, y, a, b, ccw, h, s, c);
-				if (de)
+				if (q2==0||q2==3)
 					layerDraw.call(this, x, y, a, b, ccw, h, e, c);
 			};
 			var s3 = function(x, y, a, b, s, e, h, c, bo, bow, boc, sw, ccw, isw) {
@@ -2695,6 +2701,8 @@ $.Label = $.extend($.Component, {
 				 * paint outside layer
 				 */
 				sPaint.call(this, x, y, a, b, s, e, ccw, h, c);
+				
+				
 				return this;
 			}
 			s3.layerPaint = layerPaint;
@@ -5875,6 +5883,9 @@ $.Pie = $.extend($.Chart, {
 		_.data.each(function(d,i){
 			_.doParse(_,d,i);
 		},_);
+		/**
+		 * layout the label
+		 */
 		_.localizer(_);
 	},
 	doParse : function(_,d, i) {
@@ -5893,8 +5904,8 @@ $.Pie = $.extend($.Chart, {
 		_.sectors.push(_.doSector(_,d));
 	},
 	dolayout : function(_,x,y,l,d,Q) {
-		if(_.is3D()?$.inEllipse(_.get(_.X) - x,_.get(_.Y)-y,_.a,_.b):$.distanceP2P(_.get(_.X),_.get(_.Y),x,y)<_.r){
-			y=_.get(_.Y)-y;
+		if(_.is3D()?$.inEllipse(_.get(_.X) - x,_.topY-y,_.a,_.b):$.distanceP2P(_.get(_.X),_.topY,x,y)<_.r){
+			y=_.topY-y;
 			l.push('labelx',_.get(_.X)+(Math.sqrt(_.r*_.r-y*y)*2+d)*(Q==0||Q==3?1:-1));
 			l.localizer(l);
 		}
@@ -5909,9 +5920,7 @@ $.Pie = $.extend($.Chart, {
 			});
 			
 			var pi=Math.PI,abs =function(n,Q){
-				while(n<0){
-					n+=(pi*2);
-				}
+				n = $.toPI2(n);
 				if(Q==0){
 					return n;
 				}
@@ -5992,7 +6001,7 @@ $.Pie = $.extend($.Chart, {
 		} else {
 			_.push(_.X, _.get('centerx') + _.get('offsetx'));
 		}
-		_.push(_.Y, _.get('centery') + _.get('offsety'));
+		_.topY = _.push(_.Y, _.get('centery') + _.get('offsety'));
 		
 		$.apply(_.get('sub_option'),$.clone([_.X, _.Y, 'bound_event','mutex','increment'], _.options));
 		
@@ -6076,17 +6085,22 @@ $.Pie3D = $.extend($.Pie, {
 		_.push('cylinder_height', _.get('yHeight') * Math.cos($.angle2Radian(z)));
 		_.a = _.push('sub_option.semi_major_axis', _.r);
 		_.b = _.push('sub_option.semi_minor_axis', _.r * z / 90);
-		_.push('sub_option.originy', _.get(_.Y) - _.get('yHeight') / 2);
+		_.topY = _.push('sub_option.originy', _.get(_.Y) - _.get('yHeight') / 2);
 		
 		_.parse(_);
 
-		var layer = [], L = [], PI = Math.PI, PI2 = PI * 2, c = _.get('counterclockwise'), abs = function(n) {
+		var layer,spaint,L = [], pi = Math.PI, pi2 = pi * 2, c = _.get('counterclockwise'), abs = function(n,M) {
 			n = $.toPI2(n);
-			if(n<PI/2){
-				n+=PI2;
+			if(M){
+				n -= (pi/2);
+			}else{
+				if(n<pi/2){
+					n+=pi2;
+				}
+				n -= (pi * 1.5);
 			}
-			return Math.abs(n - PI * 1.5);
-		}, t = 'startAngle', d = 'endAngle',Q,
+			return Math.abs(n);
+		}, t = 'startAngle', d = 'endAngle',Q,s,e
 		/**
 		 * If the inside layer visibile
 		 */
@@ -6132,17 +6146,17 @@ $.Pie3D = $.extend($.Pie, {
 			_.sectors.each(function(s, i) {
 				_.T.ellipse(s.x, s.y + s.h, s.a, s.b, s.get(t), s.get(d), 0, s.get('border.enable'), s.get('border.width'), s.get('border.color'), s.get('shadow'), c, true);
 			}, _);
-
 			layer = [];
-			var s, e;
-			
+			spaint = [];
 			/**
 			 * sort layer
 			 */
 			_.sectors.each(function(f) {
 				lay(c,f.get(t),f.get(d),f);
 				lay(!c,f.get(d),f.get(t),f);
+				spaint = spaint.concat($.visible(f.get(t),f.get(d),f));
 			}, _);
+			
 			/**
 			 * realtime sort
 			 */
@@ -6158,11 +6172,19 @@ $.Pie3D = $.extend($.Pie, {
 				_.T.sector3D.layerDraw.call(_.T, f.x, f.y, f.a + 0.5, f.b + 0.5, c, f.h, f.g, f.color);
 			}, _);
 			
+			if(!_.processAnimation){	
+				/**
+				 * realtime sort
+				 */
+				spaint.sor(function(p, q) {
+					return abs((p.s+p.e)/2,1) - abs((q.s+q.e)/2,1)<0;
+				});
+			}
 			/**
 			 * paint outside layer
 			 */
-			_.sectors.each(function(s, i) {
-				_.T.sector3D.sPaint.call(_.T, s.x, s.y, s.a, s.b, s.get(t), s.get(d), false, s.h, s.get('f_color'));
+			spaint.each(function(s, i) {
+				_.T.sector3D.sPaint.call(_.T, s.f.x, s.f.y, s.f.a, s.f.b, s.s, s.e, c, s.f.h, s.f.get('f_color'));
 			}, _);
 
 			/**
