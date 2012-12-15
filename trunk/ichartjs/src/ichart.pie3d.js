@@ -42,17 +42,11 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		
 		_.parse(_);
 
-		var layer,spaint,L = [], pi = Math.PI, pi2 = pi * 2, c = _.get('counterclockwise'), abs = function(n,M) {
-			n = iChart.toPI2(n);
-			if(M){
-				n -= (pi/2);
-			}else{
-				if(n<pi/2){
-					n+=pi2;
-				}
-				n -= (pi * 1.5);
-			}
-			return Math.abs(n);
+		var layer,spaint,L = [],c = _.get('counterclockwise'), abs = function(n,M) {
+			/**
+			 * If M,close to pi/2,else pi*3/2
+			 */
+			return 1 + Math.sin(M?(n+Math.PI):n);
 		}, t = 'startAngle', d = 'endAngle',Q,s,e
 		/**
 		 * If the inside layer visibile

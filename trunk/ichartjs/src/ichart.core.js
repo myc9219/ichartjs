@@ -621,8 +621,8 @@
 				if(s>e)return [];
 				var q1 = _.quadrantd(s),q2 = _.quadrantd(e);
 				if((q1==2||q1==3)&&(q2==2||q2==3)&&((e-s)<pi))return[];
-				s = $.toPI2(s);
-				e = $.toPI2(e);
+				s = _.toPI2(s);
+				e = _.toPI2(e);
 				if(e<s){e+=pi2;}
 				if(s > pi){s = pi2;}
 				else if(e>pi2){

@@ -160,34 +160,20 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	},
 	localizer:function(_){
 		if (_.get('intellectLayout')) {
-			var unlayout = [],layouted = [],d = _.get('layout_distance'),Q;
+			var unlayout = [],layouted = [],d = _.get('layout_distance'),Q,x,y;
 			
 			_.sectors.each(function(f, i) {
 				if(f.isLabel())
 				unlayout.push(f.label);
 			});
 			
-			var pi=Math.PI,abs =function(n,Q){
-				n = iChart.toPI2(n);
-				if(Q==0){
-					return n;
-				}
-				if(Q==1){
-					return pi-n;
-				}
-				if(Q==2){
-					return n-pi;
-				}
-				if(Q==3){
-					return pi*2-n;
-				}
-			}
 			unlayout.sor(function(p, q) {
-				return (abs(p.get('angle'),p.get('quadrantd')) - abs(q.get('angle'),q.get('quadrantd')))>0;
+				return Math.abs(Math.sin(p.get('angle'))) - Math.abs(Math.sin(q.get('angle')))>0;
 			});
+			
 			unlayout.each(function(la) {
 				layouted.each(function(l) {
-					var x = l.labelx, y = l.labely;
+					x = l.labelx, y = l.labely;
 					if ((la.labely <= y && (y - la.labely-1) < la.get(_.H)) || (la.labely > y && (la.labely - y-1) < l.get(_.H))) {
 						if ((la.labelx < x && (x - la.labelx) < la.get(_.W)) || (la.labelx > x && (la.labelx - x) < l.get(_.W))) {
 							Q = la.get('quadrantd');
