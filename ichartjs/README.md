@@ -7,9 +7,10 @@ Directory INFO
 
 "dist" contains the packed js files
 "docs" contains the ichartjs API docs
-
+"minify" contains the minify js files
+"samples" contains various demo
 "src" contains the general javascript source files for the ichartjs
 "test" contains the general javascript source files for test
-"samples" contains various demo
+
 
 
