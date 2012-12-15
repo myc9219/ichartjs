@@ -1,16 +1,2 @@
 //expect next
-1.中文全部去掉
-5.考虑插件式开发架构接口设计
-7.suport hsl,hsla model
-9.十字指针还是放到各自组件中,方便管理
-10.区域面积计算?
-11.增加快捷的ajax请求?URL方式?
-12.官网完全利用HTML5+CSS3制作
-///performance
 
-3.prerender
-
-line shadow-copy coordinate
-draw a ipad,then draw charts on ipad
-
-//simple effective amazed
