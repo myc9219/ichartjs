@@ -621,8 +621,8 @@
 				if(s>e)return [];
 				var q1 = _.quadrantd(s),q2 = _.quadrantd(e);
 				if((q1==2||q1==3)&&(q2==2||q2==3)&&((e-s)<pi))return[];
-				s = $.toPI2(s);
-				e = $.toPI2(e);
+				s = _.toPI2(s);
+				e = _.toPI2(e);
 				if(e<s){e+=pi2;}
 				if(s > pi){s = pi2;}
 				else if(e>pi2){
@@ -5912,34 +5912,20 @@ $.Pie = $.extend($.Chart, {
 	},
 	localizer:function(_){
 		if (_.get('intellectLayout')) {
-			var unlayout = [],layouted = [],d = _.get('layout_distance'),Q;
+			var unlayout = [],layouted = [],d = _.get('layout_distance'),Q,x,y;
 			
 			_.sectors.each(function(f, i) {
 				if(f.isLabel())
 				unlayout.push(f.label);
 			});
 			
-			var pi=Math.PI,abs =function(n,Q){
-				n = $.toPI2(n);
-				if(Q==0){
-					return n;
-				}
-				if(Q==1){
-					return pi-n;
-				}
-				if(Q==2){
-					return n-pi;
-				}
-				if(Q==3){
-					return pi*2-n;
-				}
-			}
 			unlayout.sor(function(p, q) {
-				return (abs(p.get('angle'),p.get('quadrantd')) - abs(q.get('angle'),q.get('quadrantd')))>0;
+				return Math.abs(Math.sin(p.get('angle'))) - Math.abs(Math.sin(q.get('angle')))>0;
 			});
+			
 			unlayout.each(function(la) {
 				layouted.each(function(l) {
-					var x = l.labelx, y = l.labely;
+					x = l.labelx, y = l.labely;
 					if ((la.labely <= y && (y - la.labely-1) < la.get(_.H)) || (la.labely > y && (la.labely - y-1) < l.get(_.H))) {
 						if ((la.labelx < x && (x - la.labelx) < la.get(_.W)) || (la.labelx > x && (la.labelx - x) < l.get(_.W))) {
 							Q = la.get('quadrantd');
@@ -6089,17 +6075,11 @@ $.Pie3D = $.extend($.Pie, {
 		
 		_.parse(_);
 
-		var layer,spaint,L = [], pi = Math.PI, pi2 = pi * 2, c = _.get('counterclockwise'), abs = function(n,M) {
-			n = $.toPI2(n);
-			if(M){
-				n -= (pi/2);
-			}else{
-				if(n<pi/2){
-					n+=pi2;
-				}
-				n -= (pi * 1.5);
-			}
-			return Math.abs(n);
+		var layer,spaint,L = [],c = _.get('counterclockwise'), abs = function(n,M) {
+			/**
+			 * If M,close to pi/2,else pi*3/2
+			 */
+			return 1 + Math.sin(M?(n+Math.PI):n);
 		}, t = 'startAngle', d = 'endAngle',Q,s,e
 		/**
 		 * If the inside layer visibile
