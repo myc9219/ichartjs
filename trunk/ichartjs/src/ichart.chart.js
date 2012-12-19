@@ -934,20 +934,23 @@
 			'afterAnimation', 'animating');
 
 			this.T = null;
-			this.RENDERED = false;
-			this.animationed = false;
+			this.Rendered = false;
+			this.Combination = false;
+			this.Animationed = false;
 			this.data = [];
 			this.plugins = [];
-			this.oneways = [];
 			this.total = 0;
+			this.chart = true;
 		},
 		toDataURL : function(g) {
 			return this.T.toDataURL(g);
 		},
 		segmentRect : function() {
+			if(!this.Combination)
 			this.T.clearRect(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'));
 		},
 		resetCanvas : function() {
+			if(!this.Combination)
 			this.T.box(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'),0,this.get('f_color'),0,0,true);
 		},
 		animation : function(_) {
@@ -990,7 +993,7 @@
 			} else {
 				$.requestAnimFrame(function() {
 					_.variable.animation.time = 0;
-					_.animationed = true;
+					_.Animationed = true;
 					_.draw();
 					_.processAnimation = false;
 					_.fireEvent(_, 'afterAnimation', [_]);
@@ -1006,7 +1009,7 @@
 				return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
 		commonDraw : function(_,e) {
-			$.Assert.isTrue(_.RENDERED, _.type + ' has not rendered.');
+			$.Assert.isTrue(_.Rendered, _.type + ' has not rendered.');
 			$.Assert.isTrue(_.initialization, _.type + ' has initialize failed.');
 			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty.');
 			
@@ -1014,9 +1017,10 @@
 				_.doSort();
 				_.oneways.eachAll(function(o) {o.draw()});
 			}
+			
 			_.redraw = true;
 			
-			if (!_.animationed && _.get('animation')) {
+			if (!_.Animationed && _.get('animation')) {
 				_.runAnimation();
 				return;
 			}
@@ -1031,12 +1035,16 @@
 
 		},
 		/**
-		 * @method register the customize component
-		 * @paramter <link>iChart.Custom</link>#component 
+		 * @method register the customize component or combinate with other charts
+		 * @paramter <link>iChart.Custom</link><link>iChart.Chart</link>#object 
 		 * @return void
 		 */
 		plugin : function(c) {
 			c.inject(this);
+			if(c.chart){
+				c.Combination = true;
+				c.setUp();
+			}
 			this.components.push(c);
 			this.plugins.push(c);
 		},
@@ -1137,24 +1145,28 @@
 			 */
 			_.T = _.target = new Cans(_.canvasid);
 			
-			_.RENDERED = true;
+			_.Rendered = true;
 		},
 		initialize : function() {
-			
 			var _ = this._(),d = _.get('data'),r = _.get('render');
-			/**
-			 * create dom
-			 */
-			if (!_.RENDERED) {
-				if (typeof r == "string" && $(r))
-					_.create(_,$(r));
-				else if (typeof r == 'object')
-					_.create(_,r);
+			
+			if(_.Combination){
+				
+				iChart.apply(_.options, iChart.clone([_.W,_.H,'padding','border','client_height','client_width',
+				                                      'minDistance','maxDistance','minstr','centerx', 'centery',
+				                                      'l_originx','r_originx','t_originy','b_originy'], _.root.options,true));
+				_.width = _.get(_.W);
+				_.height = _.get(_.H);
+				_.Rendered = true;
+			}else if (!_.Rendered) {
+				if(r)
+				_.create(_,$(r));
 			}
+			
 			/**
 			 * set up
 			 */
-			if (d.length > 0 && _.RENDERED && !_.initialization){
+			if (d.length > 0 && _.Rendered && !_.initialization){
 				if(_.dataType=='simple'){
 					simple.call(_,d);
 				}else if(_.dataType=='complex'){
@@ -1179,83 +1191,113 @@
 		 * this method only invoked once
 		 */
 		oneWay:function(_){
-			
-			var E = _.variable.event,tot=!_.get('turn_off_touchmove'), mCSS = !$.touch&&_.get('default_mouseover_css'), O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
-			
+			var E = _.variable.event,comb=_.Combination,tot=!_.get('turn_off_touchmove')&&!comb, mCSS = !$.touch&&_.get('default_mouseover_css')&&!comb, O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
 			_.stopEvent = false;
+			/**
+			 * If Combination,ignore binding event because of root have been do this.
+			 */
+			if(!comb){
+				events.each(function(it) {
+					_.T.addEvent(it, function(e) {
+						if (_.processAnimation||_.stopEvent)
+							return;
+						if(e.targetTouches&&e.targetTouches.length!=1){
+							return;
+						}
+						_.fireEvent(_, it, [_, $.Event.fix(e)]);
+					}, false);
+				});
+			}
 			
-			events.each(function(it) {
-				_.T.addEvent(it, function(e) {
-					if (_.processAnimation||_.stopEvent)
-						return;
-					
-					if(e.targetTouches&&e.targetTouches.length!=1){
-						return;
-					}
-					_.fireEvent(_, it, [_, $.Event.fix(e)]);
-				}, false);
-			});
 			_.on(events[0], function(_, e) {
 				_.components.eachAll(function(C) {
-					var M = C.isMouseOver(e);
-					if (M.valid){
-						E.click = true;
-						C.fireEvent(C,'click', [C, e, M]);
-						return !e.stopPropagation;
+					if(C.chart){
+						/**
+						 * meaning this component is a Combination Chart
+						 */
+						if(C.fireEvent(C,events[0], [C, e])){
+							E.click = true;
+							return false;
+						}
+					}else{
+						/**
+						 * generic component
+						 */
+						var M = C.isMouseOver(e);
+						if (M.valid){
+							E.click = true;
+							C.fireEvent(C,'click', [C, e, M]);
+							return !e.stopPropagation;
+						}
 					}
 				});
 				if(E.click){
 					if(tot)
 					e.event.preventDefault();
 					E.click = false;
+					return true;
 				}
 			});
 			
-			if(!$.touch||tot)
-			_.on(events[1], function(_, e) {
-				O = AO = false;
-				_.components.eachAll(function(cot) {
-						var cE = cot.variable.event, M = cot.isMouseOver(e);
-						if (M.valid) {
-							O = true;
-							AO = AO || cot.atomic;
-							if (!E.mouseover) {
-								E.mouseover = true;
-								_.fireEvent(_, 'mouseover', [cot,e, M]);
-							}
-							
-							if (mCSS && AO) {
-								_.T.css("cursor", "pointer");
-							}
-							
-							if (!cE.mouseover) {
-								cE.mouseover = true;
-								cot.fireEvent(cot, 'mouseover', [cot,e, M]);
-							}
-							cot.fireEvent(cot, 'mousemove', [cot,e, M]);
-							if(M.stop){
+			if(!$.touch||tot){
+				_.on(events[1], function(_, e) {
+					O = AO = false;
+					_.components.eachAll(function(C) {
+						if(C.chart){
+							/**
+							 * meaning this component is a Combination Chart
+							 */
+							if(C.fireEvent(C,events[1], [C, e])){
+								O = true;
 								return false;
 							}
-						} else {
-							if (cE.mouseover) {
-								cE.mouseover = false;
-								cot.fireEvent(cot, 'mouseout', [cot,e, M]);
+						}else{
+							var cE = C.variable.event, M = C.isMouseOver(e);
+							if (M.valid) {
+								O = O || C.atomic;
+								if (!cE.mouseover) {
+									cE.mouseover = true;
+									C.fireEvent(C, 'mouseover', [C,e, M]);
+								}
+								C.fireEvent(C, 'mousemove', [C,e, M]);
+								if(M.stop){
+									return false;
+								}
+							} else {
+								if (cE.mouseover) {
+									cE.mouseover = false;
+									C.fireEvent(C, 'mouseout', [C,e, M]);
+								}
 							}
+							return !e.stopPropagation;
 						}
-						return !e.stopPropagation;
+					});
+					
+					if(E.mouseover){
+						e.event.preventDefault();
+						if (!O && E.mouseover) {
+							E.mouseover = false;
+							_.fireEvent(_, 'mouseout', [_,e]);
+						}
+						return E.mouseover;
+					}else{
+						if(O){
+							E.mouseover = O;
+							_.fireEvent(_, 'mouseover', [_,e]);
+						}
+					}
 				});
-				
-				if(E.mouseover){
-					e.event.preventDefault();
-					if (mCSS && !AO) {
+				/**
+				 * defalut mouse style
+				 */
+				if (mCSS) {
+					_.on('mouseover',function(){
+						_.T.css("cursor", "pointer");
+					}).on('mouseout',function(){
 						_.T.css("cursor", "default");
-					}
-					if (!O && E.mouseover) {
-						E.mouseover = false;
-						_.fireEvent(_, 'mouseout', [_,e]);
-					}
+					});
 				}
-			});
+			}
 			_.oneWay = $.emptyFn;
 		},
 		getPercent:function(v){
@@ -1299,7 +1341,7 @@
 			$.Assert.isArray(_.data);
 				
 			_.T.strokeStyle(true,0, _.get('strokeStyle'), _.get('lineJoin'));
-
+			
 			_.processAnimation = _.get('animation');
 			
 			/**
@@ -1307,27 +1349,17 @@
 			 */
 			_.push('communal_acting',0);
 			
-			_.duration = ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
 			if($.isFunction(_.get('doAnimation'))){
 				_.doAnimation = _.get('doAnimation');
 			}
+			_.animationArithmetic = $.getAA(_.get('animation_timing_function'));
+			
 			_.variable.animation = {
-				type : 0,
-				time : 0,
-				queue : []
+					type : 0,
+					time : 0,
+					queue : []
 			};
-			
 			_.components = [];
-			_.oneways = [];
-			
-			/**
-			 * push the background in it
-			 */
-			_.oneways.push(new iChart.Custom({
-				drawFn:function(){
-					_.T.box(0, 0, _.width, _.height, _.get('border'), _.get('f_color'),0,0,true);
-				}
-			}));
 			
 			/**
 			 * make sure hold the customize plugin 
@@ -1336,96 +1368,111 @@
 				_.components.push(o);
 			});
 			
-			_.applyGradient();
-			
-			_.animationArithmetic = $.getAA(_.get('animation_timing_function'));
-			
-			/**
-			_.on('afterAnimation', function() {
-				var N = _.variable.animation.queue.shift();
-				if (N) {
-					_[N.handler].apply(_, N.arguments);
-				}
-			});
-			*/
-			
 			_.oneWay(_);
-			
-			_.push('r_originx', _.width - _.get('padding_right'));
-			_.push('b_originy', _.height - _.get('padding_bottom'));
-			
-			var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.get(_.W) - _.get('hpadding'))), h;
-
-			if ($.isString(_.get('title'))) {
-				_.push('title', $.applyIf({
-					text : _.get('title')
-				}, _.default_.title));
-			}
-			if ($.isString(_.get('subtitle'))) {
-				_.push('subtitle', $.applyIf({
-					text : _.get('subtitle')
-				}, _.default_.subtitle));
-			}
-			if ($.isString(_.get('footnote'))) {
-				_.push('footnote', $.applyIf({
-					text : _.get('footnote')
-				}, _.default_.footnote));
-			}
-
-			if (_.get('title.text') != '') {
-				var st = _.get('subtitle.text') != '';
-				H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
-				t = _.push('t_originy', t + H);
-				_.push('title.originx', l);
-				_.push('title.originy', _.get('padding_top'));
-				_.push('title.width', w);
-				_.title = new $.Text(_.get('title'), _);
-				_.oneways.push(_.title);
-				if (st) {
-					_.push('subtitle.originx', l);
-					_.push('subtitle.originy', _.get('title.originy') + _.get('title.height'));
-					_.push('subtitle.width', w);
-					_.subtitle = new $.Text(_.get('subtitle'), _);
-					_.oneways.push(_.subtitle);
-				}
-			}
-
-			if (_.get('footnote.text') != '') {
-				var g = _.get('footnote.height');
-				H += g;
-				_.push('b_originy', _.get('b_originy') - g);
-				_.push('footnote.originx', l);
-				_.push('footnote.originy', _.get('b_originy'));
-				_.push('footnote.width', w);
-				_.footnote = new $.Text(_.get('footnote'), _);
-				_.oneways.push(_.footnote);
-			}
-
-			h = _.push('client_height', (_.get(_.H) - _.get('vpadding') - H));
-
-			_.push('minDistance', min(w, h));
-			_.push('maxDistance', max(w, h));
-			_.push('minstr', w < h ? _.W : _.H);
-
-			_.push('centerx', l + w / 2);
-			_.push('centery', t + h / 2);
 			
 			/**
 			 * clone config to sub_option
 			 */
 			iChart.applyIf(_.get('sub_option'), iChart.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip'], _.options,true));
+			
+			_.push('r_originx', _.width - _.get('padding_right'));
+			_.push('b_originy', _.height - _.get('padding_bottom'));
+			
+			
+			_.oneways = [];
+			
+			if(!_.Combination){
+				var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.width - _.get('hpadding'))), h;
+				
+				_.duration = ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
+				
+				/**
+				 * push the background in it
+				 */
+				_.oneways.push(new iChart.Custom({
+					drawFn:function(){
+						_.T.box(0, 0, _.width, _.height, _.get('border'), _.get('f_color'),0,0,true);
+					}
+				}));
+				
+				_.applyGradient();
+				
+				/**
+				_.on('afterAnimation', function() {
+					var N = _.variable.animation.queue.shift();
+					if (N) {
+						_[N.handler].apply(_, N.arguments);
+					}
+				});
+				*/
+				
+				if ($.isString(_.get('title'))) {
+					_.push('title', $.applyIf({
+						text : _.get('title')
+					}, _.default_.title));
+				}
+				if ($.isString(_.get('subtitle'))) {
+					_.push('subtitle', $.applyIf({
+						text : _.get('subtitle')
+					}, _.default_.subtitle));
+				}
+				if ($.isString(_.get('footnote'))) {
+					_.push('footnote', $.applyIf({
+						text : _.get('footnote')
+					}, _.default_.footnote));
+				}
+	
+				if (_.get('title.text') != '') {
+					var st = _.get('subtitle.text') != '';
+					H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
+					t = _.push('t_originy', t + H);
+					_.push('title.originx', l);
+					_.push('title.originy', _.get('padding_top'));
+					_.push('title.width', w);
+					_.title = new $.Text(_.get('title'), _);
+					_.oneways.push(_.title);
+					if (st) {
+						_.push('subtitle.originx', l);
+						_.push('subtitle.originy', _.get('title.originy') + _.get('title.height'));
+						_.push('subtitle.width', w);
+						_.subtitle = new $.Text(_.get('subtitle'), _);
+						_.oneways.push(_.subtitle);
+					}
+				}
+	
+				if (_.get('footnote.text') != '') {
+					var g = _.get('footnote.height');
+					H += g;
+					_.push('b_originy', _.get('b_originy') - g);
+					_.push('footnote.originx', l);
+					_.push('footnote.originy', _.get('b_originy'));
+					_.push('footnote.width', w);
+					_.footnote = new $.Text(_.get('footnote'), _);
+					_.oneways.push(_.footnote);
+				}
+				h = _.push('client_height', (_.get(_.H) - _.get('vpadding') - H));
+				
+				_.push('minDistance', min(w, h));
+				_.push('maxDistance', max(w, h));
+				_.push('minstr', w < h ? _.W : _.H);
+				
+				_.push('centerx', l + w / 2);
+				_.push('centery', t + h / 2);
+			}
+			
+			
 			/**
 			 * legend
 			 */
 			if (_.get('legend.enable')) {
 				_.legend = new $.Legend($.apply({
-					maxwidth : w,
+					maxwidth : _.get('client_width'),
 					data : _.data
 				}, _.get('legend')), _);
 				_.components.push(_.legend);
 			}
-			_.push('sub_option.tip.wrap',_.push('tip.wrap', _.shell));
 			
+			_.push('sub_option.tip.wrap',_.push('tip.wrap', _.shell));
 		}
 	});
 })(iChart);

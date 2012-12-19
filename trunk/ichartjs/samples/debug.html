@@ -42,10 +42,8 @@
 		<script type="text/javascript" src="../src/ichart.linebasic2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.area2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.linemonitor2d.js"></script>
-		<script type="text/javascript" src="../src/ichart.points.js"></script>
 	<style type="text/css">
 		body{
-			margin-top:10px;
 			text-align: center;
 			background-color:#333333;
 			background-repeat: repeat;
@@ -56,65 +54,119 @@
 		}
 	</style>
 	<script type="text/javascript">
-	$(function(){
+	$(function(){	
 		var data = [
-		        	{name : 'UC浏2',value : 90,color:'#4572a7'},
-		        	{name : '欧朋1',value : 50,color:'#89a54e',cylinder_height:90},
-		        	{name : 'UC浏2',value : 90,color:'#4572a7'},
-		        	{name : '欧朋3',value : 50,color:'#aa4643'},
-		        	{name : '欧朋1',value : 50,color:'#89a54e',cylinder_height:90},
-		        	{name : '欧朋3',value : 50,color:'#aa4643'},
-		        	{name : 'UC浏2',value : 90,color:'#4572a7'},
-		        	{name : '欧朋3',value : 50,color:'#aa4643'}
+		        	{name : 'Alex',value : 10,color:'#849fb4'},
+		        	{name : 'Mark',value : 30,color:'#bf9d32'},
+		        	{name : 'David',value : 40,color:'#728f1b'},
+		        	{name : 'Graham',value : 55,color:'#bf784c'},
+		        	{name : 'John',value : 70,color:'#2f8586'}
 	        	];
-
     	
-		var chart = new iChart.Pie3D({
+		var chart = new iChart.Column2D({
 			render : 'canvasDiv',
 			data: data,
 			title : {
-				text : '2012年第3季度中国第三方手机浏览器市场份额',
+				text : 'This is a sample test for Combination',
 				color : '#3e576f'
+			},
+			subtitle : {
+				text : 'Top 5 Sales Person,2011',
+				color : '#6d869f'
 			},
 			footnote : {
 				text : 'ichartjs.com',
-				color : '#486c8f',
+				color : '#909090',
 				fontsize : 11,
 				padding : '0 38'
 			},
-			sub_option : {
+			width : 800,
+			height : 400,
+			shadow : true,
+			shadow_blur : 2,
+			shadow_color : '#aaaaaa',
+			shadow_offsetx : 1,
+			shadow_offsety : 0,
+			colwidth : 68,
+			zScale:0.5,
+			xAngle : 50,
+			bottom_scale:1.1,
+			label:{
+				color:'#4c4f48'
+			},
+			sub_option:{
 				label : {
-					background_color:null,
-					sign:false,//设置禁用label的小图标
-					padding:'0 4',
-					border:{
-						enable:false,
-						color:'#be5985'
-					},
-					fontsize:11,
-					fontweight:600,
-					color : '#be5985'
+					color : '#4c4f48'
 				},
-				border : {
-					width : 2,
-					color : '#ffffff'
+				listeners:{
+					parseText:function(r,t){
+						//自定义柱形图上方label的格式。
+						return '$'+t+'k';
+					}
 				}
 			},
-			shadow : true,
-			shadow_blur : 6,
-			shadow_color : '#aaaaaa',
-			shadow_offsetx : 0,
-			shadow_offsety : 0,
-			background_color:'#fefefe',
-			offset_angle:-40,//逆时针偏移120度
-			showpercent:true,
-			//animation:true,
-			duration_animation_duration:500,
-			decimalsnum:2,
-			width : 800,
-			height : 440,
-			radius:160
+			coordinate:{
+				background_color : '#d5d8d1',
+				grid_color : '#a4ad96',
+				color_factor : 0.24,
+				board_deep:10,//背面厚度
+				pedestal_height:10,//底座高度
+				left_board:false,//取消左侧面板
+				height:'88%',
+				width:'85%',
+				valid_width:'90%',
+				scale:[{
+					 position:'left',	
+					 start_scale:0,
+					 scale_space:10,
+					 label:{
+						color:'#4c4f48'
+					 },
+					 listeners:{
+						parseText:function(t,x,y){
+						//自定义左侧坐标系刻度文本的格式。
+							return {text:'$'+t+'k'}
+						}
+					 }
+				}]
+			}
 		});
+				
+		var pie = new iChart.Pie2D({
+			data: data,
+			width : 800,
+			height : 400,
+			label:{
+				color:'#4c4f48'
+			},
+			sub_option:{
+				label : false
+			},
+			text_space : 16,
+			align : 'left',
+			offsetx:120,
+			offsety:-(chart.get('centery')-chart.coo.get('originy')-80),
+			radius:60
+		});
+		
+		chart.plugin(pie);
+		
+		 //利用自定义组件构造左侧说明文本。
+		chart.plugin(new iChart.Custom({
+				drawFn:function(){
+					 //计算位置
+					var coo = chart.getCoordinate(),
+						x = coo.get('originx'),
+						y = coo.get('originy'),
+						H = coo.get('height');
+					//在左侧的位置，渲染说明文字。
+					chart.target.textAlign('center')
+					.textBaseline('middle')
+					.textFont('600 13px Verdana')
+					.fillText('Sales Figure',x-50,y+H/2,false,'#6d869f', false,false,false,-90);
+					
+				}
+		}));
 
 		chart.on('beforedraw',function(e){
 			chart.START_RUN_TIME = new Date().getTime();
@@ -123,7 +175,8 @@
 		
 		chart.on('draw',function(e){
 			chart.END_RUN_TIME = new Date().getTime();
-			console.log("cost:"+(chart.END_RUN_TIME - chart.START_RUN_TIME)+"ms");
+			chart.RUN_TIME_COST = chart.END_RUN_TIME - chart.START_RUN_TIME;
+			//console.log('cost:'+chart.RUN_TIME_COST+'ms');
 		});
 		
 		chart.draw();

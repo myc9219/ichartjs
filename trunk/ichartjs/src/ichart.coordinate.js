@@ -661,7 +661,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		}
 
 		if (_.get('crosshair.enable')) {
-			_.push('crosshair.wrap', _.container.shell);
+			_.push('crosshair.wrap', _.root.shell);
 			_.push('crosshair.height', _.get(_.H));
 			_.push('crosshair.width', _.get(_.W));
 			_.push('crosshair.top', _.y);
@@ -719,7 +719,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 				kd['distance'] = h;
 				kd['valid_distance'] = vh;
 			}
-			_.scale.push(new iChart.Scale(kd, _.container));
+			_.scale.push(new iChart.Scale(kd, _.root));
 		}, _);
 
 		var iol = _.push('ignoreOverlap', _.get('ignoreOverlap') && _.get('axis.enable') || _.get('ignoreEdge'));

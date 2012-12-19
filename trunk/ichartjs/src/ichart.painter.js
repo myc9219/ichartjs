@@ -152,22 +152,35 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	 * this is a abstract method.Currently known,both <link>iChart.Chart</link> and <link>iChart.Component</link> implement this method.
 	 * @return void
 	 */
-	draw : function(e) {
-		/**
-		 * fire the beforedraw event
-		 */
-		if (!this.fireEvent(this, 'beforedraw', [this,e])) {
-			return this;
+	draw : function(e,comb) {
+		if(comb){
+			/**
+			 * fire the root Refresh
+			 */
+			this.root.draw(e);
+		}else{
+			/**
+			 * fire the beforedraw event
+			 */
+			if (!this.fireEvent(this, 'beforedraw', [this,e])) {
+				return this;
+			}
+			/**
+			 * execute the commonDraw() that the subClass implement
+			 */
+			this.commonDraw(this,e);
+	
+			/**
+			 * fire the draw event
+			 */
+			this.fireEvent(this, 'draw', [this,e]);
 		}
-		/**
-		 * execute the commonDraw() that the subClass implement
-		 */
-		this.commonDraw(this,e);
-
-		/**
-		 * fire the draw event
-		 */
-		this.fireEvent(this, 'draw', [this,e]);
+	},
+	inject : function(c) {
+		if (c) {
+			this.root = c;
+			this.target = this.T = c.T;
+		}
 	},
 	doConfig : function() {
 		
