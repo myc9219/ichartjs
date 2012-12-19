@@ -83,7 +83,7 @@ iChart.Element = function(config) {
 	_.variable = {};
 	
 	/**
-	 * the container of all events
+	 * the root of all events
 	 */
 	_.events = {
 		'mouseup':[],

@@ -245,7 +245,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 	doConfig : function() {
 		iChart.Legend.superclass.doConfig.call(this);
 		
-		var _ = this._(),g = _.container,c = iChart.isNumber(_.get('column')),r = iChart.isNumber(_.get('row')), L = _.data.length;
+		var _ = this._(),g = _.root,c = iChart.isNumber(_.get('column')),r = iChart.isNumber(_.get('row')), L = _.data.length;
 		/**
 		 * if the position is incompatible,rectify it.
 		 */
@@ -254,7 +254,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		}
 
 		/**
-		 * if this position incompatible with container,rectify it.
+		 * if this position incompatible with root,rectify it.
 		 */
 		if (g.get('align') == _.L) {
 			if (_.get('valign') == 'middle') {
