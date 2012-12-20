@@ -31,8 +31,8 @@ iChart.ColumnMulti2D = iChart.extend(iChart.Column, {
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
 		var _ = this._(),
-			s = _.get('hispace'),
-			bw = _.get('colwidth'), 
+			s = _.get('column_space'),
+			bw = _.get('column_width'), 
 			H = _.coo.get(_.H), 
 			S = _.coo.getScale(_.get('scaleAlign')), 
 			q = bw * (_.get('group_fator') || 0), 

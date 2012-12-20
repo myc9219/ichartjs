@@ -10,6 +10,8 @@ iChart.Element = function(config) {
 	 * indicate the element's type
 	 */
 	_.type = 'element';
+	
+	_.ICHARTJS_OBJECT = true;
 
 	/**
 	 * define abstract method
@@ -23,10 +25,6 @@ iChart.Element = function(config) {
 	_.options = {};
 
 	_.set({
-		/**
-		 * @inner {String} The unique id of this element (defaults to an auto-assigned id).
-		 */
-		id : '',
 		/**
 		 * @cfg {Object} Specifies the border for this element.
 		 * Available property are:
@@ -93,7 +91,8 @@ iChart.Element = function(config) {
 		'mousedown':[],
 		'dblclick':[]
 	};
-	this.registerEvent(
+	
+	_.registerEvent(
 			/**
 			 * @event Fires after the element initializing is finished this is for test
 			 * @paramter iChart.Painter#this
@@ -116,26 +115,26 @@ iChart.Element = function(config) {
 	 * megre customize config
 	 */
 	_.set(config);
-	_.afterConfiguration();
+	_.afterConfiguration(_);
 }
 
 iChart.Element.prototype = {
 	_:function(){return this},	
-	afterConfiguration : function() {
+	afterConfiguration : function(_) {
 		/**
 		 * register customize event
 		 */
-		if (iChart.isObject(this.get('listeners'))) {
-			for ( var e in this.get('listeners')) {
-				this.on(e, this.get('listeners')[e]);
+		if (iChart.isObject(_.get('listeners'))) {
+			for ( var e in _.get('listeners')) {
+				_.on(e, _.get('listeners')[e]);
 			}
 		}
-		this.initialize();
+		_.initialize();
 		
 		/**
 		 * fire the initialize event,this probable use to unit test
 		 */
-		this.fireEvent(this, 'initialize', [this]);
+		_.fireEvent(_, 'initialize', [_]);
 	},
 	registerEvent : function() {
 		for ( var i = 0; i < arguments.length; i++) {
@@ -175,7 +174,7 @@ iChart.Element.prototype = {
 			iChart.merge(this.options, c);
 	},
 	pushIf : function(name, value) {
-		if (!iChart.isDefined(this.get(name))) {
+		if (!iChart.isDefined(this.get(name))||this.get(name)==null) {
 			return this.push(name, value);
 		}
 		return this.get(name);

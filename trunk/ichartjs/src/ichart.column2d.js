@@ -22,8 +22,8 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
 		var _ = this._(),
-			c = _.get('colwidth'),
-			s = _.get('hispace'),
+			c = _.get('column_width'),
+			s = _.get('column_space'),
 			S = _.coo.getScale(_.get('scaleAlign')),
 			H = _.coo.get(_.H), 
 			h2 = c / 2, 

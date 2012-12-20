@@ -222,7 +222,7 @@
 			} else if (_.isObject(a)) {
 				for ( var b in a) {
 					// avoid recursion reference
-					if (e && _.isObject(a[b])&& !(a[b] instanceof _.Painter))
+					if (e && _.isObject(a[b])&& !(a[b].ICHARTJS_OBJECT))
 						d[b] = _.clone(a[b], e);
 					else
 						d[b] = a[b];
@@ -285,8 +285,8 @@
 			}
 		}();
 
-		// *******************Math************************
 		var sin = Math.sin, cos = Math.cos, atan = Math.atan, tan = Math.tan, acos = Math.acos, sqrt = Math.sqrt, abs = Math.abs, pi = Math.PI, pi2 = 2 * pi, ceil = Math.ceil, round = Math.round, floor = Math.floor, max = Math.max, min = Math.min, pF = parseFloat,
+		Registry={},
 		factor = function(v, w) {
 			if (v == 0)
 				return v;
@@ -692,7 +692,25 @@
 				}
 			},
 			iGather : function(k) {
-				return (k || 'ichartjs') + '-' + ceil(Math.random()*10000)+new Date().getTime().toString().substring(4);
+				return (k || 'ichartjs') + '_' + ceil(Math.random()*10000)+new Date().getTime().toString().substring(4);
+			},
+			register:function(c){
+				var id = c.get('id');
+				if(!id||id==''){
+					id = _.iGather(c.type);
+					while(Registry[id]){
+						id = _.iGather(c.type);
+					}
+					c.push('id',id);
+				}
+				if(Registry[id]){
+					throw new Error("exist reduplicate id :"+id);
+				}
+				c.id = id;
+				Registry[id] = c;
+			},
+			get:function(id){
+				return Registry[id];
 			},
 			toPercent : function(v, d) {
 				return (v * 100).toFixed(d) + '%';

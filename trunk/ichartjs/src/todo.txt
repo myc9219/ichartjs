@@ -1,2 +1,11 @@
 //expect next
 
+
+
+
+
+
+change
+duration_animation_duration->animation_duration
+colwidth->column_width
+barheight->bar_height

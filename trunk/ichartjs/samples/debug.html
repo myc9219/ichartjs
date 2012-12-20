@@ -62,6 +62,17 @@
 		        	{name : 'Graham',value : 55,color:'#bf784c'},
 		        	{name : 'John',value : 70,color:'#2f8586'}
 	        	];
+		var data1 = [
+			        	{
+			        		name : '北京',
+			        		value:[8,22,32,53,68],
+			        		color:'#1f7e92',
+			        		line_width:3
+			        	}
+			       ];
+    	
+    	//是否启用动画
+		var animation = false;
     	
 		var chart = new iChart.Column2D({
 			render : 'canvasDiv',
@@ -80,14 +91,15 @@
 				fontsize : 11,
 				padding : '0 38'
 			},
-			width : 800,
-			height : 400,
+			width : 1000,
+			height : 460,
+			animation : animation,
+			animation_duration:600,
 			shadow : true,
 			shadow_blur : 2,
 			shadow_color : '#aaaaaa',
 			shadow_offsetx : 1,
 			shadow_offsety : 0,
-			colwidth : 68,
 			zScale:0.5,
 			xAngle : 50,
 			bottom_scale:1.1,
@@ -113,43 +125,84 @@
 				pedestal_height:10,//底座高度
 				left_board:false,//取消左侧面板
 				height:'88%',
-				width:'85%',
-				valid_width:'90%',
+				width:'84%',
+				//valid_width:'90%',
 				scale:[{
 					 position:'left',	
 					 start_scale:0,
 					 scale_space:10,
 					 label:{
 						color:'#4c4f48'
-					 },
-					 listeners:{
-						parseText:function(t,x,y){
-						//自定义左侧坐标系刻度文本的格式。
-							return {text:'$'+t+'k'}
-						}
 					 }
 				}]
 			}
 		});
-				
+		
+
 		var pie = new iChart.Pie2D({
 			data: data,
-			width : 800,
-			height : 400,
 			label:{
 				color:'#4c4f48'
 			},
 			sub_option:{
-				label : false
+				mini_label_threshold_angle : 30,//迷你label的阀值,单位:角度
+				mini_label:{//迷你label配置项
+					fontsize:10,
+					fontweight:600,
+					color : '#ffffff'
+				},
+				label : {
+					background_color:null,
+					sign:false,//设置禁用label的小图标
+					padding:'0 4',
+					border:{
+						enable:false,
+						color:'#666666'
+					},
+					fontsize:10,
+					fontweight:600,
+					color : '#4572a7'
+				},
+				listeners:{
+					parseText:function(d, t){
+						return d.get('value')+"%";//自定义label文本
+					}
+				} 
 			},
 			text_space : 16,
 			align : 'left',
-			offsetx:120,
-			offsety:-(chart.get('centery')-chart.coo.get('originy')-80),
-			radius:60
+			offsetx:chart.coo.get('originx')+60,
+			animation : animation,
+			offsety:-(chart.get('centery')-chart.coo.get('originy')-90),
+			radius:70
 		});
 		
-		chart.plugin(pie);
+		var line = new iChart.LineBasic2D({
+			z_index:1000,
+			data: data1,
+			label:{
+				color:'#4c4f48'
+			},
+			point_space:chart.get('column_width')+chart.get('column_space'),
+			tip:{
+				enable:true
+			},
+			crosshair:{
+				enable:true,
+				line_color:'#ec4646'
+			},
+			sub_option : {
+				label:false,
+				hollow_inside:false,
+				point_size:14
+			},
+			animation : animation,
+			coordinate:chart.coo
+		});
+		
+		chart.plugin(line);
+		
+		//chart.plugin(pie);
 		
 		 //利用自定义组件构造左侧说明文本。
 		chart.plugin(new iChart.Custom({

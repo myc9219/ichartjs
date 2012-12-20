@@ -217,8 +217,6 @@ iChart.Painter = iChart.extend(iChart.Element, {
 		_.push("dark_color", iChart.dark(bg, f*0.8,g));
 		_.push("light_color2", iChart.light(bg, f * 2,g));
 		
-		_.id = _.get('id');
-		
 		if(_.is3D()&&!_.get('xAngle_')){
 			var P = iChart.vectorP2P(_.get('xAngle'),_.get('yAngle'));
 			_.push('xAngle_',P.x);
