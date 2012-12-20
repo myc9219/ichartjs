@@ -53,7 +53,9 @@ iChart.Column = iChart.extend(iChart.Chart, {
 	},
 	doAnimation : function(t, d,_) {
 		var h;
+		if(!_.ILLUSIVE_COO)
 		_.coo.draw();
+		
 		_.labels.each(function(l){
 			l.draw();
 		});

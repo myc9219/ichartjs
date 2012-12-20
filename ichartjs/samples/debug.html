@@ -65,14 +65,14 @@
 		var data1 = [
 			        	{
 			        		name : '北京',
-			        		value:[8,22,32,53,68],
-			        		color:'#1f7e92',
+			        		value:[168,302,332,453,668],
+			        		color:'#aa4643',
 			        		line_width:3
 			        	}
 			       ];
     	
     	//是否启用动画
-		var animation = false;
+		var animation = true;
     	
 		var chart = new iChart.Column2D({
 			render : 'canvasDiv',
@@ -131,8 +131,17 @@
 					 position:'left',	
 					 start_scale:0,
 					 scale_space:10,
+					 end_scale:80,
 					 label:{
 						color:'#4c4f48'
+					 }
+				},{
+					 position:'right',	
+					 start_scale:0,
+					 scale_space:100,
+					 end_scale:800,
+					 label:{
+						color:'#aa4643'
 					 }
 				}]
 			}
@@ -187,11 +196,9 @@
 			tip:{
 				enable:true
 			},
-			crosshair:{
-				enable:true,
-				line_color:'#ec4646'
-			},
+			scaleAlign : 'right',
 			sub_option : {
+				smooth:true,
 				label:false,
 				hollow_inside:false,
 				point_size:14
@@ -202,7 +209,7 @@
 		
 		chart.plugin(line);
 		
-		//chart.plugin(pie);
+		chart.plugin(pie);
 		
 		 //利用自定义组件构造左侧说明文本。
 		chart.plugin(new iChart.Custom({

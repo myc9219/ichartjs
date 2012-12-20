@@ -4359,8 +4359,13 @@ $.Scale = $.extend($.Component, {
 $.Coordinate = {
 	coordinate_ : function(f) {
 		var _ = this._(),coo = _.get('coordinate');
-		if(coo.type)
+		if(coo.type){
+			/**
+			 * Imply it was illusive
+			 */
+			_.ILLUSIVE_COO = true;
 			return coo;
+		}
 		/**
 		 * Apply the coordinate feature
 		 */
@@ -6418,7 +6423,9 @@ $.Column = $.extend($.Chart, {
 	},
 	doAnimation : function(t, d,_) {
 		var h;
+		if(!_.ILLUSIVE_COO)
 		_.coo.draw();
+		
 		_.labels.each(function(l){
 			l.draw();
 		});
@@ -6783,7 +6790,9 @@ $.Bar = $.extend($.Chart, {
 		_.doActing(_, d, o,i);
 	},
 	doAnimation : function(t, d,_) {
+		if(!_.ILLUSIVE_COO)
 		_.coo.draw();
+		
 		_.labels.each(function(l) {
 			l.draw();
 		});
@@ -7490,6 +7499,7 @@ $.LineBasic2D = $.extend($.Line, {
 		this.tipInvokeHeap = [];
 	},
 	doAnimation : function(t, d,_) {
+		if(!_.ILLUSIVE_COO)
 		_.coo.draw();
 		_.lines.each(function(l){
 			l.get('points').each(function(p){

@@ -65,7 +65,9 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		_.doActing(_, d, o,i);
 	},
 	doAnimation : function(t, d,_) {
+		if(!_.ILLUSIVE_COO)
 		_.coo.draw();
+		
 		_.labels.each(function(l) {
 			l.draw();
 		});
