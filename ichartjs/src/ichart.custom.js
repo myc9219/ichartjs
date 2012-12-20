@@ -47,9 +47,9 @@
 			this.A_draw = this.get('animating_draw');
 			this.variable.animation = {
 				animating:false,	
-				time : 0,
-				duration:0
+				time : 0
 			};
+			this.duration = 0;
 		}
 });
 /**

@@ -29,7 +29,7 @@ iChart.BarMulti2D = iChart.extend(iChart.Bar, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var _ = this._(), L = _.data.length,W = _.coo.get(_.W), b = 'barheight', s = 'barspace',bh=_.get(b),
+		var _ = this._(), L = _.data.length,W = _.coo.get(_.W), b = 'bar_height', s = 'bar_space',bh=_.get(b),
 		S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2,w,
 		I = _.coo.get(_.X) + S.basic*W,x = _.coo.get(_.X)-_.get('text_space')-_.coo.get('axis.width')[3],
 		y = _.coo.get('y_start')+ _.get(s);

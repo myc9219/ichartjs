@@ -24,7 +24,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {Number} Specifies the width of each bar(default to calculate according to coordinate's height)
 			 */
-			barheight : undefined,
+			bar_height : undefined,
 			/**
 			 * @cfg {Number} Specifies the distance of bar's bottom and text(default to 6)
 			 */
@@ -77,12 +77,13 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 	doConfig : function() {
 		iChart.Bar.superclass.doConfig.call(this);
 
-		var _ = this._(), b = 'barheight', z = 'z_index';
+		var _ = this._(), b = 'bar_height', z = 'z_index';
+		
 		/**
-		 * Apply the coordinate feature
+		 * use option create a coordinate
 		 */
-		iChart.Coordinate.coordinate.call(_);
-
+		_.coo = iChart.Coordinate.coordinate_.call(_);
+		
 		_.rectangles = [];
 		_.labels = [];
 		_.rectangles.zIndex = _.get(z);
@@ -90,7 +91,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		_.components.push(_.labels);
 		_.components.push(_.rectangles);
 
-		var L = _.data.length, H = _.get('coordinate.valid_height'),h_,bh,KL;
+		var L = _.data.length, H = _.coo.get('valid_height'),h_,bh,KL;
 		
 		if (_.dataType == 'simple') {
 			h_= Math.floor(H*2 / (L * 3 + 1));
@@ -110,14 +111,8 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		/**
 		 * the space of two bar
 		 */
-		_.push('barspace', (H - bh * L) / KL);
+		_.push('bar_space', (H - bh * L) / KL);
 
-		/**
-		 * use option create a coordinate
-		 */
-		_.coo = iChart.Coordinate.coordinate_.call(_);
-
-		_.components.push(_.coo);
 
 		/**
 		 * quick config to all rectangle

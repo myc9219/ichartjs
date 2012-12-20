@@ -22,8 +22,8 @@ iChart.Bar2D = iChart.extend(iChart.Bar, {
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
 		var _ = this._(),
-			h = _.get('barheight'),
-			b = _.get('barspace'),
+			h = _.get('bar_height'),
+			b = _.get('bar_space'),
 			S = _.coo.getScale(_.get('scaleAlign')),
 			W = _.coo.get(_.W),
 			h2 = h / 2,

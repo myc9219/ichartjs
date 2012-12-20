@@ -38,9 +38,9 @@
 	pF = function(n){
 		return $.isNumber(n)?n:$.parseFloat(n,n);
 	},
-	simple = function(c) {
-		var M,V=0,MI,ML=0,n='minValue',x='maxValue';
-		this.total = 0,init=false;
+	simple = function(c,_) {
+		var M,V=0,MI,ML=0,n='minValue',x='maxValue',init=false;
+		_.total = 0;
 		c.each(function(d,i){
 			V  = d.value;
 			if($.isArray(V)){
@@ -60,7 +60,7 @@
 			}else{
 				V = pF(V);
 				d.value = V;
-				this.total+=V;
+				_.total+=V;
 				if(!init){
 					M = MI = V;
 					init=true;
@@ -68,25 +68,25 @@
 				M = max(V,M);
 				MI = min(V,MI);
 			}
-		},this);
+		},_);
 		
-		if(this.get(n)){
-			MI = min(this.get(n),MI);
+		if(_.get(n)){
+			MI = min(_.get(n),MI);
 		}
 		
-		if(this.get(x)){
-			M = max(this.get(x),M);
+		if(_.get(x)){
+			M = max(_.get(x),M);
 		}
 		
-		if($.isArray(this.get('labels'))){
-			ML = this.get('labels').length>ML?this.get('labels').length:ML;
+		if($.isArray(_.get('labels'))){
+			ML = _.get('labels').length>ML?_.get('labels').length:ML;
 		}
-		this.push('maxItemSize',ML);
-		this.push(n,MI);
-		this.push(x,M);
+		_.push('maxItemSize',ML);
+		_.push(n,MI);
+		_.push(x,M);
 	},
-	complex = function(c){
-		var _=this._(),M,MI,V,d,L,init=false;
+	complex = function(c,_){
+		var M,MI,V,d,L,init=false;
 		_.labels = _.get('labels');
 		L =_.labels.length;
 		if(L==0){
@@ -252,8 +252,6 @@
 				 * paint outside layer
 				 */
 				sPaint.call(this, x, y, a, b, s, e, ccw, h, c);
-				
-				
 				return this;
 			}
 			s3.layerPaint = layerPaint;
@@ -781,6 +779,13 @@
 			this.dataType = 'simple';
 
 			this.set({
+				/**
+				 * @cfg {String} The unique id of this element (defaults to an auto-assigned id).
+				 */
+				id : '',
+				/**
+				 * @cfg {String} id of dom you want rendered(defaults '').
+				 */
 				render : '',
 				/**
 				 * @cfg {Array} Required,The datasource of Chart.must be not empty.
@@ -899,7 +904,7 @@
 				/**
 				 * @cfg {Number} Specifies the duration when animation complete in millisecond.(default to 1000)
 				 */
-				duration_animation_duration : 1000,
+				animation_duration : 1000,
 				/**
 				 * @cfg {Number} Specifies the chart's z_index.override the default as 999 to make it at top layer.(default to 999)
 				 */
@@ -968,6 +973,7 @@
 			 */
 			if(_.legend)
 			_.legend.draw();
+			
 			/**
 			 * draw plugins
 			 */
@@ -975,16 +981,20 @@
 				if(p.A_draw){
 					p.variable.animation.animating =true;
 					p.variable.animation.time =_.variable.animation.time;
-					p.variable.animation.duration =_.duration;
 					p.draw();
 					p.variable.animation.animating =false;
 				}
 			});
 			
+			if(_.Combination){
+				return;
+			}
+			
 			/**
 			 * fill the background
 			 */
 			_.resetCanvas();
+			
 			if (_.variable.animation.time < _.duration) {
 				_.variable.animation.time++;
 				$.requestAnimFrame(function() {
@@ -994,8 +1004,18 @@
 				$.requestAnimFrame(function() {
 					_.variable.animation.time = 0;
 					_.Animationed = true;
+					/**
+					 * make plugins's status is the same as chart
+					 */
+					_.plugins.each(function(p){
+						p.variable.animation.time =0;
+						p.Animationed = true;
+					});
 					_.draw();
 					_.processAnimation = false;
+					_.plugins.each(function(p){
+						p.processAnimation = false;
+					});
 					_.fireEvent(_, 'afterAnimation', [_]);
 				});
 			}
@@ -1040,13 +1060,18 @@
 		 * @return void
 		 */
 		plugin : function(c) {
-			c.inject(this);
+			var _ = this._();
+			c.inject(_);
 			if(c.chart){
 				c.Combination = true;
 				c.setUp();
 			}
-			this.components.push(c);
-			this.plugins.push(c);
+			if(!_.get('animation')){
+				c.push('animation',false);
+			}
+			c.duration =_.duration;
+			_.components.push(c);
+			_.plugins.push(c);
 		},
 		/**
 		 * @method return the title,return undefined if unavailable
@@ -1151,26 +1176,25 @@
 			var _ = this._(),d = _.get('data'),r = _.get('render');
 			
 			if(_.Combination){
-				
 				iChart.apply(_.options, iChart.clone([_.W,_.H,'padding','border','client_height','client_width',
 				                                      'minDistance','maxDistance','minstr','centerx', 'centery',
 				                                      'l_originx','r_originx','t_originy','b_originy'], _.root.options,true));
 				_.width = _.get(_.W);
 				_.height = _.get(_.H);
+				_.shell = _.root.shell;
 				_.Rendered = true;
 			}else if (!_.Rendered) {
 				if(r)
 				_.create(_,$(r));
 			}
-			
 			/**
 			 * set up
 			 */
-			if (d.length > 0 && _.Rendered && !_.initialization){
+			if(d.length > 0 && _.Rendered && !_.initialization){
 				if(_.dataType=='simple'){
-					simple.call(_,d);
+					simple.call(_,d,_);
 				}else if(_.dataType=='complex'){
-					complex.call(_,d);
+					complex.call(_,d,_);
 				}
 				_.data = d;
 				_.doConfig();
@@ -1193,6 +1217,13 @@
 		oneWay:function(_){
 			var E = _.variable.event,comb=_.Combination,tot=!_.get('turn_off_touchmove')&&!comb, mCSS = !$.touch&&_.get('default_mouseover_css')&&!comb, O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
 			_.stopEvent = false;
+			_.A_draw = comb&&_.processAnimation;
+			
+			/**
+			 * register chart in Registry
+			 */
+			iChart.register(_);
+			
 			/**
 			 * If Combination,ignore binding event because of root have been do this.
 			 */
@@ -1384,7 +1415,7 @@
 			if(!_.Combination){
 				var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.width - _.get('hpadding'))), h;
 				
-				_.duration = ceil(_.get('duration_animation_duration') * $.FRAME / 1000);
+				_.duration = ceil(_.get('animation_duration') * $.FRAME / 1000);
 				
 				/**
 				 * push the background in it

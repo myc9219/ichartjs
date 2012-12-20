@@ -23,7 +23,11 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {Number} the width of each column(default to calculate according to coordinate's width)
 			 */
-			colwidth : undefined,
+			column_width : undefined,
+			/**
+			 * @cfg {Number} the space of each column.this option is readOnly.(default to undefined)
+			 */
+			column_space : undefined,
 			/**
 			 * @cfg {Number} the distance of column's bottom and text(default to 6)
 			 */
@@ -81,60 +85,49 @@ iChart.Column = iChart.extend(iChart.Chart, {
 	doConfig : function() {
 		iChart.Column.superclass.doConfig.call(this);
 		
-		var _ = this._(),c = 'colwidth',z = 'z_index';
-		
+		var _ = this._(),c = 'column_width',z = 'z_index';
 		_.sub = _.is3D()?'Rectangle3D':'Rectangle2D';
-		
 		_.rectangles = [];
 		_.labels = [];
-		
 		_.components.push(_.labels);
 		_.components.push(_.rectangles);
-		
-		/**
-		 * apply the coordinate feature
-		 */
-		iChart.Coordinate.coordinate.call(_);
-		
-		_.rectangles.zIndex = _.get(z);
-		
-		_.labels.zIndex = _.get(z) + 1;
-		
-		var L = _.data.length, W = _.get('coordinate.valid_width'),w_,hw,KL;
-		
-		if (_.dataType == 'simple') {
-			w_= Math.floor(W*2 / (L * 3 + 1));
-			hw = _.pushIf(c, w_);
-			KL = L+1;
-		}else{
-			KL = _.get('labels').length;
-			L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
-			w_= Math.floor(W / (KL + 1 + L));
-			hw = _.pushIf(c,w_);
-			KL +=1;
-		}
-		
-		if (hw * L > W) {
-			hw = _.push(c, w_);
-		}
-		/**
-		 * the space of two column
-		 */
-		_.push('hispace', (W - hw * L) / KL);
-		
-		if (_.is3D()) {
-			_.push('zHeight', _.get(c) * _.get('zScale'));
-			_.push('sub_option.zHeight', _.get('zHeight'));
-			_.push('sub_option.xAngle_', _.get('xAngle_'));
-			_.push('sub_option.yAngle_', _.get('yAngle_'));
-		}
 		/**
 		 * use option create a coordinate
 		 */
-		_.coo = iChart.Coordinate.coordinate_.call(_);
+		_.coo = iChart.Coordinate.coordinate_.call(_,function(){
+			var L = _.data.length, W = _.get('coordinate.valid_width'),w_,hw,KL;
+			
+			if (_.dataType == 'simple') {
+				w_= Math.floor(W*2 / (L * 3 + 1));
+				hw = _.pushIf(c, w_);
+				KL = L+1;
+			}else{
+				KL = _.get('labels').length;
+				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
+				w_= Math.floor(W / (KL + 1 + L));
+				hw = _.pushIf(c,w_);
+				KL +=1;
+			}
+			
+			if(hw * L > W){
+				hw = _.push(c, w_);
+			}
+			
+			/**
+			 * the space of two column
+			 */
+			_.push('column_space', (W - hw * L) / KL);
+			
+			if (_.is3D()) {
+				_.push('zHeight', _.get(c) * _.get('zScale'));
+				_.push('sub_option.zHeight', _.get('zHeight'));
+				_.push('sub_option.xAngle_', _.get('xAngle_'));
+				_.push('sub_option.yAngle_', _.get('yAngle_'));
+			}
+		});
 		
-		_.components.push(_.coo);
-		
+		_.rectangles.zIndex = _.get(z);
+		_.labels.zIndex = _.get(z) + 1;
 		_.push('sub_option.width', _.get(c));
 	}
 
