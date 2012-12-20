@@ -316,8 +316,13 @@ iChart.Scale = iChart.extend(iChart.Component, {
 iChart.Coordinate = {
 	coordinate_ : function(f) {
 		var _ = this._(),coo = _.get('coordinate');
-		if(coo.type)
+		if(coo.type){
+			/**
+			 * Imply it was illusive
+			 */
+			_.ILLUSIVE_COO = true;
 			return coo;
+		}
 		/**
 		 * Apply the coordinate feature
 		 */
