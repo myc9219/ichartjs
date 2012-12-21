@@ -49,14 +49,24 @@
 				for(var j=0;j<V.length;j++){
 					V[j] = pF(V[j]);
 					T+=V[j];
-					if(!init){
-						M = MI = V[j];
-						init=true;
+					if(!_.stacked){
+						if(!init){
+							M = MI = V[j];
+							init=true;
+						}
+						M = max(V[j],M);
+						MI = min(V[j],MI);
 					}
-					M = max(V[j],M);
-					MI = min(V[j],MI);
 				}
 				d.total = T;
+				if(_.stacked){
+					if(!init){
+						M = MI = T;
+						init=true;
+					}
+					M = max(T,M);
+					MI = min(T,MI);
+				}
 			}else{
 				V = pF(V);
 				d.value = V;
@@ -70,11 +80,11 @@
 			}
 		},_);
 		
-		if(_.get(n)){
+		if(_.get(n)||_.get(n)==0){
 			MI = min(_.get(n),MI);
 		}
 		
-		if(_.get(x)){
+		if(_.get(x)||_.get(x)==0){
 			M = max(_.get(x),M);
 		}
 		

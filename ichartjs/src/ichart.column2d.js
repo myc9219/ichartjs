@@ -33,6 +33,7 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 			y = y0 - S.basic*H - (_.is3D()?(_.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_')):0),
 			x = s+_.coo.get('x_start');
 			y0 = y0 + _.get('text_space') + _.coo.get('axis.width')[2];
+			
 		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
 			_.doParse(_,d, i, {
