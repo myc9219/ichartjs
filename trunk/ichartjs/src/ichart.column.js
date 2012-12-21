@@ -21,7 +21,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			 */
 			coordinate : {},
 			/**
-			 * @cfg {Number} the width of each column(default to calculate according to coordinate's width)
+			 * @cfg {Number} By default,if a width is not specified the chart will attempt to distribution in horizontally.(default to undefined)
 			 */
 			column_width : undefined,
 			/**
