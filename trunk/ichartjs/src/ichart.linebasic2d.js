@@ -18,8 +18,6 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 		this.tipInvokeHeap = [];
 	},
 	doAnimation : function(t, d,_) {
-		if(!_.ILLUSIVE_COO)
-		_.coo.draw();
 		_.lines.each(function(l){
 			l.get('points').each(function(p){
 				p.y = l.y - Math.ceil(_.animationArithmetic(t, 0, l.y - p.y_, d));

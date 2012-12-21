@@ -945,7 +945,7 @@
 			this.data = [];
 			this.plugins = [];
 			this.total = 0;
-			this.chart = true;
+			this.ICHARTJS_CHART = true;
 		},
 		toDataURL : function(g) {
 			return this.T.toDataURL(g);
@@ -963,6 +963,12 @@
 			 * clear the part of canvas
 			 */
 			_.segmentRect();
+			
+			/**
+			 * draw coordinate
+			 */
+			if(_.coo&&!_.ILLUSIVE_COO)
+				_.coo.draw();
 			
 			/**
 			 * doAnimation of implement
@@ -1029,9 +1035,9 @@
 				return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
 		commonDraw : function(_,e) {
-			$.Assert.isTrue(_.Rendered, _.type + ' has not rendered.');
-			$.Assert.isTrue(_.initialization, _.type + ' has initialize failed.');
-			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty.');
+			$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
+			$.Assert.isTrue(_.initialization, _.type + ' Failed to initialize');
+			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty');
 			
 			if (!_.redraw) {
 				_.doSort();
@@ -1062,7 +1068,7 @@
 		plugin : function(c) {
 			var _ = this._();
 			c.inject(_);
-			if(c.chart){
+			if(c.ICHARTJS_CHART){
 				c.Combination = true;
 				c.setUp();
 			}
@@ -1242,7 +1248,7 @@
 			
 			_.on(events[0], function(_, e) {
 				_.components.eachAll(function(C) {
-					if(C.chart){
+					if(C.ICHARTJS_CHART){
 						/**
 						 * meaning this component is a Combination Chart
 						 */
@@ -1274,7 +1280,7 @@
 				_.on(events[1], function(_, e) {
 					O = AO = false;
 					_.components.eachAll(function(C) {
-						if(C.chart){
+						if(C.ICHARTJS_CHART){
 							/**
 							 * meaning this component is a Combination Chart
 							 */

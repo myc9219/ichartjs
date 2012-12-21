@@ -72,9 +72,9 @@
 			       ];
     	
     	//是否启用动画
-		var animation = true;
+		var animation = false;
     	
-		var chart = new iChart.Column2D({
+		var chart = new iChart.Column3D({
 			render : 'canvasDiv',
 			data: data,
 			title : {
@@ -91,8 +91,8 @@
 				fontsize : 11,
 				padding : '0 38'
 			},
-			width : 1000,
-			height : 460,
+			width : 900,
+			height : 440,
 			animation : animation,
 			animation_duration:600,
 			shadow : true,
@@ -117,6 +117,7 @@
 					}
 				}
 			},
+			text_space:14,
 			coordinate:{
 				background_color : '#d5d8d1',
 				grid_color : '#a4ad96',
@@ -171,6 +172,10 @@
 					fontsize:10,
 					fontweight:600,
 					color : '#4572a7'
+				},
+				border : {
+					width : 2,
+					color : '#ffffff'
 				},
 				listeners:{
 					parseText:function(d, t){

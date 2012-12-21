@@ -316,7 +316,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 iChart.Coordinate = {
 	coordinate_ : function(f) {
 		var _ = this._(),coo = _.get('coordinate');
-		if(coo.type){
+		if(coo.ICHARTJS_OBJECT){
 			/**
 			 * Imply it was illusive
 			 */
