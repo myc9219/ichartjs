@@ -79,7 +79,8 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		 * @paramter int#index
 		 */
 		'rebound');
-
+		
+		this.ILLUSIVE_COO = true;
 	},
 	/**
 	 * @method Toggle sector bound or rebound by a specific index.
