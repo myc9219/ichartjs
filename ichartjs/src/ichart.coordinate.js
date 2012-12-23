@@ -333,11 +333,27 @@ iChart.Coordinate = {
 		if(f)f();
 		
 		var scale = _.get('coordinate.scale'),li=_.get('scaleAlign');
+		
 		if(iChart.isObject(scale)){
 			scale = [scale];
 		}
 		if(iChart.isArray(scale)){
 			scale.each(function(s){
+				/**
+				 * applies the percent shower
+				 */
+				if(_.get('percent')&&s.position==li){
+					s = iChart.apply(s,{
+						start_scale : 0,
+						end_scale : 100,
+						scale_space : 10,
+						listeners:{
+							parseText:function(t,x,y){
+								return {text:t+'%'}
+							}
+						 }
+					});
+				}
 				if(!s.start_scale)
 					s.min_scale = _.get('minValue');
 				if(!s.end_scale)
