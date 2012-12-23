@@ -50,9 +50,9 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			 */
 			sign : 'square',
 			/**
-			 * @cfg {Number} the size of legend' sign (default to 12)
+			 * @cfg {Number} the size of legend' sign (default to 10)
 			 */
-			sign_size : 12,
+			sign_size : 10,
 			/**
 			 * @cfg {Number} the distance of legend' sign and text (default to 5)
 			 */
