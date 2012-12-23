@@ -52,6 +52,7 @@
 				 * @cfg {String} Specifies the value's text alignment of chart(defaults to 'top') Available value are:
 				 * @Option 'left'
 				 * @Option 'right'
+				 * @Option 'middle'
 				 * @Option 'top'
 				 * @Option 'bottom'
 				 */
@@ -116,7 +117,7 @@
 			}else if(vA==_.B){
 				y = _.y  + _.height + s;
 				b = _.O;
-			}else{
+			}else if(vA==_.O){
 				y = _.y  - s;
 				b = _.B;
 			}

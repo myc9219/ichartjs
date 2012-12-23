@@ -58,17 +58,17 @@
 	$(function(){
 		var data = [
 		         	{
-		         		name : 'DPS01A',
+		         		name : '一月',
 		         		value:[45,52,54],
 		         		color:'#1385a5'
 		         	},
 		         	{
-		         		name : 'DPS01B',
+		         		name : '二月',
 		         		value:[60,80,105],
 		         		color:'#c56966'
 		         	},
 		         	{
-		         		name : 'DPS01C',
+		         		name : '三月',
 		         		value:[50,70,115],
 		         		color:'#728f1b'
 		         	}
@@ -77,14 +77,16 @@
 		var chart = new iChart.ColumnStacked2D({
 				render : 'canvasDiv',
 				data: data,
-				labels:["一月","二月","三月"],
+				labels:["北京","上海","广州"],
 				title : 'DPS01A型号比DPS01B型号的产品更受用户喜欢',
 				subtitle : '2012上半年DPS01A型号与DPS01B型号的鼠标销售比较,单位:万台',
 				footnote : '数据来源：销售中心',
 				footnote_align:'left',
 				width : 800,
 				height : 400,
+				column_width:80,
 				background_color : '#ffffff',
+				sub_option:{label:{color:'#f0f0f0'}},
 				legend:{
 					enable:true,
 					background_color : null,
@@ -97,7 +99,7 @@
 					scale:[{
 						 position:'left',	
 						 start_scale:0,
-						 scale_space:20
+						 scale_space:50
 					}],
 					width:600,
 					height:260
