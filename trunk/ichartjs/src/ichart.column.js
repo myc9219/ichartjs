@@ -81,6 +81,21 @@ iChart.Column = iChart.extend(iChart.Chart, {
 	doParse : function(_,d, i, o) {
 		_.doActing(_,d,o,i);
 	},
+	engine:function(_){
+		var cw = _.get('column_width'),
+		s = _.get('column_space'),
+		S = _.coo.getScale(_.get('scaleAlign')),
+		H = _.coo.get(_.H), 
+		w2 = cw / 2, 
+		q = cw * (_.get('group_fator') || 0), 
+		gw = _.dataType != 'complex'?(cw + s):(_.data.length * cw + s + (_.is3D() ? (_.data.length - 1) * q : 0)), 
+		y0 = _.coo.get(_.Y) +  H,
+		y = y0 - S.basic*H - (_.is3D()?(_.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_')):0),
+		x = s+_.coo.get('x_start');
+		y0 = y0 + _.get('text_space') + _.coo.get('axis.width')[2];
+		
+		_.doEngine(_,cw,s,S,H,w2,q,gw,x,y,y0);
+	},
 	doConfig : function() {
 		iChart.Column.superclass.doConfig.call(this);
 		
@@ -96,16 +111,19 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		_.coo = iChart.Coordinate.coordinate_.call(_,function(){
 			var L = _.data.length, W = _.get('coordinate.valid_width'),w_,hw,KL;
 			
-			if (_.dataType == 'simple') {
-				w_= Math.floor(W*2 / (L * 3 + 1));
-				hw = _.pushIf(c, w_);
-				KL = L+1;
-			}else{
+			if (_.dataType == 'complex') {
 				KL = _.get('labels').length;
 				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
 				w_= Math.floor(W / (KL + 1 + L));
 				hw = _.pushIf(c,w_);
 				KL +=1;
+			}else{
+				if(_.dataType == 'stacked'){
+					L = _.get('labels').length;
+				}
+				w_= Math.floor(W*2 / (L * 3 + 1));
+				hw = _.pushIf(c, w_);
+				KL = L+1;
 			}
 			
 			if(hw * L > W){

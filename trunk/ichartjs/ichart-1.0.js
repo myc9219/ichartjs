@@ -1540,7 +1540,7 @@ $.Component = $.extend($.Painter, {
 		 * If method draw be proxy.(default to false)
 		 */
 		this.proxy = false;
-		this.chart = false;
+		this.ICHARTJS_CHART = false;
 		this.inject(c);
 	},
 	initialize : function() {
@@ -2510,86 +2510,88 @@ $.Label = $.extend($.Component, {
 	pF = function(n){
 		return $.isNumber(n)?n:$.parseFloat(n,n);
 	},
-	simple = function(c,_) {
-		var M,V=0,MI,ML=0,n='minValue',x='maxValue',init=false;
-		_.total = 0;
-		c.each(function(d,i){
-			V  = d.value;
-			if($.isArray(V)){
-				var T = 0;
-				ML = V.length>ML?V.length:ML;
-				for(var j=0;j<V.length;j++){
-					V[j] = pF(V[j]);
-					T+=V[j];
+	parse = function(c,_){
+		var M,V=0,MI,ML=0,init=false,g = _.get('labels');
+		
+		if(_.dataType=='simple'){
+			_.total = 0;
+			c.each(function(d,i){
+				V  = d.value;
+				if($.isArray(V)){
+					var T = 0;
+					ML = V.length>ML?V.length:ML;
+					for(var j=0;j<V.length;j++){
+						V[j] = pF(V[j]);
+						T+=V[j];
+						if(!init){
+							M = MI = V[j];
+							init=true;
+						}
+						M = max(V[j],M);
+						MI = min(V[j],MI);
+					}
+					d.total = T;
+				}else{
+					V = pF(V);
+					d.value = V;
+					_.total+=V;
 					if(!init){
-						M = MI = V[j];
+						M = MI = V;
 						init=true;
 					}
-					M = max(V[j],M);
-					MI = min(V[j],MI);
+					M = max(V,M);
+					MI = min(V,MI);
 				}
-				d.total = T;
-			}else{
-				V = pF(V);
-				d.value = V;
-				_.total+=V;
-				if(!init){
-					M = MI = V;
-					init=true;
-				}
-				M = max(V,M);
-				MI = min(V,MI);
+			},_);
+			
+			if($.isArray(g)){
+				ML = g.length>ML?g.length:ML;
 			}
-		},_);
-		
-		if(_.get(n)){
-			MI = min(_.get(n),MI);
-		}
-		
-		if(_.get(x)){
-			M = max(_.get(x),M);
-		}
-		
-		if($.isArray(_.get('labels'))){
-			ML = _.get('labels').length>ML?_.get('labels').length:ML;
-		}
-		_.push('maxItemSize',ML);
-		_.push(n,MI);
-		_.push(x,M);
-	},
-	complex = function(c,_){
-		var M,MI,V,d,L,init=false;
-		_.labels = _.get('labels');
-		L =_.labels.length;
-		if(L==0){
-			L=c[0].value.length;for(var i=0;i<L;i++)_.labels.push("");
-		}
-		_.columns = [];_.total = 0;
-		for(var i=0;i<L;i++){
-			var item = [];
-			for(var j=0;j<c.length;j++){
-				d = c[j];
-				V = d.value[i];
-				if(!V)continue;
-				V =  pF(V,V);
-				d.value[i] = V;
-				_.total+=V;
-				if(!init){
-					M = MI = V;
-					init=true;
-				}
-				M = max(V,M);
-				MI = min(V,MI);
-				item.push({
-					name:d.name,
-					value:d.value[i],
-					color:d.color
+			_.push('maxItemSize',ML);
+		}else{
+			var L=g.length,item,T,r,stack=_.dataType=='stacked';
+			if(L==0){
+				L=c[0].value.length;for(var i=0;i<L;i++)g.push("");
+			}
+			_.columns = [];
+			for(var i=0;i<L;i++){
+				item = [],T = 0;
+				c.each(function(d,j){
+					V = d.value[i];
+					if(!V)return;
+					d.value[i] = V =  pF(V,V);
+					T+=V;
+					if(stack){
+						r = c[j].color;
+					}else{
+						r = d.color;
+						if(!init){
+							M = MI = V;
+							init=true;
+						}
+						M = max(V,M);
+						MI = min(V,MI);
+					}
+					item.push({
+						name:d.name,
+						value:d.value[i],
+						color:r
+					});
+				});
+				if(stack){
+					if(!init){
+						M = MI = V;
+						init=true;
+					}
+					M = max(T,M);
+					MI = min(T,MI);
+				}	
+				_.columns.push({
+					total:T,
+					name:g[i],
+					item:item
 				});
 			}
-			_.columns.push({
-				name:_.labels[i],
-				item:item
-			});
 		}
 		_.push('minValue',MI); 
 		_.push('maxValue',M);
@@ -3417,7 +3419,7 @@ $.Label = $.extend($.Component, {
 			this.data = [];
 			this.plugins = [];
 			this.total = 0;
-			this.chart = true;
+			this.ICHARTJS_CHART = true;
 		},
 		toDataURL : function(g) {
 			return this.T.toDataURL(g);
@@ -3435,6 +3437,12 @@ $.Label = $.extend($.Component, {
 			 * clear the part of canvas
 			 */
 			_.segmentRect();
+			
+			/**
+			 * draw coordinate
+			 */
+			if(_.coo&&!_.ILLUSIVE_COO)
+				_.coo.draw();
 			
 			/**
 			 * doAnimation of implement
@@ -3501,9 +3509,9 @@ $.Label = $.extend($.Component, {
 				return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
 		commonDraw : function(_,e) {
-			$.Assert.isTrue(_.Rendered, _.type + ' has not rendered.');
-			$.Assert.isTrue(_.initialization, _.type + ' has initialize failed.');
-			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty.');
+			$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
+			$.Assert.isTrue(_.initialization, _.type + ' Failed to initialize');
+			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty');
 			
 			if (!_.redraw) {
 				_.doSort();
@@ -3534,7 +3542,7 @@ $.Label = $.extend($.Component, {
 		plugin : function(c) {
 			var _ = this._();
 			c.inject(_);
-			if(c.chart){
+			if(c.ICHARTJS_CHART){
 				c.Combination = true;
 				c.setUp();
 			}
@@ -3663,11 +3671,10 @@ $.Label = $.extend($.Component, {
 			 * set up
 			 */
 			if(d.length > 0 && _.Rendered && !_.initialization){
-				if(_.dataType=='simple'){
-					simple.call(_,d,_);
-				}else if(_.dataType=='complex'){
-					complex.call(_,d,_);
-				}
+				/**
+				 * parse data
+				 */
+				parse.call(_,d,_);
 				_.data = d;
 				_.doConfig();
 				_.initialization = true;
@@ -3714,7 +3721,7 @@ $.Label = $.extend($.Component, {
 			
 			_.on(events[0], function(_, e) {
 				_.components.eachAll(function(C) {
-					if(C.chart){
+					if(C.ICHARTJS_CHART){
 						/**
 						 * meaning this component is a Combination Chart
 						 */
@@ -3746,7 +3753,7 @@ $.Label = $.extend($.Component, {
 				_.on(events[1], function(_, e) {
 					O = AO = false;
 					_.components.eachAll(function(C) {
-						if(C.chart){
+						if(C.ICHARTJS_CHART){
 							/**
 							 * meaning this component is a Combination Chart
 							 */
@@ -4359,7 +4366,7 @@ $.Scale = $.extend($.Component, {
 $.Coordinate = {
 	coordinate_ : function(f) {
 		var _ = this._(),coo = _.get('coordinate');
-		if(coo.type){
+		if(coo.ICHARTJS_OBJECT){
 			/**
 			 * Imply it was illusive
 			 */
@@ -5130,6 +5137,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				 * @cfg {String} Specifies the value's text alignment of chart(defaults to 'top') Available value are:
 				 * @Option 'left'
 				 * @Option 'right'
+				 * @Option 'middle'
 				 * @Option 'top'
 				 * @Option 'bottom'
 				 */
@@ -5194,7 +5202,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			}else if(vA==_.B){
 				y = _.y  + _.height + s;
 				b = _.O;
-			}else{
+			}else if(vA==_.O){
 				y = _.y  - s;
 				b = _.B;
 			}
@@ -5943,7 +5951,8 @@ $.Pie = $.extend($.Chart, {
 		 * @paramter int#index
 		 */
 		'rebound');
-
+		
+		this.ILLUSIVE_COO = true;
 	},
 	/**
 	 * @method Toggle sector bound or rebound by a specific index.
@@ -6391,7 +6400,7 @@ $.Column = $.extend($.Chart, {
 			 */
 			coordinate : {},
 			/**
-			 * @cfg {Number} the width of each column(default to calculate according to coordinate's width)
+			 * @cfg {Number} By default,if a width is not specified the chart will attempt to distribution in horizontally.(default to undefined)
 			 */
 			column_width : undefined,
 			/**
@@ -6423,9 +6432,6 @@ $.Column = $.extend($.Chart, {
 	},
 	doAnimation : function(t, d,_) {
 		var h;
-		if(!_.ILLUSIVE_COO)
-		_.coo.draw();
-		
 		_.labels.each(function(l){
 			l.draw();
 		});
@@ -6454,6 +6460,21 @@ $.Column = $.extend($.Chart, {
 	doParse : function(_,d, i, o) {
 		_.doActing(_,d,o,i);
 	},
+	engine:function(_){
+		var cw = _.get('column_width'),
+		s = _.get('column_space'),
+		S = _.coo.getScale(_.get('scaleAlign')),
+		H = _.coo.get(_.H), 
+		w2 = cw / 2, 
+		q = cw * (_.get('group_fator') || 0), 
+		gw = _.dataType != 'complex'?(cw + s):(_.data.length * cw + s + (_.is3D() ? (_.data.length - 1) * q : 0)), 
+		y0 = _.coo.get(_.Y) +  H,
+		y = y0 - S.basic*H - (_.is3D()?(_.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_')):0),
+		x = s+_.coo.get('x_start');
+		y0 = y0 + _.get('text_space') + _.coo.get('axis.width')[2];
+		
+		_.doEngine(_,cw,s,S,H,w2,q,gw,x,y,y0);
+	},
 	doConfig : function() {
 		$.Column.superclass.doConfig.call(this);
 		
@@ -6469,16 +6490,19 @@ $.Column = $.extend($.Chart, {
 		_.coo = $.Coordinate.coordinate_.call(_,function(){
 			var L = _.data.length, W = _.get('coordinate.valid_width'),w_,hw,KL;
 			
-			if (_.dataType == 'simple') {
-				w_= Math.floor(W*2 / (L * 3 + 1));
-				hw = _.pushIf(c, w_);
-				KL = L+1;
-			}else{
+			if (_.dataType == 'complex') {
 				KL = _.get('labels').length;
 				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
 				w_= Math.floor(W / (KL + 1 + L));
 				hw = _.pushIf(c,w_);
 				KL +=1;
+			}else{
+				if(_.dataType == 'stacked'){
+					L = _.get('labels').length;
+				}
+				w_= Math.floor(W*2 / (L * 3 + 1));
+				hw = _.pushIf(c, w_);
+				KL = L+1;
 			}
 			
 			if(hw * L > W){
@@ -6525,23 +6549,8 @@ $.Column2D = $.extend($.Column, {
 		this.type = 'column2d';
 		
 	},
-	doConfig : function() {
-		$.Column2D.superclass.doConfig.call(this);
-		/**
-		 * get the max/min scale of this coordinate for calculated the height
-		 */
-		var _ = this._(),
-			c = _.get('column_width'),
-			s = _.get('column_space'),
-			S = _.coo.getScale(_.get('scaleAlign')),
-			H = _.coo.get(_.H), 
-			h2 = c / 2, 
-			gw = c + s, 
-			h,
-			y0 = _.coo.get(_.Y) +  H,
-			y = y0 - S.basic*H - (_.is3D()?(_.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_')):0),
-			x = s+_.coo.get('x_start');
-			y0 = y0 + _.get('text_space') + _.coo.get('axis.width')[2];
+	doEngine:function(_,cw,s,S,H,w2,q,gw,x,y,y0){
+		var h;
 		_.data.each(function(d, i) {
 			h = (d.value - S.start) * H / S.distance;
 			_.doParse(_,d, i, {
@@ -6551,8 +6560,17 @@ $.Column2D = $.extend($.Column, {
 				height : Math.abs(h)
 			});
 			_.rectangles.push(new $[_.sub](_.get('sub_option'), _));
-			_.doLabel(_,i, d.name, x + gw * i + h2, y0);
+			_.doLabel(_,i, d.name, x + gw * i + w2, y0);
 		}, _);
+	},
+	doConfig : function() {
+		$.Column2D.superclass.doConfig.call(this);
+		
+		/**
+		 * start up engine
+		 */
+		this.engine(this);
+		
 	}
 });
 /**
@@ -6634,39 +6652,30 @@ $.ColumnMulti2D = $.extend($.Column, {
 		});
 
 	},
+	doEngine:function(_,cw,s,S,H,w2,q,gw,x,y,y0){
+		var h;
+		_.columns.each(function(c, i) {
+			c.item.each(function(d, j) {
+				h = (d.value - S.start) * H / S.distance;
+				_.doParse(_, d, j, {
+					id : i + '_' + j,
+					originx : x + j * (cw + q) + i * gw,
+					originy : y - (h > 0 ? h : 0),
+					height : Math.abs(h)
+				});
+				_.rectangles.push(new $[_.sub](_.get('sub_option'), _));
+			}, _);
+
+			_.doLabel(_, i, c.name, x - s * 0.5 + (i + 0.5) * gw, y0);
+		}, _);
+	},
 	doConfig : function() {
 		$.ColumnMulti2D.superclass.doConfig.call(this);
 
 		/**
-		 * get the max/min scale of this coordinate for calculated the height
+		 * start up engine
 		 */
-		var _ = this._(),
-			s = _.get('column_space'),
-			bw = _.get('column_width'), 
-			H = _.coo.get(_.H), 
-			S = _.coo.getScale(_.get('scaleAlign')), 
-			q = bw * (_.get('group_fator') || 0), 
-			gw = _.data.length * bw + s + (_.is3D() ? (_.data.length - 1) * q : 0), 
-			h,
-			x = _.coo.get('x_start') + s,
-			y = _.coo.get(_.Y) - S.basic * H + H,
-			y0=_.coo.get(_.Y) + H + _.get('text_space')+ _.coo.get('axis.width')[2];
-		
-		_.columns.each(function(column, i) {
-			column.item.each(function(d, j) {
-				h = (d.value - S.start) * H / S.distance;
-				_.doParse(_, d, j, {
-					id : i + '-' + j,
-					originx : x + j * (bw + q) + i * gw,
-					originy : y - (h > 0 ? h : 0),
-					height : Math.abs(h)
-				});
-				_.rectangles.push(new $[_.sub](_.get('sub_option'), this));
-			}, _);
-
-			_.doLabel(_, i, column.name, x - s * 0.5 + (i + 0.5) * gw, y0);
-		}, _);
-
+		this.engine(this);
 	}
 });
 /**
@@ -6789,10 +6798,21 @@ $.Bar = $.extend($.Chart, {
 	doParse : function(_, d, i, o) {
 		_.doActing(_, d, o,i);
 	},
-	doAnimation : function(t, d,_) {
-		if(!_.ILLUSIVE_COO)
-		_.coo.draw();
+	engine:function(_){
+		var 
+		bh = _.get('bar_height'),
+		s = _.get('bar_space'),
+		S = _.coo.getScale(_.get('scaleAlign')),
+		W = _.coo.get(_.W),
+		h2 = bh / 2,
+		gw =  _.dataType != 'complex'?bh + s:_.data.length * bh + s,
+		x = _.coo.get(_.X) + S.basic * W,
+		x0 = _.coo.get(_.X) - _.get('text_space')-_.coo.get('axis.width')[3], 
+		y0 = _.coo.get('y_start')+ s;
 		
+		_.doEngine(_,bh,s,S,W,h2,gw,x,x0,y0);
+	},
+	doAnimation : function(t, d,_) {
 		_.labels.each(function(l) {
 			l.draw();
 		});
@@ -6872,35 +6892,27 @@ $.Bar2D = $.extend($.Bar, {
 		this.type = 'bar2d';
 
 	},
-	doConfig : function() {
-		$.Bar2D.superclass.doConfig.call(this);
-		/**
-		 * get the max/min scale of this coordinate for calculated the height
-		 */
-		var _ = this._(),
-			h = _.get('bar_height'),
-			b = _.get('bar_space'),
-			S = _.coo.getScale(_.get('scaleAlign')),
-			W = _.coo.get(_.W),
-			h2 = h / 2,
-			gw = h + b,
-			w,
-			I = _.coo.get(_.X) + S.basic * W,
-			x0 = _.coo.get(_.X) - _.get('text_space')-_.coo.get('axis.width')[3], 
-			y0 = _.coo.get('y_start')+ b;
-		
+	doEngine:function(_,bh,s,S,W,h2,gw,x,x0,y0){
+		var w;
 		_.data.each(function(d, i) {
 			w = (d.value - S.start) * W / S.distance;
 			_.doParse(_, d, i, {
 				id : i,
 				originy : y0 + i * gw,
 				width : Math.abs(w),
-				originx : I + (w > 0 ? 0 : -Math.abs(w))
+				originx : x + (w > 0 ? 0 : -Math.abs(w))
 			});
 
 			_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
 			_.doLabel(i, d.name, x0, y0 + i * gw + h2);
 		}, _);
+	},
+	doConfig : function() {
+		$.Bar2D.superclass.doConfig.call(this);
+		/**
+		 * start up engine
+		 */
+		this.engine(this);
 	}
 
 });
@@ -6933,30 +6945,28 @@ $.BarMulti2D = $.extend($.Bar, {
 			labels : []
 		});
 	},
-	doConfig : function() {
-		$.BarMulti2D.superclass.doConfig.call(this);
-
-		/**
-		 * get the max/min scale of this coordinate for calculated the height
-		 */
-		var _ = this._(), L = _.data.length,W = _.coo.get(_.W), b = 'bar_height', s = 'bar_space',bh=_.get(b),
-		S = _.coo.getScale(_.get('scaleAlign')), gw = L * bh + _.get(s), h2 = _.get(b) / 2,w,
-		I = _.coo.get(_.X) + S.basic*W,x = _.coo.get(_.X)-_.get('text_space')-_.coo.get('axis.width')[3],
-		y = _.coo.get('y_start')+ _.get(s);
-		
-		_.columns.each(function(column, i) {
-			column.item.each(function(d, j) {
+	doEngine:function(_,bh,s,S,W,h2,gw,x,x0,y0){
+		var w;
+		_.columns.each(function(c, i) {
+			c.item.each(function(d, j) {
 				w = (d.value - S.start) * W / S.distance;
 				_.doParse(_, d, j, {
-					id : i + '-' + j,
-					originy : y + j * bh + i * gw,
+					id : i + '_' + j,
+					originy : y0 + j * bh + i * gw,
 					width : Math.abs(w),
-					originx: I+(w>0?0:-Math.abs(w))
+					originx: x+(w>0?0:-Math.abs(w))
 				});
 				_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
 			}, _);
-			_.doLabel(i, column.name, x, y - _.get(s) * 0.5 + (i + 0.5) * gw);
+			_.doLabel(i, c.name, x0, y0 - s * 0.5 + (i + 0.5) * gw);
 		}, _);
+	},
+	doConfig : function() {
+		$.BarMulti2D.superclass.doConfig.call(this);
+		/**
+		 * start up engine
+		 */
+		this.engine(this);
 	}
 
 });
@@ -7499,8 +7509,6 @@ $.LineBasic2D = $.extend($.Line, {
 		this.tipInvokeHeap = [];
 	},
 	doAnimation : function(t, d,_) {
-		if(!_.ILLUSIVE_COO)
-		_.coo.draw();
 		_.lines.each(function(l){
 			l.get('points').each(function(p){
 				p.y = l.y - Math.ceil(_.animationArithmetic(t, 0, l.y - p.y_, d));

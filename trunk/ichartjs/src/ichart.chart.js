@@ -38,18 +38,19 @@
 	pF = function(n){
 		return $.isNumber(n)?n:$.parseFloat(n,n);
 	},
-	simple = function(c,_) {
-		var M,V=0,MI,ML=0,n='minValue',x='maxValue',init=false;
-		_.total = 0;
-		c.each(function(d,i){
-			V  = d.value;
-			if($.isArray(V)){
-				var T = 0;
-				ML = V.length>ML?V.length:ML;
-				for(var j=0;j<V.length;j++){
-					V[j] = pF(V[j]);
-					T+=V[j];
-					if(!_.stacked){
+	parse = function(c,_){
+		var M,V=0,MI,ML=0,init=false,g = _.get('labels');
+		
+		if(_.dataType=='simple'){
+			_.total = 0;
+			c.each(function(d,i){
+				V  = d.value;
+				if($.isArray(V)){
+					var T = 0;
+					ML = V.length>ML?V.length:ML;
+					for(var j=0;j<V.length;j++){
+						V[j] = pF(V[j]);
+						T+=V[j];
 						if(!init){
 							M = MI = V[j];
 							init=true;
@@ -57,77 +58,68 @@
 						M = max(V[j],M);
 						MI = min(V[j],MI);
 					}
-				}
-				d.total = T;
-				if(_.stacked){
+					d.total = T;
+				}else{
+					V = pF(V);
+					d.value = V;
+					_.total+=V;
 					if(!init){
-						M = MI = T;
+						M = MI = V;
+						init=true;
+					}
+					M = max(V,M);
+					MI = min(V,MI);
+				}
+			},_);
+			
+			if($.isArray(g)){
+				ML = g.length>ML?g.length:ML;
+			}
+			_.push('maxItemSize',ML);
+		}else{
+			var L=g.length,item,T,r,stack=_.dataType=='stacked';
+			if(L==0){
+				L=c[0].value.length;for(var i=0;i<L;i++)g.push("");
+			}
+			_.columns = [];
+			for(var i=0;i<L;i++){
+				item = [],T = 0;
+				c.each(function(d,j){
+					V = d.value[i];
+					if(!V)return;
+					d.value[i] = V =  pF(V,V);
+					T+=V;
+					if(stack){
+						r = c[j].color;
+					}else{
+						r = d.color;
+						if(!init){
+							M = MI = V;
+							init=true;
+						}
+						M = max(V,M);
+						MI = min(V,MI);
+					}
+					item.push({
+						name:d.name,
+						value:d.value[i],
+						color:r
+					});
+				});
+				if(stack){
+					if(!init){
+						M = MI = V;
 						init=true;
 					}
 					M = max(T,M);
 					MI = min(T,MI);
-				}
-			}else{
-				V = pF(V);
-				d.value = V;
-				_.total+=V;
-				if(!init){
-					M = MI = V;
-					init=true;
-				}
-				M = max(V,M);
-				MI = min(V,MI);
-			}
-		},_);
-		
-		if(_.get(n)||_.get(n)==0){
-			MI = min(_.get(n),MI);
-		}
-		
-		if(_.get(x)||_.get(x)==0){
-			M = max(_.get(x),M);
-		}
-		
-		if($.isArray(_.get('labels'))){
-			ML = _.get('labels').length>ML?_.get('labels').length:ML;
-		}
-		_.push('maxItemSize',ML);
-		_.push(n,MI);
-		_.push(x,M);
-	},
-	complex = function(c,_){
-		var M,MI,V,d,L,init=false;
-		_.labels = _.get('labels');
-		L =_.labels.length;
-		if(L==0){
-			L=c[0].value.length;for(var i=0;i<L;i++)_.labels.push("");
-		}
-		_.columns = [];_.total = 0;
-		for(var i=0;i<L;i++){
-			var item = [];
-			for(var j=0;j<c.length;j++){
-				d = c[j];
-				V = d.value[i];
-				if(!V)continue;
-				V =  pF(V,V);
-				d.value[i] = V;
-				_.total+=V;
-				if(!init){
-					M = MI = V;
-					init=true;
-				}
-				M = max(V,M);
-				MI = min(V,MI);
-				item.push({
-					name:d.name,
-					value:d.value[i],
-					color:d.color
+				}	
+				_.columns.push({
+					total:T,
+					name:g[i],
+					item:item
 				});
 			}
-			_.columns.push({
-				name:_.labels[i],
-				item:item
-			});
 		}
 		_.push('minValue',MI); 
 		_.push('maxValue',M);
@@ -1207,11 +1199,10 @@
 			 * set up
 			 */
 			if(d.length > 0 && _.Rendered && !_.initialization){
-				if(_.dataType=='simple'){
-					simple.call(_,d,_);
-				}else if(_.dataType=='complex'){
-					complex.call(_,d,_);
-				}
+				/**
+				 * parse data
+				 */
+				parse.call(_,d,_);
 				_.data = d;
 				_.doConfig();
 				_.initialization = true;

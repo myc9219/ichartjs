@@ -64,6 +64,20 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 	doParse : function(_, d, i, o) {
 		_.doActing(_, d, o,i);
 	},
+	engine:function(_){
+		var 
+		bh = _.get('bar_height'),
+		s = _.get('bar_space'),
+		S = _.coo.getScale(_.get('scaleAlign')),
+		W = _.coo.get(_.W),
+		h2 = bh / 2,
+		gw =  _.dataType != 'complex'?bh + s:_.data.length * bh + s,
+		x = _.coo.get(_.X) + S.basic * W,
+		x0 = _.coo.get(_.X) - _.get('text_space')-_.coo.get('axis.width')[3], 
+		y0 = _.coo.get('y_start')+ s;
+		
+		_.doEngine(_,bh,s,S,W,h2,gw,x,x0,y0);
+	},
 	doAnimation : function(t, d,_) {
 		_.labels.each(function(l) {
 			l.draw();
