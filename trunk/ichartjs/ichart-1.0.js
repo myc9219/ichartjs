@@ -1960,9 +1960,9 @@ $.Legend = $.extend($.Component, {
 			 */
 			sign : 'square',
 			/**
-			 * @cfg {Number} the size of legend' sign (default to 12)
+			 * @cfg {Number} the size of legend' sign (default to 10)
 			 */
-			sign_size : 12,
+			sign_size : 10,
 			/**
 			 * @cfg {Number} the distance of legend' sign and text (default to 5)
 			 */
@@ -3810,11 +3810,11 @@ $.Label = $.extend($.Component, {
 			}
 			_.oneWay = $.emptyFn;
 		},
-		getPercent:function(v){
-			return this.get('showpercent') ? $.toPercent(v / this.total, this.get('decimalsnum')) : v;
+		getPercent:function(v,T){
+			return this.get('showpercent') ? $.toPercent(v / (T||this.total||1), this.get('decimalsnum')) : v;
 		},
 		doActing:function(_,d,o,i,t){
-			var f=!!_.get('communal_acting');
+			var f=!!_.get('communal_acting'),v=_.getPercent(d.value,d.total);
 			/**
 			 * store or restore the option
 			 */
@@ -3829,16 +3829,18 @@ $.Label = $.extend($.Component, {
 			 */
 			$.merge(_.get('sub_option'),o);
 			
+			_.push('sub_option.value',v);
+			
 			/**
 			 * prevent there no property background_color,use coloe instead
 			 */
 			_.pushIf('sub_option.background_color', d.color);
 			
 			if (_.get('sub_option.tip.enable')){
-				_.push('sub_option.tip.text',t || (d.name + ' ' +_.getPercent(d.value)));
+				_.push('sub_option.tip.text',t || (d.name + ' ' +v));
 				_.push('sub_option.tip.name',d.name);
 				_.push('sub_option.tip.value',d.value);
-				_.push('sub_option.tip.total',_.total);
+				_.push('sub_option.tip.total',d.total||_.total);
 			}
 			
 		},
@@ -4383,11 +4385,27 @@ $.Coordinate = {
 		if(f)f();
 		
 		var scale = _.get('coordinate.scale'),li=_.get('scaleAlign');
+		
 		if($.isObject(scale)){
 			scale = [scale];
 		}
 		if($.isArray(scale)){
 			scale.each(function(s){
+				/**
+				 * applies the percent shower
+				 */
+				if(_.get('percent')&&s.position==li){
+					s = $.apply(s,{
+						start_scale : 0,
+						end_scale : 100,
+						scale_space : 10,
+						listeners:{
+							parseText:function(t,x,y){
+								return {text:t+'%'}
+							}
+						 }
+					});
+				}
 				if(!s.start_scale)
 					s.min_scale = _.get('minValue');
 				if(!s.end_scale)
@@ -6012,7 +6030,7 @@ $.Pie = $.extend($.Chart, {
 	doParse : function(_,d, i) {
 		var t = d.name + ' ' +_.getPercent(d.value);
 		
-		_.doActing(_,d,i,t);
+		_.doActing(_,d,null,i,t);
 		
 		_.push('sub_option.id', i);
 		
@@ -6472,7 +6490,9 @@ $.Column = $.extend($.Chart, {
 		y = y0 - S.basic*H - (_.is3D()?(_.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_')):0),
 		x = s+_.coo.get('x_start');
 		y0 = y0 + _.get('text_space') + _.coo.get('axis.width')[2];
-		
+		/**
+		 * applies paramters to subClass
+		 */
 		_.doEngine(_,cw,s,S,H,w2,q,gw,x,y,y0);
 	},
 	doConfig : function() {
@@ -6547,7 +6567,6 @@ $.Column2D = $.extend($.Column, {
 		$.Column2D.superclass.configure.call(this);
 
 		this.type = 'column2d';
-		
 	},
 	doEngine:function(_,cw,s,S,H,w2,q,gw,x,y,y0){
 		var h;
@@ -6732,6 +6751,133 @@ $.ColumnMulti3D = $.extend($.ColumnMulti2D, {
  * @end
  */
 
+/**
+ * @overview the stacked column2d componment
+ * @component#@chart#$.ColumnStacked2D
+ * @extend#$.Column
+ */
+$.ColumnStacked2D = $.extend($.Column, {
+	/**
+	 * initialize the context for the ColumnStacked2D
+	 */
+	configure : function() {
+		/**
+		 * invoked the super class's configuration
+		 */
+		$.ColumnStacked2D.superclass.configure.call(this);
+
+		this.type = 'columnstacked2d';
+		/**
+		 * indicate the data structure
+		 */
+		this.dataType = 'stacked';
+		
+		this.set({
+			/**
+			 * @cfg {Boolean} Specifies as true to display with percent.(default to false)
+			 */
+			percent : false,
+			sub_option:{
+				label:{color:'#ffffff'},
+				valueAlign:'middle'
+			}
+		});
+		
+	},
+	doEngine:function(_,cw,s,S,H,w2,q,gw,x,y,y0){
+		var h0,h,v,p = _.get('percent');
+		_.columns.each(function(c, i) {
+			h0 = 0;
+			v = p?100/c.total:1;
+			c.item.each(function(d, j) {
+				h = (d.value*v - S.start) * H / S.distance;
+				d.total = c.total;
+				_.doParse(_, d, j, {
+					id : i + '_' + j,
+					originx : x + i * gw,
+					originy : y - (h > 0 ? h : 0)-h0,
+					height : Math.abs(h)
+				});
+				h0 += h;
+				_.rectangles.push(new $[_.sub](_.get('sub_option'), _));
+			}, _);
+			_.doLabel(_, i, c.name, x - s * 0.5 + (i + 0.5) * gw, y0);
+		}, _);
+	},
+	doConfig : function() {
+		$.ColumnStacked2D.superclass.doConfig.call(this);
+		/**
+		 * start up engine
+		 */
+		this.engine(this);
+	}
+});
+/**
+ *@end 
+ */
+/**
+ * @overview the stacked column2d componment
+ * @component#@chart#$.ColumnStacked3D
+ * @extend#$.ColumnStacked2D
+ */
+$.ColumnStacked3D = $.extend($.ColumnStacked2D, {
+	/**
+	 * initialize the context for the ColumnStacked2D
+	 */
+	configure : function() {
+		/**
+		 * invoked the super class's configuration
+		 */
+		$.ColumnStacked3D.superclass.configure.call(this);
+
+		this.type = 'columnstacked3d';
+		/**
+		 * indicate the data structure
+		 */
+		this.dataType = 'stacked';
+		
+		this.dimension = $._3D;
+		
+		this.set({
+			/**
+			 * @cfg {Boolean} Specifies as true to display with percent.(default to false)
+			 */
+			percent : false,
+			sub_option:{
+				label:{color:'#ffffff'},
+				valueAlign:'middle'
+			},
+			/**
+			 * @cfg {<link>$.Coordinate3D</link>} the option for coordinate.
+			 */
+			coordinate : {},
+			/**
+			 * @cfg {Number(0~90)} Three-dimensional rotation X in degree(angle).(default to 60)
+			 */
+			xAngle : 60,
+			/**
+			 * @cfg {Number(0~90)} Three-dimensional rotation Y in degree(angle).(default to 20)
+			 */
+			yAngle : 20,
+			/**
+			 * @cfg {Number} Three-dimensional z-axis deep factor.frame of reference is width.(default to 1)
+			 */
+			zScale : 1,
+			/**
+			 * @cfg {Number(1~)} Three-dimensional z-axis deep factor of pedestal.frame of reference is width.(default to 1.4)
+			 */
+			bottom_scale : 1.4
+		});
+		
+		
+	},
+	doConfig : function() {
+		$.ColumnStacked3D.superclass.doConfig.call(this);
+	}
+});
+/**
+ *@end 
+ */
 /**
  * @overview this class is abstract,use for config bar
  * @component#$.Bar
@@ -7383,6 +7529,7 @@ $.Line = $.extend($.Chart, {
 				return r.valid ? r : false;
 			});
 		}
+		
 		if(!_.Combination){
 			_.push('coordinate.crosshair', _.get('crosshair'));
 			_.pushIf('coordinate.scale',[{

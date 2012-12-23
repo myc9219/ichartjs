@@ -140,7 +140,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	doParse : function(_,d, i) {
 		var t = d.name + ' ' +_.getPercent(d.value);
 		
-		_.doActing(_,d,i,t);
+		_.doActing(_,d,null,i,t);
 		
 		_.push('sub_option.id', i);
 		

@@ -93,7 +93,9 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		y = y0 - S.basic*H - (_.is3D()?(_.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_')):0),
 		x = s+_.coo.get('x_start');
 		y0 = y0 + _.get('text_space') + _.coo.get('axis.width')[2];
-		
+		/**
+		 * applies paramters to subClass
+		 */
 		_.doEngine(_,cw,s,S,H,w2,q,gw,x,y,y0);
 	},
 	doConfig : function() {

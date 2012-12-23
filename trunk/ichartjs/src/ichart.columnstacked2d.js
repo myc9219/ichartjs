@@ -20,6 +20,10 @@ iChart.ColumnStacked2D = iChart.extend(iChart.Column, {
 		this.dataType = 'stacked';
 		
 		this.set({
+			/**
+			 * @cfg {Boolean} Specifies as true to display with percent.(default to false)
+			 */
+			percent : false,
 			sub_option:{
 				label:{color:'#ffffff'},
 				valueAlign:'middle'
@@ -28,11 +32,13 @@ iChart.ColumnStacked2D = iChart.extend(iChart.Column, {
 		
 	},
 	doEngine:function(_,cw,s,S,H,w2,q,gw,x,y,y0){
-		var h0,h;
+		var h0,h,v,p = _.get('percent');
 		_.columns.each(function(c, i) {
 			h0 = 0;
+			v = p?100/c.total:1;
 			c.item.each(function(d, j) {
-				h = (d.value - S.start) * H / S.distance;
+				h = (d.value*v - S.start) * H / S.distance;
+				d.total = c.total;
 				_.doParse(_, d, j, {
 					id : i + '_' + j,
 					originx : x + i * gw,

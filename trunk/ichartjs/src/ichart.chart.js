@@ -1338,11 +1338,11 @@
 			}
 			_.oneWay = $.emptyFn;
 		},
-		getPercent:function(v){
-			return this.get('showpercent') ? iChart.toPercent(v / this.total, this.get('decimalsnum')) : v;
+		getPercent:function(v,T){
+			return this.get('showpercent') ? iChart.toPercent(v / (T||this.total||1), this.get('decimalsnum')) : v;
 		},
 		doActing:function(_,d,o,i,t){
-			var f=!!_.get('communal_acting');
+			var f=!!_.get('communal_acting'),v=_.getPercent(d.value,d.total);
 			/**
 			 * store or restore the option
 			 */
@@ -1357,16 +1357,18 @@
 			 */
 			iChart.merge(_.get('sub_option'),o);
 			
+			_.push('sub_option.value',v);
+			
 			/**
 			 * prevent there no property background_color,use coloe instead
 			 */
 			_.pushIf('sub_option.background_color', d.color);
 			
 			if (_.get('sub_option.tip.enable')){
-				_.push('sub_option.tip.text',t || (d.name + ' ' +_.getPercent(d.value)));
+				_.push('sub_option.tip.text',t || (d.name + ' ' +v));
 				_.push('sub_option.tip.name',d.name);
 				_.push('sub_option.tip.value',d.value);
-				_.push('sub_option.tip.total',_.total);
+				_.push('sub_option.tip.total',d.total||_.total);
 			}
 			
 		},

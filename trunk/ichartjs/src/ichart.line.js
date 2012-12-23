@@ -129,6 +129,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 				return r.valid ? r : false;
 			});
 		}
+		
 		if(!_.Combination){
 			_.push('coordinate.crosshair', _.get('crosshair'));
 			_.pushIf('coordinate.scale',[{

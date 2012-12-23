@@ -14,7 +14,6 @@ iChart.Column2D = iChart.extend(iChart.Column, {
 		iChart.Column2D.superclass.configure.call(this);
 
 		this.type = 'column2d';
-		
 	},
 	doEngine:function(_,cw,s,S,H,w2,q,gw,x,y,y0){
 		var h;
