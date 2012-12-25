@@ -314,7 +314,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
  * @end
  */
 iChart.Coordinate = {
-	coordinate_ : function(f) {
+	coordinate_ : function(g) {
 		var _ = this._(),coo = _.get('coordinate');
 		if(coo.ICHARTJS_OBJECT){
 			/**
@@ -326,13 +326,25 @@ iChart.Coordinate = {
 		/**
 		 * Apply the coordinate feature
 		 */
-		iChart.Coordinate.coordinate.call(_);
+		var f = 0.82,
+			parse=iChart.parsePercent, 
+			scale = _.get('coordinate.scale'),
+			li=_.get('scaleAlign'),
+			w = _.push('coordinate.width',parse(_.get('coordinate.width'),Math.floor(_.get('client_width') * f))), 
+			h = _.push('coordinate.height',parse(_.get('coordinate.height'),Math.floor(_.get('client_height') * f))-(_.is3D()?((_.get('coordinate.pedestal_height')||22) + (_.get('coordinate.board_deep')||20)):0));
+			
+			_.push('coordinate.valid_width',parse(_.get('coordinate.valid_width'),w)), 
+			_.push('coordinate.valid_height',parse(_.get('coordinate.valid_height'),h));
+		
+		_.originXY(_,[_.get('l_originx'),_.get('r_originx') - w,_.get('centerx') - w / 2],[_.get('centery') - h / 2]);
+		
+		_.push('coordinate.originx', _.x);
+		_.push('coordinate.originy', _.y);
+		
 		/**
 		 * invoke call back
 		 */
-		if(f)f();
-		
-		var scale = _.get('coordinate.scale'),li=_.get('scaleAlign');
+		if(g)g();
 		
 		if(iChart.isObject(scale)){
 			scale = [scale];
@@ -380,63 +392,6 @@ iChart.Coordinate = {
 		coo = new iChart[_.is3D()?'Coordinate3D':'Coordinate2D'](_.get('coordinate'), _);
 		_.components.push(coo);
 		return coo;
-	},
-	coordinate : function() {
-		/**
-		 * calculate chart's measurement
-		 */
-		var _ = this._(), f = 0.8, 
-			_w = _.get('client_width'), 
-			_h = _.get('client_height'), 
-			w = _.push('coordinate.width',iChart.parsePercent(_.get('coordinate.width'),_w)), 
-			h = _.push('coordinate.height',iChart.parsePercent(_.get('coordinate.height'),_h)), 
-			vw = _.get('coordinate.valid_width'), 
-			vh = _.get('coordinate.valid_height');
-		
-		if (!h || h > _h) {
-			h = _.push('coordinate.height', Math.floor(_h * f));
-		}
-		
-		if (!w || w > _w) {
-			w = _.push('coordinate.width', Math.floor(_w * f));
-		}
-		
-		vw = _.push('coordinate.valid_width',iChart.parsePercent(vw,w));
-		vh = _.push('coordinate.valid_height',iChart.parsePercent(vh,h));
-		
-		if (_.is3D()) {
-			var a = _.get('coordinate.pedestal_height');
-			var b = _.get('coordinate.board_deep');
-			a = iChart.isNumber(a)?a:22;
-			b = iChart.isNumber(b)?b:20;
-			h = _.push('coordinate.height', h - a - b);
-		}
-		
-		/**
-		 * calculate chart's alignment
-		 */
-		if (_.get('align') == _.L) {
-			_.push(_.X, _.get('l_originx'));
-		} else if (_.get('align') == _.R) {
-			_.push(_.X, _.get('r_originx') - w);
-		} else {
-			_.push(_.X, _.get('centerx') - w / 2);
-		}
-
-		_.x = _.push(_.X, _.get(_.X) + _.get('offsetx'));
-		_.y = _.push(_.Y, _.get('centery') - h / 2 + _.get('offsety'));
-		
-		if (!vw || vw > w) {
-			_.push('coordinate.valid_width', w);
-		}
-		
-		if (!vh || vh > h) {
-			_.push('coordinate.valid_height', h);
-		}
-		
-		_.push('coordinate.originx', _.x);
-		_.push('coordinate.originy', _.y);
-		
 	}
 }
 /**
@@ -985,12 +940,13 @@ iChart.Coordinate3D = iChart.extend(iChart.Coordinate2D, {
 
 		var _ = this._(),
 			ws = _.get('wall_style'),
-			bg = _.get('background_color'),
+			bg = _.get('background_color')||'#d6dbd2',
 			h = _.get(_.H),
 			w = _.get(_.W),
 			f = _.get('color_factor'),
 			offx = _.push('z_offx',_.get('xAngle_') * _.get('zHeight')),
 			offy = _.push('z_offy',_.get('yAngle_') * _.get('zHeight'));
+		
 			/**
 			 * bottom-lower bottom-left
 			 */

@@ -173,30 +173,30 @@ iChart.Element.prototype = {
 		if (iChart.isObject(c))
 			iChart.merge(this.options, c);
 	},
-	pushIf : function(name, value) {
-		if (!iChart.isDefined(this.get(name))||this.get(name)==null) {
-			return this.push(name, value);
+	pushIf : function(n, v) {
+		if (!iChart.isDefined(this.get(n))||this.get(n)==null) {
+			return this.push(n, v);
 		}
-		return this.get(name);
+		return this.get(n);
 	},
 	/**
 	 * average write speed about 0.013ms
 	 */
-	push : function(name, value) {
-		var A = name.split("."),L=A.length - 1,V = this.options;
+	push : function(n, v) {
+		var A = n.split("."),L=A.length - 1,V = this.options;
 		for (var i = 0; i < L; i++) {
 			if (!V[A[i]])
 				V[A[i]] = {};
 			V = V[A[i]];
 		}
-		V[A[L]] = value;
-		return value;
+		V[A[L]] = v;
+		return v;
 	},
 	/**
 	 * average read speed about 0.005ms
 	 */
-	get : function(name) {
-		var A = name.split("."), V = this.options[A[0]];
+	get : function(n) {
+		var A = n.split("."), V = this.options[A[0]];
 		for (var i = 1; i < A.length; i++) {
 			if (!V)
 				return null;

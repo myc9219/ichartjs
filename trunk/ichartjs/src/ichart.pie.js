@@ -190,7 +190,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 	},
 	doConfig : function() {
 		iChart.Pie.superclass.doConfig.call(this);
-		iChart.Assert.gt(this.total,0,'this.total');
 		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44,pi2=Math.PI*2;
 		_.sub = _.is3D()?'Sector3D':'Sector2D';
 		_.sectors = [];
@@ -217,26 +216,9 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			sA = eA+sepa;
 		}, _);
 		
-		r = iChart.parsePercent(r,f);
-		/**
-		 * calculate pie chart's radius
-		 */
-		if (r <= 0 || r > f) {
-			r = _.push('radius',f);
-		}
-		_.r = r;
+		_.r = r = iChart.parsePercent(r,f);
 		
-		/**
-		 * calculate pie chart's alignment
-		 */
-		if (_.get('align') == _.L) {
-			_.push(_.X, r + _.get('l_originx') + _.get('offsetx'));
-		} else if (_.get('align') == _.R) {
-			_.push(_.X, _.get('r_originx') - r + _.get('offsetx'));
-		} else {
-			_.push(_.X, _.get('centerx') + _.get('offsetx'));
-		}
-		_.topY = _.push(_.Y, _.get('centery') + _.get('offsety'));
+		_.topY = _.originXY(_,[r + _.get('l_originx'),_.get('r_originx') - r,_.get('centerx')],[_.get('centery')]).y;
 		
 		iChart.apply(_.get('sub_option'),iChart.clone([_.X, _.Y, 'bound_event','mutex','increment'], _.options));
 		

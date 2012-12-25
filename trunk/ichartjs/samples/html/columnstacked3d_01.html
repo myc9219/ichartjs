@@ -39,7 +39,6 @@
 					footnote_align:'left',
 					width : 800,
 					height : 400,
-					column_width:70,
 					background_color : '#ffffff',
 					shadow : true,
 					shadow_blur : 3,
@@ -103,6 +102,23 @@
 						}]
 					}
 			});
+
+			//利用自定义组件构造左侧说明文本
+			chart.plugin(new iChart.Custom({
+					drawFn:function(){
+						//计算位置
+						var coo = chart.getCoordinate(),
+							x = coo.get('originx'),
+							y = coo.get('originy');
+						//在左上侧的位置，渲染一个单位的文字
+						chart.target.textAlign('start')
+						.textBaseline('bottom')
+						.textFont('600 11px Verdana')
+						.fillText('销售量(万件)',x-40,y-24,false,'#254d70');
+						
+					}
+			}));
+			
 			chart.draw();
 		});
 	</script>
