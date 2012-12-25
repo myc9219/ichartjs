@@ -719,10 +719,10 @@
 				if(_.isString(v)){
 					v = v.match(/(.*)%/);
 					if(v){
-						return f?floor(pF(v[1])*f/100):v[1]/100;
+						v = f?floor(pF(v[1])*f/100):v[1]/100;
 					}
 				}
-				return v;
+				return (!v ||v <= 0 || v > f)?f:v;
 			},
 			parseFloat : function(v, d) {
 				if (!_.isNumber(v)) {

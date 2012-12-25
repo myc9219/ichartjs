@@ -81,13 +81,13 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			 */
 			listeners : null,
 			/**
-			 * @inner {Number} inner use
+			 * @cfg {Number} If you want to totally override the positioning of the chart,you should setting it.(default to null)
 			 */
-			originx : 0,
+			originx : null,
 			/**
-			 * @inner {Number} inner use
+			 * @cfg {Number} If you want to totally override the positioning of the chart,you should setting it.(default to null)
 			 */
-			originy : 0
+			originy : null
 		});
 
 		this.variable.event = {

@@ -1338,6 +1338,27 @@
 			}
 			_.oneWay = $.emptyFn;
 		},
+		/**
+		 * calculate chart's alignment
+		 */
+		originXY:function(_,x,y){
+			var A = _.get('align');
+			if (A == _.L) {
+				_.pushIf(_.X, x[0]);
+			} else if (A == _.R) {
+				_.pushIf(_.X, x[1]);
+			} else {
+				_.pushIf(_.X, x[2]);
+			}
+			
+			_.x = _.pushIf(_.X, _.get(_.X) + _.get('offsetx'));
+			_.y = _.pushIf(_.Y, y[0]+ _.get('offsety'));
+			
+			return {
+				x:_.x,
+				y:_.y
+			}
+		},
 		getPercent:function(v,T){
 			return this.get('showpercent') ? iChart.toPercent(v / (T||this.total||1), this.get('decimalsnum')) : v;
 		},
