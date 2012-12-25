@@ -326,7 +326,7 @@ iChart.Coordinate = {
 		/**
 		 * Apply the coordinate feature
 		 */
-		var f = 0.82,
+		var f = 0.84,
 			parse=iChart.parsePercent, 
 			scale = _.get('coordinate.scale'),
 			li=_.get('scaleAlign'),
