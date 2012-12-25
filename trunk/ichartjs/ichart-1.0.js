@@ -3823,8 +3823,8 @@ $.Label = $.extend($.Component, {
 				_.pushIf(_.X, x[2]);
 			}
 			
-			_.x = _.pushIf(_.X, _.get(_.X) + _.get('offsetx'));
-			_.y = _.pushIf(_.Y, y[0]+ _.get('offsety'));
+			_.x = _.push(_.X, _.get(_.X) + _.get('offsetx'));
+			_.y = _.push(_.Y, y[0]+ _.get('offsety'));
 			
 			return {
 				x:_.x,
