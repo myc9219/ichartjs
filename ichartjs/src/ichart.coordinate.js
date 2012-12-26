@@ -181,8 +181,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 	},
 	doConfig : function() {
 		iChart.Scale.superclass.doConfig.call(this);
-		iChart.Assert.isNumber(this.get('distance'), 'distance');
-
+		
 		var _ = this._(),abs = Math.abs,customL = _.get('labels').length, min_s = _.get('min_scale'), max_s = _.get('max_scale'), s_space = _.get('scale_space'), e_scale = _.get('end_scale'), start_scale = _.get('start_scale');
 
 		_.items = [];
@@ -192,7 +191,6 @@ iChart.Scale = iChart.extend(iChart.Component, {
 		if (customL > 0) {
 			_.number = customL - 1;
 		} else {
-			iChart.Assert.isTrue(iChart.isNumber(max_s) || iChart.isNumber(e_scale), 'max_scale or end_scale must be given.');
 			/**
 			 * end_scale must greater than maxScale
 			 */
@@ -626,10 +624,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		iChart.Coordinate2D.superclass.doConfig.call(this);
 
 		var _ = this._();
-
-		iChart.Assert.isNumber(_.get(_.W), _.W);
-		iChart.Assert.isNumber(_.get(_.H), _.H);
-
+		
 		/**
 		 * this element not atomic because it is a container,so this is a particular case.
 		 */
@@ -762,7 +757,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		}
 		if (vg) {
 			var gv = _.get('grids.vertical');
-			iChart.Assert.gt(gv['value'],0, 'value');
+			iChart.Assert.isTrue(gv['value']>0, 'vertical value');
 			var d = w / gv['value'], n = gv['value'];
 			if (gv['way'] == 'given_value') {
 				n = d;
@@ -786,7 +781,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		}
 		if (hg) {
 			var gh = _.get('grids.horizontal');
-			iChart.Assert.gt(gh['value'],0,'value');
+			iChart.Assert.isTrue(gh['value']>0,'horizontal value');
 			var d = h / gh['value'], n = gh['value'];
 			if (gh['way'] == 'given_value') {
 				n = d;

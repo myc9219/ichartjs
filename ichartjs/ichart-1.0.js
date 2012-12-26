@@ -712,9 +712,6 @@
 			get:function(id){
 				return Registry[id];
 			},
-			toPercent : function(v, d) {
-				return (v * 100).toFixed(d) + '%';
-			},
 			parsePercent:function(v,f){
 				if(_.isString(v)){
 					v = v.match(/(.*)%/);
@@ -768,18 +765,6 @@
 		});
 		
 		_.Assert = {
-			gt : function(v, c, n) {
-				if (!(_.isNumber(v) && v > c))
-					throw new Error(n||'required must be gt '+c);
-			},
-			isNumber : function(v, n) {
-				if (!_.isNumber(v))
-					throw new Error(n + " required Number,given:" + v);
-			},
-			isArray : function(v, n) {
-				if (!_.isArray(v))
-					throw new Error(n + " required Array,given:" + v);
-			},
 			isTrue : function(v, cause) {
 				if (v !== true)
 					throw new Error(cause);
@@ -3508,11 +3493,11 @@ $.Label = $.extend($.Component, {
 				return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
 		commonDraw : function(_,e) {
-			$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
-			$.Assert.isTrue(_.initialization, _.type + ' Failed to initialize');
-			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty');
 			
 			if (!_.redraw) {
+				$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
+				$.Assert.isTrue(_.initialization, _.type + ' Failed to initialize');
+				$.Assert.isTrue(_.data.length>0,_.type + '\'s data is empty');
 				_.doSort();
 				_.oneways.eachAll(function(o) {o.draw()});
 			}
@@ -3831,7 +3816,7 @@ $.Label = $.extend($.Component, {
 			}
 		},
 		getPercent:function(v,T){
-			return this.get('showpercent') ? $.toPercent(v / (T||this.total||1), this.get('decimalsnum')) : v;
+			return this.get('showpercent') ? (v / (T||this.total||1) * 100).toFixed(this.get('decimalsnum')) + '%' : v;
 		},
 		doActing:function(_,d,o,i,t){
 			var f=!!_.get('communal_acting'),v=_.getPercent(d.value,d.total);
@@ -3870,8 +3855,6 @@ $.Label = $.extend($.Component, {
 			
 			var _ = this._();
 			
-			$.Assert.isArray(_.data);
-				
 			_.T.strokeStyle(true,0, _.get('strokeStyle'), _.get('lineJoin'));
 			
 			_.processAnimation = _.get('animation');
@@ -3891,6 +3874,7 @@ $.Label = $.extend($.Component, {
 					time : 0,
 					queue : []
 			};
+			
 			_.components = [];
 			
 			/**
@@ -4252,8 +4236,7 @@ $.Scale = $.extend($.Component, {
 	},
 	doConfig : function() {
 		$.Scale.superclass.doConfig.call(this);
-		$.Assert.isNumber(this.get('distance'), 'distance');
-
+		
 		var _ = this._(),abs = Math.abs,customL = _.get('labels').length, min_s = _.get('min_scale'), max_s = _.get('max_scale'), s_space = _.get('scale_space'), e_scale = _.get('end_scale'), start_scale = _.get('start_scale');
 
 		_.items = [];
@@ -4263,7 +4246,6 @@ $.Scale = $.extend($.Component, {
 		if (customL > 0) {
 			_.number = customL - 1;
 		} else {
-			$.Assert.isTrue($.isNumber(max_s) || $.isNumber(e_scale), 'max_scale or end_scale must be given.');
 			/**
 			 * end_scale must greater than maxScale
 			 */
@@ -4697,10 +4679,7 @@ $.Coordinate2D = $.extend($.Component, {
 		$.Coordinate2D.superclass.doConfig.call(this);
 
 		var _ = this._();
-
-		$.Assert.isNumber(_.get(_.W), _.W);
-		$.Assert.isNumber(_.get(_.H), _.H);
-
+		
 		/**
 		 * this element not atomic because it is a container,so this is a particular case.
 		 */
@@ -4833,7 +4812,7 @@ $.Coordinate2D = $.extend($.Component, {
 		}
 		if (vg) {
 			var gv = _.get('grids.vertical');
-			$.Assert.gt(gv['value'],0, 'value');
+			$.Assert.isTrue(gv['value']>0, 'vertical value');
 			var d = w / gv['value'], n = gv['value'];
 			if (gv['way'] == 'given_value') {
 				n = d;
@@ -4857,7 +4836,7 @@ $.Coordinate2D = $.extend($.Component, {
 		}
 		if (hg) {
 			var gh = _.get('grids.horizontal');
-			$.Assert.gt(gh['value'],0,'value');
+			$.Assert.isTrue(gh['value']>0,'horizontal value');
 			var d = h / gh['value'], n = gh['value'];
 			if (gh['way'] == 'given_value') {
 				n = d;
@@ -5168,7 +5147,6 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 		doConfig:function(){
 			$.Rectangle.superclass.doConfig.call(this);
 			var _ = this._(),v = _.variable.event,vA=_.get('valueAlign');
-			$.Assert.gt(_.get(_.W),0,_.W);
 			
 			/**
 			 * mouseover light
@@ -5714,8 +5692,6 @@ $.Sector = $.extend($.Component, {
 			var _ = this._();
 			_.r = _.get('radius');
 			
-			$.Assert.gt(_.r,0);
-			
 			if(_.get('donutwidth')>_.r){
 				_.push('donutwidth',0);
 			}
@@ -5776,27 +5752,7 @@ $.Sector = $.extend($.Component, {
 				cylinder_height:0
 			});
 			
-			
-		},
-		drawSector:function(){
-			this.T.sector3D(
-					this.x,
-					this.y,
-					this.a,
-					this.b,
-					this.get('startAngle'),
-					this.get('endAngle'),
-					this.h,
-					this.get('f_color'),
-					this.get('border.enable'),
-					this.get('border.width'),
-					this.get('border.color'),
-					this.get('shadow'),
-					this.get('shadow_color'),
-					this.get('shadow_blur'),
-					this.get('shadow_offsetx'),
-					this.get('shadow_offsety'),
-					this.get('counterclockwise'));
+			this.proxy = true;
 		},
 		isEventValid:function(e,_){
 			if(!_.get('ignored')){
@@ -5836,7 +5792,7 @@ $.Sector = $.extend($.Component, {
 			_.b = _.get('semi_minor_axis');
 			_.h = _.get('cylinder_height');
 			
-			$.Assert.gt(_.a*_.b,0);
+			$.Assert.isTrue(_.a*_.b>0,'major&minor');
 			
 			var pi2 = 2 * Math.PI,toAngle = function(A){
 				while(A<0)A+=pi2;
@@ -6022,6 +5978,9 @@ $.Pie = $.extend($.Chart, {
 		});
 		_.sectors.push(_.doSector(_,d));
 	},
+	doSector:function(_){
+		return  new $[_.sub](_.get('sub_option'), _);
+	},
 	dolayout : function(_,x,y,l,d,Q) {
 		if(_.is3D()?$.inEllipse(_.get(_.X) - x,_.topY-y,_.a,_.b):$.distanceP2P(_.get(_.X),_.topY,x,y)<_.r){
 			y=_.topY-y;
@@ -6112,9 +6071,6 @@ $.Pie2D = $.extend($.Pie, {
 		this.type = 'pie2d';
 
 	},
-	doSector:function(_){
-		return  new $[_.sub](_.get('sub_option'), _);
-	},
 	doConfig : function() {
 		$.Pie2D.superclass.doConfig.call(this);
 		var _ = this._();
@@ -6159,9 +6115,7 @@ $.Pie3D = $.extend($.Pie, {
 	},
 	doSector : function(_,d) {
 		_.push('sub_option.cylinder_height', (d.cylinder_height ? d.cylinder_height * Math.cos($.angle2Radian(_.get('zRotate'))) : _.get('cylinder_height')));
-		var s = new $[_.sub](_.get('sub_option'), _);
-		s.proxy = true;
-		return s;
+		return new $[_.sub](_.get('sub_option'), _);
 	},
 	doConfig : function() {
 		$.Pie3D.superclass.doConfig.call(this);
@@ -6316,9 +6270,6 @@ $.Donut2D = $.extend($.Pie, {
 				fontsize : 24
 			}
 		});
-	},
-	doSector:function(){
-		return  new $.Sector2D(this.get('sub_option'), this);
 	},
 	doConfig : function() {
 		$.Donut2D.superclass.doConfig.call(this);
@@ -7256,7 +7207,7 @@ $.LineSegment = $.extend($.Component, {
 	},
 	doConfig : function() {
 		$.LineSegment.superclass.doConfig.call(this);
-		$.Assert.gt(this.get('point_space'),0,'point_space');
+		$.Assert.isTrue(this.get('point_space')>0,'point_space');
 
 		var _ = this._(),L = !!_.get('label'),ps = _.get('point_size') * 3 / 2,sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points'),N=_.get('name');
 		

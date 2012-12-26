@@ -34,9 +34,6 @@ iChart.Donut2D = iChart.extend(iChart.Pie, {
 			}
 		});
 	},
-	doSector:function(){
-		return  new iChart.Sector2D(this.get('sub_option'), this);
-	},
 	doConfig : function() {
 		iChart.Donut2D.superclass.doConfig.call(this);
 		

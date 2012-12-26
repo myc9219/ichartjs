@@ -174,7 +174,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 	},
 	doConfig : function() {
 		iChart.LineSegment.superclass.doConfig.call(this);
-		iChart.Assert.gt(this.get('point_space'),0,'point_space');
+		iChart.Assert.isTrue(this.get('point_space')>0,'point_space');
 
 		var _ = this._(),L = !!_.get('label'),ps = _.get('point_size') * 3 / 2,sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points'),N=_.get('name');
 		

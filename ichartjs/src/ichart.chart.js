@@ -1037,11 +1037,11 @@
 				return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
 		commonDraw : function(_,e) {
-			$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
-			$.Assert.isTrue(_.initialization, _.type + ' Failed to initialize');
-			$.Assert.gt(_.data.length,0,_.type + '\'s data is empty');
 			
 			if (!_.redraw) {
+				$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
+				$.Assert.isTrue(_.initialization, _.type + ' Failed to initialize');
+				$.Assert.isTrue(_.data.length>0,_.type + '\'s data is empty');
 				_.doSort();
 				_.oneways.eachAll(function(o) {o.draw()});
 			}
@@ -1360,7 +1360,7 @@
 			}
 		},
 		getPercent:function(v,T){
-			return this.get('showpercent') ? iChart.toPercent(v / (T||this.total||1), this.get('decimalsnum')) : v;
+			return this.get('showpercent') ? (v / (T||this.total||1) * 100).toFixed(this.get('decimalsnum')) + '%' : v;
 		},
 		doActing:function(_,d,o,i,t){
 			var f=!!_.get('communal_acting'),v=_.getPercent(d.value,d.total);
@@ -1399,8 +1399,6 @@
 			
 			var _ = this._();
 			
-			$.Assert.isArray(_.data);
-				
 			_.T.strokeStyle(true,0, _.get('strokeStyle'), _.get('lineJoin'));
 			
 			_.processAnimation = _.get('animation');
@@ -1420,6 +1418,7 @@
 					time : 0,
 					queue : []
 			};
+			
 			_.components = [];
 			
 			/**

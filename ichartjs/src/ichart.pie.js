@@ -152,6 +152,9 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		});
 		_.sectors.push(_.doSector(_,d));
 	},
+	doSector:function(_){
+		return  new iChart[_.sub](_.get('sub_option'), _);
+	},
 	dolayout : function(_,x,y,l,d,Q) {
 		if(_.is3D()?iChart.inEllipse(_.get(_.X) - x,_.topY-y,_.a,_.b):iChart.distanceP2P(_.get(_.X),_.topY,x,y)<_.r){
 			y=_.topY-y;

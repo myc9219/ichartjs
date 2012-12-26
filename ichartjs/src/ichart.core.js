@@ -712,9 +712,6 @@
 			get:function(id){
 				return Registry[id];
 			},
-			toPercent : function(v, d) {
-				return (v * 100).toFixed(d) + '%';
-			},
 			parsePercent:function(v,f){
 				if(_.isString(v)){
 					v = v.match(/(.*)%/);
@@ -768,18 +765,6 @@
 		});
 		
 		_.Assert = {
-			gt : function(v, c, n) {
-				if (!(_.isNumber(v) && v > c))
-					throw new Error(n||'required must be gt '+c);
-			},
-			isNumber : function(v, n) {
-				if (!_.isNumber(v))
-					throw new Error(n + " required Number,given:" + v);
-			},
-			isArray : function(v, n) {
-				if (!_.isArray(v))
-					throw new Error(n + " required Array,given:" + v);
-			},
 			isTrue : function(v, cause) {
 				if (v !== true)
 					throw new Error(cause);
