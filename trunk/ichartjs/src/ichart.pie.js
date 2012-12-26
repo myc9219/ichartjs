@@ -200,8 +200,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		if (_.is3D())
 			f += 0.06;
 		
-		f = Math.floor(_.get('minDistance') * f);
-		
 		var L = _.data.length,sepa = iChart.angle2Radian(iChart.between(0,90,_.get('separate_angle'))),PI = pi2-sepa,sepa=sepa/L,eA = _.oA+sepa, sA = eA;
 		
 		_.data.each(function(d, i) {
@@ -216,7 +214,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			sA = eA+sepa;
 		}, _);
 		
-		_.r = r = iChart.parsePercent(r,f);
+		_.r = r = iChart.parsePercent(r,Math.floor(_.get('minDistance') * f));
 		
 		_.topY = _.originXY(_,[r + _.get('l_originx'),_.get('r_originx') - r,_.get('centerx')],[_.get('centery')]).y;
 		

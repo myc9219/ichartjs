@@ -36,7 +36,8 @@
 					this.get('border.width'),
 					this.get('border.color'),
 					this.get('shadow'),
-					this.get('counterclockwise'));
+					this.get('counterclockwise'),
+					this.get('rounded'));
 		},
 		isEventValid:function(e,_){
 			if(!_.get('ignored')){
@@ -74,8 +75,8 @@
 			if(_.get('donutwidth')>_.r){
 				_.push('donutwidth',0);
 			}
-			_.applyGradient(_.x-_.r,_.y-_.r,2*_.r,2*_.r);
 			
+			_.applyGradient(_.x-_.r,_.y-_.r,2*_.r*0.9,2*_.r*0.9);
 			
 			var A = _.get('middleAngle'),L = _.pushIf('increment',iChart.lowTo(5,_.r/10)),p2;
 			_.push('inc_x',L * Math.cos(2 * Math.PI -A));

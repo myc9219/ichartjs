@@ -76,7 +76,7 @@
 				ML = g.length>ML?g.length:ML;
 			}
 			_.push('maxItemSize',ML);
-		}else{
+		}else if(_.dataType=='stacked'||_.dataType=='complex'){
 			var L=g.length,item,T,r,stack=_.dataType=='stacked';
 			if(L==0){
 				L=c[0].value.length;for(var i=0;i<L;i++)g.push("");
@@ -171,8 +171,9 @@
 		 */
 		arc : function(x, y, r, dw, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
 			if(!r)return this;
-			var ccw = !!ccw, a2r = !!a2r&&!dw;
 			this.save().gCo(last).strokeStyle(b,bw,bc).fillStyle(c).beginPath();
+			if(b)
+				r-=floor(bw/2);
 			
 			if(dw){
 				this.moveTo(x+cos(s)*(r-dw),y+sin(s)*(r-dw)).lineTo(x+cos(s)*r,y+sin(s)*r);
@@ -181,10 +182,9 @@
 				this.c.arc(x, y, r-dw, e, s,!ccw);
 			}else{
 				this.c.arc(x, y, r, s, e, ccw);
+				if (a2r)
+					this.lineTo(x, y);
 			}
-			
-			if (a2r)
-				this.lineTo(x, y);
 			
 			this.closePath();
 			
@@ -199,10 +199,10 @@
 		/**
 		 * draw sector
 		 */
-		sector : function(x, y, r, dw,s, e, c, b, bw, bc, sw, ccw) {
+		sector : function(x, y, r, dw,s, e, c, b, bw, bc, sw, ccw,a2r) {
 			if (sw)
 				this.arc(x, y, r, dw, s, e, c,0,0,0,sw,ccw, true, true);
-			return this.arc(x, y, r, dw, s, e, c, b, bw, bc, false, ccw, true);
+			return this.arc(x, y, r, dw, s, e, c, b, bw, bc, false, ccw, !a2r);
 		},
 		sector3D : function() {
 			var x0, y0,sPaint = function(x, y, a, b, s, e, ccw, h, c) {
@@ -319,7 +319,7 @@
 			this.c.shadowBlur = this.c.shadowOffsetX = this.c.shadowOffsetY = 0;
 			return this;
 		},
-		gradient : function(x, y, w, h, c,m) {
+		gradient : function(x, y, w, h, c,m,r) {
 			m = m.toLowerCase();
 			var x0=x,y0=y,f=!m.indexOf("linear");
 			m = m.substring(14);
@@ -348,7 +348,7 @@
 				if(m=='outin'){
 					c.reverse();
 				}
-				return this.avgRadialGradient(x,y,0,x,y,(w>h?h:w)*0.8,c);
+				return this.avgRadialGradient(x,y,(r||0),x,y,(w>h?h:w),c);
 			}
 		},
 		avgLinearGradient : function(xs, ys, xe, ye, c) {
@@ -363,7 +363,7 @@
 		avgRadialGradient : function(xs, ys, rs, xe, ye, re, c) {
 			var g = this.createRadialGradient(xs, ys, rs, xe, ye, re);
 			for ( var i = 0; i < c.length; i++)
-				g.addColorStop(i / (c.length - 1), c[i]);
+				g.addColorStop(i/ (c.length - 1), c[i]);
 			return g;
 		},
 		createRadialGradient : function(xs, ys, rs, xe, ye, re) {
@@ -1198,7 +1198,7 @@
 			/**
 			 * set up
 			 */
-			if(d.length > 0 && _.Rendered && !_.initialization){
+			if(d.length>0&&_.Rendered && !_.initialization){
 				/**
 				 * parse data
 				 */

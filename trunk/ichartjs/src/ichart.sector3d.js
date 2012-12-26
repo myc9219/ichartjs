@@ -91,9 +91,7 @@
 			_.b = _.get('semi_minor_axis');
 			_.h = _.get('cylinder_height');
 			
-			iChart.Assert.gt(_.a,0);
-			iChart.Assert.gt(_.b,0);
-			
+			iChart.Assert.gt(_.a*_.b,0);
 			
 			var pi2 = 2 * Math.PI,toAngle = function(A){
 				while(A<0)A+=pi2;
