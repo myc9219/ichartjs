@@ -615,7 +615,7 @@
 			toPI2 : function(a) {
 				while(a<0)
 					a+=pi2;
-				return a%pi2;
+				return a;
 			},
 			visible:function(s, e, f){
 				if(s>e)return [];
@@ -623,7 +623,7 @@
 				if((q1==2||q1==3)&&(q2==2||q2==3)&&((e-s)<pi))return[];
 				s = _.toPI2(s);
 				e = _.toPI2(e);
-				if(e<s){e+=pi2;}
+				if(e<=s){e+=pi2;}
 				if(s > pi){s = pi2;}
 				else if(e>pi2){
 					return [{s:s,e:pi,f:f},{s:pi2,e:e,f:f}]
@@ -769,8 +769,8 @@
 		
 		_.Assert = {
 			gt : function(v, c, n) {
-				if (!_.isNumber(v) && v >= c)
-					throw new Error(n + " required Number gt " + c + ",given:" + v);
+				if (!(_.isNumber(v) && v > c))
+					throw new Error(n||'required must be gt '+c);
 			},
 			isNumber : function(v, n) {
 				if (!_.isNumber(v))
@@ -1342,8 +1342,7 @@ $.Painter = $.extend($.Element, {
 			vpadding:p[0] + p[2] + b[0] + b[2]
 		});	
 		
-		
-		if (_.get('shadow')) {
+		if (_.get('shadow')===true) {
 			_.push('shadow', {
 				color : _.get('shadow_color'),
 				blur : _.get('shadow_blur'),
@@ -2548,7 +2547,7 @@ $.Label = $.extend($.Component, {
 				ML = g.length>ML?g.length:ML;
 			}
 			_.push('maxItemSize',ML);
-		}else{
+		}else if(_.dataType=='stacked'||_.dataType=='complex'){
 			var L=g.length,item,T,r,stack=_.dataType=='stacked';
 			if(L==0){
 				L=c[0].value.length;for(var i=0;i<L;i++)g.push("");
@@ -2643,8 +2642,9 @@ $.Label = $.extend($.Component, {
 		 */
 		arc : function(x, y, r, dw, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
 			if(!r)return this;
-			var ccw = !!ccw, a2r = !!a2r&&!dw;
 			this.save().gCo(last).strokeStyle(b,bw,bc).fillStyle(c).beginPath();
+			if(b)
+				r-=floor(bw/2);
 			
 			if(dw){
 				this.moveTo(x+cos(s)*(r-dw),y+sin(s)*(r-dw)).lineTo(x+cos(s)*r,y+sin(s)*r);
@@ -2653,10 +2653,9 @@ $.Label = $.extend($.Component, {
 				this.c.arc(x, y, r-dw, e, s,!ccw);
 			}else{
 				this.c.arc(x, y, r, s, e, ccw);
+				if (a2r)
+					this.lineTo(x, y);
 			}
-			
-			if (a2r)
-				this.lineTo(x, y);
 			
 			this.closePath();
 			
@@ -2671,10 +2670,10 @@ $.Label = $.extend($.Component, {
 		/**
 		 * draw sector
 		 */
-		sector : function(x, y, r, dw,s, e, c, b, bw, bc, sw, ccw) {
+		sector : function(x, y, r, dw,s, e, c, b, bw, bc, sw, ccw,a2r) {
 			if (sw)
 				this.arc(x, y, r, dw, s, e, c,0,0,0,sw,ccw, true, true);
-			return this.arc(x, y, r, dw, s, e, c, b, bw, bc, false, ccw, true);
+			return this.arc(x, y, r, dw, s, e, c, b, bw, bc, false, ccw, !a2r);
 		},
 		sector3D : function() {
 			var x0, y0,sPaint = function(x, y, a, b, s, e, ccw, h, c) {
@@ -2791,7 +2790,7 @@ $.Label = $.extend($.Component, {
 			this.c.shadowBlur = this.c.shadowOffsetX = this.c.shadowOffsetY = 0;
 			return this;
 		},
-		gradient : function(x, y, w, h, c,m) {
+		gradient : function(x, y, w, h, c,m,r) {
 			m = m.toLowerCase();
 			var x0=x,y0=y,f=!m.indexOf("linear");
 			m = m.substring(14);
@@ -2820,7 +2819,7 @@ $.Label = $.extend($.Component, {
 				if(m=='outin'){
 					c.reverse();
 				}
-				return this.avgRadialGradient(x,y,0,x,y,(w>h?h:w)*0.8,c);
+				return this.avgRadialGradient(x,y,(r||0),x,y,(w>h?h:w),c);
 			}
 		},
 		avgLinearGradient : function(xs, ys, xe, ye, c) {
@@ -2835,7 +2834,7 @@ $.Label = $.extend($.Component, {
 		avgRadialGradient : function(xs, ys, rs, xe, ye, re, c) {
 			var g = this.createRadialGradient(xs, ys, rs, xe, ye, re);
 			for ( var i = 0; i < c.length; i++)
-				g.addColorStop(i / (c.length - 1), c[i]);
+				g.addColorStop(i/ (c.length - 1), c[i]);
 			return g;
 		},
 		createRadialGradient : function(xs, ys, rs, xe, ye, re) {
@@ -3670,7 +3669,7 @@ $.Label = $.extend($.Component, {
 			/**
 			 * set up
 			 */
-			if(d.length > 0 && _.Rendered && !_.initialization){
+			if(d.length>0&&_.Rendered && !_.initialization){
 				/**
 				 * parse data
 				 */
@@ -3906,7 +3905,7 @@ $.Label = $.extend($.Component, {
 			/**
 			 * clone config to sub_option
 			 */
-			$.applyIf(_.get('sub_option'), $.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip'], _.options,true));
+			$.applyIf(_.get('sub_option'), $.clone(['shadow','tip'], _.options,true));
 			
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
@@ -4032,11 +4031,11 @@ $.Label = $.extend($.Component, {
 			this.type = 'custom';
 			
 			this.set({
-				
 				/**
 				 * @cfg {Function} Specifies the customize function.(default to emptyFn)
 				 */
 				drawFn:$.emptyFn,
+				configFn:$.emptyFn,
 				/**
 				 * @cfg {Function} Specifies the customize event valid function.(default to undefined)
 				 */
@@ -4046,9 +4045,6 @@ $.Label = $.extend($.Component, {
 				 */
 				animating_draw:true
 			});
-			
-			this.registerEvent();
-			
 		},
 		doDraw:function(_){
 			_.get('drawFn').call(_,_);
@@ -4060,12 +4056,14 @@ $.Label = $.extend($.Component, {
 		},
 		doConfig:function(){
 			$.Custom.superclass.doConfig.call(this);
-			this.A_draw = this.get('animating_draw');
-			this.variable.animation = {
+			var _ = this._();
+			_.A_draw = _.get('animating_draw');
+			_.variable.animation = {
 				animating:false,	
 				time : 0
 			};
-			this.duration = 0;
+			_.duration = 0;
+			_.get('configFn').call(_,_);
 		}
 });
 /**
@@ -5477,7 +5475,8 @@ $.Sector = $.extend($.Component, {
 			/**
 			 * @cfg {<link>$.Label</link>} Specifies the config of label.when mini_label is unavailable,there will as a <link>$.Label</link>. note:set false to make label disabled.
 			 */
-			label : {}
+			label : {},
+			rounded:false
 		});
 
 		/**
@@ -5562,6 +5561,12 @@ $.Sector = $.extend($.Component, {
 
 		var _ = this._(), v = _.variable.event, f = _.get('label'),event=_.get('bound_event'),g;
 		
+		if(_.get('rounded')){
+			_.push('startAngle',0);
+			_.push('endAngle',Math.PI*2);
+			return;
+		}
+		
 		/**
 		 * mouseover light
 		 */
@@ -5595,7 +5600,7 @@ $.Sector = $.extend($.Component, {
 			}
 			_.tip = new $.Tip(_.get('tip'), _);
 		}
-
+		
 		v.poped = false;
 		
 		/**
@@ -5714,8 +5719,8 @@ $.Sector = $.extend($.Component, {
 			if(_.get('donutwidth')>_.r){
 				_.push('donutwidth',0);
 			}
-			_.applyGradient(_.x-_.r,_.y-_.r,2*_.r,2*_.r);
 			
+			_.applyGradient(_.x-_.r,_.y-_.r,2*_.r*0.9,2*_.r*0.9);
 			
 			var A = _.get('middleAngle'),L = _.pushIf('increment',$.lowTo(5,_.r/10)),p2;
 			_.push('inc_x',L * Math.cos(2 * Math.PI -A));
@@ -5831,9 +5836,7 @@ $.Sector = $.extend($.Component, {
 			_.b = _.get('semi_minor_axis');
 			_.h = _.get('cylinder_height');
 			
-			$.Assert.gt(_.a,0);
-			$.Assert.gt(_.b,0);
-			
+			$.Assert.gt(_.a*_.b,0);
 			
 			var pi2 = 2 * Math.PI,toAngle = function(A){
 				while(A<0)A+=pi2;
@@ -6067,8 +6070,6 @@ $.Pie = $.extend($.Chart, {
 		if (_.is3D())
 			f += 0.06;
 		
-		f = Math.floor(_.get('minDistance') * f);
-		
 		var L = _.data.length,sepa = $.angle2Radian($.between(0,90,_.get('separate_angle'))),PI = pi2-sepa,sepa=sepa/L,eA = _.oA+sepa, sA = eA;
 		
 		_.data.each(function(d, i) {
@@ -6083,7 +6084,7 @@ $.Pie = $.extend($.Chart, {
 			sA = eA+sepa;
 		}, _);
 		
-		_.r = r = $.parsePercent(r,f);
+		_.r = r = $.parsePercent(r,Math.floor(_.get('minDistance') * f));
 		
 		_.topY = _.originXY(_,[r + _.get('l_originx'),_.get('r_originx') - r,_.get('centerx')],[_.get('centery')]).y;
 		

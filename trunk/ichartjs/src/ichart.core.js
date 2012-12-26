@@ -615,7 +615,7 @@
 			toPI2 : function(a) {
 				while(a<0)
 					a+=pi2;
-				return a%pi2;
+				return a;
 			},
 			visible:function(s, e, f){
 				if(s>e)return [];
@@ -623,7 +623,7 @@
 				if((q1==2||q1==3)&&(q2==2||q2==3)&&((e-s)<pi))return[];
 				s = _.toPI2(s);
 				e = _.toPI2(e);
-				if(e<s){e+=pi2;}
+				if(e<=s){e+=pi2;}
 				if(s > pi){s = pi2;}
 				else if(e>pi2){
 					return [{s:s,e:pi,f:f},{s:pi2,e:e,f:f}]
