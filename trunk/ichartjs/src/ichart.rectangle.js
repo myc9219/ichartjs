@@ -90,7 +90,6 @@
 		doConfig:function(){
 			iChart.Rectangle.superclass.doConfig.call(this);
 			var _ = this._(),v = _.variable.event,vA=_.get('valueAlign');
-			iChart.Assert.gt(_.get(_.W),0,_.W);
 			
 			/**
 			 * mouseover light

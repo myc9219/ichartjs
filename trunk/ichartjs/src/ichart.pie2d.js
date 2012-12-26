@@ -16,9 +16,6 @@ iChart.Pie2D = iChart.extend(iChart.Pie, {
 		this.type = 'pie2d';
 
 	},
-	doSector:function(_){
-		return  new iChart[_.sub](_.get('sub_option'), _);
-	},
 	doConfig : function() {
 		iChart.Pie2D.superclass.doConfig.call(this);
 		var _ = this._();
