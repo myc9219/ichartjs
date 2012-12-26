@@ -36,8 +36,7 @@
 					this.get('border.width'),
 					this.get('border.color'),
 					this.get('shadow'),
-					this.get('counterclockwise'),
-					this.get('rounded'));
+					this.get('counterclockwise'));
 		},
 		isEventValid:function(e,_){
 			if(!_.get('ignored')){

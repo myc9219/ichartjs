@@ -201,8 +201,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			vpadding:p[0] + p[2] + b[0] + b[2]
 		});	
 		
-		
-		if (_.get('shadow')) {
+		if (_.get('shadow')===true) {
 			_.push('shadow', {
 				color : _.get('shadow_color'),
 				blur : _.get('shadow_blur'),

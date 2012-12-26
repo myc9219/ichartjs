@@ -1434,7 +1434,7 @@
 			/**
 			 * clone config to sub_option
 			 */
-			iChart.applyIf(_.get('sub_option'), iChart.clone(['shadow', 'shadow_color', 'shadow_blur', 'shadow_offsetx', 'shadow_offsety','tip'], _.options,true));
+			iChart.applyIf(_.get('sub_option'), iChart.clone(['shadow','tip'], _.options,true));
 			
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));

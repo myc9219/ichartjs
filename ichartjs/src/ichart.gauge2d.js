@@ -23,9 +23,9 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			 */
 			radius : '100%',
 			start_angle:30,
-			panel :{
-				
-			},
+			outer_border_color:'#dedede',
+			outer_border_width:1,
+			panel_color:'#FEFEFE',
 			inner_border_color:'#dedede',
 			inner_border_width:0,
 			inner_border_radius:'95%',
@@ -76,25 +76,42 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 		
 		_.originXY(_,[r + _.get('l_originx'),_.get('r_originx') - r,_.get('centerx')],[_.get('centery')]);
 		
-		_.push('panel.rounded',true);
-		_.push('panel.label',false);
-		_.push('panel.radius',r);
-		_.push('panel.originx',_.x);
-		_.push('panel.originy',_.y);
-		
-		_.panel = new iChart.Sector2D(_.get('panel'), _);
-		_.panel.zIndex = _.get('z_index')-10;
-		
-		if(_.get('inner_border_width')>0){
-			r = iChart.parsePercent(_.get('inner_border_radius'),r);
-			_.push('panel.radius',r);
-			_.push('panel.border.color',_.get('inner_border_color'));
-			_.push('panel.border.width',_.get('inner_border_width'));
-			_.iborder = new iChart.Sector2D(_.get('panel'), _);
-			_.components.push(_.iborder);
-		}
+		/**
+		 * build dial panel
+		 */
+		_.panel = new iChart.Custom({
+			z_index:_.get('z_index')-10,
+			background_color:_.get('panel_color'),
+			radius:r,
+			originx:_.x,
+			originy:_.y,
+			shadow:_.get('shadow'),
+			border:{
+				width:_.get('outer_border_width'),
+				color:_.get('outer_border_color')
+			},
+			innerborder:{
+				radius:iChart.parsePercent(_.get('inner_border_radius'),r),
+				width:_.get('inner_border_width'),
+				color:_.get('inner_border_color')
+			},
+			configFn:function(_){
+				_.r = _.get('radius');
+				_.applyGradient(_.x-_.r,_.y-_.r,2*_.r*0.9,2*_.r*0.9);
+				_.iborder = _.get('innerborder.width')>0;
+				_.ir = _.get('innerborder.radius');
+			},
+			drawFn:function(_){
+				_.T.sector(_.x, _.y, _.r, 0, 0, Math.PI * 2, _.get('f_color'), _.get('border.width')>0, _.get('border.width'), _.get('border.color'), _.get('shadow'), false, true);
+				if(_.iborder){
+					_.T.sector(_.x, _.y, _.ir, 0, 0, Math.PI * 2, 0, true, _.get('innerborder.width'), _.get('innerborder.color'), _.get('shadow'), false, true);
+				}
+			}
+		}, _);
 		
 		_.components.push(_.panel);
+		
+		
 		
 	}
 
