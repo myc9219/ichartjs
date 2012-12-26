@@ -769,8 +769,8 @@
 		
 		_.Assert = {
 			gt : function(v, c, n) {
-				if (!_.isNumber(v) && v >= c)
-					throw new Error(n + " required Number gt " + c + ",given:" + v);
+				if (!(_.isNumber(v) && v > c))
+					throw new Error(n||'required must be gt '+c);
 			},
 			isNumber : function(v, n) {
 				if (!_.isNumber(v))
