@@ -976,6 +976,7 @@
 			 * doAnimation of implement
 			 */
 			_.doAnimation(_.variable.animation.time, _.duration,_);
+			
 			/**
 			 * draw plugins
 			 */
@@ -997,7 +998,6 @@
 			if(_.Combination){
 				return;
 			}
-			
 			/**
 			 * fill the background
 			 */
@@ -1028,9 +1028,9 @@
 				});
 			}
 		},
-		runAnimation : function() {
-			this.fireEvent(this, 'beforeAnimation', [this]);
-			this.animation(this);
+		runAnimation : function(_) {
+			_.fireEvent(_, 'beforeAnimation', [_]);
+			_.animation(_);
 		},
 		doSort:function(){
 			this.components.sor(function(p, q){
@@ -1049,7 +1049,7 @@
 			_.redraw = true;
 			
 			if (!_.Animationed && _.get('animation')) {
-				_.runAnimation();
+				_.runAnimation(_);
 				return;
 			}
 			

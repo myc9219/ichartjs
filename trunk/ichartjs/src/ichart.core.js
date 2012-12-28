@@ -618,7 +618,7 @@
 				return a;
 			},
 			visible:function(s, e, f){
-				if(s>e)return [];
+				if(s>=e)return [];
 				var q1 = _.quadrantd(s),q2 = _.quadrantd(e);
 				if((q1==2||q1==3)&&(q2==2||q2==3)&&((e-s)<pi))return[];
 				s = _.toPI2(s);

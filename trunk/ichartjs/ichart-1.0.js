@@ -618,7 +618,7 @@
 				return a;
 			},
 			visible:function(s, e, f){
-				if(s>e)return [];
+				if(s>=e)return [];
 				var q1 = _.quadrantd(s),q2 = _.quadrantd(e);
 				if((q1==2||q1==3)&&(q2==2||q2==3)&&((e-s)<pi))return[];
 				s = _.toPI2(s);
@@ -3432,6 +3432,7 @@ $.Label = $.extend($.Component, {
 			 * doAnimation of implement
 			 */
 			_.doAnimation(_.variable.animation.time, _.duration,_);
+			
 			/**
 			 * draw plugins
 			 */
@@ -3453,7 +3454,6 @@ $.Label = $.extend($.Component, {
 			if(_.Combination){
 				return;
 			}
-			
 			/**
 			 * fill the background
 			 */
@@ -3484,9 +3484,9 @@ $.Label = $.extend($.Component, {
 				});
 			}
 		},
-		runAnimation : function() {
-			this.fireEvent(this, 'beforeAnimation', [this]);
-			this.animation(this);
+		runAnimation : function(_) {
+			_.fireEvent(_, 'beforeAnimation', [_]);
+			_.animation(_);
 		},
 		doSort:function(){
 			this.components.sor(function(p, q){
@@ -3505,7 +3505,7 @@ $.Label = $.extend($.Component, {
 			_.redraw = true;
 			
 			if (!_.Animationed && _.get('animation')) {
-				_.runAnimation();
+				_.runAnimation(_);
 				return;
 			}
 			
@@ -7581,8 +7581,8 @@ $.LineBasic2D = $.extend($.Line, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), H = _.coo.get('valid_height'), sp = _.get('point_space'), points, x, y, 
-		ox = _.get('sub_option.originx'), oy = _.get('sub_option.originy')- S.basic*H, p;
+		var S, H = _.coo.get('valid_height'), sp = _.get('point_space'), points, x, y, 
+		ox = _.get('sub_option.originx'), oy, p;
 		
 		_.push('sub_option.tip.showType', 'follow');
 		_.push('sub_option.coordinate', _.coo);
@@ -7590,6 +7590,8 @@ $.LineBasic2D = $.extend($.Line, {
 		_.push('sub_option.point_space', sp);
 		
 		_.data.each(function(d, i) {
+			S = _.coo.getScale(d.scaleAlign||_.get('scaleAlign'));
+			oy = _.get('sub_option.originy')- S.basic*H;
 			points = [];
 			d.value.each(function(v, j) {
 				x = sp * j;

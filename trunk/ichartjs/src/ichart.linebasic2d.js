@@ -32,8 +32,8 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S = _.coo.getScale(_.get('scaleAlign')), H = _.coo.get('valid_height'), sp = _.get('point_space'), points, x, y, 
-		ox = _.get('sub_option.originx'), oy = _.get('sub_option.originy')- S.basic*H, p;
+		var S, H = _.coo.get('valid_height'), sp = _.get('point_space'), points, x, y, 
+		ox = _.get('sub_option.originx'), oy, p;
 		
 		_.push('sub_option.tip.showType', 'follow');
 		_.push('sub_option.coordinate', _.coo);
@@ -41,6 +41,8 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 		_.push('sub_option.point_space', sp);
 		
 		_.data.each(function(d, i) {
+			S = _.coo.getScale(d.scaleAlign||_.get('scaleAlign'));
+			oy = _.get('sub_option.originy')- S.basic*H;
 			points = [];
 			d.value.each(function(v, j) {
 				x = sp * j;
