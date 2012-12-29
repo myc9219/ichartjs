@@ -5,7 +5,6 @@
 		<title>test</title>
 		<meta name="Description" content="" />
 		<meta name="Keywords" content="" />
-
 		<script type="text/javascript" src="../src/ichart.core.js"></script>
 		<script type="text/javascript" src="../src/ichart.element.js"></script>
 		<script type="text/javascript" src="../src/ichart.html.js"></script>
@@ -56,8 +55,9 @@
 		}
 	</style>
 	<script type="text/javascript">
+	var chart ;
 	$(function(){
-		var chart = new iChart.Gauge2D({
+		chart = new iChart.Gauge2D({
 			render : 'canvasDiv',
 			title : {
 				text : 'Gauge Component Designer',
@@ -65,18 +65,34 @@
 				fontsize : 30,
 				color : '#333333'
 			},
-			background_color:0,
 			inner_border_width:2,
 			outer_border_width:10,
 			shadow:true,
-			
+			value:10,
+			tickmarks_count:10,
+			start_angle:30,
+			//end_angle:-90,
 			width : 300,
 			height : 360,
 			radius:'90%'
 		});
+		chart.on('beforedraw',function(e){
+			chart.START_RUN_TIME = new Date().getTime();
+			return true;
+		});
 		
+		chart.on('draw',function(e){
+			chart.END_RUN_TIME = new Date().getTime();
+			chart.RUN_TIME_COST = chart.END_RUN_TIME - chart.START_RUN_TIME;
+			//console.log(chart.RUN_TIME_COST);
+		});
 		chart.draw();
+		setInterval(function(){
+			var vaule = Math.floor(Math.random() * 100);
+			chart.needleTo(vaule);
+		},1000);
 	});
+	
 	</script>
 	</head>
 	<body>

@@ -691,15 +691,15 @@
 					y : y * cos(x)
 				}
 			},
-			iGather : function(k) {
+			uid : function(k) {
 				return (k || 'ichartjs') + '_' + ceil(Math.random()*10000)+new Date().getTime().toString().substring(4);
 			},
 			register:function(c){
 				var id = c.get('id');
 				if(!id||id==''){
-					id = _.iGather(c.type);
+					id = _.uid(c.type);
 					while(Registry[id]){
-						id = _.iGather(c.type);
+						id = _.uid(c.type);
 					}
 					c.push('id',id);
 				}
