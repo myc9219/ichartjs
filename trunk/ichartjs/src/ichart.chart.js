@@ -187,7 +187,6 @@
 			}
 			
 			this.closePath();
-			
 			if(!b){
 				this.shadowOn(sw).fill(c);
 			}else{
@@ -199,10 +198,10 @@
 		/**
 		 * draw sector
 		 */
-		sector : function(x, y, r, dw,s, e, c, b, bw, bc, sw, ccw,a2r) {
+		sector : function(x, y, r, dw,s, e, c, b, bw, bc, sw, ccw,a2a,font) {
 			if (sw)
-				this.arc(x, y, r, dw, s, e, c,0,0,0,sw,ccw, true, true);
-			return this.arc(x, y, r, dw, s, e, c, b, bw, bc, false, ccw, !a2r);
+				this.arc(x, y, r, dw, s, e,c,b,bw,bc,sw,ccw, !a2a, !font);
+			return this.arc(x, y, r, dw, s, e, c, b, bw, bc, false, ccw, !a2a);
 		},
 		sector3D : function() {
 			var x0, y0,sPaint = function(x, y, a, b, s, e, ccw, h, c) {
@@ -370,11 +369,11 @@
 			return this.c.createRadialGradient(xs, ys, rs, xe, ye, re);
 		},
 		text : function(t, x, y, max, color, align, line, font, mode, h,sw,ro) {
-			if(t=='')return this;
 			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw,ro).restore();
 		},
 		fillText : function(t, x, y, max, color, mode, h,sw,ro) {
 			t = t.toString();
+			if(!t||!t.length)return;
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
@@ -1030,6 +1029,7 @@
 		},
 		runAnimation : function(_) {
 			_.fireEvent(_, 'beforeAnimation', [_]);
+			_.processAnimation = true;
 			_.animation(_);
 		},
 		doSort:function(){
@@ -1148,7 +1148,7 @@
 			 */
 			_.width = _.pushIf(_.W, 400);
 			_.height = _.pushIf(_.H, 300);
-			_.canvasid = $.iGather(_.type);
+			_.canvasid = $.uid(_.type);
 			_.shellid = "shell-"+_.canvasid;
 			
 			var H = [];
