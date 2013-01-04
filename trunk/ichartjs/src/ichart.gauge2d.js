@@ -31,8 +31,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			tickmarks_radius:'88%',
 			tickmarks_width:10,
 			tickmarks_bg_color:'#4fa9db',
-			
-			tickmarks_size:3,
+			tickmarks_size:2,
 			tickmarks_count:5,
 			tickmarks_color:'#344352',
 			tickmarks_lower : 0,
@@ -45,6 +44,22 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			 * @cfg {Number} the distance of column's bottom and text(default to 6)
 			 */
 			label_space : 12,
+			text:{
+				/**
+				 * @cfg {Number} Specifies the number of decimal.(default to 0)
+				 */
+				decimalsnum : 1,
+				unit_pre:'',
+				unit_post:'',
+				background_color:'#ffffff',
+				height:22,
+				width:60,
+				fontsize:13,
+				fontweight:600,
+				border : {
+					enable : true
+				}
+			},
 			needle_radius:'100%',
 			needle_size:    3,
             needle_color:  'red',
@@ -65,11 +80,14 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 		this.push('data',[0]);
 	},
 	doAnimation : function(t, d,_) {
+		var v = _.animationArithmetic(t,_.needle.start, _.needle.offset, d);
 		_.panel.draw();
-		_.needle.push('value',_.animationArithmetic(t,_.needle.start, _.needle.offset, d));
+		_.screen.push('text',v);
+		_.screen.draw();
+		_.needle.push('value',v);
 		_.needle.draw();
 	},
-	needleTo:function(value){
+	to:function(value){
 		var _ = this._();
 		if(value==_.needle.value)return;
 		if(_.processAnimation){
@@ -79,9 +97,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 		}
 		_.needle.value = parseFloat(value);
 		_.needle.offset = _.needle.value-_.needle.start;
-		if(!_.processAnimation){
-			_.runAnimation(_);
-		}
+		_.runAnimation(_);
 	},
 	doLabel:function(_,id,text,x, y){
 		_.labels.push(new iChart.Text(iChart.apply(_.get('label'),{
@@ -145,7 +161,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 				tickmarks_small_color:_.get('tickmarks_small_color'),
 				tickmarks_lower : _.get('tickmarks_lower'),
 				tickmarks_upper : _.get('tickmarks_upper'),
-				tickmarks_small_count:_.get('tickmarks_small_count')
+				tickmarks_small_count:_.get('tickmarks_small_count')||1
 			},
 			label:_.get('label'),
 			label_space:_.get('label_space'),
@@ -175,7 +191,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 				wA = size/2/_.tr,
 				sAA,
 				swA = wA*0.6;
-				
+				_.minMarks = T/scount;
 				_.lower =lower;
 				_.upper =upper;
 				
@@ -234,18 +250,18 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			}
 		}, _);
 		
-		
+		var value = (!_.get('value')&&_.get('value')!=0)?_.panel.lower:_.get('value');
 		
 		/**
 		 * build needle
 		 */
 		_.needle = new iChart.Custom({
-			z_index:_.get('z_index')-9,
+			z_index:_.get('z_index')-8,
 			radius:iChart.parsePercent(_.get('needle_radius'),_.panel.tr - _.get('tickmarks_width')*0.5),
 			originx:_.x,
 			originy:_.y,
 			panel:_.panel,
-			value:(!_.get('value')&&_.get('value')!=0)?_.panel.lower:_.get('value'),
+			value:value,
 			size:_.get('needle_size'),
 			background_color:_.get('needle_color'),
 			getRadian:function(v){
@@ -268,11 +284,29 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			},
 			drawFn:function(_){
 				var A = _.getRadian(_.get('value'));
-				_.T.sector(_.x, _.y,10, 0, 0, pi2, _.get('f_color'), 0, 0,0,0, false, true);
-				_.T.line(_.x, _.y, _.x+Math.cos(A)*_.r, _.y+Math.sin(A)*_.r,_.get('size'),_.get('f_color'));
+				
+				_.T.sector(_.x, _.y,10, 0, 0, pi2, _.get('f_color'),true,2,'#333333',0, false, true);
+				
+				_.T.line(_.x+Math.cos(A)*12, _.y+Math.sin(A)*12, _.x+Math.cos(A)*_.r, _.y+Math.sin(A)*_.r,_.get('size'),_.get('f_color'));
 			}
 		}, _);
 		
+		/**
+		 * build screen
+		 */
+		_.screen = new iChart.Text(iChart.apply(_.get('text'),{
+			z_index:_.get('z_index')-9,
+			originx:_.x-_.get('text.width')/2,
+			originy:_.y+r/3,
+			text:value
+		}), _);
+		
+		_.screen.on('beforedraw', function() {
+			this.push('text',this.get('unit_pre')+parseFloat(this.get('text')).toFixed(this.get('decimalsnum'))+this.get('unit_post'));
+			return true;
+		});
+		
+		_.components.push(_.screen);
 		_.components.push(_.panel);
 		_.components.push(_.needle);
 	}

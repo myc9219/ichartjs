@@ -1009,13 +1009,12 @@
 				});
 			} else {
 				$.requestAnimFrame(function() {
-					_.variable.animation.time = 0;
 					_.Animationed = true;
+					
 					/**
 					 * make plugins's status is the same as chart
 					 */
 					_.plugins.each(function(p){
-						p.variable.animation.time =0;
 						p.Animationed = true;
 					});
 					_.draw();
@@ -1029,6 +1028,11 @@
 		},
 		runAnimation : function(_) {
 			_.fireEvent(_, 'beforeAnimation', [_]);
+			_.variable.animation = {
+					type : 0,
+					time : 0,
+					queue : []
+			}
 			_.processAnimation = true;
 			_.animation(_);
 		},
@@ -1412,12 +1416,6 @@
 				_.doAnimation = _.get('doAnimation');
 			}
 			_.animationArithmetic = $.getAA(_.get('animation_timing_function'));
-			
-			_.variable.animation = {
-					type : 0,
-					time : 0,
-					queue : []
-			};
 			
 			_.components = [];
 			

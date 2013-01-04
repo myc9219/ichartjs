@@ -691,15 +691,15 @@
 					y : y * cos(x)
 				}
 			},
-			iGather : function(k) {
+			uid : function(k) {
 				return (k || 'ichartjs') + '_' + ceil(Math.random()*10000)+new Date().getTime().toString().substring(4);
 			},
 			register:function(c){
 				var id = c.get('id');
 				if(!id||id==''){
-					id = _.iGather(c.type);
+					id = _.uid(c.type);
 					while(Registry[id]){
-						id = _.iGather(c.type);
+						id = _.uid(c.type);
 					}
 					c.push('id',id);
 				}
@@ -2422,7 +2422,6 @@ $.Label = $.extend($.Component, {
 		doDraw:function(_){
 			if(_.get('box_feature'))
 			_.T.box(_.x,_.y,_.get(_.W),_.get(_.H),_.get('border'),_.get('f_color'));
-			if(_.get('text')!='')
 			_.T.text(_.get('text'),_.get('textx'),_.get('texty'),_.get(_.W),_.get('color'),_.get('textAlign'),_.get('textBaseline'),_.get('fontStyle'),_.get('writingmode'),_.get('line_height'),_.get('shadow'),_.get('rotate'));
 		},
 		isEventValid:function(){
@@ -2643,7 +2642,6 @@ $.Label = $.extend($.Component, {
 			}
 			
 			this.closePath();
-			
 			if(!b){
 				this.shadowOn(sw).fill(c);
 			}else{
@@ -2655,10 +2653,10 @@ $.Label = $.extend($.Component, {
 		/**
 		 * draw sector
 		 */
-		sector : function(x, y, r, dw,s, e, c, b, bw, bc, sw, ccw,a2r) {
+		sector : function(x, y, r, dw,s, e, c, b, bw, bc, sw, ccw,a2a,font) {
 			if (sw)
-				this.arc(x, y, r, dw, s, e, c,0,0,0,sw,ccw, true, true);
-			return this.arc(x, y, r, dw, s, e, c, b, bw, bc, false, ccw, !a2r);
+				this.arc(x, y, r, dw, s, e,c,b,bw,bc,sw,ccw, !a2a, !font);
+			return this.arc(x, y, r, dw, s, e, c, b, bw, bc, false, ccw, !a2a);
 		},
 		sector3D : function() {
 			var x0, y0,sPaint = function(x, y, a, b, s, e, ccw, h, c) {
@@ -2826,11 +2824,11 @@ $.Label = $.extend($.Component, {
 			return this.c.createRadialGradient(xs, ys, rs, xe, ye, re);
 		},
 		text : function(t, x, y, max, color, align, line, font, mode, h,sw,ro) {
-			if(t=='')return this;
 			return this.save().textStyle(align, line, font).fillText(t, x, y, max, color, mode, h,sw,ro).restore();
 		},
 		fillText : function(t, x, y, max, color, mode, h,sw,ro) {
 			t = t.toString();
+			if(!t||!t.length)return;
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
@@ -3466,13 +3464,12 @@ $.Label = $.extend($.Component, {
 				});
 			} else {
 				$.requestAnimFrame(function() {
-					_.variable.animation.time = 0;
 					_.Animationed = true;
+					
 					/**
 					 * make plugins's status is the same as chart
 					 */
 					_.plugins.each(function(p){
-						p.variable.animation.time =0;
 						p.Animationed = true;
 					});
 					_.draw();
@@ -3486,6 +3483,12 @@ $.Label = $.extend($.Component, {
 		},
 		runAnimation : function(_) {
 			_.fireEvent(_, 'beforeAnimation', [_]);
+			_.variable.animation = {
+					type : 0,
+					time : 0,
+					queue : []
+			}
+			_.processAnimation = true;
 			_.animation(_);
 		},
 		doSort:function(){
@@ -3604,7 +3607,7 @@ $.Label = $.extend($.Component, {
 			 */
 			_.width = _.pushIf(_.W, 400);
 			_.height = _.pushIf(_.H, 300);
-			_.canvasid = $.iGather(_.type);
+			_.canvasid = $.uid(_.type);
 			_.shellid = "shell-"+_.canvasid;
 			
 			var H = [];
@@ -3868,12 +3871,6 @@ $.Label = $.extend($.Component, {
 				_.doAnimation = _.get('doAnimation');
 			}
 			_.animationArithmetic = $.getAA(_.get('animation_timing_function'));
-			
-			_.variable.animation = {
-					type : 0,
-					time : 0,
-					queue : []
-			};
 			
 			_.components = [];
 			
