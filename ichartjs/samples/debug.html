@@ -62,7 +62,7 @@
 			title : {
 				text : 'Gauge Component Designer',
 				height:40,
-				fontsize : 30,
+				fontsize : 20,
 				color : '#333333'
 			},
 			inner_border_width:2,
@@ -71,6 +71,7 @@
 			value:10,
 			tickmarks_count:10,
 			start_angle:30,
+			text:{decimalsnum:1,unit_post:'KM'},
 			//end_angle:-90,
 			width : 300,
 			height : 360,
@@ -87,15 +88,24 @@
 			//console.log(chart.RUN_TIME_COST);
 		});
 		chart.draw();
-		setInterval(function(){
-			var vaule = Math.floor(Math.random() * 100);
-			chart.needleTo(vaule);
-		},1000);
+		
+		
 	});
+	function interval(){
+		setInterval(function(){
+			chart.to(Math.floor(Math.random() * 100));
+		},2000);
+	}
 	
+	function change(){
+		chart.to(Math.floor(Math.random() * 100));
+	}
 	</script>
 	</head>
 	<body>
 		<div id='canvasDiv' ></div>
+		<div style='width:360px;'>
+			<input type="button" onclick="change();" value="随机">
+		</div>
 	</body>
 </html>
