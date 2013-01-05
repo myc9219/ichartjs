@@ -1390,10 +1390,7 @@
 			
 			_.push('sub_option.value',v);
 			
-			/**
-			 * prevent there no property background_color,use coloe instead
-			 */
-			_.pushIf('sub_option.background_color', d.color);
+			_.push('sub_option.background_color',d.background_color || d.color);
 			
 			if (_.get('sub_option.tip.enable')){
 				_.push('sub_option.tip.text',t || (d.name + ' ' +v));
@@ -1436,6 +1433,7 @@
 			});
 			
 			_.oneWay(_);
+			
 			
 			/**
 			 * clone config to sub_option
