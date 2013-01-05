@@ -119,11 +119,7 @@
 			
 			var _ = this._();
 			
-			_.css('position','absolute');
-			
 			_.text(_.get('name'),_.get('value'),_.get('text'),0,_);
-			
-			_.style = _.dom.style;
 			_.hidden();
 			
 			if(_.get('animation')){
@@ -137,8 +133,6 @@
 					}
 				},false);
 			}
-			
-			_.wrap.appendChild(_.dom);
 			
 			_.T.on('mouseover',function(c,e,m){
 				_.show(e,m);	

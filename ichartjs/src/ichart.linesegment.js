@@ -129,7 +129,6 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 				j=b;
 				b = _.get('hollow_color');
 			}
-			
 			p.each(function(q,i){
 				if(!q.ignored){
 					if(!f||!f.call(_,_.T,_.get('sign'),q.x, q.y,s,b,j)){

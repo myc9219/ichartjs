@@ -610,6 +610,11 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			s.draw()
 		});
 	},
+	destroy:function(){
+		if(this.crosshair){
+			this.crosshair.destroy();
+		}
+	},
 	doCrosshair:function(_){
 		if (_.get('crosshair.enable')&&!_.crosshair) {
 			_.push('crosshair.wrap', _.root.shell);

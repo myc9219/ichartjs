@@ -1407,19 +1407,26 @@ $.Html = $.extend($.Element,{
 		this.transitions = "";
 	},
 	initialize:function(){
-		this.wrap = this.get('wrap');
-		this.dom = document.createElement("div");
+		var _ = this._();
+		_.wrap = _.get('wrap');
+		_.dom = document.createElement("div");
 		
-		if(this.get('shadow')){
-			this.css('boxShadow',this.get('shadow_offsetx')+'px '+this.get('shadow_offsety')+'px '+this.get('shadow_blur')+'px '+this.get('shadow_color'));
+		if(_.get('shadow')){
+			_.css('boxShadow',_.get('shadow_offsetx')+'px '+_.get('shadow_offsety')+'px '+_.get('shadow_blur')+'px '+_.get('shadow_color'));
 		}
-		if(this.get('border.enable')){
-			this.css('border',this.get('border.width')+"px "+this.get('border.style')+" "+this.get('border.color'));
-			this.css('borderRadius',this.get('border.radius')+"px");
+		if(_.get('border.enable')){
+			_.css('border',_.get('border.width')+"px "+_.get('border.style')+" "+_.get('border.color'));
+			_.css('borderRadius',_.get('border.radius')+"px");
 		}
-		this.css('zIndex',this.get('index'));
 		
-		this.applyStyle();
+		_.css('position','absolute');
+		_.css('zIndex',_.get('index'));
+		
+		_.applyStyle();
+		
+		_.wrap.appendChild(_.dom);
+		
+		_.style = _.dom.style;
 	},
 	width:function(){
 		return this.dom.offsetWidth;
@@ -1435,6 +1442,9 @@ $.Html = $.extend($.Element,{
 			type = 'oTransitionEnd';
 		}
 		$.Event.addEvent(this.dom,type,fn,useCapture);
+	},
+	destroy:function(){
+		this.wrap.removeChild(this.dom); 
 	},
 	transition:function(v){
 		this.transitions = this.transitions==''?v:this.transitions+','+v;
@@ -1548,6 +1558,11 @@ $.Component = $.extend($.Painter, {
 			y : this.y,
 			width : this.get("width"),
 			height : this.get("height")
+		}
+	},
+	destroy:function(){
+		if(this.tip){
+			this.tip.destroy();
 		}
 	},
 	doConfig : function() {
@@ -1718,11 +1733,7 @@ $.Component = $.extend($.Painter, {
 			
 			var _ = this._();
 			
-			_.css('position','absolute');
-			
 			_.text(_.get('name'),_.get('value'),_.get('text'),0,_);
-			
-			_.style = _.dom.style;
 			_.hidden();
 			
 			if(_.get('animation')){
@@ -1736,8 +1747,6 @@ $.Component = $.extend($.Painter, {
 					}
 				},false);
 			}
-			
-			_.wrap.appendChild(_.dom);
 			
 			_.T.on('mouseover',function(c,e,m){
 				_.show(e,m);	
@@ -1855,29 +1864,19 @@ $.Component = $.extend($.Painter, {
 			
 			_.top = $.fixPixel(_.get(_.O));
 			_.left = $.fixPixel(_.get(_.L));
-			
-			_.dom = document.createElement("div");
-			
-			_.dom.style.zIndex=_.get('index');
-			_.dom.style.position="absolute";
 			/**
 			 * set size zero make integration with vertical and horizontal
 			 */
-			_.dom.style.width= $.toPixel(0);
-			_.dom.style.height=$.toPixel(0);
-			_.dom.style.top=$.toPixel(_.get(_.O));
-			_.dom.style.left=$.toPixel(_.get(_.L));
+			_.css('width','0px');
+			_.css('height','0px');
+			_.css('top',_.top+'px');
+			_.css('left',_.left+'px');
 			_.css('visibility','hidden');
 			
 			_.horizontal = _.doCreate(_,_.get('hcross')?$.toPixel(_.get(_.W)):"0px",L);
 			_.vertical = _.doCreate(_,L,_.get('vcross')?$.toPixel(_.get(_.H)):"0px");
+			
 			_.size = _.get('line_width')/2;
-			
-			if(_.get('shadow')){
-				_.dom.style.boxShadow = _.get('shadowStyle');
-			}
-			
-			_.wrap.appendChild(_.dom);
 			
 			_.T.on('mouseover',function(c,e,m){
 				_.show(e,m);	
@@ -3400,6 +3399,7 @@ $.Label = $.extend($.Component, {
 			this.Animationed = false;
 			this.data = [];
 			this.plugins = [];
+			this.components = [];
 			this.total = 0;
 			this.ICHARTJS_CHART = true;
 		},
@@ -3539,6 +3539,11 @@ $.Label = $.extend($.Component, {
 			c.duration =_.duration;
 			_.components.push(c);
 			_.plugins.push(c);
+		},
+		destroy:function(){
+			this.components.eachAll(function(C) {
+				C.destroy();
+			});
 		},
 		/**
 		 * @method return the title,return undefined if unavailable
@@ -3871,7 +3876,10 @@ $.Label = $.extend($.Component, {
 				_.doAnimation = _.get('doAnimation');
 			}
 			_.animationArithmetic = $.getAA(_.get('animation_timing_function'));
-			
+			/**
+			 * destroy exist dom
+			 */
+			_.destroy();
 			_.components = [];
 			
 			/**
@@ -4661,6 +4669,11 @@ $.Coordinate2D = $.extend($.Component, {
 		_.scale.each(function(s) {
 			s.draw()
 		});
+	},
+	destroy:function(){
+		if(this.crosshair){
+			this.crosshair.destroy();
+		}
 	},
 	doCrosshair:function(_){
 		if (_.get('crosshair.enable')&&!_.crosshair) {
@@ -7159,7 +7172,6 @@ $.LineSegment = $.extend($.Component, {
 				j=b;
 				b = _.get('hollow_color');
 			}
-			
 			p.each(function(q,i){
 				if(!q.ignored){
 					if(!f||!f.call(_,_.T,_.get('sign'),q.x, q.y,s,b,j)){

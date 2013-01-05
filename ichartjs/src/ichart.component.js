@@ -73,6 +73,11 @@ iChart.Component = iChart.extend(iChart.Painter, {
 			height : this.get("height")
 		}
 	},
+	destroy:function(){
+		if(this.tip){
+			this.tip.destroy();
+		}
+	},
 	doConfig : function() {
 		iChart.Component.superclass.doConfig.call(this);
 		var _ = this._();
