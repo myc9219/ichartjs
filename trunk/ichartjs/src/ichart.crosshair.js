@@ -92,29 +92,19 @@
 			
 			_.top = iChart.fixPixel(_.get(_.O));
 			_.left = iChart.fixPixel(_.get(_.L));
-			
-			_.dom = document.createElement("div");
-			
-			_.dom.style.zIndex=_.get('index');
-			_.dom.style.position="absolute";
 			/**
 			 * set size zero make integration with vertical and horizontal
 			 */
-			_.dom.style.width= iChart.toPixel(0);
-			_.dom.style.height=iChart.toPixel(0);
-			_.dom.style.top=iChart.toPixel(_.get(_.O));
-			_.dom.style.left=iChart.toPixel(_.get(_.L));
+			_.css('width','0px');
+			_.css('height','0px');
+			_.css('top',_.top+'px');
+			_.css('left',_.left+'px');
 			_.css('visibility','hidden');
 			
 			_.horizontal = _.doCreate(_,_.get('hcross')?iChart.toPixel(_.get(_.W)):"0px",L);
 			_.vertical = _.doCreate(_,L,_.get('vcross')?iChart.toPixel(_.get(_.H)):"0px");
+			
 			_.size = _.get('line_width')/2;
-			
-			if(_.get('shadow')){
-				_.dom.style.boxShadow = _.get('shadowStyle');
-			}
-			
-			_.wrap.appendChild(_.dom);
 			
 			_.T.on('mouseover',function(c,e,m){
 				_.show(e,m);	

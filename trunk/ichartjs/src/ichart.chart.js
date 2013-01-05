@@ -945,6 +945,7 @@
 			this.Animationed = false;
 			this.data = [];
 			this.plugins = [];
+			this.components = [];
 			this.total = 0;
 			this.ICHARTJS_CHART = true;
 		},
@@ -1084,6 +1085,11 @@
 			c.duration =_.duration;
 			_.components.push(c);
 			_.plugins.push(c);
+		},
+		destroy:function(){
+			this.components.eachAll(function(C) {
+				C.destroy();
+			});
 		},
 		/**
 		 * @method return the title,return undefined if unavailable
@@ -1416,7 +1422,10 @@
 				_.doAnimation = _.get('doAnimation');
 			}
 			_.animationArithmetic = $.getAA(_.get('animation_timing_function'));
-			
+			/**
+			 * destroy exist dom
+			 */
+			_.destroy();
 			_.components = [];
 			
 			/**
