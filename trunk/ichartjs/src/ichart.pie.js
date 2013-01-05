@@ -150,6 +150,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		_.push('sub_option.listeners.changed', function(se, st, i) {
 			_.fireEvent(_, st ? 'bound' : 'rebound', [_, se.get('name')]);
 		});
+		
 		_.sectors.push(_.doSector(_,d));
 	},
 	doSector:function(_){
