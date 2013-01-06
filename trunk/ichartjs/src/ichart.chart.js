@@ -44,6 +44,7 @@
 		if(_.dataType=='simple'){
 			_.total = 0;
 			c.each(function(d,i){
+				d.background_color = d.color;
 				V  = d.value;
 				if($.isArray(V)){
 					var T = 0;
@@ -103,6 +104,7 @@
 					item.push({
 						name:d.name,
 						value:d.value[i],
+						background_color:r,
 						color:r
 					});
 				});
@@ -344,10 +346,7 @@
 			}else{
 				x+=w/2;
 				y+=h/2;
-				if(m=='outin'){
-					c.reverse();
-				}
-				return this.avgRadialGradient(x,y,(r||0),x,y,(w>h?h:w),c);
+				return this.avgRadialGradient(x,y,(r||0),x,y,(w>h?h:w),m=='outin'?c.reverse():c);
 			}
 		},
 		avgLinearGradient : function(xs, ys, xe, ye, c) {
@@ -587,23 +586,6 @@
 				}
 			}
 			return this.stroke(true).restore();
-		},
-		manyLine : function(p, w, c, smooth, smo) {
-			var T = [],Q  = false;
-			smo = smo || 1.5;
-			p.each(function(p0){
-				if(p0.ignored&&Q){
-					this.lineArray(T, w, c, smooth, smo);
-					T = [];
-					Q = false;
-				}else if(!p0.ignored){
-					T.push(p0);
-					Q = true;
-				}
-			},this);
-			if(T.length){
-				this.lineArray(T, w, c, smooth, smo);
-			}
 		},
 		dotted : function(x1, y1, x2, y2, w, c,L,f,last) {
 			if (!w)
@@ -1389,8 +1371,6 @@
 			iChart.merge(_.get('sub_option'),o);
 			
 			_.push('sub_option.value',v);
-			
-			_.push('sub_option.background_color',d.background_color || d.color);
 			
 			if (_.get('sub_option.tip.enable')){
 				_.push('sub_option.tip.text',t || (d.name + ' ' +v));

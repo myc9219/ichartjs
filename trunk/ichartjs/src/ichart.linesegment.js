@@ -36,6 +36,10 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			 */
 			sign : 'round',
 			/**
+			 * @cfg {String} Specifies the bgcolor when applies a Area.If not given,use lighter bgcolor of line.(default to null)
+			 */
+			area_color:null,
+			/**
 			 * @cfg {Boolean} If true the centre of point will be hollow.(default to true)
 			 */
 			hollow : true,
@@ -115,32 +119,24 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 	},
 	drawSegment : function() {
 		var _ = this._(),p = _.get('points'),b=_.get('f_color'),h=_.get('brushsize');
-		if (_.get('area')) {
-			_.T.polygon(_.get('light_color2'), false, 1, '', false,_.get('area_opacity'),  _.get('smooth')?p:[{x:_.x,y:_.y}].concat(p.concat([{x:_.x + _.get(_.W),y:_.y}])), _.get('smooth'), _.get('smoothing'),[{x:_.x,y:_.y},{x:_.x + _.get(_.W),y:_.y}]);
-		}
+		
+		_.polygons.each(function(P){
+			_.T.polygon.apply(_.T,P);
+		});
 		
 		_.T.shadowOn(_.get('shadow'));
 		
-		_.T[_.ignored_?"manyLine":"lineArray"](p,h, b, _.get('smooth'), _.get('smoothing'));
+		_.lines.each(function(L){
+			_.T.lineArray.apply(_.T,L);
+		});
 		
-		if (_.get('intersection')) {
-			var f = _.getPlugin('sign'),s=_.get('point_size'),j = _.get('hollow_color');
-			if(_.get('hollow_inside')){
-				j=b;
-				b = _.get('hollow_color');
+		_.intersections.each(function(I){
+			if(_.sign_plugin){
+				_.sign_plugin_fn.apply(_,I);
+			}else{
+				_.T.round.apply(_.T,I);
 			}
-			p.each(function(q,i){
-				if(!q.ignored){
-					if(!f||!f.call(_,_.T,_.get('sign'),q.x, q.y,s,b,j)){
-						if (_.get('hollow')) {
-							_.T.round(q.x, q.y, s/2-h,b,h+1,j);
-						} else {
-							_.T.round(q.x, q.y, s/2,b);
-						}
-					}
-				}
-			},_);
-		}
+		});
 		
 		if (_.get('shadow')) {
 			_.T.shadowOff();
@@ -154,11 +150,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			});
 		}
 	},
-	isEventValid : function() {
-		return {
-			valid : false
-		};
-	},
+	isEventValid : function() {},
 	tipInvoke : function() {
 		var x = this.x, y = this.y, o = this.get('tip_offset'), s = this.get('point_size') + o, _ = this;
 		return function(w, h, m) {
@@ -175,9 +167,13 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		iChart.LineSegment.superclass.doConfig.call(this);
 		iChart.Assert.isTrue(this.get('point_space')>0,'point_space');
 
-		var _ = this._(),L = !!_.get('label'),ps = _.get('point_size') * 3 / 2,sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points'),N=_.get('name');
+		var _ = this._(),A = _.get('area'), s = _.get('smooth'), sm = _.get('smoothing') || 1.5, b = _.get('f_color'), h = _.get('brushsize'), L = !!_.get('label'), ps = _.get('point_size') * 3 / 2, sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _
+				.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points'), N = _.get('name');
 		
 		_.labels = [];
+		_.polygons = [];
+		_.lines = [];
+		_.intersections = [];
 		
 		p.each(function(q){
 			q.x_ = q.x;
@@ -189,11 +185,56 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 				_.push('label.text',_.fireString(_, 'parseText', [_, q.value],q.value));
 				iChart.applyIf(_.get('label'),{
 					textBaseline : 'bottom',
-					color:_.get('f_color')
+					color:b
 				});
 				_.labels.push(new iChart.Text(_.get('label'), _))
 			}
 		});
+		
+		var PP = function(p,x1,y1,x2,y2){
+			if(A){
+				_.polygons.push([_.get('area_color')||_.get('light_color2'),0,h,0,0,_.get('area_opacity'),s?p:[{x:x1,y:y1}].concat(p.concat([{x:x2,y:y2}])),s,sm,[{x:x1,y:y1},{x:x2,y:y2}]]);
+			}
+		}
+		
+		if(_.ignored_){
+			var T = [],Q  = false;
+			p.each(function(p0){
+				if(p0.ignored&&Q){
+					_.lines.push([T, h, b, s, sm]);
+					PP(T,T[0].x,_.y,T[T.length-1].x,_.y);
+					T = [];
+					Q = false;
+				}else if(!p0.ignored){
+					T.push(p0);
+					Q = true;
+				}
+			},_);
+			if(T.length){
+				_.lines.push([T, h, b, s, sm]);
+				PP(T,T[0].x,_.y,T[T.length-1].x,_.y);
+			}
+		}else{
+			_.lines.push([p,h,b,s, sm]);
+			PP(p,_.x,_.y,_.x+ _.get(_.W),_.y);
+		}
+		
+		if (_.get('intersection')) {
+			var f = _.getPlugin('sign'),g=b,j = _.get('hollow_color'),pps=_.get('point_size');
+			_.sign_plugin = iChart.isFunction(f);
+			_.sign_plugin_fn = f;
+			
+			if(_.get('hollow_inside')){
+				g = j;
+				j = b;
+			}
+			
+			p.each(function(q){
+				if(!q.ignored){
+					_.intersections.push(_.sign_plugin?[_.T,_.get('sign'),q.x, q.y,pps,g,j]:_.get('hollow')?[q.x, q.y, pps/2-h,g,h+1,j]:[q.x, q.y, pps/2,g]);
+				}
+			});
+		}
 		
 		if (rx <= 0||rx > sp / 2) {
 			rx = _.push('event_range_x', sp / 2);
