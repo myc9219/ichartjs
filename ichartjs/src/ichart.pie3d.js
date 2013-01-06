@@ -29,7 +29,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		_.push('sub_option.cylinder_height', (d.cylinder_height ? d.cylinder_height * _.get('zRotate') : _.get('cylinder_height')));
 		return new iChart[_.sub](_.get('sub_option'), _);
 	},
-	oneProxy:function(_){
+	one:function(_){
 		var layer,spaint,L = [],c = _.get('counterclockwise'), abs = function(n,M) {
 			/**
 			 * If M,close to pi/2,else pi*3/2
@@ -129,7 +129,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 				_.T.ellipse(s.x, s.y, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, false, true);
 			}, _);
 		}
-		_.oneProxy = $.emptyFn;
+		_.one = $.emptyFn;
 	},
 	doConfig : function() {
 		iChart.Pie3D.superclass.doConfig.call(this);
@@ -143,7 +143,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		
 		_.parse(_);
 		
-		_.oneProxy(_);
+		_.one(_);
 		
 		_.components.push(_.proxy);
 	}
