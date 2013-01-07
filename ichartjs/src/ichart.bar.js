@@ -26,6 +26,10 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 			 */
 			bar_height : undefined,
 			/**
+			 * @cfg {Number} the space of each column.this option is readOnly.(default to undefined)
+			 */
+			bar_space : undefined,
+			/**
 			 * @cfg {Number} Specifies the distance of bar's bottom and text(default to 6)
 			 */
 			text_space : 6,
