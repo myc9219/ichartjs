@@ -23,6 +23,10 @@ iChart.Html = iChart.extend(iChart.Element,{
 		this.set({
 			 animation:true,
 			 /**
+			  * @cfg If true the component will has defalut action when event fired.(default to true)
+			  */
+			 default_action:true,
+			 /**
 			  * @inner Specifies the width of this element in pixels.
 			  */
 			 width:0,
@@ -73,6 +77,10 @@ iChart.Html = iChart.extend(iChart.Element,{
 		_.wrap.appendChild(_.dom);
 		
 		_.style = _.dom.style;
+		
+		if(_.get('default_action')){
+			_.doAction(_);
+		}
 	},
 	width:function(){
 		return this.dom.offsetWidth;

@@ -626,6 +626,9 @@
 		round : function(x, y, r, c, bw, bc) {
 			return this.arc(x, y, r,0, 0, PI2, c, !!bc, bw, bc);
 		},
+		round0 : function(q, r, c, bw, bc) {
+			return this.arc(q.x, q.y, r,0, 0, PI2, c, !!bc, bw, bc);
+		},
 		fillRect : function(x, y, w, h) {
 			this.c.fillRect(x, y, w, h);
 			return this;
@@ -1000,8 +1003,8 @@
 					_.plugins.each(function(p){
 						p.Animationed = true;
 					});
-					_.draw();
 					_.processAnimation = false;
+					_.draw();
 					_.plugins.each(function(p){
 						p.processAnimation = false;
 					});
@@ -1011,10 +1014,11 @@
 		},
 		runAnimation : function(_) {
 			_.fireEvent(_, 'beforeAnimation', [_]);
+			if(!_.A_draw)
 			_.variable.animation = {
-					type : 0,
-					time : 0,
-					queue : []
+				type : 0,
+				time : 0,
+				queue : []
 			}
 			_.processAnimation = true;
 			_.animation(_);

@@ -42,7 +42,6 @@
 		<script type="text/javascript" src="../src/ichart.line.js"></script>
 		<script type="text/javascript" src="../src/ichart.linebasic2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.area2d.js"></script>
-		<script type="text/javascript" src="../src/ichart.linemonitor2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.gauge2d.js"></script>
 	<style type="text/css">
 		body{
@@ -56,121 +55,95 @@
 	</style>
 	<script type="text/javascript">
 
-	$(function(){
-		var flow=[],labels = [];
-		
-		for(var i=0;i<31;i++){
-			flow.push(Math.floor(Math.random()*(30+((i%12)*5)))+10);
-			labels.push((i+1)+"");
-		}
-		
+	$(function(){	
 		var data = [
-		         	{
-		         		name : '产品A',
-		         		value:flow,
-		         		color:'#0d8ecf',
-		         		linewidth:2,
-		         		area_color:'red'//设置线下区域背景色
-		         	}
-		         ];
-				
-		var line = new iChart.Area2D({
+		        	{name : 'Alex',value : 25,color:'#849fb4'},
+		        	{name : 'Mark',value : 35,color:'#bf9d32'},
+		        	{name : 'David',value : 42.3,color:'#728f1b'},
+		        	{name : 'Graham',value : 35.3,color:'#bf784c'},
+		        	{name : 'John',value : 31.3,color:'#2f8586'}
+	        	];
+    	
+		var chart = new iChart.Column3D({
 			render : 'canvasDiv',
 			data: data,
-			align:'center',
-			title:{
-				text:'产品A销售情况-应用了一些简单样式的',
-				color:'#e0e5e8',
-				height:40,
-				border:{
-					enable:true,
-					width:[0,0,2,0],
-					color:'#343b3e'
-				}
+			title : {
+				text : 'This is a sample spirit from FusionCharts',
+				color : '#3e576f'
 			},
-			footnote:{
-				text:'StatCounter Global Stats',
-				color:'#e0e5e8',
-				height:30,
-				border:{
-					enable:true,
-					width:[2,0,0,0],
-					color:'#343b3e'
-				}
+			subtitle : {
+				text : 'Top 5 Sales Person,2011',
+				color : '#6d869f'
 			},
-			padding:'2 10',
-			border:{
-				width:[0,20,0,20],
-				color:'#1e2223'
+			footnote : {
+				text : 'ichartjs.com',
+				color : '#909090',
+				fontsize : 11,
+				padding : '0 38'
 			},
 			width : 800,
 			height : 400,
-			shadow:true,
-			shadow_color:'#15353a',
-			shadow_blur:8,
-			background_color : '#3b4346',
-			tip:{
-				enable:true,
-				shadow:true
+			shadow : true,
+			shadow_blur : 2,
+			shadow_color : '#aaaaaa',
+			shadow_offsetx : 1,
+			shadow_offsety : 0,
+			column_width : 98,
+			zScale:0.5,
+			xAngle : 50,
+			bottom_scale:1.1,
+			label:{
+				color:'#4c4f48'
 			},
-			crosshair:{
-				enable:true,
-				line_color:'#62bce9'//十字线的颜色
-			},
-			sub_option : {
-				smooth:true,
-				point_size:10,
-				label:{color:'#e0e5e8',fontsize:11,fontweight:600}
-			},
-			listeners:{
-				/**
-				* d:相当于data[0],即是一个线段的对象
-				* v:相当于data[0].value
-				* x:计算出来的横坐标
-				* x:计算出来的纵坐标
-				* j:序号
-				*/
-				parsePoint:function(d,v,x,y,j){
-					//利用序号进行过滤折线图的某一段，这样就能达到随便显示哪一段
-					if(j<2||(j>12&&j<18)||j>28)
-					return {ignored:true}//ignored为true表示忽略该点
+			sub_option:{
+				label : {
+					color : '#4c4f48'
+				},
+				listeners:{
+					parseText:function(r,t){
+						//自定义柱形图上方label的格式。
+						return '$'+t+'k';
+					}
 				}
 			},
+			text_space : 16,//坐标系下方的label距离坐标系的距离。
 			coordinate:{
-				width:600,
-				height:260,
-				axis:{
-					color:'#9f9f9f',
-					width:[0,0,2,2]
-				},
-				grid_color : '#9f9f9f',
+				background_color : '#d5d8d1',
+				grid_color : '#a4ad96',
+				color_factor : 0.24,
+				board_deep:10,//背面厚度
+				pedestal_height:10,//底座高度
+				left_board:false,//取消左侧面板
+				width:580,
+				valid_width:560,
 				scale:[{
-					 position:'left',
-					 label:{color:'#e0e5e8'},
+					 position:'left',	
 					 start_scale:0,
-					 end_scale:100,
+					 end_scale:50,
 					 scale_space:10,
-					 scale_size:2,
-					 scale_color:'#9f9f9f'
-				},{
-					 position:'bottom',	
-					 label:{color:'#e0e5e8'},
-					 labels:labels
+					 label:{
+						color:'#4c4f48'
+					 },
+					 listeners:{
+						parseText:function(t,x,y){
+						//自定义左侧坐标系刻度文本的格式。
+							return {text:'$'+t+'k'}
+						}
+					 }
 				}]
 			}
 		});
-	
-	//开始画图
-	line.draw();
-});
+		console.profile("test");
+		chart.draw();
+		console.profileEnd("test");
+	});
 	</script>
 	</head>
 	<body>
 		<div id='canvasDiv' ></div>
 		<div style='width:360px;'>
-			<input type="button" onclick="refreshdata1();" value="正向">
-			<input type="button" onclick="refreshdata2();" value="反向">
-			<input type="button" onclick="refreshdata3();" value="荡秋千">
+			<br/>
+			<input type="button" onclick="change();" value="随机">
 		</div>
 	</body>
 </html>

@@ -114,6 +114,24 @@
 				this.css('visibility','hidden');
 			}
 		},
+		doAction:function(_){
+			_.T.on('mouseover',function(c,e,m){
+				_.show(e,m);	
+			}).on('mouseout',function(c,e,m){
+				_.hidden(e);
+			});
+			
+			if(_.get('showType')=='follow'){
+				_.T.on('mousemove',function(c,e,m){
+					if(_.T.variable.event.mouseover){
+						setTimeout(function(){
+							if(_.T.variable.event.mouseover)
+								_.follow(e,m);
+						},_.get('delay'));
+					}
+				});
+			}
+		},
 		initialize:function(){
 			iChart.Tip.superclass.initialize.call(this);
 			
@@ -134,22 +152,6 @@
 				},false);
 			}
 			
-			_.T.on('mouseover',function(c,e,m){
-				_.show(e,m);	
-			}).on('mouseout',function(c,e,m){
-				_.hidden(e);
-			});
-			
-			if(_.get('showType')=='follow'){
-				_.T.on('mousemove',function(c,e,m){
-					if(_.T.variable.event.mouseover){
-						setTimeout(function(){
-							if(_.T.variable.event.mouseover)
-								_.follow(e,m);
-						},_.get('delay'));
-					}
-				});
-			}
 		}
 });
 /**
