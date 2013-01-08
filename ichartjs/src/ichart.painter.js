@@ -94,6 +94,7 @@ iChart.Painter = iChart.extend(iChart.Element, {
 			mouseover : false
 		};
 		
+		this.variable.animation = {}
 		/**
 		 * register the common event
 		 */

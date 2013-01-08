@@ -44,7 +44,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			 * @cfg {Number} the distance of column's bottom and text(default to 6)
 			 */
 			label_space : 12,
-			text:{
+			screen:{
 				/**
 				 * @cfg {Number} Specifies the number of decimal.(default to 0)
 				 */
@@ -60,6 +60,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 					enable : true
 				}
 			},
+			cap:'',
 			needle_radius:'100%',
 			needle_size:    3,
             needle_color:  'red',
@@ -71,7 +72,19 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			panel_color:'#FEFEFE',
 			inner_border_color:'#d8d8da',
 			inner_border_width:0,
-			inner_border_radius:'95%'
+			inner_border_radius:'95%',
+			/**
+			 * @cfg {Object/String} Specifies the config of Top Text details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
+			 */
+			text : {
+				text:'',
+				line_height:24,
+				fontweight : 'bold',
+				/**
+				 * Specifies the font-size in pixels of top text.(default to 18)
+				 */
+				fontsize : 18
+			}
 		});
 		//obj.Set('chart.colors.ranges', [[0, 60, 'green'],[60, 80 'yellow'],[80, 100, 'red']]);
 		//needle.radius,needle.linewidth,type
@@ -84,6 +97,8 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 		_.panel.draw();
 		_.screen.push('text',v);
 		_.screen.draw();
+		if(_.text)
+		_.text.draw();
 		_.needle.push('value',v);
 		_.needle.draw();
 	},
@@ -294,9 +309,9 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 		/**
 		 * build screen
 		 */
-		_.screen = new iChart.Text(iChart.apply(_.get('text'),{
+		_.screen = new iChart.Text(iChart.apply(_.get('screen'),{
 			z_index:_.get('z_index')-9,
-			originx:_.x-_.get('text.width')/2,
+			originx:_.x-_.get('screen.width')/2,
 			originy:_.y+r/3,
 			text:value
 		}), _);
@@ -305,6 +320,23 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			this.push('text',this.get('unit_pre')+parseFloat(this.get('text')).toFixed(this.get('decimalsnum'))+this.get('unit_post'));
 			return true;
 		});
+		
+		if ($.isString(_.get('text'))) {
+			_.push('text', $.applyIf({
+				text : _.get('text')
+			}, _.default_.text));
+		}
+		
+		if (_.get('text.text') != '') {
+			_.text = new $.Text(iChart.apply(_.get('text'),{
+				z_index:_.get('z_index')-8,
+				originx:_.x,
+				originy:_.y-r/3,
+				textBaseline:'middle'
+			}), _);
+			_.components.push(_.text);
+		}
+		
 		
 		_.components.push(_.screen);
 		_.components.push(_.panel);

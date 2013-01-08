@@ -1220,6 +1220,7 @@ $.Painter = $.extend($.Element, {
 			mouseover : false
 		};
 		
+		this.variable.animation = {}
 		/**
 		 * register the common event
 		 */
@@ -1377,6 +1378,10 @@ $.Html = $.extend($.Element,{
 		this.set({
 			 animation:true,
 			 /**
+			  * @cfg If true the component will has defalut action when event fired.(default to true)
+			  */
+			 default_action:true,
+			 /**
 			  * @inner Specifies the width of this element in pixels.
 			  */
 			 width:0,
@@ -1427,6 +1432,10 @@ $.Html = $.extend($.Element,{
 		_.wrap.appendChild(_.dom);
 		
 		_.style = _.dom.style;
+		
+		if(_.get('default_action')){
+			_.doAction(_);
+		}
 	},
 	width:function(){
 		return this.dom.offsetWidth;
@@ -1728,6 +1737,24 @@ $.Component = $.extend($.Painter, {
 				this.css('visibility','hidden');
 			}
 		},
+		doAction:function(_){
+			_.T.on('mouseover',function(c,e,m){
+				_.show(e,m);	
+			}).on('mouseout',function(c,e,m){
+				_.hidden(e);
+			});
+			
+			if(_.get('showType')=='follow'){
+				_.T.on('mousemove',function(c,e,m){
+					if(_.T.variable.event.mouseover){
+						setTimeout(function(){
+							if(_.T.variable.event.mouseover)
+								_.follow(e,m);
+						},_.get('delay'));
+					}
+				});
+			}
+		},
 		initialize:function(){
 			$.Tip.superclass.initialize.call(this);
 			
@@ -1748,22 +1775,6 @@ $.Component = $.extend($.Painter, {
 				},false);
 			}
 			
-			_.T.on('mouseover',function(c,e,m){
-				_.show(e,m);	
-			}).on('mouseout',function(c,e,m){
-				_.hidden(e);
-			});
-			
-			if(_.get('showType')=='follow'){
-				_.T.on('mousemove',function(c,e,m){
-					if(_.T.variable.event.mouseover){
-						setTimeout(function(){
-							if(_.T.variable.event.mouseover)
-								_.follow(e,m);
-						},_.get('delay'));
-					}
-				});
-			}
 		}
 });
 /**
@@ -1857,6 +1868,15 @@ $.Component = $.extend($.Painter, {
 			_.dom.appendChild(d);
 			return d;
 		},
+		doAction:function(_){
+			_.T.on('mouseover',function(c,e,m){
+				_.show(e,m);	
+			}).on('mouseout',function(c,e,m){
+				_.hidden(e,m);	
+			}).on('mousemove',function(c,e,m){
+				_.follow(e,m);
+			});
+		},
 		initialize:function(){
 			$.CrossHair.superclass.initialize.call(this);
 			
@@ -1877,14 +1897,6 @@ $.Component = $.extend($.Painter, {
 			_.vertical = _.doCreate(_,L,_.get('vcross')?$.toPixel(_.get(_.H)):"0px");
 			
 			_.size = _.get('line_width')/2;
-			
-			_.T.on('mouseover',function(c,e,m){
-				_.show(e,m);	
-			}).on('mouseout',function(c,e,m){
-				_.hidden(e,m);	
-			}).on('mousemove',function(c,e,m){
-				_.follow(e,m);
-			});
 			
 		}
 });
@@ -3080,6 +3092,9 @@ $.Label = $.extend($.Component, {
 		round : function(x, y, r, c, bw, bc) {
 			return this.arc(x, y, r,0, 0, PI2, c, !!bc, bw, bc);
 		},
+		round0 : function(q, r, c, bw, bc) {
+			return this.arc(q.x, q.y, r,0, 0, PI2, c, !!bc, bw, bc);
+		},
 		fillRect : function(x, y, w, h) {
 			this.c.fillRect(x, y, w, h);
 			return this;
@@ -3454,8 +3469,8 @@ $.Label = $.extend($.Component, {
 					_.plugins.each(function(p){
 						p.Animationed = true;
 					});
-					_.draw();
 					_.processAnimation = false;
+					_.draw();
 					_.plugins.each(function(p){
 						p.processAnimation = false;
 					});
@@ -3465,10 +3480,11 @@ $.Label = $.extend($.Component, {
 		},
 		runAnimation : function(_) {
 			_.fireEvent(_, 'beforeAnimation', [_]);
+			if(!_.A_draw)
 			_.variable.animation = {
-					type : 0,
-					time : 0,
-					queue : []
+				type : 0,
+				time : 0,
+				queue : []
 			}
 			_.processAnimation = true;
 			_.animation(_);
@@ -5666,12 +5682,12 @@ $.Sector = $.extend($.Component, {
 			return {valid:false};
 		},
 		tipInvoke:function(){
-			var _ = this;
+			var _ = this,A = _.get('middleAngle'),Q  = $.quadrantd(A);
 			return function(w,h){
-				var P = $.p2Point(this.x,this.y,this.get('middleAngle'),this.r*0.8),Q  = $.quadrantd(this.get('middleAngle'));
+				var P = $.p2Point(_.x,_.y,A,_.r*0.8)
 				return {
-					left:(Q>=2&&Q<=3)?(P.x - w):P.x,
-					top:Q>=3?(P.y - h):P.y
+					left:(Q>=1&&Q<=2)?(P.x - w):P.x,
+					top:Q>=2?(P.y - h):P.y
 				}
 			}
 		},
@@ -6811,6 +6827,10 @@ $.Bar = $.extend($.Chart, {
 			 */
 			bar_height : undefined,
 			/**
+			 * @cfg {Number} the space of each column.this option is readOnly.(default to undefined)
+			 */
+			bar_space : undefined,
+			/**
 			 * @cfg {Number} Specifies the distance of bar's bottom and text(default to 6)
 			 */
 			text_space : 6,
@@ -7142,7 +7162,6 @@ $.LineSegment = $.extend($.Component, {
 				'parseText');
 		
 		this.tip = null;
-		this.ignored_ = false;
 	},
 	drawSegment : function() {
 		var _ = this._(),p = _.get('points'),b=_.get('f_color'),h=_.get('brushsize');
@@ -7161,7 +7180,7 @@ $.LineSegment = $.extend($.Component, {
 			if(_.sign_plugin){
 				_.sign_plugin_fn.apply(_,I);
 			}else{
-				_.T.round.apply(_.T,I);
+				_.T.round0.apply(_.T,I);
 			}
 		});
 		
@@ -7190,78 +7209,71 @@ $.LineSegment = $.extend($.Component, {
 			}
 		}
 	},
-	doConfig : function() {
-		$.LineSegment.superclass.doConfig.call(this);
-		$.Assert.isTrue(this.get('point_space')>0,'point_space');
-
-		var _ = this._(),A = _.get('area'), s = _.get('smooth'), sm = _.get('smoothing') || 1.5, b = _.get('f_color'), h = _.get('brushsize'), L = !!_.get('label'), ps = _.get('point_size') * 3 / 2, sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _
-				.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points'), N = _.get('name');
-		
-		_.labels = [];
+	PP:function(_,p,x1,y1,x2,y2){
+		if(_.get('area')){
+			_.polygons.push([_.get('area_color')||_.get('light_color2'),0,_.get('brushsize'),0,0,_.get('area_opacity'),_.get('smooth')?p:[{x:x1,y:y1}].concat(p.concat([{x:x2,y:y2}])),_.get('smooth'),_.get('smoothing') || 1.5,[{x:x1,y:y1},{x:x2,y:y2}]]);
+		}
+	},
+	parse:function(_){
 		_.polygons = [];
 		_.lines = [];
 		_.intersections = [];
+		_.labels = [];
 		
-		p.each(function(q){
-			q.x_ = q.x;
-			q.y_ = q.y;
-			if(q.ignored)_.ignored_ = true;
-			if(!q.ignored&&L){
-				_.push('label.originx', q.x);
-				_.push('label.originy', q.y-ps);
-				_.push('label.text',_.fireString(_, 'parseText', [_, q.value],q.value));
-				$.applyIf(_.get('label'),{
-					textBaseline : 'bottom',
-					color:b
-				});
-				_.labels.push(new $.Text(_.get('label'), _))
-			}
-		});
+		var p = _.get('points'),I = _.get('intersection'),L = !!_.get('label'), T = [],Q  = false,s = _.get('smooth'), sm = _.get('smoothing') || 1.5, b = _.get('f_color'), h = _.get('brushsize'),ps=_.get('point_size');
 		
-		var PP = function(p,x1,y1,x2,y2){
-			if(A){
-				_.polygons.push([_.get('area_color')||_.get('light_color2'),0,h,0,0,_.get('area_opacity'),s?p:[{x:x1,y:y1}].concat(p.concat([{x:x2,y:y2}])),s,sm,[{x:x1,y:y1},{x:x2,y:y2}]]);
-			}
-		}
-		
-		if(_.ignored_){
-			var T = [],Q  = false;
-			p.each(function(p0){
-				if(p0.ignored&&Q){
-					_.lines.push([T, h, b, s, sm]);
-					PP(T,T[0].x,_.y,T[T.length-1].x,_.y);
-					T = [];
-					Q = false;
-				}else if(!p0.ignored){
-					T.push(p0);
-					Q = true;
-				}
-			},_);
-			if(T.length){
-				_.lines.push([T, h, b, s, sm]);
-				PP(T,T[0].x,_.y,T[T.length-1].x,_.y);
-			}
-		}else{
-			_.lines.push([p,h,b,s, sm]);
-			PP(p,_.x,_.y,_.x+ _.get(_.W),_.y);
-		}
-		
-		if (_.get('intersection')) {
-			var f = _.getPlugin('sign'),g=b,j = _.get('hollow_color'),pps=_.get('point_size');
+		if (I) {
+			var f = _.getPlugin('sign'),g=b,j = _.get('hollow_color');
 			_.sign_plugin = $.isFunction(f);
 			_.sign_plugin_fn = f;
-			
 			if(_.get('hollow_inside')){
 				g = j;
 				j = b;
 			}
-			
-			p.each(function(q){
-				if(!q.ignored){
-					_.intersections.push(_.sign_plugin?[_.T,_.get('sign'),q.x, q.y,pps,g,j]:_.get('hollow')?[q.x, q.y, pps/2-h,g,h+1,j]:[q.x, q.y, pps/2,g]);
-				}
-			});
 		}
+		
+		p.each(function(q){
+			q.x_ = q.x;
+			q.y_ = q.y;
+			if(!q.ignored&&L){
+				_.push('label.originx', q.x);
+				_.push('label.originy', q.y-ps/2-1);
+				_.push('label.text',_.fireString(_, 'parseText', [_, q.value],q.value));
+				$.applyIf(_.get('label'),{
+					textBaseline : 'bottom',
+					color:_.get('f_color')
+				});
+				_.labels.push(new $.Text(_.get('label'), _))
+			}
+			if(q.ignored&&Q){
+				_.lines.push([T, h, b, s, sm]);
+				_.PP(_,T,T[0].x,_.y,T[T.length-1].x,_.y);
+				T = [];
+				Q = false;
+			}else if(!q.ignored){
+				T.push(q);
+				Q = true;
+			}
+			
+			if(I&&!q.ignored){
+				_.intersections.push(_.sign_plugin?[_.T,_.get('sign'),q,ps,g,j]:_.get('hollow')?[q, ps/2-h+1,g,h+1,j]:[q,ps/2,g]);
+			}
+			
+		});
+		
+		if(T.length){
+			_.lines.push([T, h, b, s, sm]);
+			_.PP(_,T,T[0].x,_.y,T[T.length-1].x,_.y);
+		}
+	},
+	doConfig : function() {
+		$.LineSegment.superclass.doConfig.call(this);
+		$.Assert.isTrue(this.get('point_space')>0,'point_space');
+
+		var _ = this._(), ps = _.get('point_size') * 3 / 2, sp = _.get('point_space'), ry = _.get('event_range_y'), rx = _
+				.get('event_range_x'), heap = _.get('tipInvokeHeap'), p = _.get('points'), N = _.get('name');
+		
+		_.parse(_);
 		
 		if (rx <= 0||rx > sp / 2) {
 			rx = _.push('event_range_x', sp / 2);

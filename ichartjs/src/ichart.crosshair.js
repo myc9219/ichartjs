@@ -85,6 +85,15 @@
 			_.dom.appendChild(d);
 			return d;
 		},
+		doAction:function(_){
+			_.T.on('mouseover',function(c,e,m){
+				_.show(e,m);	
+			}).on('mouseout',function(c,e,m){
+				_.hidden(e,m);	
+			}).on('mousemove',function(c,e,m){
+				_.follow(e,m);
+			});
+		},
 		initialize:function(){
 			iChart.CrossHair.superclass.initialize.call(this);
 			
@@ -105,14 +114,6 @@
 			_.vertical = _.doCreate(_,L,_.get('vcross')?iChart.toPixel(_.get(_.H)):"0px");
 			
 			_.size = _.get('line_width')/2;
-			
-			_.T.on('mouseover',function(c,e,m){
-				_.show(e,m);	
-			}).on('mouseout',function(c,e,m){
-				_.hidden(e,m);	
-			}).on('mousemove',function(c,e,m){
-				_.follow(e,m);
-			});
 			
 		}
 });

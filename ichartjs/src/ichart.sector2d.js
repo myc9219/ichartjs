@@ -55,12 +55,12 @@
 			return {valid:false};
 		},
 		tipInvoke:function(){
-			var _ = this;
+			var _ = this,A = _.get('middleAngle'),Q  = iChart.quadrantd(A);
 			return function(w,h){
-				var P = iChart.p2Point(this.x,this.y,this.get('middleAngle'),this.r*0.8),Q  = iChart.quadrantd(this.get('middleAngle'));
+				var P = iChart.p2Point(_.x,_.y,A,_.r*0.8)
 				return {
-					left:(Q>=2&&Q<=3)?(P.x - w):P.x,
-					top:Q>=3?(P.y - h):P.y
+					left:(Q>=1&&Q<=2)?(P.x - w):P.x,
+					top:Q>=2?(P.y - h):P.y
 				}
 			}
 		},
