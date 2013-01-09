@@ -54,89 +54,70 @@
 		}
 	</style>
 	<script type="text/javascript">
-
-	$(function(){	
-		var data = [
-		        	{name : 'Alex',value : 25,color:'#849fb4'},
-		        	{name : 'Mark',value : 35,color:'#bf9d32'},
-		        	{name : 'David',value : 42.3,color:'#728f1b'},
-		        	{name : 'Graham',value : 35.3,color:'#bf784c'},
-		        	{name : 'John',value : 31.3,color:'#2f8586'}
-	        	];
-    	
-		var chart = new iChart.Column3D({
+	var chart ;
+	$(function(){
+		chart = new iChart.Gauge2D({
 			render : 'canvasDiv',
-			data: data,
 			title : {
-				text : 'This is a sample spirit from FusionCharts',
-				color : '#3e576f'
+				text : 'Gauge Component Designer',
+				height:40,
+				fontsize : 20,
+				color : '#fefefe'
 			},
-			subtitle : {
-				text : 'Top 5 Sales Person,2011',
-				color : '#6d869f'
-			},
-			footnote : {
-				text : 'ichartjs.com',
-				color : '#909090',
-				fontsize : 11,
-				padding : '0 38'
-			},
-			width : 800,
-			height : 400,
-			shadow : true,
-			shadow_blur : 2,
-			shadow_color : '#aaaaaa',
-			shadow_offsetx : 1,
-			shadow_offsety : 0,
-			column_width : 98,
-			zScale:0.5,
-			xAngle : 50,
-			bottom_scale:1.1,
+			shadow:true,
+			value:10,
+			tickmarks_width:14,
+			tickmarks_bg_color:[0,0,0,0,0,0,0,0,'#e3c63e','#e33e41'],
+			tickmarks_small_color:['#fcf1e2',0,0,0,0,0,0,0,'#2c374a','#2c374a'],
+			tickmarks_color:['#fcf1e2',0,0,0,0,0,0,0,0,'#2c374a','#2c374a'],
+			tickmarks_count:10,
+			tickmarks_radius:'84%',
+			label_space:20,
 			label:{
-				color:'#4c4f48'
+				color:'#9fb3b2',
+				fontsize:12,
+				fontweight:600
 			},
-			sub_option:{
-				label : {
-					color : '#4c4f48'
-				},
-				listeners:{
-					parseText:function(r,t){
-						//自定义柱形图上方label的格式。
-						return '$'+t+'k';
-					}
-				}
-			},
-			text_space : 16,//坐标系下方的label距离坐标系的距离。
-			coordinate:{
-				background_color : '#d5d8d1',
-				grid_color : '#a4ad96',
-				color_factor : 0.24,
-				board_deep:10,//背面厚度
-				pedestal_height:10,//底座高度
-				left_board:false,//取消左侧面板
-				width:580,
-				valid_width:560,
-				scale:[{
-					 position:'left',	
-					 start_scale:0,
-					 end_scale:50,
-					 scale_space:10,
-					 label:{
-						color:'#4c4f48'
-					 },
-					 listeners:{
-						parseText:function(t,x,y){
-						//自定义左侧坐标系刻度文本的格式。
-							return {text:'$'+t+'k'}
-						}
-					 }
-				}]
-			}
+			start_angle:30,
+			space_angle:2,
+			panel_color:'#2c374a',
+			background_color:$.toRgba('#254d60',0.6),
+			outer_border_color:'#142036',
+			outer_border_width:0,
+			inner_border_color:'#cdc0a8',
+			inner_border_width:10,
+			inner_border_radius:'98%',
+			text:{text:'Gauge',color:'#e33e41'},
+			screen:{decimalsnum:1,unit_post:'KM',fontsize:12,height:0,color:'#fcf1e3'},
+			needle_color:'#f4e5b0',
+			needle_size:10,
+			center_cap_size:20,
+			center_cap_color:'#7bbfec',
+			width : 300,
+			height : 360,
+			radius:'90%'
 		});
-		console.profile("test");
+		chart.on('beforedraw',function(e){
+			chart.START_RUN_TIME = new Date().getTime();
+			return true;
+		});
+		
+		chart.on('draw',function(e){
+			chart.END_RUN_TIME = new Date().getTime();
+			chart.RUN_TIME_COST = chart.END_RUN_TIME - chart.START_RUN_TIME;
+			//console.log(chart.RUN_TIME_COST);
+		});
 		chart.draw();
-		console.profileEnd("test");
 	});
+	function interval(){
+		setInterval(function(){
+			chart.to(Math.floor(Math.random() * 100));
+		},1000);
+	}
+	
+	function change(){
+		chart.to(Math.floor(Math.random() * 100));
+	}
 	</script>
 	</head>
 	<body>

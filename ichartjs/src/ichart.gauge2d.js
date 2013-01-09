@@ -41,7 +41,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			value : null,
 			label:{fontsize:11},
 			/**
-			 * @cfg {Number} the distance of column's bottom and text(default to 6)
+			 * @cfg {Number} the distance of column's bottom and text(default to 12)
 			 */
 			label_space : 12,
 			screen:{
@@ -60,7 +60,12 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 					enable : true
 				}
 			},
-			cap:'',
+			/**
+			 * [[0, 60, 'green'],[60, 80 'yellow'],[80, 100, 'red']]
+			 */
+			tickmarks_ranges:[],
+			center_cap_size:10,
+			center_cap_color:'#7bbfec',
 			needle_radius:'100%',
 			needle_size:    3,
             needle_color:  'red',
@@ -86,10 +91,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 				fontsize : 18
 			}
 		});
-		//obj.Set('chart.colors.ranges', [[0, 60, 'green'],[60, 80 'yellow'],[80, 100, 'red']]);
-		//needle.radius,needle.linewidth,type
-		//Gauge?
-		//centerpin radius color
+		
 		this.push('data',[0]);
 	},
 	doAnimation : function(t, d,_) {
@@ -147,7 +149,9 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			radius:r,
 			originx:_.x,
 			originy:_.y,
-			gradient:true,
+			gradient:!!_.get('panel_color'),
+			gradient_mode:'RadialGradientOutIn',
+			color_factor : 0.2,
 			shadow:_.get('shadow'),
 			border:{
 				width:_.get('outer_border_width'),
@@ -186,10 +190,14 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 				_.iborder = _.get('iborder.width')>0;
 				_.ir = _.get('iborder.radius');
 				_.tr = _.get('tickmarks.radius');
+				_.tickbg = [];
 				_.tickmarks = [];
 				_.labels = [];
 				
 				var count=_.get('tickmarks.tickmarks_count'),
+				colors = [].concat(_.get('tickmarks.color')),
+				tcolors = [].concat(_.get('tickmarks.tickmarks_color')),
+				stcolors = [].concat(_.get('tickmarks.tickmarks_small_color')),
 				scount = _.get('tickmarks.tickmarks_small_count'),
 				lower = _.get('tickmarks.tickmarks_lower'),
 				upper = _.get('tickmarks.tickmarks_upper'),
@@ -198,8 +206,8 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 				sA = _.get('tickmarks.start_angle')+A,
 				eA = _.get('tickmarks.end_angle')- A,
 				tA = eA- sA,
-				A = tA/count,
-				AA = A/scount,
+				S = tA/count,
+				AA = S/scount,
 				size = _.get('tickmarks.tickmarks_size'),
 				w = _.get('tickmarks.width')-1,
 				tr = _.tr - w -_.get('label_space'),
@@ -214,13 +222,23 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 				_.eA =eA;
 				_.tA =tA;
 				
+				
 				for(var i=0;i<=count;i++){
+					tcolors[i] = tcolors[i] || tcolors[i-1];
+					stcolors[i] = stcolors[i] || stcolors[i-1];
+					
 					_.tickmarks.push({
 						start:sA-wA,
 						end:sA+wA,
 						radius:_.tr-1,
 						width:w,
-						color:_.get('tickmarks.tickmarks_color')
+						color:tcolors[i]
+					});
+					
+					(i<count)&&colors[i]&&_.tickbg.push({
+						start:sA-(i==0?A:0),
+						end:sA+S+(count-i==1?A:0),
+						color:colors[i]
 					});
 					
 					sAA = sA;
@@ -231,7 +249,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 							end:sAA+swA,
 							radius:_.tr-1-w*0.4,
 							width:w*0.6,
-							color:_.get('tickmarks.tickmarks_small_color')
+							color:stcolors[i]
 						});
 					}
 					
@@ -244,7 +262,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 					}), _));
 					
 					lower+=T;
-					sA+=A;
+					sA+=S;
 				}
 			},
 			drawFn:function(_){
@@ -252,7 +270,10 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 				if(_.iborder){
 					_.T.sector(_.x, _.y, _.ir, 0, 0, pi2, 0, true, _.get('iborder.width'), _.get('iborder.color'),0, false, true, true);
 				}
-				_.T.sector(_.x, _.y, _.tr,_.get('tickmarks.width'),_.get('tickmarks.start_angle'), _.get('tickmarks.end_angle'),_.get('tickmarks.color'), 0, 0, 0, 0, false, true, true);
+				
+				_.tickbg.each(function(bg){
+					_.T.sector(_.x, _.y, _.tr,_.get('tickmarks.width'),bg.start, bg.end,bg.color, 0, 0, 0, 0, false, true, true);
+				});
 				
 				_.tickmarks.each(function(tick){
 					_.T.sector(_.x, _.y, tick.radius,tick.width,tick.start,tick.end,tick.color, 0, 0, 0, 0, false, true, true);
@@ -271,7 +292,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 		 * build needle
 		 */
 		_.needle = new iChart.Custom({
-			z_index:_.get('z_index')-8,
+			z_index:_.get('z_index')-6,
 			radius:iChart.parsePercent(_.get('needle_radius'),_.panel.tr - _.get('tickmarks_width')*0.5),
 			originx:_.x,
 			originy:_.y,
@@ -279,6 +300,10 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			value:value,
 			size:_.get('needle_size'),
 			background_color:_.get('needle_color'),
+			cap:{
+				size:_.get('center_cap_size'),
+				color:_.get('center_cap_color')
+			},
 			getRadian:function(v){
 				var l = _.panel.lower,u = _.panel.upper;
 				if(l>u){
@@ -298,11 +323,11 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 				_.offset = _.value-_.start;
 			},
 			drawFn:function(_){
-				var A = _.getRadian(_.get('value'));
+				var A = _.getRadian(_.get('value')),cap = _.get('cap.size'),Q = _.get('size')/cap;
 				
-				_.T.sector(_.x, _.y,10, 0, 0, pi2, _.get('f_color'),true,2,'#333333',0, false, true);
+				_.T.polygon(_.get('f_color'),true,1,'#bcbcbc',0,1,[{x:_.x+Math.cos(A-Q)*cap,y:_.y+Math.sin(A-Q)*cap},{x:_.x+Math.cos(A+Q)*cap,y:_.y+Math.sin(A+Q)*cap},{x:_.x+Math.cos(A)*_.r,y:_.y+Math.sin(A)*_.r}]);
 				
-				_.T.line(_.x+Math.cos(A)*12, _.y+Math.sin(A)*12, _.x+Math.cos(A)*_.r, _.y+Math.sin(A)*_.r,_.get('size'),_.get('f_color'));
+				_.T.sector(_.x, _.y,cap, 0, 0, pi2, _.get('cap.color'),true,2,'#333333',0, false, true);
 			}
 		}, _);
 		
