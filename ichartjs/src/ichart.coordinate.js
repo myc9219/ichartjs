@@ -286,7 +286,6 @@ iChart.Scale = iChart.extend(iChart.Component, {
 				x1 : x + x1,
 				y1 : y + y1
 			});
-
 			/**
 			 * put the label into a Text?
 			 */

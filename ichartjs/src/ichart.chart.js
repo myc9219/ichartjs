@@ -372,7 +372,7 @@
 		},
 		fillText : function(t, x, y, max, color, mode, h,sw,ro) {
 			t = t.toString();
-			if(!t||!t.length)return;
+			if(!t||!t.length)return this;
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
