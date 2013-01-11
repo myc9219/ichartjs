@@ -62,39 +62,60 @@
 				text : 'Gauge Component Designer',
 				height:40,
 				fontsize : 20,
-				color : '#fefefe'
+				color : '#2c374a'
 			},
-			shadow:true,
-			value:10,
-			tickmarks_width:14,
-			tickmarks_bg_color:[0,0,0,0,0,0,0,0,'#e3c63e','#e33e41'],
-			tickmarks_small_color:['#fcf1e2',0,0,0,0,0,0,0,'#2c374a','#2c374a'],
-			tickmarks_color:['#fcf1e2',0,0,0,0,0,0,0,0,'#2c374a','#2c374a'],
-			tickmarks_count:10,
-			tickmarks_radius:'84%',
-			label_space:20,
+			panel:{
+				background_color:'#2c374a',
+				border:false,
+				iborder:{
+					radius:'98%',
+					color:'#9cb1b2'
+				}
+			},
+			tickmarks:{
+				start_angle:40,
+				space_angle:0,
+				radius:'84%',
+				width:14,
+				bg_color:[0,0,0,0,0,0,0,0,'#e3c63e','#e33e41'],
+				size:2,
+				count:10,
+				color:['#fcf1e2',0,0,0,0,0,0,0,'#2c374a','#2c374a'],
+				lower : 0,
+				upper : 100,
+				small_color:['#fcf1e2',0,0,0,0,0,0,0,'#2c374a','#2c374a'],
+				small_count:5
+			},
+			screen:{
+				decimalsnum:1,
+				unit_post:'km/h',
+				fontsize:12,
+				width:74,
+				height:22,
+				background_color:$.toRgba('#fefefe',0.5),
+				color:'#2c374a'
+			},
 			label:{
+				label_space:20,
 				color:'#9fb3b2',
 				fontsize:12,
 				fontweight:600
 			},
-			start_angle:30,
-			space_angle:2,
-			panel_color:'#2c374a',
-			background_color:$.toRgba('#254d60',0.6),
-			outer_border_color:'#142036',
-			outer_border_width:0,
-			inner_border_color:'#cdc0a8',
-			inner_border_width:10,
-			inner_border_radius:'98%',
-			text:{text:'Gauge',color:'#e33e41'},
-			screen:{decimalsnum:1,unit_post:'KM',fontsize:12,height:0,color:'#fcf1e3'},
-			needle_color:'#f4e5b0',
-			needle_size:6,
-			center_cap_size:14,
-			center_cap_color:'#7bbfec',
-			width : 300,
-			height : 360,
+			shadow:true,
+			value:10,
+			background_color:'#e4e5e9',
+			text:{text:'ichartjs',color:'#e33e41'},
+			needle:{
+				color:'#f4e5b0',
+				size:6,
+				alpham:0.6
+			},
+			cap:{
+				color:'#7bbfec',
+				size:12
+			},
+			width : 340,
+			height : 380,
 			radius:'90%'
 		});
 		chart.on('beforedraw',function(e){
