@@ -1268,7 +1268,7 @@ $.Painter = $.extend($.Element, {
 	},
 	applyGradient:function(x,y,w,h){
 		var _ = this._();
-		if(_.get('gradient')){
+		if(_.get('gradient')&&_.get('f_color')){
 			_.push('f_color', _.T.gradient(x||_.x||0,y||_.y||0,w||_.get(_.W),h||_.get(_.H),[_.get('dark_color'), _.get('light_color')],_.get('gradient_mode')));
 			_.push('light_color', _.T.gradient(x||_.x||0,y||_.y||0,w||_.get(_.W),h||_.get(_.H),[_.get('background_color'), _.get('light_color')],_.get('gradient_mode')));
 			_.push('f_color_',_.get('f_color'));
@@ -2838,7 +2838,7 @@ $.Label = $.extend($.Component, {
 		},
 		fillText : function(t, x, y, max, color, mode, h,sw,ro) {
 			t = t.toString();
-			if(!t||!t.length)return;
+			if(!t||!t.length)return this;
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
@@ -4340,7 +4340,6 @@ $.Scale = $.extend($.Component, {
 				x1 : x + x1,
 				y1 : y + y1
 			});
-
 			/**
 			 * put the label into a Text?
 			 */
