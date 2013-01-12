@@ -348,10 +348,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			}
 		}, _);
 		
-		_.components.push(_.screen);
-		_.components.push(_.panel);
-		_.components.push(_.tickmark);
-		_.components.push(_.needle);
+		_.components.push(_.screen,_.panel,_.tickmark,_.needle);
 	}
 
 });
