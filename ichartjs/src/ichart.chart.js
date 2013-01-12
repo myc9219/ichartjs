@@ -40,7 +40,7 @@
 	},
 	parse = function(c,_){
 		var M,V=0,MI,ML=0,init=false,g = _.get('labels');
-		
+		_.data = c;
 		if(_.dataType=='simple'){
 			_.total = 0;
 			c.each(function(d,i){
@@ -125,6 +125,8 @@
 		}
 		_.push('minValue',MI); 
 		_.push('maxValue',M);
+		_.doConfig();
+		_.initialization = true;
 	};
 	
 	/**
@@ -594,7 +596,7 @@
 			y1 = fd(w, y1);
 			x2 = fd(w, x2);
 			y2 = fd(w, y2);
-			var d = iChart.distanceP2P(x1, y1, x2, y2),t;
+			var d = $.distanceP2P(x1, y1, x2, y2),t;
 			if(L<=0||d<=L||(x1!=x2&&y1!=y2)){
 				return this.line(x1, y1, x2, y2, w, c, last);
 			}
@@ -1031,8 +1033,8 @@
 			
 			if (!_.redraw) {
 				$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
+				$.Assert.isTrue(_.data&&_.data.length>0,_.type + '\'s data is empty');
 				$.Assert.isTrue(_.initialization, _.type + ' Failed to initialize');
-				$.Assert.isTrue(_.data.length>0,_.type + '\'s data is empty');
 				_.doSort();
 				_.oneways.eachAll(function(o) {o.draw()});
 			}
@@ -1178,9 +1180,8 @@
 		},
 		initialize : function() {
 			var _ = this._(),d = _.get('data'),r = _.get('render');
-			
 			if(_.Combination){
-				iChart.apply(_.options, iChart.clone([_.W,_.H,'padding','border','client_height','client_width',
+				$.apply(_.options, $.clone([_.W,_.H,'padding','border','client_height','client_width',
 				                                      'minDistance','maxDistance','minstr','centerx', 'centery',
 				                                      'l_originx','r_originx','t_originy','b_originy'], _.root.options,true));
 				_.width = _.get(_.W);
@@ -1191,17 +1192,17 @@
 				if(r)
 				_.create(_,$(r));
 			}
-			/**
-			 * set up
-			 */
-			if(d.length>0&&_.Rendered && !_.initialization){
+			
+			if((!d||!d.length)&&$.isString(_.get('url'))){
+				_.ajax.call(_,_.get('url'),function(){
+					_.initialize();
+					_.draw();
+				});
+			}else if(d&&d.length>0&&_.Rendered && !_.initialization){
 				/**
 				 * parse data
 				 */
 				parse.call(_,d,_);
-				_.data = d;
-				_.doConfig();
-				_.initialization = true;
 			}
 		},
 		/**
@@ -1225,7 +1226,7 @@
 			/**
 			 * register chart in Registry
 			 */
-			iChart.register(_);
+			$.register(_);
 			
 			/**
 			 * If Combination,ignore binding event because of root have been do this.
@@ -1363,16 +1364,16 @@
 			/**
 			 * store or restore the option
 			 */
-			_.push(f?'sub_option':'communal_acting',iChart.clone(_.get(f?'communal_acting':'sub_option'),true));
+			_.push(f?'sub_option':'communal_acting',$.clone(_.get(f?'communal_acting':'sub_option'),true));
 			/**
 			 * merge the option
 			 */
-			iChart.merge(_.get('sub_option'),d);
+			$.merge(_.get('sub_option'),d);
 			
 			/**
 			 * merge specific option
 			 */
-			iChart.merge(_.get('sub_option'),o);
+			$.merge(_.get('sub_option'),o);
 			
 			_.push('sub_option.value',v);
 			
@@ -1418,11 +1419,10 @@
 			
 			_.oneWay(_);
 			
-			
 			/**
 			 * clone config to sub_option
 			 */
-			iChart.applyIf(_.get('sub_option'), iChart.clone(['shadow','tip'], _.options,true));
+			$.applyIf(_.get('sub_option'), $.clone(['shadow','tip'], _.options,true));
 			
 			_.push('r_originx', _.width - _.get('padding_right'));
 			_.push('b_originy', _.height - _.get('padding_bottom'));
@@ -1438,7 +1438,7 @@
 				/**
 				 * push the background in it
 				 */
-				_.oneways.push(new iChart.Custom({
+				_.oneways.push(new $.Custom({
 					drawFn:function(){
 						_.T.box(0, 0, _.width, _.height, _.get('border'), _.get('f_color'),0,0,true);
 					}
@@ -1508,7 +1508,6 @@
 				_.push('centerx', l + w / 2);
 				_.push('centery', t + h / 2);
 			}
-			
 			
 			/**
 			 * legend
