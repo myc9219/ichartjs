@@ -1193,16 +1193,16 @@
 				_.create(_,$(r));
 			}
 			
-			if((!d||!d.length)&&$.isString(_.get('url'))){
-				_.ajax.call(_,_.get('url'),function(){
-					_.initialize();
-					_.draw();
-				});
-			}else if(d&&d.length>0&&_.Rendered && !_.initialization){
-				/**
-				 * parse data
-				 */
-				parse.call(_,d,_);
+			if(_.Rendered && !_.initialization){
+				if(d&&d.length>0){
+					parse.call(_,d,_);
+				}else if($.isString(_.get('url'))){
+					_.ajax.call(_,_.get('url'),function(D){
+						_.push('data',D);
+						_.initialize();
+						_.draw();
+					});
+				}
 			}
 		},
 		/**
