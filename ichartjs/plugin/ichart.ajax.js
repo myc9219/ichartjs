@@ -1,5 +1,5 @@
 /*!
- * simple ichartjs ajax Plugin use iQuery
+ * simple ichartjs ajax Plugin use jQuery
  * version: 1.0
  * @requires ichartjs v1.0 or later,jquery
  * @site http://www.ichartjs.com/
@@ -9,7 +9,7 @@
  */
 iChart.override(iChart.Chart, {
 	ajax : function(URL,f) {
-		$.ajax({
+		jQuery.ajax({
 		  type: 'POST',
 		  url: URL,
 		  dataType: 'json',
