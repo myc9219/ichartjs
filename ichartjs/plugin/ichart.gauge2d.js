@@ -358,12 +358,14 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 				_.r = iChart.parsePercent(_.get('needle.radius'),_.tickmark.r - _.tickmark.get('width')*0.5);
 				_.value = _.get('value');
 				_.start = _.tickmark.lower;
+				/**
+				 * offset from start to value
+				 */
 				_.offset = _.value - _.start;
 			},
 			drawFn:function(_){
 				var A = _.tickmark.getRadian(_.get('value')),cap = _.get('cap.size'),Q = _.get('needle.size')/cap;
 				_.T.polygon(_.get('needle.color'),_.get('needle.border.enable'),_.get('needle.border.width'),_.get('needle.border.color'),_.get('needle.shadow'),_.get('needle.alpham')||1,[{x:_.x+Math.cos(A-Q)*cap,y:_.y+Math.sin(A-Q)*cap},{x:_.x+Math.cos(A+Q)*cap,y:_.y+Math.sin(A+Q)*cap},{x:_.x+Math.cos(A)*_.r,y:_.y+Math.sin(A)*_.r}]);
-				
 				_.T.sector(_.x, _.y,cap, 0, 0, pi2, _.get('cap.color'),_.get('cap.border.enable'),_.get('cap.border.width'),_.get('cap.border.color'),_.get('needle.shadow'), false, true);
 			}
 		}, _);

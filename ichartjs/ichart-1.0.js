@@ -646,7 +646,7 @@
 				return v < l ? l : v;
 			},
 			between : function(l, u, v) {
-				return v > u ? u : v < l ? l : v;
+				return l>u?_.between(u, l, v):(v > u ? u : v < l ? l : v);
 			},
 			inRange : function(l, u, v) {
 				return u > v && l < v;
@@ -2506,7 +2506,7 @@ $.Label = $.extend($.Component, {
 	},
 	parse = function(c,_){
 		var M,V=0,MI,ML=0,init=false,g = _.get('labels');
-		
+		_.data = c;
 		if(_.dataType=='simple'){
 			_.total = 0;
 			c.each(function(d,i){
@@ -2591,6 +2591,8 @@ $.Label = $.extend($.Component, {
 		}
 		_.push('minValue',MI); 
 		_.push('maxValue',M);
+		_.doConfig();
+		_.initialization = true;
 	};
 	
 	/**
@@ -3497,8 +3499,8 @@ $.Label = $.extend($.Component, {
 			
 			if (!_.redraw) {
 				$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
+				$.Assert.isTrue(_.data&&_.data.length>0,_.type + '\'s data is empty');
 				$.Assert.isTrue(_.initialization, _.type + ' Failed to initialize');
-				$.Assert.isTrue(_.data.length>0,_.type + '\'s data is empty');
 				_.doSort();
 				_.oneways.eachAll(function(o) {o.draw()});
 			}
@@ -3644,7 +3646,6 @@ $.Label = $.extend($.Component, {
 		},
 		initialize : function() {
 			var _ = this._(),d = _.get('data'),r = _.get('render');
-			
 			if(_.Combination){
 				$.apply(_.options, $.clone([_.W,_.H,'padding','border','client_height','client_width',
 				                                      'minDistance','maxDistance','minstr','centerx', 'centery',
@@ -3657,17 +3658,17 @@ $.Label = $.extend($.Component, {
 				if(r)
 				_.create(_,$(r));
 			}
-			/**
-			 * set up
-			 */
-			if(d.length>0&&_.Rendered && !_.initialization){
-				/**
-				 * parse data
-				 */
-				parse.call(_,d,_);
-				_.data = d;
-				_.doConfig();
-				_.initialization = true;
+			
+			if(_.Rendered && !_.initialization){
+				if(d&&d.length>0){
+					parse.call(_,d,_);
+				}else if($.isString(_.get('url'))){
+					_.ajax.call(_,_.get('url'),function(D){
+						_.push('data',D);
+						_.initialize();
+						_.draw();
+					});
+				}
 			}
 		},
 		/**
@@ -3884,7 +3885,6 @@ $.Label = $.extend($.Component, {
 			
 			_.oneWay(_);
 			
-			
 			/**
 			 * clone config to sub_option
 			 */
@@ -3974,7 +3974,6 @@ $.Label = $.extend($.Component, {
 				_.push('centerx', l + w / 2);
 				_.push('centery', t + h / 2);
 			}
-			
 			
 			/**
 			 * legend
@@ -4246,16 +4245,18 @@ $.Scale = $.extend($.Component, {
 			_.number = customL - 1;
 		} else {
 			/**
-			 * end_scale must greater than maxScale
-			 */
-			if (!$.isNumber(e_scale) || e_scale < max_s) {
-				e_scale = _.push('end_scale', $.ceil(max_s));
-			}
-			/**
 			 * startScale must less than minScale
 			 */
 			if (start_scale > min_s) {
 				start_scale = _.push('start_scale', $.floor(min_s));
+			}
+			
+			/**
+			 * end_scale must greater than maxScale
+			 */
+			if (!$.isNumber(e_scale) || e_scale < max_s) {
+				e_scale = $.ceil(max_s);
+				e_scale = _.push('end_scale', (!e_scale&&!start_scale)?1:e_scale);
 			}
 			
 			
