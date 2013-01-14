@@ -75,10 +75,10 @@
 			},
 			tickmarks:{
 				start_angle:40,
-				space_angle:10,
+				space_angle:0,
 				radius:'84%',
 				width:14,
-				//bg_color:[0,0,0,0,0,0,0,0,'#e3c63e','#e33e41'],
+				bg_color:[0,0,0,0,0,0,0,0,'#e3c63e','#e33e41'],
 				size:2,
 				count:10,
 				color:['#fcf1e2',0,0,0,0,0,0,0,'#2c374a','#2c374a'],
@@ -86,7 +86,7 @@
 				upper : 100,
 				small_color:['#fcf1e2',0,0,0,0,0,0,0,'#2c374a','#2c374a'],
 				small_count:5,
-				ranges:[[0, 60, 'green'],[70, 80 ,'yellow'],[90, 100, 'red']]
+				ranges:[[0, 60, 'green'],[60, 80 ,'yellow'],[80, 100, 'red']]
 			},
 			screen:{
 				decimalsnum:1,
@@ -118,12 +118,7 @@
 			},
 			width : 340,
 			height : 380,
-			radius:'90%',
-			listeners:{
-				change:function(g,v){
-					//console.log(g.id+'=='+v);
-				}
-			}
+			radius:'90%'
 		});
 		chart.draw();
 		//interval();
@@ -132,7 +127,7 @@
 	function change(){
 		chart.to(Math.floor(Math.random() * 100));
 	}
-	
+
 	function interval(){
 		setInterval(function(){
 			var i = Math.floor(Math.random() * 5);

@@ -192,16 +192,18 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			_.number = customL - 1;
 		} else {
 			/**
-			 * end_scale must greater than maxScale
-			 */
-			if (!iChart.isNumber(e_scale) || e_scale < max_s) {
-				e_scale = _.push('end_scale', iChart.ceil(max_s));
-			}
-			/**
 			 * startScale must less than minScale
 			 */
 			if (start_scale > min_s) {
 				start_scale = _.push('start_scale', iChart.floor(min_s));
+			}
+			
+			/**
+			 * end_scale must greater than maxScale
+			 */
+			if (!iChart.isNumber(e_scale) || e_scale < max_s) {
+				e_scale = iChart.ceil(max_s);
+				e_scale = _.push('end_scale', (!e_scale&&!start_scale)?1:e_scale);
 			}
 			
 			
