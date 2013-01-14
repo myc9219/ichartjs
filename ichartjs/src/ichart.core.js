@@ -646,7 +646,7 @@
 				return v < l ? l : v;
 			},
 			between : function(l, u, v) {
-				return v > u ? u : v < l ? l : v;
+				return l>u?_.between(u, l, v):(v > u ? u : v < l ? l : v);
 			},
 			inRange : function(l, u, v) {
 				return u > v && l < v;

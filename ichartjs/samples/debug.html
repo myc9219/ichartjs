@@ -55,90 +55,90 @@
 		}
 	</style>
 	<script type="text/javascript">
-	var data = [
-	        	{name : 'UC浏览器',value : 40.0,color:'#4572a7'},
-	        	{name : 'QQ浏览器',value : 37.1,color:'#aa4643'},
-	        	{name : '欧朋浏览器',value : 13.8,color:'#89a54e'},
-	        	{name : '百度浏览器',value : 1.6,color:'#80699b'},
-	        	{name : '海豚浏览器',value : 1.4,color:'#92a8cd'},
-	        	{name : '天天浏览器',value : 1.2,color:'#db843d'},
-	        	{name : '其他',value : 4.9,color:'#a47d7c'}
-        	];
+	var chart ;
 	$(function(){
-		var chart = new iChart.Pie3D({
-			render : "canvasDiv",
-			data: data,
-			url:'abc.html',
-			tip : {
-			    showType: 'follow',
-				enable : true
-			},
+		chart = new iChart.Gauge2D({
+			render : 'canvasDiv',
 			title : {
-				color : '#3E576F'
+				text : 'Gauge Component Designer',
+				height:40,
+				fontsize : 20,
+				color : '#2c374a'
 			},
-			footnote : {
-				color : '#8A8A8A',
-				fontsize : 11,
-				padding : '0 38'
-			},
-			sub_option : {
-				mini_label_threshold_angle : 40,//迷你label的阀值,单位:角度
-				mini_label:{//迷你label配置项
-					fontsize:11,
-					color : '#ffffff'
-				}, 
-				label : {
-					background_color:null,
-					sign:false,//设置禁用label的小图标
-					padding:'0 4',
-					border:{
-						enable:false,
-						color:'#8A8A8A'
-					},
-				fontsize:11,
-				fontweight:600,
-				color:'#8A8A8A'
-				},
-				border : {
-					width : 2,
-					color : '#ffffff'
+			panel:{
+				background_color:'#2c374a',
+				border:false,
+				iborder:{
+					radius:'98%',
+					color:'#9cb1b2'
 				}
+			},
+			tickmarks:{
+				start_angle:40,
+				space_angle:10,
+				radius:'84%',
+				width:14,
+				//bg_color:[0,0,0,0,0,0,0,0,'#e3c63e','#e33e41'],
+				size:2,
+				count:10,
+				color:['#fcf1e2',0,0,0,0,0,0,0,'#2c374a','#2c374a'],
+				lower : 0,
+				upper : 100,
+				small_color:['#fcf1e2',0,0,0,0,0,0,0,'#2c374a','#2c374a'],
+				small_count:5,
+				ranges:[[0, 60, 'green'],[70, 80 ,'yellow'],[90, 100, 'red']]
+			},
+			screen:{
+				decimalsnum:1,
+				unit_post:'km/h',
+				fontsize:12,
+				width:74,
+				height:22,
+				background_color:$.toRgba('#fefefe',0.5),
+				color:'#2c374a'
 			},
 			label:{
-            	color:'#8A8A8A'
-            },
-			shadow : true,
-			shadow_blur : 6,
-			shadow_color : '#aaaaaa',
-			shadow_offsetx : 0,
-			shadow_offsety : 0,
-			background_color:'#fefefe',
-			yHeight:20,//饼图厚度
-			offsetx:2,//设置向x轴负方向偏移位置60px
-			offset_angle:0,//逆时针偏移120度
-			mutex : true,//只允许一个扇形弹出
-//			increment:10,
-			showpercent:true,
-			decimalsnum:2,
-			width : 800,
-			height : 400,
-			radius:150
-			});
-			//利用自定义组件构造右侧说明文本
-			chart.plugin(new iChart.Custom({
-			drawFn:function(){
-				//计算位置
-				var y = chart.get('originy'),
-				w = chart.get('width');
-				//在右侧的位置，渲染说明文字
-				chart.target.textAlign('start')
-				.textBaseline('middle')
-				.textFont('600 16px Verdana')
+				label_space:20,
+				color:'#9fb3b2',
+				fontsize:12,
+				fontweight:600
+			},
+			shadow:true,
+			value:10,
+			background_color:'#e4e5e9',
+			text:{text:'ichartjs',color:'#e33e41'},
+			needle:{
+				color:'#f4e5b0',
+				size:6,
+				alpham:0.6
+			},
+			cap:{
+				color:'#7bbfec',
+				size:12
+			},
+			width : 340,
+			height : 380,
+			radius:'90%',
+			listeners:{
+				change:function(g,v){
+					//console.log(g.id+'=='+v);
 				}
-			}));
-			chart.draw();
-		
+			}
+		});
+		chart.draw();
+		//interval();
 	});
+	
+	function change(){
+		chart.to(Math.floor(Math.random() * 100));
+	}
+	
+	function interval(){
+		setInterval(function(){
+			var i = Math.floor(Math.random() * 5);
+			chart.to(chart.get('value')+((i%2==0)?i:-i));
+		},600);
+	}
 	
 	</script>
 	</head>
