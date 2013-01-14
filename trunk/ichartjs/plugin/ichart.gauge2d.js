@@ -45,7 +45,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 				space_angle:4,
 				radius:'88%',
 				width:10,
-				bg_color:'#4fa9db',
+				bg_color:null,
 				size:2,
 				count:5,
 				color:'#344352',
@@ -54,7 +54,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 				small_color:'#344352',
 				small_count:5,
 				/**
-				 * [[0, 60, 'green'],[60, 80 'yellow'],[80, 100, 'red']]
+				 * [[0, 80, 'green'],[80, 90 'yellow'],[90, 100, 'red']]
 				 */
 				ranges:[]
 			},
@@ -118,6 +118,14 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
             animation_timing_function : 'easeOut'
 		});
 		
+		this.registerEvent(
+				/**
+				 * @event Fires when value changed
+				 * @paramter <link>iChart.Gauge2D</link>#g
+				 * @paramter int#value
+				 */
+				'change');
+		
 		this.push('data',[0]);
 	},
 	doAnimation : function(t, d,_) {
@@ -131,17 +139,26 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 		_.needle.push('value',v);
 		_.needle.draw();
 	},
-	to:function(value){
+	/**
+	 * @method setting the vaule of gauge,the value must between the valid range
+	 * @paramter int#value the vaule of gauge
+	 * @return void
+	 */
+	to:function(v){
 		var _ = this._();
-		if(value==_.needle.value)return;
+		if(v==_.needle.value)return;
 		if(_.processAnimation){
 			_.needle.start = _.needle.get('value');
 		}else{
 			_.needle.start = _.needle.value;
 		}
-		_.needle.value = parseFloat(value);
+		_.needle.value = parseFloat(v);
 		_.needle.offset = _.needle.value-_.needle.start;
-		_.runAnimation(_);
+		_.Animationed = false;
+		_.screen.push('text',v);
+		_.needle.push('value',v);
+		_.draw();
+		_.fireEvent(_, 'change', [_,v]);
 	},
 	doConfig : function() {
 		iChart.Gauge2D.superclass.doConfig.call(this);
@@ -193,16 +210,17 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 				_.labels = [];
 				_.pushIf('end_angle',-_.get('start_angle'));
 				var count= _.push('count',iChart.lowTo(2,_.get('count'))),
-					A = _.push('space_angle',iChart.angle2Radian(_.get('space_angle'))),
+					A = _.push('space_angle',iChart.angle2Radian(_.get('space_angle')/2)),
 					sA = _.push('start_angle',iChart.angle2Radian(_.get('start_angle')+ 90))+A,
 					eA = _.push('end_angle',iChart.angle2Radian(_.get('end_angle')+ 450))-A,
 					colors = [].concat(_.get('bg_color')),
 					tcolors = [].concat(_.get('color')),
 					stcolors = [].concat(_.get('small_color')),
 					scount = _.get('small_count')||1,
-					lower = _.get('lower'),
-					upper = _.get('upper'),
-					T = (upper - lower)/count,
+					l = _.get('lower'),
+					u = _.get('upper'),
+					ranges = _.get('ranges'),
+					T = (u - l)/count,
 					tA = eA- sA,
 					S = tA/count,
 					AA = S/scount,
@@ -214,12 +232,15 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 					swA = wA*0.6;
 				
 				_.minMarks = T/scount;
-				_.lower =lower;
-				_.upper =upper;
-				
+				_.lower =l;
+				_.upper =u;
 				_.sA =sA;
 				_.eA =eA;
 				_.tA =tA;
+				
+				_.getRadian = function(v){
+					return Math.abs(((iChart.between(_.lower,_.upper,v)-_.lower)/(_.upper-_.lower))*_.tA)+_.sA;
+				}
 				
 				for(var i=0;i<=count;i++){
 					tcolors[i] = tcolors[i] || tcolors[i-1];
@@ -252,16 +273,26 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 					}
 					
 					_.labels.push(new iChart.Text(iChart.apply(_.get('label'),{
-						text : lower,
+						text : l,
 						textAlign:'center',
 						textBaseline:'middle',
 						originx : _.x+Math.cos(sA)*tr,
 						originy : _.y+Math.sin(sA)*tr
 					}), _));
 					
-					lower+=T;
+					l+=T;
 					sA+=S;
 				}
+				/**
+				 * customize ranges
+				 */
+				ranges.each(function(r){
+					_.tickbg.push({
+						start:_.getRadian(r[0]),
+						end:_.getRadian(r[1]),
+						color:r[2]
+					});
+				});
 			},
 			drawFn:function(_){
 				_.tickbg.each(function(bg){
@@ -322,26 +353,15 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			originy:_.y,
 			tickmark:_.tickmark,
 			value:value,
-			getRadian:function(v){
-				var l = _.tickmark.lower,u = _.tickmark.upper;
-				if(l>u){
-					v = iChart.between(u,l,v);
-				}else{
-					v = iChart.between(l,u,v);
-				}
-				return Math.abs(((v-l)/(u-l))*_.tickmark.tA)+_.tickmark.sA;
-			},
 			configFn:function(_){
 				_.tickmark = _.get('tickmark');
 				_.r = iChart.parsePercent(_.get('needle.radius'),_.tickmark.r - _.tickmark.get('width')*0.5);
-				_.getRadian = _.get('getRadian');
 				_.value = _.get('value');
 				_.start = _.tickmark.lower;
 				_.offset = _.value - _.start;
 			},
 			drawFn:function(_){
-				var A = _.getRadian(_.get('value')),cap = _.get('cap.size'),Q = _.get('needle.size')/cap;
-				
+				var A = _.tickmark.getRadian(_.get('value')),cap = _.get('cap.size'),Q = _.get('needle.size')/cap;
 				_.T.polygon(_.get('needle.color'),_.get('needle.border.enable'),_.get('needle.border.width'),_.get('needle.border.color'),_.get('needle.shadow'),_.get('needle.alpham')||1,[{x:_.x+Math.cos(A-Q)*cap,y:_.y+Math.sin(A-Q)*cap},{x:_.x+Math.cos(A+Q)*cap,y:_.y+Math.sin(A+Q)*cap},{x:_.x+Math.cos(A)*_.r,y:_.y+Math.sin(A)*_.r}]);
 				
 				_.T.sector(_.x, _.y,cap, 0, 0, pi2, _.get('cap.color'),_.get('cap.border.enable'),_.get('cap.border.width'),_.get('cap.border.color'),_.get('needle.shadow'), false, true);
