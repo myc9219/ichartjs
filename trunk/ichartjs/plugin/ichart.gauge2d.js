@@ -1,6 +1,6 @@
 /**
  * @overview the ichartjs Plug-in,the circular gauge component
- * @component#iChart.Gauge2D
+ * @component#@chart#iChart.Gauge2D
  * @extend#iChart.Chart
  */
 iChart.Gauge2D = iChart.extend(iChart.Chart, {
@@ -12,7 +12,7 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 		 * invoked the super class's configuration
 		 */
 		iChart.Gauge2D.superclass.configure.call(this);
-
+		
 		this.type = 'gauge2d';
 		this.dataType = 'single';
 		
@@ -21,6 +21,9 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			 * @cfg {Float/String} Specifies the gauge's radius.If given a percentage,it will relative to minDistance.(default to '100%')
 			 */
 			radius : '100%',
+			/**
+			 * @cfg {Float} Specifies the gauge's initialized value.If not given,it will the same as tickmarks.lower.(default to null)
+			 */
 			value : null,
 			panel:{
 				background_color:'#FEFEFE',

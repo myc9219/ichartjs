@@ -140,8 +140,6 @@
 
 		this.canvas = c;
 		this.c = this.canvas.getContext("2d");
-		this.width = this.canvas.width;
-		this.height = this.canvas.height;
 	}
 
 	Cans.prototype = {
@@ -1121,10 +1119,11 @@
 		 * @return void
 		 */
 		setUp:function(){
-			this.redraw = false;
-			this.T.clearRect();
-			this.initialization = false;
-			this.initialize();
+			var _ = this._();
+			_.redraw = false;
+			_.T.clearRect();
+			_.initialization = false;
+			_.initialize();
 		},
 		create : function(_,shell) {
 			/**
@@ -1141,28 +1140,15 @@
 			    _.push(_.H, h);
 			}
 			
-			/**
-			 * did default should to calculate the size of warp?
-			 */
-			_.width = _.pushIf(_.W, 400);
-			_.height = _.pushIf(_.H, 300);
 			_.canvasid = $.uid(_.type);
 			_.shellid = "shell-"+_.canvasid;
 			
 			var H = [];
 			H.push("<div id='");
 			H.push(_.shellid);
-			H.push("' style='width:");
-			H.push(_.width);
-			H.push("px;height:");
-			H.push(_.height);
-			H.push("px;padding:0px;margin:0px;overflow:hidden;position:relative;'>");
+			H.push("' style='padding:0px;margin:0px;overflow:hidden;position:relative;'>");
 			H.push("<canvas id= '");
 			H.push(_.canvasid);
-			H.push("'  width='");
-			H.push(_.width);
-			H.push("' height='");
-			H.push(_.height);
 			H.push("'><p>Your browser does not support the canvas element</p></canvas></div>");
 			/**
 			 * also use appendChild()
@@ -1176,7 +1162,18 @@
 			 */
 			_.T = _.target = new Cans(_.canvasid);
 			
+			/**
+			 * do size
+			 */
+			_.size(_);
+			
 			_.Rendered = true;
+		},
+		size:function(_){
+			_.T.canvas.width = _.width = _.pushIf(_.W, 400);
+			_.T.canvas.height = _.height = _.pushIf(_.H, 300);
+			_.shell.style.width = _.width+'px';
+			_.shell.style.height = _.height+'px';
 		},
 		initialize : function() {
 			var _ = this._(),d = _.get('data'),r = _.get('render');
@@ -1191,6 +1188,10 @@
 			}else if (!_.Rendered) {
 				if(r)
 				_.create(_,$(r));
+			}else{
+				if(_.width != _.get(_.W)||_.height!=_.get(_.H)){
+					_.size(_);
+				}
 			}
 			
 			if(_.Rendered && !_.initialization){
@@ -1340,6 +1341,7 @@
 		 */
 		originXY:function(_,x,y){
 			var A = _.get('align');
+			
 			if (A == _.L) {
 				_.pushIf(_.X, x[0]);
 			} else if (A == _.R) {
@@ -1349,7 +1351,7 @@
 			}
 			
 			_.x = _.push(_.X, _.get(_.X) + _.get('offsetx'));
-			_.y = _.push(_.Y, y[0]+ _.get('offsety'));
+			_.y = _.push(_.Y, _.get(_.Y)||y[0]+ _.get('offsety'));
 			
 			return {
 				x:_.x,
@@ -1432,7 +1434,6 @@
 			
 			if(!_.Combination){
 				var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.width - _.get('hpadding'))), h;
-				
 				_.duration = ceil(_.get('animation_duration') * $.FRAME / 1000);
 				
 				/**
