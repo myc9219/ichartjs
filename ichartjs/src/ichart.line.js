@@ -119,6 +119,8 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		_.lines.zIndex = _.get('z_index');
 		_.components.push(_.lines);
 		
+		var k = _.pushIf('sub_option.keep_with_coordinate',s);
+		
 		if (_.get('crosshair.enable')) {
 			_.push('crosshair.hcross', s);
 			_.push('crosshair.invokeOffset', function(e, m) {
@@ -126,7 +128,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 				 * TODO how fire muti line?now fire by first line
 				 */
 				var r = _.lines[0].isEventValid(e);
-				return r.valid ? r : false;
+				return r.valid ? r : k;
 			});
 		}
 		
@@ -168,7 +170,8 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		
 		_.push('sub_option.width', vw);
 		_.push('sub_option.height', vh);
-		_.pushIf('sub_option.keep_with_coordinate',s);
+		
+		
 		_.push('sub_option.originx', _.coo.get('x_start')+(_.coo.get('valid_width')-vw)/2);
 		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.get(_.H));
 		

@@ -52,29 +52,25 @@
 		/**
 		 * this function will implement at every target object,and this just default effect
 		 */
-		follow:function(e,m){
-			if(this.get('invokeOffset')){
-				var o = this.get('invokeOffset')(e,m);
+		follow:function(e,m,_){
+			if(_.get('invokeOffset')){
+				var o = _.get('invokeOffset')(e,m);
 				if(o&&o.hit){
-					this.position(o.top-this.top,o.left-this.left);
+					_.o_valid = true;
+					_.position(o.top-_.top,o.left-_.left,_);
+				}else if(!o||!_.o_valid){
+					_.position(_.owidth,_.oheight,_);
 				}
-				return false;
 			}else{
 				/**
 				 * set the 1px offset will make the line at the top left all the time
 				 */
-				this.position(e.y-this.top-1,e.x-this.left-1);
+				_.position(e.y-_.top-1,e.x-_.left-1,_);
 			}
-			return true;
 		},
-		position:function(t,l){
-			this.horizontal.style.top = (t-this.size)+"px";
-			this.vertical.style.left = (l-this.size)+"px";
-		},
-		beforeshow:function(e,m){
-			if(!this.follow(e,m)){
-				this.position(-99,-99);
-			}
+		position:function(t,l,_){
+			_.horizontal.style.top = (t-_.size)+"px";
+			_.vertical.style.left = (l-_.size)+"px";
 		},
 		doCreate:function(_,w,h){
 			var d = document.createElement("div");
@@ -91,7 +87,7 @@
 			}).on('mouseout',function(c,e,m){
 				_.hidden(e,m);	
 			}).on('mousemove',function(c,e,m){
-				_.follow(e,m);
+				_.follow(e,m,_);
 			});
 		},
 		initialize:function(){
@@ -99,8 +95,13 @@
 			
 			var _ = this._(),L = iChart.toPixel(_.get('line_width'));
 			
+			_.size = _.get('line_width')/2;
+			
 			_.top = iChart.fixPixel(_.get(_.O));
 			_.left = iChart.fixPixel(_.get(_.L));
+			_.owidth = -_.T.root.width;
+			_.oheight = -_.T.root.height;
+			_.o_valid = false;
 			/**
 			 * set size zero make integration with vertical and horizontal
 			 */
@@ -113,7 +114,7 @@
 			_.horizontal = _.doCreate(_,_.get('hcross')?iChart.toPixel(_.get(_.W)):"0px",L);
 			_.vertical = _.doCreate(_,L,_.get('vcross')?iChart.toPixel(_.get(_.H)):"0px");
 			
-			_.size = _.get('line_width')/2;
+			
 			
 		}
 });

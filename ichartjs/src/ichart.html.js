@@ -112,8 +112,11 @@ iChart.Html = iChart.extend(iChart.Element,{
 			this.css('transition',this.transitions);
 		}
 	},
+	beforeshow:function(e,m,_){
+		_.follow(e,m,_);
+	},
 	show:function(e,m){
-		this.beforeshow(e,m);
+		this.beforeshow(e,m,this);
 		this.css('visibility','visible');
 		if(this.get('animation')){
 			this.css('opacity',1);

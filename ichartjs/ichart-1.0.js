@@ -1467,8 +1467,11 @@ $.Html = $.extend($.Element,{
 			this.css('transition',this.transitions);
 		}
 	},
+	beforeshow:function(e,m,_){
+		_.follow(e,m,_);
+	},
 	show:function(e,m){
-		this.beforeshow(e,m);
+		this.beforeshow(e,m,this);
 		this.css('visibility','visible');
 		if(this.get('animation')){
 			this.css('opacity',1);
@@ -1700,35 +1703,31 @@ $.Component = $.extend($.Painter, {
 					 */
 					'parseText');
 		},
-		position:function(t,l){
-			this.style.top =  (t<0?0:t)+"px";
-			this.style.left = (l<0?0:l)+"px";
+		position:function(t,l,_){
+			_.style.top =  (t<0?0:t)+"px";
+			_.style.left = (l<0?0:l)+"px";
 		},
-		follow:function(e,m){
-			var _ = this._();
-			_.style.width = "";
+		follow:function(e,m,_){
+			//_.style.width = "";
 			if(_.get('invokeOffsetDynamic')){
 				if(m.hit){
 					if($.isString(m.text)||$.isNumber(m.text)){
 						_.text(m.name,m.value,m.text,m.i,_);
 					}
 					var o = _.get('invokeOffset')(_.width(),_.height(),m);
-					_.position(o.top,o.left);
+					_.position(o.top,o.left,_);
 				}
 			}else{
 				if(_.get('showType')!='follow'&&$.isFunction(_.get('invokeOffset'))){
 					var o = _.get('invokeOffset')(_.width(),_.height(),m);
-					_.position(o.top,o.left);
+					_.position(o.top,o.left,_);
 				}else{
-					_.position((e.y-_.height()*1.1-2),e.x+2);
+					_.position((e.y-_.height()*1.1-2),e.x+2,_);
 				}
 			}
 		},
 		text:function(n,v,t,i,_){
 			_.dom.innerHTML = _.fireString(_, 'parseText', [_,n,v,t,i],t);
-		},
-		beforeshow:function(e,m){
-			this.follow(e,m);
 		},
 		hidden:function(e){
 			if(this.get('animation')){
@@ -1749,7 +1748,7 @@ $.Component = $.extend($.Painter, {
 					if(_.T.variable.event.mouseover){
 						setTimeout(function(){
 							if(_.T.variable.event.mouseover)
-								_.follow(e,m);
+								_.follow(e,m,_);
 						},_.get('delay'));
 					}
 				});
@@ -1835,29 +1834,25 @@ $.Component = $.extend($.Painter, {
 		/**
 		 * this function will implement at every target object,and this just default effect
 		 */
-		follow:function(e,m){
-			if(this.get('invokeOffset')){
-				var o = this.get('invokeOffset')(e,m);
+		follow:function(e,m,_){
+			if(_.get('invokeOffset')){
+				var o = _.get('invokeOffset')(e,m);
 				if(o&&o.hit){
-					this.position(o.top-this.top,o.left-this.left);
+					_.o_valid = true;
+					_.position(o.top-_.top,o.left-_.left,_);
+				}else if(!o||!_.o_valid){
+					_.position(_.owidth,_.oheight,_);
 				}
-				return false;
 			}else{
 				/**
 				 * set the 1px offset will make the line at the top left all the time
 				 */
-				this.position(e.y-this.top-1,e.x-this.left-1);
+				_.position(e.y-_.top-1,e.x-_.left-1,_);
 			}
-			return true;
 		},
-		position:function(t,l){
-			this.horizontal.style.top = (t-this.size)+"px";
-			this.vertical.style.left = (l-this.size)+"px";
-		},
-		beforeshow:function(e,m){
-			if(!this.follow(e,m)){
-				this.position(-99,-99);
-			}
+		position:function(t,l,_){
+			_.horizontal.style.top = (t-_.size)+"px";
+			_.vertical.style.left = (l-_.size)+"px";
 		},
 		doCreate:function(_,w,h){
 			var d = document.createElement("div");
@@ -1874,7 +1869,7 @@ $.Component = $.extend($.Painter, {
 			}).on('mouseout',function(c,e,m){
 				_.hidden(e,m);	
 			}).on('mousemove',function(c,e,m){
-				_.follow(e,m);
+				_.follow(e,m,_);
 			});
 		},
 		initialize:function(){
@@ -1882,8 +1877,13 @@ $.Component = $.extend($.Painter, {
 			
 			var _ = this._(),L = $.toPixel(_.get('line_width'));
 			
+			_.size = _.get('line_width')/2;
+			
 			_.top = $.fixPixel(_.get(_.O));
 			_.left = $.fixPixel(_.get(_.L));
+			_.owidth = -_.T.root.width;
+			_.oheight = -_.T.root.height;
+			_.o_valid = false;
 			/**
 			 * set size zero make integration with vertical and horizontal
 			 */
@@ -1896,7 +1896,7 @@ $.Component = $.extend($.Painter, {
 			_.horizontal = _.doCreate(_,_.get('hcross')?$.toPixel(_.get(_.W)):"0px",L);
 			_.vertical = _.doCreate(_,L,_.get('vcross')?$.toPixel(_.get(_.H)):"0px");
 			
-			_.size = _.get('line_width')/2;
+			
 			
 		}
 });
@@ -2606,8 +2606,6 @@ $.Label = $.extend($.Component, {
 
 		this.canvas = c;
 		this.c = this.canvas.getContext("2d");
-		this.width = this.canvas.width;
-		this.height = this.canvas.height;
 	}
 
 	Cans.prototype = {
@@ -3587,10 +3585,11 @@ $.Label = $.extend($.Component, {
 		 * @return void
 		 */
 		setUp:function(){
-			this.redraw = false;
-			this.T.clearRect();
-			this.initialization = false;
-			this.initialize();
+			var _ = this._();
+			_.redraw = false;
+			_.T.clearRect();
+			_.initialization = false;
+			_.initialize();
 		},
 		create : function(_,shell) {
 			/**
@@ -3607,28 +3606,15 @@ $.Label = $.extend($.Component, {
 			    _.push(_.H, h);
 			}
 			
-			/**
-			 * did default should to calculate the size of warp?
-			 */
-			_.width = _.pushIf(_.W, 400);
-			_.height = _.pushIf(_.H, 300);
 			_.canvasid = $.uid(_.type);
 			_.shellid = "shell-"+_.canvasid;
 			
 			var H = [];
 			H.push("<div id='");
 			H.push(_.shellid);
-			H.push("' style='width:");
-			H.push(_.width);
-			H.push("px;height:");
-			H.push(_.height);
-			H.push("px;padding:0px;margin:0px;overflow:hidden;position:relative;'>");
+			H.push("' style='padding:0px;margin:0px;overflow:hidden;position:relative;'>");
 			H.push("<canvas id= '");
 			H.push(_.canvasid);
-			H.push("'  width='");
-			H.push(_.width);
-			H.push("' height='");
-			H.push(_.height);
 			H.push("'><p>Your browser does not support the canvas element</p></canvas></div>");
 			/**
 			 * also use appendChild()
@@ -3642,7 +3628,18 @@ $.Label = $.extend($.Component, {
 			 */
 			_.T = _.target = new Cans(_.canvasid);
 			
+			/**
+			 * do size
+			 */
+			_.size(_);
+			
 			_.Rendered = true;
+		},
+		size:function(_){
+			_.T.canvas.width = _.width = _.pushIf(_.W, 400);
+			_.T.canvas.height = _.height = _.pushIf(_.H, 300);
+			_.shell.style.width = _.width+'px';
+			_.shell.style.height = _.height+'px';
 		},
 		initialize : function() {
 			var _ = this._(),d = _.get('data'),r = _.get('render');
@@ -3657,6 +3654,10 @@ $.Label = $.extend($.Component, {
 			}else if (!_.Rendered) {
 				if(r)
 				_.create(_,$(r));
+			}else{
+				if(_.width != _.get(_.W)||_.height!=_.get(_.H)){
+					_.size(_);
+				}
 			}
 			
 			if(_.Rendered && !_.initialization){
@@ -3806,6 +3807,7 @@ $.Label = $.extend($.Component, {
 		 */
 		originXY:function(_,x,y){
 			var A = _.get('align');
+			
 			if (A == _.L) {
 				_.pushIf(_.X, x[0]);
 			} else if (A == _.R) {
@@ -3815,7 +3817,7 @@ $.Label = $.extend($.Component, {
 			}
 			
 			_.x = _.push(_.X, _.get(_.X) + _.get('offsetx'));
-			_.y = _.push(_.Y, y[0]+ _.get('offsety'));
+			_.y = _.push(_.Y, _.get(_.Y)||y[0]+ _.get('offsety'));
 			
 			return {
 				x:_.x,
@@ -3898,7 +3900,6 @@ $.Label = $.extend($.Component, {
 			
 			if(!_.Combination){
 				var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.width - _.get('hpadding'))), h;
-				
 				_.duration = ceil(_.get('animation_duration') * $.FRAME / 1000);
 				
 				/**
@@ -7476,6 +7477,8 @@ $.Line = $.extend($.Chart, {
 		_.lines.zIndex = _.get('z_index');
 		_.components.push(_.lines);
 		
+		var k = _.pushIf('sub_option.keep_with_coordinate',s);
+		
 		if (_.get('crosshair.enable')) {
 			_.push('crosshair.hcross', s);
 			_.push('crosshair.invokeOffset', function(e, m) {
@@ -7483,7 +7486,7 @@ $.Line = $.extend($.Chart, {
 				 * TODO how fire muti line?now fire by first line
 				 */
 				var r = _.lines[0].isEventValid(e);
-				return r.valid ? r : false;
+				return r.valid ? r : k;
 			});
 		}
 		
@@ -7525,7 +7528,8 @@ $.Line = $.extend($.Chart, {
 		
 		_.push('sub_option.width', vw);
 		_.push('sub_option.height', vh);
-		_.pushIf('sub_option.keep_with_coordinate',s);
+		
+		
 		_.push('sub_option.originx', _.coo.get('x_start')+(_.coo.get('valid_width')-vw)/2);
 		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.get(_.H));
 		
