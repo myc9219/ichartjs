@@ -301,9 +301,9 @@
 				f = 1;
 				while(M<1){
 					M = M*10;
-					f = f/10;
+					f = f *10;
 				}
-				return round(v/f+w)*f;
+				return round(v*f+w)/f;
 			}
 		}, colors = {
 			navy : 'rgb(0,0,128)',
