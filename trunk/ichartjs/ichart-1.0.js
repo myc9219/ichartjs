@@ -301,9 +301,9 @@
 				f = 1;
 				while(M<1){
 					M = M*10;
-					f = f/10;
+					f = f *10;
 				}
-				return round(v/f+w)*f;
+				return round(v*f+w)/f;
 			}
 		}, colors = {
 			navy : 'rgb(0,0,128)',
@@ -1071,9 +1071,7 @@ $.Element.prototype = {
 		return r;
 	},
 	on : function(n, fn) {
-		if($.isString(n)){
-			if (!this.events[n])
-				throw new Error('['+this.type+"] invalid event:'" + n + "'");
+		if($.isString(n)&&$.isArray(this.events[n])){
 			this.events[n].push(fn);
 		}else if($.isArray(n)){
 			n.each(function(c){this.on(c, fn)},this);

@@ -157,9 +157,7 @@ iChart.Element.prototype = {
 		return r;
 	},
 	on : function(n, fn) {
-		if(iChart.isString(n)){
-			if (!this.events[n])
-				throw new Error('['+this.type+"] invalid event:'" + n + "'");
+		if(iChart.isString(n)&&iChart.isArray(this.events[n])){
 			this.events[n].push(fn);
 		}else if(iChart.isArray(n)){
 			n.each(function(c){this.on(c, fn)},this);
