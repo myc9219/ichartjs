@@ -4269,13 +4269,13 @@ $.Scale = $.extend($.Component, {
 			 * value of each scale
 			 */
 			if (!s_space || s_space >( e_scale - start_scale)) {
-				s_space = _.push('scale', (e_scale - start_scale) / _.get('scale_share'));
+				var W = ((e_scale - start_scale)+"").indexOf('.')+1,M=1;
+				while(W>0){W--;M*=10;}
+				s_space = _.push('scale', (e_scale - start_scale)*M / _.get('scale_share')/M);
 			}
 			
 			if (parseInt(s_space)!=s_space && _.get('decimalsnum') == 0) {
-				var dec = s_space+"";
-				dec =  dec.substring(dec.indexOf('.')+1);
-				_.push('decimalsnum', dec.length);
+				_.push('decimalsnum',(s_space+"").substring((s_space+"").indexOf('.')+1).length);
 			}
 		}
 		
