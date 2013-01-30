@@ -291,6 +291,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			/**
 			 * put the label into a Text?
 			 */
+			if(_.get('label'))
 			_.labels.push(new iChart.Text(iChart.applyIf(iChart.apply(_.get('label'), iChart.merge({
 				text : text,
 				x : x,
