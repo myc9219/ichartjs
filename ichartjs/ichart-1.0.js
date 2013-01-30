@@ -4343,6 +4343,7 @@ $.Scale = $.extend($.Component, {
 			/**
 			 * put the label into a Text?
 			 */
+			if(_.get('label'))
 			_.labels.push(new $.Text($.applyIf($.apply(_.get('label'), $.merge({
 				text : text,
 				x : x,
