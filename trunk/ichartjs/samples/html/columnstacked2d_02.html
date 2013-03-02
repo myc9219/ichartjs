@@ -11,31 +11,26 @@
 		$(function(){
 			var data = [
 			         	{
-			         		name : '一月',
-			         		value:[45,52,54,60],
+			         		name : '直营店',
+			         		value:[54841,72400,76776,83361],
 			         		color:'#4f81bd'
 			         	},
 			         	{
-			         		name : '二月',
-			         		value:[60,80,105,80],
+			         		name : '加盟店',
+			         		value:[22790,33284,52148,68333],
 			         		color:'#bd4d4a'
-			         	},
-			         	{
-			         		name : '三月',
-			         		value:[50,70,120,100],
-			         		color:'#98c045'
 			         	}
 			         ];
 	        
 			var chart = new iChart.ColumnStacked2D({
 					render : 'canvasDiv',
 					data: data,
-					labels:["北京","上海","广州","深圳"],
+					labels:["2004年","2005年","2006年","2007年"],
 					title : {
-						text:'DPS01A型号产品第一季度4城市销售情况',
+						text:'全国限额以上连锁零售业情况',
 						color:'#254d70'
 					},
-					footnote : '数据来源：销售中心',
+					footnote : '数据来源：中华人民共和国国家统计局',
 					width : 800,
 					height : 400,
 					column_width:70,
@@ -64,18 +59,7 @@
 							enable : false
 						}
 					},
-					tip:{
-						enable :true,
-						listeners:{
-							//tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
-							parseText:function(tip,name,value,text,i){
-								return name+":"+value+ '万件';
-							}
-						} 
-					},
-					percent:true,//标志为百分比堆积图
-					showpercent:true,//显示各组内百分比
-					decimalsnum:1,//百分比小数点
+					column_width:80,
 					coordinate:{
 						background_color : 0,
 						axis : {
@@ -86,7 +70,8 @@
 							 position:'left',	
 							 scale_enable : false,
 							 start_scale:0,
-							 scale_space:50,
+							 scale_space:20000,
+							 end_scale:160000,
 							 label:{color:'#254d70',fontsize:11,fontweight:600}
 						}],
 						width:600,
