@@ -112,6 +112,23 @@
 						}]
 					}
 			});
+
+			//利用自定义组件构造左上侧单位
+			chart.plugin(new iChart.Custom({
+					drawFn:function(){
+						//计算位置
+						var coo = chart.getCoordinate(),
+							x = coo.get('originx'),
+							y = coo.get('originy');
+						//在左上侧的位置，渲染一个单位的文字
+						chart.target.textAlign('end')
+						.textBaseline('bottom')
+						.textFont('600 12px 微软雅黑')
+						.fillText('单位(个)',x+10,y-20,false,'#254d70')
+						
+					}
+			}));
+			
 			chart.draw();
 		});
 	</script>
@@ -126,10 +143,10 @@
 				说明
 			</div>
 			<div class='ichartjs_details'>
-				
+				这是一个3D堆积柱形图的示例，该示例展示了全国连锁零售企业总部(总店)数TOP5的城市情况。
 			</div>
 			<span class='ichartjs_sm'>备注：</span>
-			<span class='ichartjs_details'>数据均为模拟。 </span>
+			<span class='ichartjs_details'>数据来源于中华人民共和国国家统计局网站。  </span>
 		</div>
 	</body>
 </html>
