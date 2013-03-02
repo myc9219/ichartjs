@@ -16,19 +16,27 @@
 			        	{name : 'Graham',value : 55,color:'#bf784c'},
 			        	{name : 'John',value : 70,color:'#2f8586'}
 		        	];
+			var data1 = [
+				        	{
+				        		name : '累计销售',
+				        		value:[168,302,332,453,668],
+				        		color:'#aa4643',
+				        		line_width:3
+				        	}
+				       ];
 	    	
 	    	//是否启用动画
 			var animation = false;
 	    	
-			var chart = new iChart.Column2D({
+			var chart = new iChart.Column3D({
 				render : 'canvasDiv',
 				data: data,
 				title : {
-					text : 'This is a sample test for Combination',
+					text : 'This is a sample for Combination',
 					color : '#3e576f'
 				},
 				subtitle : {
-					text : 'Top 5 Sales Person,2011',
+					text : 'Top 5 Sales Person,Oct 2011',
 					color : '#6d869f'
 				},
 				footnote : {
@@ -37,8 +45,8 @@
 					fontsize : 11,
 					padding : '0 38'
 				},
-				width : 1000,
-				height : 460,
+				width : 800,
+				height : 400,
 				animation : animation,
 				animation_duration:600,
 				shadow : true,
@@ -46,10 +54,10 @@
 				shadow_color : '#aaaaaa',
 				shadow_offsetx : 1,
 				shadow_offsety : 0,
-				column_width : 68,
 				zScale:0.5,
 				xAngle : 50,
 				bottom_scale:1.1,
+				column_width:90,
 				label:{
 					color:'#4c4f48'
 				},
@@ -64,97 +72,92 @@
 						}
 					}
 				},
+				text_space : 16,//坐标系下方的label距离坐标系的距离。
 				coordinate:{
 					background_color : '#d5d8d1',
-					grid_color : '#a4ad96',
+					grid_color : '#919d7e',
 					color_factor : 0.24,
 					board_deep:10,//背面厚度
 					pedestal_height:10,//底座高度
 					left_board:false,//取消左侧面板
-					height:'88%',
-					width:'84%',
-					valid_width:'90%',
+					height:'100%',
+					width:'96%',
+					shadow:true,//底座的阴影效果
+					wall_style:[{//坐标系的各个面样式
+						color : '#333333'
+					},{
+						color : '#b2b2d3'
+					}, {
+						color : '#a6a6cb'
+					},{
+						color : '#333333'
+					},{
+						color : '#74749b'
+					},{
+						color : '#a6a6cb'
+					}],
 					scale:[{
 						 position:'left',	
 						 start_scale:0,
 						 scale_space:10,
+						 end_scale:80,
 						 label:{
 							color:'#4c4f48'
 						 },
 						 listeners:{
 							parseText:function(t,x,y){
-							//自定义左侧坐标系刻度文本的格式。
+								//自定义左侧坐标系刻度文本的格式。
+								return {text:'$'+t+'k'}
+							}
+						 }
+					},{
+						 position:'right',	
+						 start_scale:0,
+						 scale_space:100,
+						 end_scale:800,
+						 scaleAlign:'right',
+						 label:{
+							color:'#aa4643'
+						 },
+						 listeners:{
+							parseText:function(t,x,y){
+								//自定义右侧坐标系刻度文本的格式。
 								return {text:'$'+t+'k'}
 							}
 						 }
 					}]
 				}
 			});
-			var pie = new iChart.Pie2D({
-				data: data,
+			
+			
+			var line = new iChart.LineBasic2D({
+				z_index:1000,
+				data: data1,
 				label:{
 					color:'#4c4f48'
 				},
-				sub_option:{
-					mini_label_threshold_angle : 30,//迷你label的阀值,单位:角度
-					mini_label:{//迷你label配置项
-						fontsize:10,
-						fontweight:600,
-						color : '#ffffff'
-					},
-					label : {
-						background_color:null,
-						sign:false,//设置禁用label的小图标
-						padding:'0 4',
-						border:{
-							enable:false,
-							color:'#666666'
-						},
-						fontsize:10,
-						fontweight:600,
-						color : '#4572a7'
-					},
+				point_space:chart.get('column_width')+chart.get('column_space'),
+				tip:{
+					enable:true,
 					listeners:{
-						parseText:function(d, t){
-							return d.get('value')+"%";//自定义label文本
+						 //tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
+						parseText:function(tip,name,value,text,i){
+							return "全年销售:"+value+"k";
 						}
-					} 
+					}
 				},
-				text_space : 16,
-				align : 'left',
-				offsetx:chart.coo.get('originx')+60,
+				scaleAlign : 'right',
+				sub_option : {
+					smooth:true,
+					label:false,
+					hollow_inside:false,
+					point_size:14
+				},
 				animation : animation,
-				offsety:-(chart.get('centery')-chart.coo.get('originy')-90),
-				radius:70
+				coordinate:chart.coo
 			});
 			
-			var bar = new iChart.Bar2D({
-				data: data,
-				label:{
-					color:'#4c4f48'
-				},
-				align : 'left',
-				animation : animation,
-				offsetx:chart.coo.get('originx')+80,
-				offsety:-(chart.get('centery')-chart.coo.get('originy')-90),
-				coordinate:{
-					background_color : null,
-					grid_color : 'red',
-					axis:{width:0,color:'red'},
-					height:100,
-					width:200,
-					scale:[{
-						 position:'bottom',	
-						 label:{
-							color:'#4c4f48'
-						 }
-					}]
-				}
-			});
-
-			//chart.plugin(bar);
-			
-			chart.plugin(pie);
+			chart.plugin(line);
 			
 			 //利用自定义组件构造左侧说明文本。
 			chart.plugin(new iChart.Custom({
@@ -173,17 +176,6 @@
 					}
 			}));
 
-			chart.on('beforedraw',function(e){
-				chart.START_RUN_TIME = new Date().getTime();
-				return true;
-			});
-			
-			chart.on('draw',function(e){
-				chart.END_RUN_TIME = new Date().getTime();
-				chart.RUN_TIME_COST = chart.END_RUN_TIME - chart.START_RUN_TIME;
-				//console.log('cost:'+chart.RUN_TIME_COST+'ms');
-			});
-			
 			chart.draw();
 		});
 		
@@ -196,13 +188,10 @@
 				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);">View Code</span>
 				<div class='ichartjs_sm'>说明</div>
 				<div class='ichartjs_details'>
-					这是一个3D柱形图示例，该示例展示了公司年度销售5强的情况。此示例中，模拟了FusionCharts的图表风格。
-					特点是对坐标系进行了细致的配置，利用配置项left_board去除了左侧的面板，利用valid_width配置项限定了有效的横向坐标区域。
+					此示例在示例<a href='column3d_04.html'>2011年度销售5强</a>基础上组合了一个折线图表。该示例中柱形图展示了公司年度销售5强的情况。折线图展示了5强年度总销售额的情况。
 				</div>
 				<span class='ichartjs_sm'>备注：</span>
-				<span class='ichartjs_details'>
-					图表示例模拟FusionCharts风格。
-				</span>
+				<span class='ichartjs_details'>示例数据来源网络。仅供参考。</span>
 			</div>
 		</body>
 </html>

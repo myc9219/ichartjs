@@ -11,18 +11,18 @@
 		$(function(){
 			var data = [
 			         	{
-			         		name : '一月',
-			         		value:[45,52,54,60],
+			         		name : '便利店',
+			         		value:[9,12,10,11,16],
 			         		color:'#4f81bd'
 			         	},
 			         	{
-			         		name : '二月',
-			         		value:[60,80,105,80],
+			         		name : '超市',
+			         		value:[63,42,38,21,14],
 			         		color:'#bd4d4a'
 			         	},
 			         	{
-			         		name : '三月',
-			         		value:[50,70,120,100],
+			         		name : '大型超市',
+			         		value:[32,19,23,11,7],
 			         		color:'#98c045'
 			         	}
 			         ];
@@ -30,12 +30,12 @@
 			var chart = new iChart.ColumnStacked3D({
 					render : 'canvasDiv',
 					data: data,
-					labels:["北京","上海","广州","深圳"],
+					labels:["浙江","江苏","广东","北京","上海"],
 					title : {
-						text:'DPS01A型号产品第一季度4城市销售情况',
+						text:'连锁零售企业总部(总店)数TOP5',
 						color:'#254d70'
 					},
-					footnote : '数据来源：销售中心',
+					footnote : '数据来源：中华人民共和国国家统计局',
 					width : 800,
 					height : 400,
 					column_width:70,
@@ -69,19 +69,16 @@
 						listeners:{
 							//tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
 							parseText:function(tip,name,value,text,i){
-								return name+":"+value+ '万件';
+								return name+":"+value+ '个';
 							}
 						} 
 					},
-					percent:true,//标志为百分比堆积图
-					showpercent:true,
-					decimalsnum:1,
 					text_space : 16,//坐标系下方的label距离坐标系的距离。
 					zScale:0.5,
 					xAngle : 50,
 					bottom_scale:1.1, 
 					coordinate:{
-						width:'94%',
+						width:'90%',
 						height:'90%',
 						board_deep:10,//背面厚度
 						pedestal_height:10,//底座高度
@@ -109,7 +106,8 @@
 							 position:'left',	
 							 scale_enable : false,
 							 start_scale:0,
-							 scale_space:50,
+							 scale_space:20,
+							 end_scale:120,
 							 label:{color:'#254d70',fontsize:11,fontweight:600}
 						}]
 					}
