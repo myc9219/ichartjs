@@ -24,18 +24,13 @@
 					collapsible: true,
 					autoHeight: false
 				}); 
-				try{ 
-					document.createElement('canvas').getContext('2d');
-					if(hash.indexOf("#")!=-1){
-						hash = hash.substring(1,hash.length);
-						hash = hash.split('&');
-						document.getElementById("viewport").src="html/"+hash[0]+".html";
-						index = parseInt(hash[1]) || 0;
-					}else{
-						document.getElementById("viewport").src="html/area2d_01.html";
-					}
-				}catch (e) {
-					document.getElementById("viewport").src="notsupport.html";
+				if(hash.indexOf("#")!=-1){
+					hash = hash.substring(1,hash.length);
+					hash = hash.split('&');
+					document.getElementById("viewport").src="html/"+hash[0]+".html";
+					index = parseInt(hash[1]) || 0;
+				}else{
+					document.getElementById("viewport").src="html/area2d_01.html";
 				}
 				
 				$( "#ichartjs_accordion" ).accordion( "activate" ,index);
