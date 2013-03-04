@@ -1,5 +1,5 @@
 	/**
-	 * @overview this component use for abc
+	 * @overview the sector2d componment
 	 * @component#iChart.Sector2D
 	 * @extend#iChart.Sector
 	 */

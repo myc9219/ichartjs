@@ -1,5 +1,5 @@
 /**
- * @overview this component use for abc
+ * @overview the legend componment
  * @component#iChart.Legend
  * @extend#iChart.Component
  */

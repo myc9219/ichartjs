@@ -1,5 +1,5 @@
 /**
- * @overview this component use for abc
+ * @overview the base class of pie chart
  * @component#iChart.Pie
  * @extend#iChart.Chart
  */
