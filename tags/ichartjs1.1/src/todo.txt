@@ -1,0 +1,11 @@
+//expect next
+1.StackedColumn
+
+
+
+
+
+change
+duration_animation_duration->animation_duration
+colwidth->column_width
+barheight->bar_height
