@@ -24,14 +24,20 @@
 					collapsible: true,
 					autoHeight: false
 				}); 
-				if(hash.indexOf("#")!=-1){
-					hash = hash.substring(1,hash.length);
-					hash = hash.split('&');
-					document.getElementById("viewport").src="html/"+hash[0]+".html";
-					index = parseInt(hash[1]) || 0;
-				}else{
-					document.getElementById("viewport").src="html/area2d_01.html";
+				try{ 
+					document.createElement('canvas').getContext('2d');
+					if(hash.indexOf("#")!=-1){
+						hash = hash.substring(1,hash.length);
+						hash = hash.split('&');
+						document.getElementById("viewport").src="html/"+hash[0]+".html";
+						index = parseInt(hash[1]) || 0;
+					}else{
+						document.getElementById("viewport").src="html/area2d_01.html";
+					}
+				}catch (e) {
+					document.getElementById("viewport").src="notsupport.html";
 				}
+				
 				$( "#ichartjs_accordion" ).accordion( "activate" ,index);
 				
 				$pre = $("#ichartjs_pre");
@@ -219,7 +225,7 @@
 			<table id="ichartjs_code">
 				<tr>
 					<td valign="top">
-						<pre id="ichartjs_number"><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/><span>1.</span><br/></pre>
+						<pre id="ichartjs_number"></pre>
 					</td>
 					<td valign="top">
 						<pre id="ichartjs_pre"></pre>

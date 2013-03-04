@@ -1,5 +1,5 @@
 	/**
-	 * @overview this component use for abc
+	 * @overview the base class of rectangle
 	 * @component#iChart.Rectangle
 	 * @extend#iChart.Component
 	 */

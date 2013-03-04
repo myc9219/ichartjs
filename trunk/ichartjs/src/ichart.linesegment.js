@@ -1,7 +1,5 @@
 /**
- * Line ability for real-time show
- * 
- * @overview this component use for abc
+ * @overview the line segment componment
  * @component#iChart.LineSegment
  * @extend#iChart.Component
  */

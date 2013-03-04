@@ -1,5 +1,5 @@
 	/**
-	 * @overview this component use for abc
+	 * @overview the customize componment
 	 * @component#iChart.Custom
 	 * @extend#iChart.Component
 	 */

@@ -741,7 +741,7 @@
 	}
 	
 	/**
-	 * @overview this component use for abc
+	 * @overview this component is a super class of all chart
 	 * @component#iChart.Chart
 	 * @extend#iChart.Painter
 	 */

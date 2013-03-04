@@ -1,5 +1,5 @@
 /**
- * @overview this component use for abc
+ * @overview the pie2d componment
  * @component#@chart#iChart.Pie2D
  * @extend#iChart.Pie
  */

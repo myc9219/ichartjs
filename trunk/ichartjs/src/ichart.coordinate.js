@@ -395,7 +395,7 @@ iChart.Coordinate = {
 	}
 }
 /**
- * @overview this component use for abc
+ * @overview the coordinate2d componment
  * @component#iChart.Coordinate2D
  * @extend#iChart.Component
  */
@@ -816,7 +816,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
  * @end
  */
 /**
- * @overview this component use for abc
+ * @overview the coordinate3d componment
  * @component#iChart.Coordinate3D
  * @extend#iChart.Coordinate2D
  */
