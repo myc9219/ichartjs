@@ -1902,7 +1902,7 @@ $.Component = $.extend($.Painter, {
  * @end
  */
 /**
- * @overview this component use for abc
+ * @overview the legend componment
  * @component#$.Legend
  * @extend#$.Component
  */
@@ -2197,7 +2197,7 @@ $.Legend = $.extend($.Component, {
 });/** @end */
 
 /**
- * @overview this component use for abc
+ * @overview the label componment
  * @component#$.Label
  * @extend#$.Component
  */
@@ -2340,7 +2340,7 @@ $.Label = $.extend($.Component, {
  */
 
 	/**
-	 * @overview this component use for abc
+	 * @overview the text componment
 	 * @component#$.Text
 	 * @extend#$.Component
 	 */
@@ -3205,7 +3205,7 @@ $.Label = $.extend($.Component, {
 	}
 	
 	/**
-	 * @overview this component use for abc
+	 * @overview this component is a super class of all chart
 	 * @component#$.Chart
 	 * @extend#$.Painter
 	 */
@@ -3995,7 +3995,7 @@ $.Label = $.extend($.Component, {
 
 
 	/**
-	 * @overview this component use for abc
+	 * @overview the customize componment
 	 * @component#$.Custom
 	 * @extend#$.Component
 	 */
@@ -4447,7 +4447,7 @@ $.Coordinate = {
 	}
 }
 /**
- * @overview this component use for abc
+ * @overview the coordinate2d componment
  * @component#$.Coordinate2D
  * @extend#$.Component
  */
@@ -4868,7 +4868,7 @@ $.Coordinate2D = $.extend($.Component, {
  * @end
  */
 /**
- * @overview this component use for abc
+ * @overview the coordinate3d componment
  * @component#$.Coordinate3D
  * @extend#$.Coordinate2D
  */
@@ -5060,7 +5060,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 
 
 	/**
-	 * @overview this component use for abc
+	 * @overview the base class of rectangle
 	 * @component#$.Rectangle
 	 * @extend#$.Component
 	 */
@@ -5206,7 +5206,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
  *@end
  */	
 	/**
-	 * @overview this component use for abc
+	 * @overview the rectangle2d componment
 	 * @component#$.Rectangle2D
 	 * @extend#$.Rectangle
 	 */
@@ -5284,7 +5284,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
  *@end
  */	
 	/**
-	 * @overview this component use for abc
+	 * @overview the rectangle3d componment
 	 * @component#$.Rectangle3D
 	 * @extend#$.Rectangle
 	 */
@@ -5626,7 +5626,7 @@ $.Sector = $.extend($.Component, {
  * @end
  */
 	/**
-	 * @overview this component use for abc
+	 * @overview the sector2d componment
 	 * @component#$.Sector2D
 	 * @extend#$.Sector
 	 */
@@ -5724,7 +5724,7 @@ $.Sector = $.extend($.Component, {
  * @end
  */
 	/**
-	 * @overview this component use for abc
+	 * @overview the sector3d componment
 	 * @component#$.Sector3D
 	 * @extend#$.Sector
 	 */
@@ -5829,7 +5829,7 @@ $.Sector = $.extend($.Component, {
  *@end
  */	
 /**
- * @overview this component use for abc
+ * @overview the base class of pie chart
  * @component#$.Pie
  * @extend#$.Chart
  */
@@ -6059,7 +6059,7 @@ $.Pie = $.extend($.Chart, {
 /** @end */
 
 /**
- * @overview this component use for abc
+ * @overview the pie2d componment
  * @component#@chart#$.Pie2D
  * @extend#$.Pie
  */
@@ -6092,7 +6092,7 @@ $.Pie2D = $.extend($.Pie, {
  * @end
  */
 /**
- * @overview this component use for abc
+ * @overview the pie3d componment
  * @component#@chart#$.Pie3D
  * @extend#$.Pie
  */
@@ -6518,7 +6518,7 @@ $.Column2D = $.extend($.Column, {
  *@end 
  */
 /**
- * @overview this component use for abc
+ * @overview the column3d componment
  * @component#@chart#$.Column3D
  * @extend#$.Column2D
  */
@@ -6699,6 +6699,10 @@ $.ColumnStacked2D = $.extend($.Column, {
 			 * @cfg {Boolean} Specifies as true to display with percent.(default to false)
 			 */
 			percent : false,
+			/**
+			 * @cfg {Array} the array of labels close to the axis
+			 */
+			labels : [],
 			sub_option:{
 				label:{color:'#ffffff'},
 				valueAlign:'middle'
@@ -7047,9 +7051,7 @@ $.BarMulti2D = $.extend($.Bar, {
  */
 
 /**
- * Line ability for real-time show
- * 
- * @overview this component use for abc
+ * @overview the line segment componment
  * @component#$.LineSegment
  * @extend#$.Component
  */
@@ -7673,7 +7675,7 @@ $.LineBasic2D = $.extend($.Line, {
  */
 
 /**
- * @overview this component use for abc
+ * @overview the area2d componment
  * @component#@chart#$.Area2D
  * @extend#$.LineBasic2D
  */
