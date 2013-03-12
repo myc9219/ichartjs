@@ -24,6 +24,10 @@ iChart.ColumnStacked2D = iChart.extend(iChart.Column, {
 			 * @cfg {Boolean} Specifies as true to display with percent.(default to false)
 			 */
 			percent : false,
+			/**
+			 * @cfg {Array} the array of labels close to the axis
+			 */
+			labels : [],
 			sub_option:{
 				label:{color:'#ffffff'},
 				valueAlign:'middle'
