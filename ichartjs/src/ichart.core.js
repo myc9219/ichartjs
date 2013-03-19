@@ -810,7 +810,7 @@
 						//time: new Date().getTime(),
 						event:e
 					};
-				
+				console.log(e.offsetX);
 				/**
 				 * This is mainly for FF which doesn't provide offsetX
 				 */
@@ -826,7 +826,6 @@
 						E.pageX = e.targetTouches[0].pageX;
 						E.pageY = e.targetTouches[0].pageY;
 					}
-					
 					/**
 					 * Calculate pageX/Y if missing and clientX/Y available
 					 */
@@ -841,7 +840,7 @@
 					 */
 					var x = 0, y = 0, obj = e.target;
 					while (obj != document.body && obj) {
-						x += obj.offsetLeft;
+						x += obj.offsetLeft-(obj.scrollLeft||0);
 						y += obj.offsetTop;
 						obj = obj.offsetParent;
 					}
@@ -868,7 +867,7 @@
 	})(window);
 
 	/**
-	 * Add useful method
+	 * Add useful method,need to optimized
 	 */
 	Array.prototype.each = function(f, s) {
 		var j = this.length, r;

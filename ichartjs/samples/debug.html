@@ -56,98 +56,107 @@
 	</style>
 	<script type="text/javascript">
 	$(function(){
-		chart = new iChart.Gauge2D({
+		var flow=[];
+		for(var i=0;i<25;i++){
+			flow.push(Math.floor(Math.random()*(10+((i%16)*5)))+10);
+		}
+		
+		var data = [
+		         	{
+		         		name : 'PV',
+		         		value:flow,
+		         		color:'#ec4646',
+		         		line_width:2
+		         	}
+		         ];
+        
+		var labels = ["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24"];
+		
+		var chart = new iChart.LineBasic2D({
 			render : 'canvasDiv',
+			data: data,
+			align:'center',
 			title : {
-				text : 'Gauge Component Designer',
-				height:40,
-				fontsize : 20,
-				color : '#2c374a'
+				text:'ichartjs官方网站上一日PV流量',
+				font : '微软雅黑',
+				fontsize:24,
+				color:'#b4b4b4'
 			},
-			panel:{
-				background_color:'#2c374a',
-				border:false,
-				iborder:{
-					radius:'98%',
-					color:'#9cb1b2'
+			subtitle : {
+				text:'14:00-16:00访问量达到最大值',
+				font : '微软雅黑',
+				color:'#b4b4b4'
+			},
+			footnote : {
+				text:'ichartjs.com',
+				font : '微软雅黑',
+				fontsize:11,
+				fontweight:600,
+				padding:'0 28',
+				color:'#b4b4b4'
+			},
+			width : 800,
+			height : 400,
+			shadow:true,
+			shadow_color : '#202020',
+			shadow_blur : 8,
+			shadow_offsetx : 0,
+			shadow_offsety : 0,
+			background_color:'#2e2e2e',
+			tip:{
+				enable:true,
+				shadow:true,
+				listeners:{
+					 //tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
+					parseText:function(tip,name,value,text,i){
+						return "<span style='color:#005268;font-size:12px;'>"+labels[i]+":00访问量约:<br/>"+
+						"</span><span style='color:#005268;font-size:20px;'>"+value+"万</span>";
+					}
 				}
 			},
-			tickmarks:{
-				start_angle:40,
-				space_angle:0,
-				radius:'84%',
-				width:14,
-				bg_color:[0,0,0,0,0,0,0,0,'#e3c63e','#e33e41'],
-				size:2,
-				count:10,
-				color:['#fcf1e2',0,0,0,0,0,0,0,'#2c374a','#2c374a'],
-				lower : 0,
-				upper : 100,
-				small_color:['#fcf1e2',0,0,0,0,0,0,0,'#2c374a','#2c374a'],
-				small_count:5,
-				ranges:[[0, 60, 'green'],[60, 80 ,'yellow'],[80, 100, 'red']]
+			crosshair:{
+				enable:true,
+				line_color:'#ec4646'
 			},
-			screen:{
-				decimalsnum:1,
-				unit_post:'km/h',
-				fontsize:12,
-				width:74,
-				height:22,
-				background_color:$.toRgba('#fefefe',0.5),
-				color:'#2c374a'
+			sub_option : {
+				smooth : true,
+				label:false,
+				hollow:false,
+				hollow_inside:false,
+				point_size:8
 			},
-			label:{
-				label_space:20,
-				color:'#9fb3b2',
-				fontsize:12,
-				fontweight:600
-			},
-			shadow:true,
-			value:10,
-			background_color:'#e4e5e9',
-			text:{text:'ichartjs',color:'#e33e41'},
-			needle:{
-				color:'#f4e5b0',
-				size:6,
-				alpham:0.6
-			},
-			cap:{
-				color:'#7bbfec',
-				size:12
-			},
-			width : 340,
-			height : 380,
-			radius:'90%'
+			coordinate:{
+				width:640,
+				height:260,
+				striped_factor : 0.18,
+				grid_color:'#4e4e4e',
+				axis:{
+					color:'#252525',
+					width:[0,0,4,4]
+				},
+				scale:[{
+					 position:'left',	
+					 start_scale:0,
+					 end_scale:100,
+					 scale_space:10,
+					 scale_size:2,
+					 scale_enable : false,
+					 label : {color:'#9d987a',font : '微软雅黑',fontsize:11,fontweight:600},
+					 scale_color:'#9f9f9f'
+				},{
+					 position:'bottom',	
+					 label : {color:'#9d987a',font : '微软雅黑',fontsize:11,fontweight:600},
+					 scale_enable : false,
+					 labels:labels
+				}]
+			}
 		});
-		chart.draw();
-		//interval();
-	});
-	
-	function change(){
-		chart.to(Math.floor(Math.random() * 100));
-	}
-
-	function interval(){
-		setInterval(function(){
-			var i = Math.floor(Math.random() * 5);
-			chart.to(chart.get('value')+((i%2==0)?i:-i));
-		},600);
-	}
-	var rects = [];//chart.rectangles;
-	for(var i=0;i<rects.length;i++){
-		var x = rects[i].get('originx'),
-			y = rects[i].get('originy'),
-			h = rects[i].get('height');
-		//....
-	}
-	
+	//开始画图
+	chart.draw();
+});
 	</script>
 	</head>
 	<body>
-		<div id='canvasDiv' ></div>
-		<div style='width:360px;'>
-			<br/>
-			<input type="button" onclick="change();" value="随机">
-		</div>
+		<div id='canvasDiv' style="overflow-x:auto;overflow-y:hidden;width:500px;position: relative; "></div>
 	</body>
 </html>
