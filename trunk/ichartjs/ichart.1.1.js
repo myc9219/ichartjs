@@ -841,7 +841,7 @@
 					 */
 					var x = 0, y = 0, obj = e.target;
 					while (obj != document.body && obj) {
-						x += obj.offsetLeft;
+						x += obj.offsetLeft-(obj.scrollLeft||0);
 						y += obj.offsetTop;
 						obj = obj.offsetParent;
 					}

@@ -928,6 +928,7 @@
 			this.Rendered = false;
 			this.Combination = false;
 			this.Animationed = false;
+			this.show = false;
 			this.data = [];
 			this.plugins = [];
 			this.components = [];
@@ -1028,7 +1029,7 @@
 				return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
 		commonDraw : function(_,e) {
-			
+			_.show = false;
 			if (!_.redraw) {
 				$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
 				$.Assert.isTrue(_.data&&_.data.length>0,_.type + '\'s data is empty');
@@ -1051,7 +1052,8 @@
 			});
 			
 			_.resetCanvas();
-
+				
+			_.show = true;
 		},
 		/**
 		 * @method register the customize component or combinate with other charts
