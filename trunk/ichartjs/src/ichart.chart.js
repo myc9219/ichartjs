@@ -325,24 +325,23 @@
 			var x0=x,y0=y,f=!m.indexOf("linear");
 			m = m.substring(14);
 			if(f){
-				switch(m)
-			   　　{
-			　　   case 'updown':
-			 　　    y0+=h;
-			 　　    break;
-			　　   case 'downup':
-			　　    y+=h;
-			　　     break;
-			   	 case 'leftright':
-			 　　    x0+=w;
-			 　　    break;
-			　　   case 'rightleft':
-				  x+=w;
-			　　     break;
-			　　   default:
-			　　     return c[0];
-			　　   }
-				return this.avgLinearGradient(x,y,x0,y0,c);
+			switch (m) {
+				case 'updown':
+					y0 += h;
+					break;
+				case 'downup':
+					y += h;
+					break;
+				case 'leftright':
+					x0 += w;
+					break;
+				case 'rightleft':
+					x += w;
+					break;
+				default:
+					return c[0];
+				}
+				return this.avgLinearGradient(x, y, x0, y0, c);
 			}else{
 				x+=w/2;
 				y+=h/2;
