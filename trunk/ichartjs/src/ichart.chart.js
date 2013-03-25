@@ -45,7 +45,7 @@
 			_.total = 0;
 			c.each(function(d,i){
 				d.background_color = d.color;
-				V  = d.value;
+				V  = d.value||0;
 				if($.isArray(V)){
 					var T = 0;
 					ML = V.length>ML?V.length:ML;
@@ -1343,7 +1343,6 @@
 		 */
 		originXY:function(_,x,y){
 			var A = _.get('align');
-			
 			if (A == _.L) {
 				_.pushIf(_.X, x[0]);
 			} else if (A == _.R) {
@@ -1351,10 +1350,8 @@
 			} else {
 				_.pushIf(_.X, x[2]);
 			}
-			
 			_.x = _.push(_.X, _.get(_.X) + _.get('offsetx'));
 			_.y = _.push(_.Y, _.get(_.Y)||y[0]+ _.get('offsety'));
-			
 			return {
 				x:_.x,
 				y:_.y
