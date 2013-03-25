@@ -1,7 +1,7 @@
 /**
  * ichartjs Library v1.1 http://www.ichartjs.com/
  * 
- * @author wanghe
+ * @author taylor
  * @Copyright 2013 wanghetommy@gmail.com Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -810,7 +810,6 @@
 						//time: new Date().getTime(),
 						event:e
 					};
-				
 				/**
 				 * This is mainly for FF which doesn't provide offsetX
 				 */
@@ -826,7 +825,6 @@
 						E.pageX = e.targetTouches[0].pageX;
 						E.pageY = e.targetTouches[0].pageY;
 					}
-					
 					/**
 					 * Calculate pageX/Y if missing and clientX/Y available
 					 */
@@ -868,7 +866,7 @@
 	})(window);
 
 	/**
-	 * Add useful method
+	 * Add useful method,need to optimized
 	 */
 	Array.prototype.each = function(f, s) {
 		var j = this.length, r;
@@ -895,10 +893,10 @@
 		var _=this,L = _.length-1,T; 
 		for(var i = 0; i < L; i++){
 			for (var j = L; j > i;j--) {
-			　　if (f?!f(_[j],_[j - 1]):(_[j] < _[j - 1])){ 
-				　　T = _[j]; 　　
-					_[j] = _[j - 1]; 　　
-					_[j - 1] = T; 
+				if (f ? !f(_[j], _[j - 1]) : (_[j] < _[j - 1])) {
+					T = _[j];
+					_[j] = _[j - 1];
+					_[j - 1] = T;
 				} 
 			} 
 		} 
@@ -1944,7 +1942,7 @@ $.Legend = $.extend($.Component, {
 			 */
 			line_height : 16,
 			/**
-			 * @cfg {String} Specifies the shape of legend' sign (default to 'square') Available value are：
+			 * @cfg {String} Specifies the shape of legend' sign (default to 'square') Available value are:
 			 * @Option 'round'
 			 * @Option 'square'
 			 * @Option 'bar'
@@ -2227,7 +2225,7 @@ $.Label = $.extend($.Component, {
 			 */
 			line_thickness : 1,
 			/**
-			 * @cfg {String} Specifies the shape of legend' sign (default to 'square').Available value are：
+			 * @cfg {String} Specifies the shape of legend' sign (default to 'square').Available value are:
 			 * @Option 'round'
 			 * @Option 'square'
 			 */
@@ -2509,7 +2507,7 @@ $.Label = $.extend($.Component, {
 			_.total = 0;
 			c.each(function(d,i){
 				d.background_color = d.color;
-				V  = d.value;
+				V  = d.value||0;
 				if($.isArray(V)){
 					var T = 0;
 					ML = V.length>ML?V.length:ML;
@@ -2789,24 +2787,23 @@ $.Label = $.extend($.Component, {
 			var x0=x,y0=y,f=!m.indexOf("linear");
 			m = m.substring(14);
 			if(f){
-				switch(m)
-			   　　{
-			　　   case 'updown':
-			 　　    y0+=h;
-			 　　    break;
-			　　   case 'downup':
-			　　    y+=h;
-			　　     break;
-			   	 case 'leftright':
-			 　　    x0+=w;
-			 　　    break;
-			　　   case 'rightleft':
-				  x+=w;
-			　　     break;
-			　　   default:
-			　　     return c[0];
-			　　   }
-				return this.avgLinearGradient(x,y,x0,y0,c);
+			switch (m) {
+				case 'updown':
+					y0 += h;
+					break;
+				case 'downup':
+					y += h;
+					break;
+				case 'leftright':
+					x0 += w;
+					break;
+				case 'rightleft':
+					x += w;
+					break;
+				default:
+					return c[0];
+				}
+				return this.avgLinearGradient(x, y, x0, y0, c);
 			}else{
 				x+=w/2;
 				y+=h/2;
@@ -3392,6 +3389,7 @@ $.Label = $.extend($.Component, {
 			this.Rendered = false;
 			this.Combination = false;
 			this.Animationed = false;
+			this.show = false;
 			this.data = [];
 			this.plugins = [];
 			this.components = [];
@@ -3492,7 +3490,7 @@ $.Label = $.extend($.Component, {
 				return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
 		},
 		commonDraw : function(_,e) {
-			
+			_.show = false;
 			if (!_.redraw) {
 				$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
 				$.Assert.isTrue(_.data&&_.data.length>0,_.type + '\'s data is empty');
@@ -3515,7 +3513,8 @@ $.Label = $.extend($.Component, {
 			});
 			
 			_.resetCanvas();
-
+				
+			_.show = true;
 		},
 		/**
 		 * @method register the customize component or combinate with other charts
@@ -3805,7 +3804,6 @@ $.Label = $.extend($.Component, {
 		 */
 		originXY:function(_,x,y){
 			var A = _.get('align');
-			
 			if (A == _.L) {
 				_.pushIf(_.X, x[0]);
 			} else if (A == _.R) {
@@ -3813,10 +3811,8 @@ $.Label = $.extend($.Component, {
 			} else {
 				_.pushIf(_.X, x[2]);
 			}
-			
 			_.x = _.push(_.X, _.get(_.X) + _.get('offsetx'));
 			_.y = _.push(_.Y, _.get(_.Y)||y[0]+ _.get('offsety'));
-			
 			return {
 				x:_.x,
 				y:_.y
@@ -4378,12 +4374,14 @@ $.Coordinate = {
 		/**
 		 * Apply the coordinate feature
 		 */
-		var f = 0.84,
+		var f = '85%',
 			parse=$.parsePercent, 
 			scale = _.get('coordinate.scale'),
 			li=_.get('scaleAlign'),
-			w = _.push('coordinate.width',parse(_.get('coordinate.width'),Math.floor(_.get('client_width') * f))), 
-			h = _.push('coordinate.height',parse(_.get('coordinate.height'),Math.floor(_.get('client_height') * f))-(_.is3D()?((_.get('coordinate.pedestal_height')||22) + (_.get('coordinate.board_deep')||20)):0));
+			w = _.pushIf('coo_width',Math.floor(_.get('client_width'))),
+			h = _.pushIf('coo_height',Math.floor(_.get('client_height')));
+			w = _.push('coordinate.width',parse(_.get('coordinate.width')||f,w));
+			h = _.push('coordinate.height',parse(_.get('coordinate.height')||f,h)-(_.is3D()?((_.get('coordinate.pedestal_height')||22) + (_.get('coordinate.board_deep')||20)):0));
 			
 			_.push('coordinate.valid_width',parse(_.get('coordinate.valid_width'),w)), 
 			_.push('coordinate.valid_height',parse(_.get('coordinate.valid_height'),h));
@@ -5440,6 +5438,7 @@ $.Sector = $.extend($.Component, {
 			 * @inner {Number} Specifies the offset when bounded.Normally,this will given by chart.(default to undefined)
 			 */
 			increment : undefined,
+			label_length : undefined,
 			/**
 			 * @cfg {String} Specifies the gradient mode of background.(defaults to 'RadialGradientOutIn')
 			 * @Option 'RadialGradientOutIn'
@@ -5708,7 +5707,7 @@ $.Sector = $.extend($.Component, {
 			L *=2;
 			if(_.get('label')){
 				if(_.get('mini_label')){
-					P2 = $.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r/2);
+					P2 = $.p2Point(_.x,_.y,A,_.get('donutwidth')?_.r - _.get('donutwidth')/2:_.r*5/8);
 					_.doText(_,P2.x,P2.y);
 				}else{
 					var Q  = $.quadrantd(A),
@@ -7445,7 +7444,8 @@ $.Line = $.extend($.Chart, {
 			/**
 			 * @cfg {<link>$.Text</link>} Specifies option of label at bottom.
 			 */
-			label:{}
+			label:{},
+			slider:null
 		});
 
 		this.registerEvent(
@@ -7507,10 +7507,21 @@ $.Line = $.extend($.Chart, {
 			}]);
 		}
 		
+		if(_.get('slider')){
+			_.slider = new $.Slider(_.get('slider'),_);
+			 _.components.push(_.slider);
+			var SH  = _.slider.Height();
+		      _.push('coo_height',_.get('client_height')-SH);
+		      _.push('offsety',_.get('offsety')-SH/2);
+		}
 		/**
 		 * use option create a coordinate
 		 */
 		_.coo = $.Coordinate.coordinate_.call(_);
+		
+		if(_.slider){
+			_.slider.position(_.coo.get(_.X),_.coo.get(_.Y)+_.coo.get(_.H),_.coo.get(_.W))
+		}
 		
 		if(_.Combination){
 			_.coo.push('crosshair', _.get('crosshair'));
