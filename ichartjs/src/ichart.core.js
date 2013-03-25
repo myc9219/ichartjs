@@ -810,7 +810,6 @@
 						//time: new Date().getTime(),
 						event:e
 					};
-				console.log(e.offsetX);
 				/**
 				 * This is mainly for FF which doesn't provide offsetX
 				 */

@@ -326,12 +326,14 @@ iChart.Coordinate = {
 		/**
 		 * Apply the coordinate feature
 		 */
-		var f = 0.84,
+		var f = '85%',
 			parse=iChart.parsePercent, 
 			scale = _.get('coordinate.scale'),
 			li=_.get('scaleAlign'),
-			w = _.push('coordinate.width',parse(_.get('coordinate.width'),Math.floor(_.get('client_width') * f))), 
-			h = _.push('coordinate.height',parse(_.get('coordinate.height'),Math.floor(_.get('client_height') * f))-(_.is3D()?((_.get('coordinate.pedestal_height')||22) + (_.get('coordinate.board_deep')||20)):0));
+			w = _.pushIf('coo_width',Math.floor(_.get('client_width'))),
+			h = _.pushIf('coo_height',Math.floor(_.get('client_height')));
+			w = _.push('coordinate.width',parse(_.get('coordinate.width')||f,w));
+			h = _.push('coordinate.height',parse(_.get('coordinate.height')||f,h)-(_.is3D()?((_.get('coordinate.pedestal_height')||22) + (_.get('coordinate.board_deep')||20)):0));
 			
 			_.push('coordinate.valid_width',parse(_.get('coordinate.valid_width'),w)), 
 			_.push('coordinate.valid_height',parse(_.get('coordinate.valid_height'),h));
