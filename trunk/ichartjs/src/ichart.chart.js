@@ -1309,10 +1309,9 @@
 							return !e.stopPropagation;
 						}
 					});
-					
 					if(E.mouseover){
 						e.event.preventDefault();
-						if (!O && E.mouseover) {
+						if (!O) {
 							E.mouseover = false;
 							_.fireEvent(_, 'mouseout', [_,e]);
 						}
