@@ -101,12 +101,12 @@
 						M = max(V,M);
 						MI = min(V,MI);
 					}
-					item.push({
+					item.push($.applyIf({
 						name:d.name,
 						value:d.value[i],
 						background_color:r,
 						color:r
-					});
+					},$.isArray(d.extra)?(d.extra[i]||{}):d));					
 				});
 				if(stack){
 					if(!init){

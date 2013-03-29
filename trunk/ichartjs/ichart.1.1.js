@@ -1,7 +1,7 @@
 /**
  * ichartjs Library v1.1 http://www.ichartjs.com/
  * 
- * @author taylor
+ * @author wanghe
  * @Copyright 2013 wanghetommy@gmail.com Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -2563,12 +2563,12 @@ $.Label = $.extend($.Component, {
 						M = max(V,M);
 						MI = min(V,MI);
 					}
-					item.push({
+					item.push($.applyIf({
 						name:d.name,
 						value:d.value[i],
 						background_color:r,
 						color:r
-					});
+					},$.isArray(d.extra)?(d.extra[i]||{}):d));					
 				});
 				if(stack){
 					if(!init){
@@ -3771,10 +3771,9 @@ $.Label = $.extend($.Component, {
 							return !e.stopPropagation;
 						}
 					});
-					
 					if(E.mouseover){
 						e.event.preventDefault();
-						if (!O && E.mouseover) {
+						if (!O) {
 							E.mouseover = false;
 							_.fireEvent(_, 'mouseout', [_,e]);
 						}
