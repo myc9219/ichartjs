@@ -95,6 +95,10 @@
 		isEventValid:function(){
 			return {valid:false};
 		},
+		doSize:function(x,y,w,h,_){
+			_.push(_.W,w);
+			_.push(_.H,h);
+		},
 		doLayout:function(x,y,n,_){
 			_.x = _.push(_.X,_.x+x);
 			_.y = _.push(_.Y,_.y+y);
