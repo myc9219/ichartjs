@@ -316,6 +316,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
 iChart.Coordinate = {
 	coordinate_ : function(g) {
 		var _ = this._(),coo = _.get('coordinate');
+		
 		if(coo.ICHARTJS_OBJECT){
 			/**
 			 * Imply it was illusive
@@ -332,12 +333,13 @@ iChart.Coordinate = {
 			li=_.get('scaleAlign'),
 			w = _.pushIf('coo_width',Math.floor(_.get('client_width'))),
 			h = _.pushIf('coo_height',Math.floor(_.get('client_height')));
+			
 			w = _.push('coordinate.width',parse(_.get('coordinate.width')||f,w));
 			h = _.push('coordinate.height',parse(_.get('coordinate.height')||f,h)-(_.is3D()?((_.get('coordinate.pedestal_height')||22) + (_.get('coordinate.board_deep')||20)):0));
 			
 			_.push('coordinate.valid_width',parse(_.get('coordinate.valid_width'),w)), 
 			_.push('coordinate.valid_height',parse(_.get('coordinate.valid_height'),h));
-		
+			
 		_.originXY(_,[_.get('l_originx'),_.get('r_originx') - w,_.get('centerx') - w / 2],[_.get('centery') - h / 2]);
 		
 		_.push('coordinate.originx', _.x);
@@ -553,8 +555,21 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			}
 		});
 		
+		this.registerEvent(
+				/**
+				 * @event Fires when chart resize.
+				 * @paramter int#width chart's width
+				 * @paramter int#height chart's height
+				 * @return Object object the new size for coordinate.eg:{width:'80%',height:'80%'}
+				 */
+				'resize');
+		
 		this.scale = [];
 		this.gridlines = [];
+	},
+	doSize : function(_,w,h) {
+		iChart.apply(_.options,_.fireEvent(_,'resize',[w,h]));
+		console.log(_.get('width'));
 	},
 	getScale : function(p,L) {
 		var _ = this._(),r;

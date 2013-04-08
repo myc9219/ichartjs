@@ -643,8 +643,8 @@
 		clearRect : function(x, y, w, h) {
 			x = x || 0;
 			y = y || 0;
-			w = w || this.width;
-			h = h || this.height;
+			w = w || this.canvas.width;
+			h = h || this.canvas.height;
 			this.c.clearRect(x, y, w, h);
 			return this;
 		},
@@ -931,6 +931,7 @@
 			this.data = [];
 			this.plugins = [];
 			this.components = [];
+			this.oneways = [];
 			this.total = 0;
 			this.ICHARTJS_CHART = true;
 		},
@@ -1029,6 +1030,7 @@
 		},
 		commonDraw : function(_,e) {
 			_.show = false;
+			
 			if (!_.redraw) {
 				$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
 				$.Assert.isTrue(_.data&&_.data.length>0,_.type + '\'s data is empty');
@@ -1167,8 +1169,29 @@
 			 * do size
 			 */
 			_.size(_);
-			
 			_.Rendered = true;
+		},
+		/**
+		 * @method resize the chart
+		 * @paramter int#width 
+		 * @paramter int#height 
+		 * @return void
+		 */
+		resize:function(w,h){
+			var _ = this._();
+			_.width = _.push(_.W, w);
+			_.height = _.push(_.H, h);
+			_.push(_.X, null);
+			_.push(_.Y, null);
+			_.size(_);
+			_.components.eachAll(function(C) {
+				C.doSize(C,w,h);
+			});
+			_.setUp();
+			_.draw();
+		},
+		doSize:function(_,w,h){
+			_.resize(w,h);
 		},
 		size:function(_){
 			_.T.canvas.width = _.width = _.pushIf(_.W, 400);
@@ -1180,7 +1203,7 @@
 			var _ = this._(),d = _.get('data'),r = _.get('render');
 			if(_.Combination){
 				$.apply(_.options, $.clone([_.W,_.H,'padding','border','client_height','client_width',
-				                                      'minDistance','maxDistance','minstr','centerx', 'centery',
+				                                      'minDistance','maxDistance','centerx', 'centery',
 				                                      'l_originx','r_originx','t_originy','b_originy'], _.root.options,true));
 				_.width = _.get(_.W);
 				_.height = _.get(_.H);
@@ -1221,6 +1244,21 @@
 		 * this method only invoked once
 		 */
 		oneWay:function(_){
+			
+			_.T.strokeStyle(true,0, _.get('strokeStyle'), _.get('lineJoin'));
+			
+			_.processAnimation = _.get('animation');
+			
+			/**
+			 * for store the option of each item in chart
+			 */
+			_.push('communal_acting',0);
+			
+			if($.isFunction(_.get('doAnimation'))){
+				_.doAnimation = _.get('doAnimation');
+			}
+			_.animationArithmetic = $.getAA(_.get('animation_timing_function'));
+			
 			var E = _.variable.event,comb=_.Combination,tot=!_.get('turn_off_touchmove')&&!comb, mCSS = !$.touch&&_.get('default_mouseover_css')&&!comb, O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
 			_.stopEvent = false;
 			_.A_draw = comb&&_.processAnimation;
@@ -1334,6 +1372,23 @@
 					});
 				}
 			}
+			/**
+			 * clone config to sub_option
+			 */
+			$.applyIf(_.get('sub_option'), $.clone(['shadow','tip'], _.options,true));
+			
+			if(!_.Combination){
+				/**
+				 * push the background in it
+				 */
+				_.oneways.push(new $.Custom({
+					drawFn:function(){
+						_.T.box(0, 0, _.width, _.height, _.get('border'), _.get('f_color'),0,0,true);
+					}
+				}));
+				_.duration = ceil(_.get('animation_duration') * $.FRAME / 1000);
+			}
+			
 			_.oneWay = $.emptyFn;
 		},
 		/**
@@ -1382,76 +1437,30 @@
 				_.push('sub_option.tip.value',d.value);
 				_.push('sub_option.tip.total',d.total||_.total);
 			}
-			
 		},
 		doConfig : function() {
-			
 			$.Chart.superclass.doConfig.call(this);
-			
 			var _ = this._();
-			
-			_.T.strokeStyle(true,0, _.get('strokeStyle'), _.get('lineJoin'));
-			
-			_.processAnimation = _.get('animation');
-			
-			/**
-			 * for store the option of each item in chart
-			 */
-			_.push('communal_acting',0);
-			
-			if($.isFunction(_.get('doAnimation'))){
-				_.doAnimation = _.get('doAnimation');
-			}
-			_.animationArithmetic = $.getAA(_.get('animation_timing_function'));
-			/**
-			 * destroy exist dom
-			 */
-			_.destroy();
-			_.components = [];
-			
-			/**
-			 * make sure hold the customize plugin 
-			 */
-			_.plugins.each(function(o){
-				_.components.push(o);
-			});
+//			/**
+//			 * destroy exist dom
+//			 */
+//			_.destroy();
+//			_.components = [];
+//			_.oneways = [];
+//			/**
+//			 * make sure hold the customize plugin 
+//			 */
+//			_.plugins.each(function(o){
+//				_.components.push(o);
+//			});
 			
 			_.oneWay(_);
 			
-			/**
-			 * clone config to sub_option
-			 */
-			$.applyIf(_.get('sub_option'), $.clone(['shadow','tip'], _.options,true));
-			
-			_.push('r_originx', _.width - _.get('padding_right'));
-			_.push('b_originy', _.height - _.get('padding_bottom'));
-			
-			
-			_.oneways = [];
-			
 			if(!_.Combination){
-				var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.width - _.get('hpadding'))), h;
-				_.duration = ceil(_.get('animation_duration') * $.FRAME / 1000);
-				
-				/**
-				 * push the background in it
-				 */
-				_.oneways.push(new $.Custom({
-					drawFn:function(){
-						_.T.box(0, 0, _.width, _.height, _.get('border'), _.get('f_color'),0,0,true);
-					}
-				}));
+				_.push('r_originx', _.width - _.get('padding_right'));
+				_.push('b_originy', _.height - _.get('padding_bottom')-_.footnote?_.footnote.get(_.H):0);
 				
 				_.applyGradient();
-				
-				/**
-				_.on('afterAnimation', function() {
-					var N = _.variable.animation.queue.shift();
-					if (N) {
-						_[N.handler].apply(_, N.arguments);
-					}
-				});
-				*/
 				
 				if ($.isString(_.get('title'))) {
 					_.push('title', $.applyIf({
@@ -1463,13 +1472,16 @@
 						text : _.get('subtitle')
 					}, _.default_.subtitle));
 				}
+				
 				if ($.isString(_.get('footnote'))) {
 					_.push('footnote', $.applyIf({
 						text : _.get('footnote')
 					}, _.default_.footnote));
 				}
-	
-				if (_.get('title.text') != '') {
+				
+				var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.width - _.get('hpadding'))), h;
+				
+				if (!_.title&&_.get('title.text') != ''){
 					var st = _.get('subtitle.text') != '';
 					H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
 					t = _.push('t_originy', t + H);
@@ -1486,8 +1498,8 @@
 						_.oneways.push(_.subtitle);
 					}
 				}
-	
-				if (_.get('footnote.text') != '') {
+					
+				if (!_.footnote&&_.get('footnote.text') != '') {
 					var g = _.get('footnote.height');
 					H += g;
 					_.push('b_originy', _.get('b_originy') - g);
@@ -1497,18 +1509,17 @@
 					_.footnote = new $.Text(_.get('footnote'), _);
 					_.oneways.push(_.footnote);
 				}
-				h = _.push('client_height', (_.get(_.H) - _.get('vpadding') - H));
+				
+				h = _.push('client_height', (_.get(_.H) - _.get('vpadding') - _.pushIf('other_height',H)));
 				
 				_.push('minDistance', min(w, h));
 				_.push('maxDistance', max(w, h));
-				_.push('minstr', w < h ? _.W : _.H);
-				
 				_.push('centerx', l + w / 2);
 				_.push('centery', t + h / 2);
 			}
 			
 			/**
-			 * legend
+			 * legend dosize?
 			 */
 			if (_.get('legend.enable')) {
 				_.legend = new $.Legend($.apply({

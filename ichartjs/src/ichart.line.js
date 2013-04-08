@@ -85,8 +85,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			/**
 			 * @cfg {<link>iChart.Text</link>} Specifies option of label at bottom.
 			 */
-			label:{},
-			slider:null
+			label:{}
 		});
 
 		this.registerEvent(
@@ -148,21 +147,11 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			}]);
 		}
 		
-		if(_.get('slider')){
-			_.slider = new iChart.Slider(_.get('slider'),_);
-			 _.components.push(_.slider);
-			var SH  = _.slider.Height();
-		      _.push('coo_height',_.get('client_height')-SH);
-		      _.push('offsety',_.get('offsety')-SH/2);
-		}
 		/**
 		 * use option create a coordinate
 		 */
 		_.coo = iChart.Coordinate.coordinate_.call(_);
 		
-		if(_.slider){
-			_.slider.position(_.coo.get(_.X),_.coo.get(_.Y)+_.coo.get(_.H),_.coo.get(_.W))
-		}
 		
 		if(_.Combination){
 			_.coo.push('crosshair', _.get('crosshair'));
@@ -182,7 +171,6 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		
 		_.push('sub_option.width', vw);
 		_.push('sub_option.height', vh);
-		
 		
 		_.push('sub_option.originx', _.coo.get('x_start')+(_.coo.get('valid_width')-vw)/2);
 		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.get(_.H));
