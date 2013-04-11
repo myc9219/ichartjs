@@ -331,11 +331,8 @@ iChart.Coordinate = {
 			parse=iChart.parsePercent, 
 			scale = _.get('coordinate.scale'),
 			li=_.get('scaleAlign'),
-			w = _.pushIf('coo_width',Math.floor(_.get('client_width'))),
-			h = _.pushIf('coo_height',Math.floor(_.get('client_height')));
-			
-			w = _.push('coordinate.width',parse(_.get('coordinate.width')||f,w));
-			h = _.push('coordinate.height',parse(_.get('coordinate.height')||f,h)-(_.is3D()?((_.get('coordinate.pedestal_height')||22) + (_.get('coordinate.board_deep')||20)):0));
+			w = _.push('coordinate.width',parse(_.get('coordinate.width')||f,Math.floor(_.get('client_width'))));
+			h = _.push('coordinate.height',parse(_.get('coordinate.height')||f,Math.floor(_.get('client_height')))-(_.is3D()?((_.get('coordinate.pedestal_height')||22) + (_.get('coordinate.board_deep')||20)):0));
 			
 			_.push('coordinate.valid_width',parse(_.get('coordinate.valid_width'),w)), 
 			_.push('coordinate.valid_height',parse(_.get('coordinate.valid_height'),h));
@@ -392,10 +389,8 @@ iChart.Coordinate = {
 			 */
 			_.push('coordinate.zHeight', _.get('zHeight') * _.get('bottom_scale'));
 		}
-		
-		coo = new iChart[_.is3D()?'Coordinate3D':'Coordinate2D'](_.get('coordinate'), _);
-		_.components.push(coo);
-		return coo;
+		_.remove(_,_.coo);
+		return _.register(new iChart[_.is3D()?'Coordinate3D':'Coordinate2D'](_.get('coordinate'), _));;
 	}
 }
 /**
@@ -568,8 +563,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		this.gridlines = [];
 	},
 	doSize : function(_,w,h) {
-		iChart.apply(_.options,_.fireEvent(_,'resize',[w,h]));
-		console.log(_.get('width'));
+		return {coordinate:iChart.apply({},_.fireEvent(_,'resize',[w,h]))};
 	},
 	getScale : function(p,L) {
 		var _ = this._(),r;

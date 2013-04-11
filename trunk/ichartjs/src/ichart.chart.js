@@ -857,20 +857,6 @@
 					height : 20
 				},
 				/**
-				 * @inner {String} Specifies how align title horizontally Available value are:
-				 * @Option 'left'
-				 * @Option 'center'
-				 * @Option 'right'
-				 */
-				title_align : 'center',
-				/**
-				 * @inner {String} Specifies how align title vertically Available value are:
-				 * @Option 'top'
-				 * @Option 'middle' Only applies when title_writingmode = 'tb'
-				 * @Option 'bottom'
-				 */
-				title_valign : 'top',
-				/**
 				 * @cfg {Boolean} If true element will have a animation when show, false to skip the animation.(default to false)
 				 */
 				animation : false,
@@ -940,7 +926,7 @@
 		},
 		segmentRect : function() {
 			if(!this.Combination)
-			this.T.clearRect(this.get('l_originx'), this.get('t_originy'), this.get('client_width'), this.get('client_height'));
+			this.T.clearRect();
 		},
 		resetCanvas : function() {
 			if(!this.Combination)
@@ -984,10 +970,8 @@
 			if(_.Combination){
 				return;
 			}
-			/**
-			 * fill the background
-			 */
-			_.resetCanvas();
+			
+			_.oneways.each(function(o) {o.draw()});
 			
 			if (_.variable.animation.time < _.duration) {
 				_.variable.animation.time++;
@@ -1025,8 +1009,9 @@
 			_.animation(_);
 		},
 		doSort:function(){
-			this.components.sor(function(p, q){
-				return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))});
+			var f = function(p, q){return ($.isArray(p)?(p.zIndex||0):p.get('z_index'))>($.isArray(q)?(q.zIndex||0):q.get('z_index'))};
+			this.components.sor(f);
+			this.oneways.sor(f);
 		},
 		commonDraw : function(_,e) {
 			_.show = false;
@@ -1036,7 +1021,6 @@
 				$.Assert.isTrue(_.data&&_.data.length>0,_.type + '\'s data is empty');
 				$.Assert.isTrue(_.initialization, _.type + ' Failed to initialize');
 				_.doSort();
-				_.oneways.eachAll(function(o) {o.draw()});
 			}
 			
 			_.redraw = true;
@@ -1047,13 +1031,13 @@
 			}
 			
 			_.segmentRect();
-
+			
 			_.components.eachAll(function(c) {
 				c.draw(e);
 			});
 			
-			_.resetCanvas();
-				
+			_.oneways.each(function(o) {o.draw()});
+			
 			_.show = true;
 		},
 		/**
@@ -1072,11 +1056,11 @@
 				c.push('animation',false);
 			}
 			c.duration =_.duration;
-			_.components.push(c);
+			_.register(c);
 			_.plugins.push(c);
 		},
 		destroy:function(){
-			this.components.eachAll(function(C) {
+			this.components.eachAll(function(C){
 				C.destroy();
 			});
 		},
@@ -1185,9 +1169,21 @@
 			_.push(_.Y, null);
 			_.size(_);
 			_.components.eachAll(function(C) {
-				C.doSize(C,w,h);
+				_.set(C.doSize(C,w,h));
 			});
+			
 			_.setUp();
+			
+			var x=_.get('l_originx'),y=_.get('padding_top'),W=_.get('client_width');
+			if(_.title){
+				_.title.doSize(_.title,x,y,W);
+				if(_.subtitle){
+					_.subtitle.doSize(_.subtitle,x,y+_.title.get(_.H),W);
+				}
+			}
+			if(_.footnote){
+				_.footnote.doSize(_.footnote,x,_.get('b_originy'),W);
+			}
 			_.draw();
 		},
 		doSize:function(_,w,h){
@@ -1382,6 +1378,7 @@
 				 * push the background in it
 				 */
 				_.oneways.push(new $.Custom({
+					z_index:-1,
 					drawFn:function(){
 						_.T.box(0, 0, _.width, _.height, _.get('border'), _.get('f_color'),0,0,true);
 					}
@@ -1404,7 +1401,8 @@
 				_.pushIf(_.X, x[2]);
 			}
 			_.x = _.push(_.X, _.get(_.X) + _.get('offsetx'));
-			_.y = _.push(_.Y, _.get(_.Y)||y[0]+ _.get('offsety'));
+			_.y = _.push(_.Y, y[0]+ _.get('offsety'));
+			
 			return {
 				x:_.x,
 				y:_.y
@@ -1438,21 +1436,25 @@
 				_.push('sub_option.tip.total',d.total||_.total);
 			}
 		},
+		register:function(c){
+			c.id = $.uid(c.type);
+			this.components.push(c);
+			return c;
+		},
+		remove:function(_,c){
+			if(c)
+			_.components.each(function(C,i){
+				if(c.id==C.id){
+					_.components.splice(i,1);
+					return false;
+				}
+			});
+		},
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
 			var _ = this._();
-//			/**
-//			 * destroy exist dom
-//			 */
-//			_.destroy();
-//			_.components = [];
-//			_.oneways = [];
-//			/**
-//			 * make sure hold the customize plugin 
-//			 */
-//			_.plugins.each(function(o){
-//				_.components.push(o);
-//			});
+			
+			_.destroy();
 			
 			_.oneWay(_);
 			
@@ -1478,8 +1480,7 @@
 						text : _.get('footnote')
 					}, _.default_.footnote));
 				}
-				
-				var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.width - _.get('hpadding'))), h;
+				var H = 0, l = _.pushIf('l_originx', _.get('padding_left')), t = _.pushIf('t_originy', _.get('padding_top')), w = _.push('client_width', (_.width - _.get('hpadding'))), h;
 				
 				if (!_.title&&_.get('title.text') != ''){
 					var st = _.get('subtitle.text') != '';
@@ -1492,7 +1493,7 @@
 					_.oneways.push(_.title);
 					if (st) {
 						_.push('subtitle.originx', l);
-						_.push('subtitle.originy', _.get('title.originy') + _.get('title.height'));
+						_.push('subtitle.originy', _.get('padding_top') + _.get('title.height'));
 						_.push('subtitle.width', w);
 						_.subtitle = new $.Text(_.get('subtitle'), _);
 						_.oneways.push(_.subtitle);
@@ -1509,7 +1510,6 @@
 					_.footnote = new $.Text(_.get('footnote'), _);
 					_.oneways.push(_.footnote);
 				}
-				
 				h = _.push('client_height', (_.get(_.H) - _.get('vpadding') - _.pushIf('other_height',H)));
 				
 				_.push('minDistance', min(w, h));
@@ -1526,7 +1526,7 @@
 					maxwidth : _.get('client_width'),
 					data : _.data
 				}, _.get('legend')), _);
-				_.components.push(_.legend);
+				_.register(_.legend);
 			}
 			
 			_.push('sub_option.tip.wrap',_.push('tip.wrap', _.shell));

@@ -74,6 +74,7 @@ iChart.Component = iChart.extend(iChart.Painter, {
 		}
 	},
 	doSize:function(){
+		
 	},
 	destroy:function(){
 		if(this.tip){
