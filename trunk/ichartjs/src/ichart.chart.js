@@ -1063,6 +1063,9 @@
 			this.components.eachAll(function(C){
 				C.destroy();
 			});
+			this.oneways.each(function(O){
+				O.destroy();
+			});
 		},
 		/**
 		 * @method return the title,return undefined if unavailable
@@ -1173,17 +1176,6 @@
 			});
 			
 			_.setUp();
-			
-			var x=_.get('l_originx'),y=_.get('padding_top'),W=_.get('client_width');
-			if(_.title){
-				_.title.doSize(_.title,x,y,W);
-				if(_.subtitle){
-					_.subtitle.doSize(_.subtitle,x,y+_.title.get(_.H),W);
-				}
-			}
-			if(_.footnote){
-				_.footnote.doSize(_.footnote,x,_.get('b_originy'),W);
-			}
 			_.draw();
 		},
 		doSize:function(_,w,h){
@@ -1377,12 +1369,12 @@
 				/**
 				 * push the background in it
 				 */
-				_.oneways.push(new $.Custom({
+				_.bg = new $.Custom({
 					z_index:-1,
 					drawFn:function(){
 						_.T.box(0, 0, _.width, _.height, _.get('border'), _.get('f_color'),0,0,true);
 					}
-				}));
+				});
 				_.duration = ceil(_.get('animation_duration') * $.FRAME / 1000);
 			}
 			
@@ -1456,9 +1448,12 @@
 			
 			_.destroy();
 			
+			_.oneways = [];
+			
 			_.oneWay(_);
 			
 			if(!_.Combination){
+				_.oneways.push(_.bg);
 				_.push('r_originx', _.width - _.get('padding_right'));
 				_.push('b_originy', _.height - _.get('padding_bottom')-_.footnote?_.footnote.get(_.H):0);
 				
@@ -1480,9 +1475,9 @@
 						text : _.get('footnote')
 					}, _.default_.footnote));
 				}
-				var H = 0, l = _.pushIf('l_originx', _.get('padding_left')), t = _.pushIf('t_originy', _.get('padding_top')), w = _.push('client_width', (_.width - _.get('hpadding'))), h;
+				var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.width - _.get('hpadding'))), h;
 				
-				if (!_.title&&_.get('title.text') != ''){
+				if (_.get('title.text') != ''){
 					var st = _.get('subtitle.text') != '';
 					H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
 					t = _.push('t_originy', t + H);
@@ -1500,7 +1495,7 @@
 					}
 				}
 					
-				if (!_.footnote&&_.get('footnote.text') != '') {
+				if (_.get('footnote.text') != '') {
 					var g = _.get('footnote.height');
 					H += g;
 					_.push('b_originy', _.get('b_originy') - g);
