@@ -79,7 +79,7 @@
 				align:'center',
 				title : 'ichartjs官方网站最近5天PV流量趋势',
 				subtitle : '平均18:00-22:00访问量达到最大值(单位：万)',
-				//fit:true,
+				//animation:true,
 				width : 800,
 				height : 400,
 				sub_option:{
@@ -117,7 +117,7 @@
 					}],
 					listeners:{
 						resize:function(w,h){
-							return {width:'80%',height:'70%'}
+							return {width:'80%',height:'80%'}
 						}
 					}
 				},
@@ -134,7 +134,8 @@
 		chart.draw();
 	});
 	function change(){
-		chart.resize(600,300);
+		var r = Math.random();
+		chart.resize(400+Math.ceil(r*400),200+Math.ceil(r*200));
 	}
 	</script>
 	</head>

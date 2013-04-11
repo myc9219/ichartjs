@@ -103,6 +103,8 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		 */
 		'parsePoint');
 
+		this.lines = [];
+		this.components.push(this.lines);
 	},
 	/**
 	 * @method Returns the coordinate of this element.
@@ -115,43 +117,41 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		iChart.Line.superclass.doConfig.call(this);
 		var _ = this._(), s = _.data.length == 1;
 		
-		_.lines = [];
 		_.lines.zIndex = _.get('z_index');
-		_.components.push(_.lines);
 		
-		var k = _.pushIf('sub_option.keep_with_coordinate',s);
-		
-		if (_.get('crosshair.enable')) {
-			_.push('crosshair.hcross', s);
-			_.push('crosshair.invokeOffset', function(e, m) {
-				/**
-				 * TODO how fire muti line?now fire by first line
-				 */
-				var r = _.lines[0].isEventValid(e);
-				return r.valid ? r : k;
-			});
-		}
-		
-		if(!_.Combination){
-			_.push('coordinate.crosshair', _.get('crosshair'));
-			_.pushIf('coordinate.scale',[{
-				position : _.get('scaleAlign'),
-				max_scale : _.get('maxValue')
-			}, {
-				position : _.get('labelAlign'),
-				start_scale : 1,
-				scale : 1,
-				end_scale : _.get('maxItemSize'),
-				labels : _.get('labels'),
-				label:_.get('label')
-			}]);
+		if(!_.coo){
+			var k = _.pushIf('sub_option.keep_with_coordinate',s);
+			if (_.get('crosshair.enable')) {
+				_.push('crosshair.hcross', s);
+				_.push('crosshair.invokeOffset', function(e, m) {
+					/**
+					 * TODO how fire muti line?now fire by first line
+					 */
+					var r = _.lines[0].isEventValid(e);
+					return r.valid ? r : k;
+				});
+			}
+			
+			if(!_.Combination){
+				_.push('coordinate.crosshair', _.get('crosshair'));
+				_.pushIf('coordinate.scale',[{
+					position : _.get('scaleAlign'),
+					max_scale : _.get('maxValue')
+				}, {
+					position : _.get('labelAlign'),
+					start_scale : 1,
+					scale : 1,
+					end_scale : _.get('maxItemSize'),
+					labels : _.get('labels'),
+					label:_.get('label')
+				}]);
+			}
 		}
 		
 		/**
 		 * use option create a coordinate
 		 */
 		_.coo = iChart.Coordinate.coordinate_.call(_);
-		
 		
 		if(_.Combination){
 			_.coo.push('crosshair', _.get('crosshair'));
@@ -224,7 +224,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 					}
 				});
 				new iChart.Tip(_.get('tip'),mocker);
-				_.components.push(mocker);
+				_.register(mocker);
 			}
 		}
 		

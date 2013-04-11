@@ -95,9 +95,11 @@
 		isEventValid:function(){
 			return {valid:false};
 		},
-		doSize:function(x,y,w,h,_){
+		doSize:function(_,x,y,w,h){
 			_.push(_.W,w);
-			_.push(_.H,h);
+			_.x = x;
+			_.y = y;
+			_.size(_);
 		},
 		doLayout:function(x,y,n,_){
 			_.x = _.push(_.X,_.x+x);
@@ -105,21 +107,21 @@
 			_.push('textx',_.get('textx')+x);
 			_.push('texty',_.get('texty')+y);
 		},
-		doConfig:function(){
-			iChart.Text.superclass.doConfig.call(this);
-			var _ = this._(),x = _.x,y=_.y+_.get('padding_top'),w=_.get(_.W),h=_.get(_.H),a=_.get('textAlign');
+		size:function(_){
+			var x = _.x,y=_.y+_.get('padding_top'),w=_.get(_.W),h=_.get(_.H),a=_.get('textAlign');
 			x+=(a==_.C?w/2:(a==_.R?w-_.get('padding_right'):_.get('padding_left')));
 			if(h){
 				y+=h/2;
 				_.push('textBaseline','middle');
 			}
-			
 			_.push('textx',x);
 			_.push('texty',y);
 			_.push('box_feature',w&&h);
-			
 			_.applyGradient();
-			
+		},
+		doConfig:function(){
+			iChart.Text.superclass.doConfig.call(this);
+			this.size(this);
 		}
 });
 /**
