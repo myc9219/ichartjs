@@ -907,7 +907,15 @@
 			 * @event Fires when this element Animation finished.Only valid when <link>animation</link> is true
 			 * @paramter iChart.Chart#this
 			 */
-			'afterAnimation', 'animating');
+			'afterAnimation',
+			/**
+			 * @event Fires when chart resize.
+			 * @paramter int#width chart's width
+			 * @paramter int#height chart's height
+			 * @return Object object the new config for chart
+			 */
+			'resize',
+			'animating');
 
 			this.T = null;
 			this.Rendered = false;
@@ -1171,15 +1179,10 @@
 			_.push(_.X, null);
 			_.push(_.Y, null);
 			_.size(_);
-			_.components.eachAll(function(C) {
-				_.set(C.doSize(C,w,h));
-			});
-			
+			_.set(_.fireEvent(_,'resize',[w,h]));
+			_.doSize(_,w,h);
 			_.setUp();
 			_.draw();
-		},
-		doSize:function(_,w,h){
-			_.resize(w,h);
 		},
 		size:function(_){
 			_.T.canvas.width = _.width = _.pushIf(_.W, 400);
@@ -1236,11 +1239,6 @@
 			_.T.strokeStyle(true,0, _.get('strokeStyle'), _.get('lineJoin'));
 			
 			_.processAnimation = _.get('animation');
-			
-			/**
-			 * for store the option of each item in chart
-			 */
-			_.push('communal_acting',0);
 			
 			if($.isFunction(_.get('doAnimation'))){
 				_.doAnimation = _.get('doAnimation');
@@ -1448,9 +1446,14 @@
 			
 			_.destroy();
 			
-			_.oneways = [];
+			_.oneways.length =0;
 			
 			_.oneWay(_);
+			
+			/**
+			 * for store the option of each item in chart
+			 */
+			_.push('communal_acting',0);
 			
 			if(!_.Combination){
 				_.oneways.push(_.bg);

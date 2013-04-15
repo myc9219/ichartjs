@@ -49,7 +49,10 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		});
 
 		this.registerEvent();
-
+		this.rectangles = [];
+		this.labels = [];
+		this.components.push(this.labels);
+		this.components.push(this.rectangles);
 	},
 	doAnimation : function(t, d,_) {
 		var h;
@@ -78,6 +81,9 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			originy : y
 		}), _));
 	},
+	doSize:function(_,w,h){
+		_.set(_.coo.doSize(_.coo,w,h));
+	},
 	doParse : function(_,d, i, o) {
 		_.doActing(_,d,o,i);
 	},
@@ -103,16 +109,16 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		
 		var _ = this._(),c = 'column_width',z = 'z_index';
 		_.sub = _.is3D()?'Rectangle3D':'Rectangle2D';
-		_.rectangles = [];
-		_.labels = [];
-		_.components.push(_.labels);
-		_.components.push(_.rectangles);
+		_.rectangles.length = 0;
+		_.labels.length = 0;
+		_.rectangles.zIndex = _.get(z);
+		_.labels.zIndex = _.get(z) + 1;
+		
 		/**
 		 * use option create a coordinate
 		 */
 		_.coo = iChart.Coordinate.coordinate_.call(_,function(){
 			var L = _.data.length, W = _.get('coordinate.valid_width'),w_,hw,KL;
-			
 			if (_.dataType == 'complex') {
 				KL = _.get('labels').length;
 				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
@@ -144,9 +150,6 @@ iChart.Column = iChart.extend(iChart.Chart, {
 				_.push('sub_option.yAngle_', _.get('yAngle_'));
 			}
 		});
-		
-		_.rectangles.zIndex = _.get(z);
-		_.labels.zIndex = _.get(z) + 1;
 		_.push('sub_option.width', _.get(c));
 	}
 
