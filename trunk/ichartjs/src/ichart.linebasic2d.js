@@ -29,7 +29,6 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 		iChart.LineBasic2D.superclass.doConfig.call(this);
 		var _ = this._();
 		
-		_.lines.length = 0;
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */

@@ -113,39 +113,41 @@ iChart.Line = iChart.extend(iChart.Chart, {
 	getCoordinate : function() {
 		return this.coo;
 	},
+	doSize:function(_,w,h){
+		_.set(_.coo.doSize(_.coo,w,h));
+	},
 	doConfig : function() {
 		iChart.Line.superclass.doConfig.call(this);
 		var _ = this._(), s = _.data.length == 1;
 		
+		_.lines.length = 0;
 		_.lines.zIndex = _.get('z_index');
 		
-		if(!_.coo){
-			var k = _.pushIf('sub_option.keep_with_coordinate',s);
-			if (_.get('crosshair.enable')) {
-				_.push('crosshair.hcross', s);
-				_.push('crosshair.invokeOffset', function(e, m) {
-					/**
-					 * TODO how fire muti line?now fire by first line
-					 */
-					var r = _.lines[0].isEventValid(e);
-					return r.valid ? r : k;
-				});
-			}
-			
-			if(!_.Combination){
-				_.push('coordinate.crosshair', _.get('crosshair'));
-				_.pushIf('coordinate.scale',[{
-					position : _.get('scaleAlign'),
-					max_scale : _.get('maxValue')
-				}, {
-					position : _.get('labelAlign'),
-					start_scale : 1,
-					scale : 1,
-					end_scale : _.get('maxItemSize'),
-					labels : _.get('labels'),
-					label:_.get('label')
-				}]);
-			}
+		var k = _.pushIf('sub_option.keep_with_coordinate',s);
+		if (_.get('crosshair.enable')) {
+			_.push('crosshair.hcross', s);
+			_.push('crosshair.invokeOffset', function(e, m) {
+				/**
+				 * TODO how fire muti line?now fire by first line
+				 */
+				var r = _.lines[0].isEventValid(e);
+				return r.valid ? r : k;
+			});
+		}
+		
+		if(!_.Combination){
+			_.push('coordinate.crosshair', _.get('crosshair'));
+			_.pushIf('coordinate.scale',[{
+				position : _.get('scaleAlign'),
+				max_scale : _.get('maxValue')
+			}, {
+				position : _.get('labelAlign'),
+				start_scale : 1,
+				scale : 1,
+				end_scale : _.get('maxItemSize'),
+				labels : _.get('labels'),
+				label:_.get('label')
+			}]);
 		}
 		
 		/**

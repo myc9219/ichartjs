@@ -68,6 +68,9 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 	doParse : function(_, d, i, o) {
 		_.doActing(_, d, o,i);
 	},
+	doSize:function(_,w,h){
+		_.set(_.coo.doSize(_.coo,w,h));
+	},
 	engine:function(_){
 		var 
 		bh = _.get('bar_height'),
