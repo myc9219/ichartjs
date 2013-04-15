@@ -279,7 +279,6 @@ iChart.Scale = iChart.extend(iChart.Component, {
 			text = customL ? _.get('labels')[i] : (s_space * i + start_scale).toFixed(_.get('decimalsnum'));
 			x = _.isH ? _.get('valid_x') + i * _.get('distanceOne') : _.x;
 			y = _.isH ? _.y : _.get('valid_y') + _.get('distance') - i * _.get('distanceOne');
-
 			_.items.push({
 				x : x,
 				y : y,
@@ -334,11 +333,12 @@ iChart.Coordinate = {
 			w = _.push('coordinate.width',parse(_.get('coordinate.width')||f,Math.floor(_.get('client_width'))));
 			h = _.push('coordinate.height',parse(_.get('coordinate.height')||f,Math.floor(_.get('client_height')))-(_.is3D()?((_.get('coordinate.pedestal_height')||22) + (_.get('coordinate.board_deep')||20)):0));
 			
+			//valid_height有问题
+			console.log(h+","+_.get('coordinate.valid_height')+","+_.push('coordinate.valid_height',parse(_.get('coordinate.valid_height'),h)));
+			
 			_.push('coordinate.valid_width',parse(_.get('coordinate.valid_width'),w)), 
-			_.push('coordinate.valid_height',parse(_.get('coordinate.valid_height'),h));
 			
 		_.originXY(_,[_.get('l_originx'),_.get('r_originx') - w,_.get('centerx') - w / 2],[_.get('centery') - h / 2]);
-		
 		_.push('coordinate.originx', _.x);
 		_.push('coordinate.originy', _.y);
 		
@@ -664,7 +664,6 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		}
 
 		_.doCrosshair(_);
-
 		var jp, cg = !!(_.get('gridlinesVisible') && _.get('grids')), hg = cg && !!_.get('grids.horizontal'), vg = cg && !!_.get('grids.vertical'), h = _.get(_.H), w = _.get(_.W), vw = _.get('valid_width'), vh = _.get('valid_height'), k2g = _.get('gridlinesVisible')
 				&& _.get('scale2grid') && !(hg && vg), sw = (w - vw) / 2, sh = (h - vh) / 2, axis = _.get('axis.width');
 		
