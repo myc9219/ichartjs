@@ -46,9 +46,9 @@
 								var avg = chart.total/5,
 									coo = chart.getCoordinate(),
 									x = coo.get('originx'),
-									W = coo.get('width'),
+									W = coo.width,
 									S = coo.getScale('left'),
-									H = coo.get('height'),
+									H = coo.height,
 									h = (avg - S.start) * H / S.distance,
 									y = chart.y + H - h;
 								

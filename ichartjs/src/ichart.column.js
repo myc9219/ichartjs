@@ -81,9 +81,6 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			originy : y
 		}), _));
 	},
-	doSize:function(_,w,h){
-		_.set(_.coo.doSize(_.coo,w,h));
-	},
 	doParse : function(_,d, i, o) {
 		_.doActing(_,d,o,i);
 	},
@@ -91,11 +88,11 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		var cw = _.get('column_width'),
 		s = _.get('column_space'),
 		S = _.coo.getScale(_.get('scaleAlign')),
-		H = _.coo.get(_.H), 
+		H = _.coo.valid_height, 
 		w2 = cw / 2, 
 		q = cw * (_.get('group_fator') || 0), 
 		gw = _.dataType != 'complex'?(cw + s):(_.data.length * cw + s + (_.is3D() ? (_.data.length - 1) * q : 0)), 
-		y0 = _.coo.get(_.Y) +  H,
+		y0 = _.coo.get('y_end'),
 		y = y0 - S.basic*H - (_.is3D()?(_.get('zHeight') * (_.get('bottom_scale') - 1) / 2 * _.get('yAngle_')):0),
 		x = s+_.coo.get('x_start');
 		y0 = y0 + _.get('text_space') + _.coo.get('axis.width')[2];
@@ -118,7 +115,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		 * use option create a coordinate
 		 */
 		_.coo = iChart.Coordinate.coordinate_.call(_,function(){
-			var L = _.data.length, W = _.get('coordinate.valid_width'),w_,hw,KL;
+			var L = _.data.length, W = _.get('coordinate._valid_width'),w_,hw,KL;
 			if (_.dataType == 'complex') {
 				KL = _.get('labels').length;
 				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);

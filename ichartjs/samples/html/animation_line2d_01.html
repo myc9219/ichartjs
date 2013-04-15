@@ -113,8 +113,8 @@
 						var coo = chart.getCoordinate(),
 							x = coo.get('originx'),
 							y = coo.get('originy'),
-							w = coo.get('width'),
-							h = coo.get('height');
+							w = coo.width,
+							h = coo.height;
 						//在左上侧的位置，渲染一个单位的文字
 						chart.target.textAlign('start')
 						.textBaseline('bottom')

@@ -1180,7 +1180,6 @@
 			_.push(_.Y, null);
 			_.size(_);
 			_.set(_.fireEvent(_,'resize',[w,h]));
-			_.doSize(_,w,h);
 			_.setUp();
 			_.draw();
 		},
@@ -1517,7 +1516,7 @@
 			}
 			
 			/**
-			 * legend dosize?
+			 * TODO legend dosize?
 			 */
 			if (_.get('legend.enable')) {
 				_.legend = new $.Legend($.apply({

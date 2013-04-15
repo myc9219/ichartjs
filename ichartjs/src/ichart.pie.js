@@ -79,7 +79,8 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		 * @paramter int#index
 		 */
 		'rebound');
-		
+		this.sectors = [];
+		this.components.push(this.sectors);
 		this.ILLUSIVE_COO = true;
 	},
 	/**
@@ -196,9 +197,9 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		iChart.Pie.superclass.doConfig.call(this);
 		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44,pi2=Math.PI*2;
 		_.sub = _.is3D()?'Sector3D':'Sector2D';
-		_.sectors = [];
 		_.sectors.zIndex = _.get('z_index');
-		_.components.push(_.sectors);
+		_.sectors.length = 0;
+		
 		_.oA = iChart.angle2Radian(_.get('offset_angle'))%pi2;
 		//If 3D,let it bigger
 		if (_.is3D())
