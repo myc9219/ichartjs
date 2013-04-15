@@ -32,7 +32,7 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */
-		var S, H = _.coo.get('valid_height'), sp = _.get('point_space'), points, x, y, 
+		var S, H = _.coo.valid_height, sp = _.get('point_space'), points, x, y, 
 		ox = _.get('sub_option.originx'), oy, p;
 		
 		_.push('sub_option.tip.showType', 'follow');

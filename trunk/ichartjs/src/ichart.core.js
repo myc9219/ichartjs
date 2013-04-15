@@ -712,6 +712,9 @@
 			get:function(id){
 				return Registry[id];
 			},
+			isPercent:function(v){
+				return _.isString(v)&&v.match(/(.*)%/);
+			},
 			parsePercent:function(v,f){
 				if(_.isString(v)){
 					v = v.match(/(.*)%/);

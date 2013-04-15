@@ -113,9 +113,6 @@ iChart.Line = iChart.extend(iChart.Chart, {
 	getCoordinate : function() {
 		return this.coo;
 	},
-	doSize:function(_,w,h){
-		_.set(_.coo.doSize(_.coo,w,h));
-	},
 	doConfig : function() {
 		iChart.Line.superclass.doConfig.call(this);
 		var _ = this._(), s = _.data.length == 1;
@@ -160,7 +157,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			_.coo.doCrosshair(_.coo);
 		}
 		
-		var vw = _.coo.get('valid_width'),vh = _.coo.get('valid_height'),
+		var vw = _.coo.valid_width,vh = _.coo.valid_height,
 			M=vw / (_.get('maxItemSize') - 1),ps=_.get('point_space');
 		
 		if (_.get('proportional_spacing')){
@@ -174,14 +171,14 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		_.push('sub_option.width', vw);
 		_.push('sub_option.height', vh);
 		
-		_.push('sub_option.originx', _.coo.get('x_start')+(_.coo.get('valid_width')-vw)/2);
-		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.get(_.H));
+		_.push('sub_option.originx', _.coo.get('x_start')+(_.coo.valid_width-vw)/2);
+		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.height);
 		
 		if (_.get('tip.enable')){
 			if(iChart.isFunction(_.get('tipMocker'))){
 				_.push('sub_option.tip.enable', false);
 				_.push('tip.invokeOffsetDynamic', true);
-				var U,x=_.coo.get(_.X),y=_.coo.get(_.Y),H=_.coo.get(_.H),f = _.get('tipMockerOffset'),r0,r,r1;
+				var U,x=_.coo.get(_.X),y=_.coo.get(_.Y),H=_.coo.height,f = _.get('tipMockerOffset'),r0,r,r1;
 				f = iChart.isNumber(f)?(f<0?0:(f>1?1:f)):null;
 				_.push('tip.invokeOffset',function(w,h,m){
 					if(f!=null){

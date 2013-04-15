@@ -68,18 +68,15 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 	doParse : function(_, d, i, o) {
 		_.doActing(_, d, o,i);
 	},
-	doSize:function(_,w,h){
-		_.set(_.coo.doSize(_.coo,w,h));
-	},
 	engine:function(_){
 		var 
 		bh = _.get('bar_height'),
 		s = _.get('bar_space'),
 		S = _.coo.getScale(_.get('scaleAlign')),
-		W = _.coo.get(_.W),
+		W = _.coo.valid_width,
 		h2 = bh / 2,
 		gw =  _.dataType != 'complex'?bh + s:_.data.length * bh + s,
-		x = _.coo.get(_.X) + S.basic * W,
+		x = _.coo.get('x_start')+ S.basic * W,
 		x0 = _.coo.get(_.X) - _.get('text_space')-_.coo.get('axis.width')[3], 
 		y0 = _.coo.get('y_start')+ s;
 		
@@ -111,7 +108,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		_.components.push(_.labels);
 		_.components.push(_.rectangles);
 
-		var L = _.data.length, H = _.coo.get('valid_height'),h_,bh,KL;
+		var L = _.data.length, H = _.coo.valid_height,h_,bh,KL;
 		
 		if (_.dataType == 'simple') {
 			h_= Math.floor(H*2 / (L * 3 + 1));
