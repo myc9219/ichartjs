@@ -117,17 +117,18 @@
 						width:[0,0,2,2]
 					},
 					width:'80%',
+					valid_height:'70%',
 					scale:[{
 						 position:'left',	
 						 start_scale:0,
 						 end_scale:100,
-						 scale_space:10,
+						 scale_space:20,
 						 scale_size:2,
 						 scale_color:'#9f9f9f'
 					}],
 					listeners:{
 						resize:function(w,h){
-							return {width:'80%',height:'80%'}
+							return {width:'80%',height:'80%',valid_height:'100%',valid_width:'100%'}
 						}
 					}
 				},
@@ -148,9 +149,9 @@
 		//开始画图
 		chart.draw();
 	});
-	function change(){
+	function change(w,h){
 		var r = Math.random();
-		chart.resize(400+Math.ceil(r*400),200+Math.ceil(r*200));
+		chart.resize(w||400+Math.ceil(r*400),h||200+Math.ceil(r*200));
 	}
 	</script>
 	</head>
