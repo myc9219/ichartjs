@@ -55,48 +55,78 @@
 		}
 	</style>
 	<script type="text/javascript">
+	var chart ;
 	$(function(){
-		var data = [
-		        	{name : 'IE',value : 35.75,color:'#bc6666'},
-		        	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
-		        	{name : 'Firefox',value : 24.88,color:'#76a871'},
-		        	{name : 'Safari',value : 6.77,color:'#9f7961'},
-		        	{name : 'Opera',value : 2.02,color:'#2ba5a4'},
-		        	{name : 'Other',value : 0.73,color:'#6f83a5'}
-	        	];
-    	
-		new iChart.Column3D({
-			render : 'canvasDiv',
-			data: data,
-			title : 'Top 5 Browsers from 1 to 29 Feb 2012',
-			width : 800,
-			height : 400,
-			align:'left',
-			offsetx:50,
-			legend : {
-				enable : true
-			},
-			sub_option:{
-				label:{
-					color:'#111111'
+				var flow=[];
+				for(var i=0;i<21;i++){
+					flow.push(Math.floor(Math.random()*(30+((i%12)*5)))+10);
 				}
-			},
-			coordinate:{
-				width:600,
-				scale:[{
-					 position:'left',	
-					 start_scale:0,
-					 end_scale:40,
-					 scale_space:8,
-					 listeners:{
-						parseText:function(t,x,y){
-							return {text:t+"%"}
-						}
+				
+				var data = [
+				         	{
+				         		name : 'PV',
+				         		value:flow,
+				         		color:'#0d8ecf',
+				         		line_width:2
+				         	}
+				         ];
+		         
+				var labels = ["12-01","12-02","12-03","12-04","12-05","12-06"];
+				
+			chart = new iChart.LineBasic2D({
+					render : 'canvasDiv',
+					data: data,
+					align:'center',
+					title : 'ichartjs官方网站最近5天PV流量趋势',
+					subtitle : '平均18:00-22:00访问量达到最大值(单位：万)',
+					footnote : '数据来源：模拟数据',
+					width : 800,
+					height : 400,
+					sub_option:{
+						smooth : true,//平滑曲线
+						point_size:10
+					},
+					tip:{
+						enable:true,
+						shadow:true
+					},
+					legend : {
+						enable : false
+					},
+					crosshair:{
+						enable:true,
+						line_color:'#62bce9'
+					},
+					coordinate:{
+						width:'80%',
+						valid_width:'90%',
+						height:'80%',
+						axis:{
+							color:'#9f9f9f',
+							width:[0,0,2,2]
+						},
+						grids:{
+							vertical:{
+								way:'share_alike',
+						 		value:12
+							}
+						},
+						scale:[{
+							 position:'left',	
+							 start_scale:0,
+							 end_scale:100,
+							 scale_space:10,
+							 scale_size:2,
+							 scale_color:'#9f9f9f'
+						},{
+							 position:'bottom',	
+							 labels:labels
+						}]
 					}
-				}]
-			}
-		}).draw();
-});
+				});
+			//开始画图
+			chart.draw();
+		});
 	function change(w,h){
 		var r = Math.random();
 		chart.resize(w||400+Math.ceil(r*400),h||200+Math.ceil(r*200));

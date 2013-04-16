@@ -333,8 +333,8 @@ iChart.Coordinate = {
 			li=_.get('scaleAlign'),
 			w = _.push('coordinate._width',parse(_.get('coordinate.width')||f,Math.floor(_.get('client_width'))));
 			h = _.push('coordinate._height',parse(_.get('coordinate.height')||f,Math.floor(_.get('client_height')))-(_.is3D()?((_.get('coordinate.pedestal_height')||22) + (_.get('coordinate.board_deep')||20)):0));
-			_.push('coordinate._valid_height',parse(_.get('coordinate.valid_height'),h));
-			_.push('coordinate._valid_width',parse(_.get('coordinate.valid_width'),w));
+			_.push('coordinate.valid_height_value',parse(_.get('coordinate.valid_height'),h));
+			_.push('coordinate.valid_width_value',parse(_.get('coordinate.valid_width'),w));
 			
 		_.originXY(_,[_.get('l_originx'),_.get('r_originx') - w,_.get('centerx') - w / 2],[_.get('centery') - h / 2]);
 		_.push('coordinate.originx', _.x);
@@ -637,8 +637,8 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 
 		_.width = _.get('_width');
 		_.height = _.get('_height');
-		_.valid_width = _.get('_valid_width');
-		_.valid_height = _.get('_valid_height');
+		_.valid_width = _.get('valid_width_value');
+		_.valid_height = _.get('valid_height_value');
 		/**
 		 * apply the gradient color to f_color
 		 */

@@ -175,7 +175,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.height);
 		
 		if (_.get('tip.enable')){
-			if(iChart.isFunction(_.get('tipMocker'))){
+			if(!_.mocker&&iChart.isFunction(_.get('tipMocker'))){
 				_.push('sub_option.tip.enable', false);
 				_.push('tip.invokeOffsetDynamic', true);
 				var U,x=_.coo.get(_.X),y=_.coo.get(_.Y),H=_.coo.height,f = _.get('tipMockerOffset'),r0,r,r1;
@@ -200,7 +200,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 				var p = _.get('tip.listeners.parseText');
 				if(p)
 				delete _.get('tip.listeners').parseText;
-				var mocker = new iChart.Custom({
+				_.mocker = new iChart.Custom({
 					eventValid:function(e){
 						r = _.lines[0].isEventValid(e);
 						r.hit = r0 != r.i;
@@ -222,8 +222,8 @@ iChart.Line = iChart.extend(iChart.Chart, {
 						return r.valid ? r : false;
 					}
 				});
-				new iChart.Tip(_.get('tip'),mocker);
-				_.register(mocker);
+				new iChart.Tip(_.get('tip'),_.mocker);
+				_.register(_.mocker);
 			}
 		}
 		

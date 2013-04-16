@@ -1112,17 +1112,6 @@
 				height:this.get("client_height")
 			}
 		},
-		/**
-		 * @method set up the chart by latest configruation
-		 * @return void
-		 */
-		setUp:function(){
-			var _ = this._();
-			_.redraw = false;
-			_.T.clearRect();
-			_.initialization = false;
-			_.initialize();
-		},
 		create : function(_,shell) {
 			/**
 			 * fit the window
@@ -1167,6 +1156,17 @@
 			_.Rendered = true;
 		},
 		/**
+		 * @method set up the chart by latest configruation
+		 * @return void
+		 */
+		setUp:function(){
+			var _ = this._();
+			_.redraw = false;
+			_.T.clearRect();
+			_.initialization = false;
+			_.initialize();
+		},
+		/**
 		 * @method resize the chart
 		 * @paramter int#width 
 		 * @paramter int#height 
@@ -1174,14 +1174,23 @@
 		 */
 		resize:function(w,h){
 			var _ = this._();
-			_.width = _.push(_.W, w);
-			_.height = _.push(_.H, h);
-			_.push(_.X, null);
-			_.push(_.Y, null);
-			_.size(_);
+			if(!_.Combination){
+				_.width = _.push(_.W, w);
+				_.height = _.push(_.H, h);
+				_.push(_.X, null);
+				_.push(_.Y, null);
+				_.size(_);
+			}
 			_.set(_.fireEvent(_,'resize',[w,h]));
 			_.setUp();
-			_.draw();
+			_.plugins.eachAll(function(P) {
+				if(P.Combination){
+					P.resize(w,h);
+				}
+			});
+			if(!_.Combination){
+				_.draw();
+			}
 		},
 		size:function(_){
 			_.T.canvas.width = _.width = _.pushIf(_.W, 400);
@@ -1202,10 +1211,6 @@
 			}else if (!_.Rendered) {
 				if(r)
 				_.create(_,$(r));
-			}else{
-				if(_.width != _.get(_.W)||_.height!=_.get(_.H)){
-					_.size(_);
-				}
 			}
 			
 			if(_.Rendered && !_.initialization){
