@@ -69,10 +69,6 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			 */
 			proportional_spacing : true,
 			/**
-			 * @cfg {Number} the space of each point.(default to null)
-			 */
-			point_space : null,
-			/**
 			 * @cfg {<link>iChart.LineSegment</link>} the option for linesegment.
 			 */
 			sub_option : {},
@@ -157,22 +153,17 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			_.coo.doCrosshair(_.coo);
 		}
 		
-		var vw = _.coo.valid_width,vh = _.coo.valid_height,
-			M=vw / (_.get('maxItemSize') - 1),ps=_.get('point_space');
+		var vw = _.coo.valid_width,M=vw / (_.get('maxItemSize') - 1);
 		
 		if (_.get('proportional_spacing')){
-			if(ps&&ps<M){
-				vw = (_.get('maxItemSize') - 1)*ps;
-			}else{
-				_.push('point_space',M);
-			}
+			_.push('point_space',M);
 		}
 		
 		_.push('sub_option.width', vw);
-		_.push('sub_option.height', vh);
+		_.push('sub_option.height', _.coo.valid_height);
 		
-		_.push('sub_option.originx', _.coo.get('x_start')+(_.coo.valid_width-vw)/2);
-		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.height);
+		_.push('sub_option.originx', _.coo.get('x_start'));
+		_.push('sub_option.originy', _.coo.get('y_end'));
 		
 		if (_.get('tip.enable')){
 			if(!_.mocker&&iChart.isFunction(_.get('tipMocker'))){
@@ -230,7 +221,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 		/**
 		 * quick config to all linesegment
 		 */
-		iChart.applyIf(_.get('sub_option'), iChart.clone(['area_opacity'], _.options));
+		iChart.applyIf(_.get('sub_option'), _.get('area_opacity'));
 	}
 
 });

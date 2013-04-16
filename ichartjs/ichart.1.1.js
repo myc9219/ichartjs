@@ -7441,10 +7441,6 @@ $.Line = $.extend($.Chart, {
 			 */
 			proportional_spacing : true,
 			/**
-			 * @cfg {Number} the space of each point.(default to null)
-			 */
-			point_space : null,
-			/**
 			 * @cfg {<link>$.LineSegment</link>} the option for linesegment.
 			 */
 			sub_option : {},
@@ -7529,22 +7525,17 @@ $.Line = $.extend($.Chart, {
 			_.coo.doCrosshair(_.coo);
 		}
 		
-		var vw = _.coo.valid_width,vh = _.coo.valid_height,
-			M=vw / (_.get('maxItemSize') - 1),ps=_.get('point_space');
+		var vw = _.coo.valid_width,M=vw / (_.get('maxItemSize') - 1);
 		
 		if (_.get('proportional_spacing')){
-			if(ps&&ps<M){
-				vw = (_.get('maxItemSize') - 1)*ps;
-			}else{
-				_.push('point_space',M);
-			}
+			_.push('point_space',M);
 		}
 		
 		_.push('sub_option.width', vw);
-		_.push('sub_option.height', vh);
+		_.push('sub_option.height', _.coo.valid_height);
 		
-		_.push('sub_option.originx', _.coo.get('x_start')+(_.coo.valid_width-vw)/2);
-		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.height);
+		_.push('sub_option.originx', _.coo.get('x_start'));
+		_.push('sub_option.originy', _.coo.get('y_end'));
 		
 		if (_.get('tip.enable')){
 			if(!_.mocker&&$.isFunction(_.get('tipMocker'))){
@@ -7602,7 +7593,7 @@ $.Line = $.extend($.Chart, {
 		/**
 		 * quick config to all linesegment
 		 */
-		$.applyIf(_.get('sub_option'), $.clone(['area_opacity'], _.options));
+		$.applyIf(_.get('sub_option'), _.get('area_opacity'));
 	}
 
 });
@@ -7651,7 +7642,6 @@ $.LineBasic2D = $.extend($.Line, {
 		_.push('sub_option.coordinate', _.coo);
 		_.push('sub_option.tipInvokeHeap', _.tipInvokeHeap);
 		_.push('sub_option.point_space', sp);
-		
 		_.data.each(function(d, i) {
 			S = _.coo.getScale(d.scaleAlign||_.get('scaleAlign'));
 			oy = _.get('sub_option.originy')- S.basic*H;
@@ -7668,7 +7658,6 @@ $.LineBasic2D = $.extend($.Line, {
 				$.merge(p, _.fireEvent(_, 'parsePoint', [d, v, x, y, j]));
 				points.push(p);
 			}, _);
-			
 			/**
 			 * merge the option
 			 */

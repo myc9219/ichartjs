@@ -39,7 +39,6 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 		_.push('sub_option.coordinate', _.coo);
 		_.push('sub_option.tipInvokeHeap', _.tipInvokeHeap);
 		_.push('sub_option.point_space', sp);
-		
 		_.data.each(function(d, i) {
 			S = _.coo.getScale(d.scaleAlign||_.get('scaleAlign'));
 			oy = _.get('sub_option.originy')- S.basic*H;
@@ -56,7 +55,6 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 				iChart.merge(p, _.fireEvent(_, 'parsePoint', [d, v, x, y, j]));
 				points.push(p);
 			}, _);
-			
 			/**
 			 * merge the option
 			 */
