@@ -115,7 +115,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		 * use option create a coordinate
 		 */
 		_.coo = iChart.Coordinate.coordinate_.call(_,function(){
-			var L = _.data.length, W = _.get('coordinate._valid_width'),w_,hw,KL;
+			var L = _.data.length, W = _.get('coordinate.valid_width_value'),w_,hw,KL;
 			if (_.dataType == 'complex') {
 				KL = _.get('labels').length;
 				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);

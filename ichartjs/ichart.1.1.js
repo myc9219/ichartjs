@@ -3575,17 +3575,6 @@ $.Label = $.extend($.Component, {
 				height:this.get("client_height")
 			}
 		},
-		/**
-		 * @method set up the chart by latest configruation
-		 * @return void
-		 */
-		setUp:function(){
-			var _ = this._();
-			_.redraw = false;
-			_.T.clearRect();
-			_.initialization = false;
-			_.initialize();
-		},
 		create : function(_,shell) {
 			/**
 			 * fit the window
@@ -3630,6 +3619,17 @@ $.Label = $.extend($.Component, {
 			_.Rendered = true;
 		},
 		/**
+		 * @method set up the chart by latest configruation
+		 * @return void
+		 */
+		setUp:function(){
+			var _ = this._();
+			_.redraw = false;
+			_.T.clearRect();
+			_.initialization = false;
+			_.initialize();
+		},
+		/**
 		 * @method resize the chart
 		 * @paramter int#width 
 		 * @paramter int#height 
@@ -3637,14 +3637,23 @@ $.Label = $.extend($.Component, {
 		 */
 		resize:function(w,h){
 			var _ = this._();
-			_.width = _.push(_.W, w);
-			_.height = _.push(_.H, h);
-			_.push(_.X, null);
-			_.push(_.Y, null);
-			_.size(_);
+			if(!_.Combination){
+				_.width = _.push(_.W, w);
+				_.height = _.push(_.H, h);
+				_.push(_.X, null);
+				_.push(_.Y, null);
+				_.size(_);
+			}
 			_.set(_.fireEvent(_,'resize',[w,h]));
 			_.setUp();
-			_.draw();
+			_.plugins.eachAll(function(P) {
+				if(P.Combination){
+					P.resize(w,h);
+				}
+			});
+			if(!_.Combination){
+				_.draw();
+			}
 		},
 		size:function(_){
 			_.T.canvas.width = _.width = _.pushIf(_.W, 400);
@@ -3665,10 +3674,6 @@ $.Label = $.extend($.Component, {
 			}else if (!_.Rendered) {
 				if(r)
 				_.create(_,$(r));
-			}else{
-				if(_.width != _.get(_.W)||_.height!=_.get(_.H)){
-					_.size(_);
-				}
 			}
 			
 			if(_.Rendered && !_.initialization){
@@ -4389,8 +4394,8 @@ $.Coordinate = {
 			li=_.get('scaleAlign'),
 			w = _.push('coordinate._width',parse(_.get('coordinate.width')||f,Math.floor(_.get('client_width'))));
 			h = _.push('coordinate._height',parse(_.get('coordinate.height')||f,Math.floor(_.get('client_height')))-(_.is3D()?((_.get('coordinate.pedestal_height')||22) + (_.get('coordinate.board_deep')||20)):0));
-			_.push('coordinate._valid_height',parse(_.get('coordinate.valid_height'),h));
-			_.push('coordinate._valid_width',parse(_.get('coordinate.valid_width'),w));
+			_.push('coordinate.valid_height_value',parse(_.get('coordinate.valid_height'),h));
+			_.push('coordinate.valid_width_value',parse(_.get('coordinate.valid_width'),w));
 			
 		_.originXY(_,[_.get('l_originx'),_.get('r_originx') - w,_.get('centerx') - w / 2],[_.get('centery') - h / 2]);
 		_.push('coordinate.originx', _.x);
@@ -4693,8 +4698,8 @@ $.Coordinate2D = $.extend($.Component, {
 
 		_.width = _.get('_width');
 		_.height = _.get('_height');
-		_.valid_width = _.get('_valid_width');
-		_.valid_height = _.get('_valid_height');
+		_.valid_width = _.get('valid_width_value');
+		_.valid_height = _.get('valid_height_value');
 		/**
 		 * apply the gradient color to f_color
 		 */
@@ -6439,7 +6444,7 @@ $.Column = $.extend($.Chart, {
 		 * use option create a coordinate
 		 */
 		_.coo = $.Coordinate.coordinate_.call(_,function(){
-			var L = _.data.length, W = _.get('coordinate._valid_width'),w_,hw,KL;
+			var L = _.data.length, W = _.get('coordinate.valid_width_value'),w_,hw,KL;
 			if (_.dataType == 'complex') {
 				KL = _.get('labels').length;
 				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
