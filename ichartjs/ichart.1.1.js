@@ -1644,6 +1644,7 @@ $.Component = $.extend($.Painter, {
 			
 			this.set({
 				name:'',
+				index:0,
 				value:'',
 				/**
 				 * @cfg {String} Specifies the text want to disply.(default to '')
@@ -1759,7 +1760,7 @@ $.Component = $.extend($.Painter, {
 			
 			var _ = this._();
 			
-			_.text(_.get('name'),_.get('value'),_.get('text'),0,_);
+			_.text(_.get('name'),_.get('value'),_.get('text'),_.get('index'),_);
 			_.hidden();
 			
 			if(_.get('animation')){
@@ -3889,6 +3890,7 @@ $.Label = $.extend($.Component, {
 			if (_.get('sub_option.tip.enable')){
 				_.push('sub_option.tip.text',t || (d.name + ' ' +v));
 				_.push('sub_option.tip.name',d.name);
+				_.push('sub_option.tip.index',i);
 				_.push('sub_option.tip.value',d.value);
 				_.push('sub_option.tip.total',d.total||_.total);
 			}
@@ -7545,7 +7547,7 @@ $.Line = $.extend($.Chart, {
 		_.push('sub_option.originy', _.coo.get(_.Y) + _.coo.height);
 		
 		if (_.get('tip.enable')){
-			if($.isFunction(_.get('tipMocker'))){
+			if(!_.mocker&&$.isFunction(_.get('tipMocker'))){
 				_.push('sub_option.tip.enable', false);
 				_.push('tip.invokeOffsetDynamic', true);
 				var U,x=_.coo.get(_.X),y=_.coo.get(_.Y),H=_.coo.height,f = _.get('tipMockerOffset'),r0,r,r1;
@@ -7570,7 +7572,7 @@ $.Line = $.extend($.Chart, {
 				var p = _.get('tip.listeners.parseText');
 				if(p)
 				delete _.get('tip.listeners').parseText;
-				var mocker = new $.Custom({
+				_.mocker = new $.Custom({
 					eventValid:function(e){
 						r = _.lines[0].isEventValid(e);
 						r.hit = r0 != r.i;
@@ -7592,8 +7594,8 @@ $.Line = $.extend($.Chart, {
 						return r.valid ? r : false;
 					}
 				});
-				new $.Tip(_.get('tip'),mocker);
-				_.register(mocker);
+				new $.Tip(_.get('tip'),_.mocker);
+				_.register(_.mocker);
 			}
 		}
 		

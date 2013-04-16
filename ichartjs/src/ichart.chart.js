@@ -1426,6 +1426,7 @@
 			if (_.get('sub_option.tip.enable')){
 				_.push('sub_option.tip.text',t || (d.name + ' ' +v));
 				_.push('sub_option.tip.name',d.name);
+				_.push('sub_option.tip.index',i);
 				_.push('sub_option.tip.value',d.value);
 				_.push('sub_option.tip.total',d.total||_.total);
 			}
