@@ -55,96 +55,32 @@
 		}
 	</style>
 	<script type="text/javascript">
-	var data1 = [
-					{name : '驾驶员查询1',value : 10,color : '#a5c2d5'},
-					{name : '机动车查询1',value : 12,color : '#cbab4f'},
-					{name : '简易处罚10',value : 10,color : '#76a871'},
-					{name : '一般处罚10',value : 10,color : '#9f7961'},
-					{name : '强制措施10',value : 10,color : '#a56f8f'},
-					{name : '非现场0',value : 0,color : '#6f83a5'},
-					{name : '发送消息0',value : 0,color : '#00FFFF'},
-					{name : '警情上报0',value : 0,color : '#000080'},
-					{name : '事故采集0',value : 10,color : '#FF0000'}
-				];
-		$(function() {
-			toChart('This is a sample spirit from HighCharts',data1);
-		});
-     function  toChart(titletime,data){
-	    	var chart = new iChart.Pie3D({
+	$(function(){
+		var data = [
+		        	{
+		        		name : '北京',
+		        		value:[-9,1,12,20,26,30,32,29,22,12,0,-6],
+		        		color:'#1f7e92',
+		        		line_width:2
+		        	}
+		       ];
+	       
+		var chart = new iChart.Area2D({
 				render : 'canvasDiv',
 				data: data,
-				title : {
-					offsety:-15,
-					valign:'top',
-					text : '工作统计: '+titletime,
-					fontsize : 18,
-					color : '#282828'
-				},
-				tip:{
-					enable:true
-				},
-				border:{
-					enable:false
-				},
-				legend : {
-					offsetx:0,
-					offsety:2,
-					valign:'top',
-					enable : true,
-					//shadow:true,
-					background_color:null,
-					border:false,
-					legend_space:30,//图例间距
-					line_height:15,//设置行高
-					sign_space:10,//小图标与文本间距
-					sign_size:12,//小图标大小
-					color:'#6f6f6f',
-					fontsize:12//文本大小
-				},
-				sub_option:{
-					border:{
-							enable:false
-						},
-					label : {
-							background_color:null,
-							sign:false,//设置禁用label的小图标
-							padding:'0 4',
-							border:{
-								enable:false,
-								color:'#666666'
-							},
-							fontsize:11,
-							//fontweight:600,
-							color : '#444444'
-						},
-						listeners:{
-							parseText:function(d, t){
-								return d.get('value');
-							}
-						},
-					color_factor : 0.3
-				},
-				//animation : true,//开启过渡动画
-				animation_duration:1200,//1200ms完成动画 
-				offsetx:-60,
-				offsety:-32,
-				valign:'top',
-				//shadow:true,
-				//separate_angle:10,//分离角度
-				legend_space:30,//图例间距
-				showpercent:true,
-				decimalsnum:2,
+				title : '北京2012年平均温度情况',
 				width : 800,
 				height : 400,
-				zRotate:25,
-				radius:'75%'
+				coordinate:{height:'90%',background_color:'#edf8fa'},
+				sub_option:{
+					hollow_inside:false,//设置一个点的亮色在外环的效果
+					point_size:10
+				},
+				labels:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]
 			});
-			//利用自定义组件构造右侧说明文本
-			
-			
-			chart.draw();
-			
-		}
+		
+		chart.draw();
+	});
 	</script>
 	</head>
 	<body>
