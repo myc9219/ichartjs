@@ -658,7 +658,7 @@
 				return (u -l) > v;
 			},
 			angleZInRange : function(l, u, v) {
-				return u > l?u > v && l < v:(v > l || v < u);
+				return u < l?(v > l || v < u):(u > v && l < v);
 			},
 			inRangeClosed : function(l, u, v) {
 				return u >= v && l <= v;
@@ -1453,7 +1453,8 @@ $.Html = $.extend($.Element,{
 		$.Event.addEvent(this.dom,type,fn,useCapture);
 	},
 	destroy:function(){
-		this.wrap.removeChild(this.dom); 
+		this.wrap.removeChild(this.dom);
+		this.dom = null;
 	},
 	transition:function(v){
 		this.transitions = this.transitions==''?v:this.transitions+','+v;
@@ -6018,10 +6019,13 @@ $.Pie = $.extend($.Chart, {
 			});
 			
 			unlayout.each(function(la) {
+				if(la.get('text')=='Opera'){
+					console.log(la.get('text')+","+Math.sin(la.get('angle')));
+				}
 				layouted.each(function(l) {
 					x = l.labelx, y = l.labely;
 					if ((la.labely <= y && (y - la.labely-1) < la.get(_.H)) || (la.labely > y && (la.labely - y-1) < l.get(_.H))) {
-						if ((la.labelx < x && (x - la.labelx) < la.get(_.W)) || (la.labelx > x && (la.labelx - x) < l.get(_.W))) {
+						if ((la.labelx <= x && (x - la.labelx) < la.get(_.W)) || (la.labelx > x && (la.labelx - x) < l.get(_.W))) {
 							Q = la.get('quadrantd');
 							la.push('labely', (la.get('labely')+ y - la.labely) + (la.get(_.H)  + d)*(Q>1?-1:1));
 							la.localizer(la);
@@ -6035,7 +6039,7 @@ $.Pie = $.extend($.Chart, {
 	},
 	doConfig : function() {
 		$.Pie.superclass.doConfig.call(this);
-		var _ = this._(),r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44,pi2=Math.PI*2;
+		var _ = this._(),V,r = _.get('radius'), f = _.get('sub_option.label') ? 0.35 : 0.44,pi2=Math.PI*2;
 		_.sub = _.is3D()?'Sector3D':'Sector2D';
 		_.sectors.zIndex = _.get('z_index');
 		_.sectors.length = 0;
@@ -6046,9 +6050,11 @@ $.Pie = $.extend($.Chart, {
 			f += 0.06;
 		
 		var L = _.data.length,sepa = $.angle2Radian($.between(0,90,_.get('separate_angle'))),PI = pi2-sepa,sepa=sepa/L,eA = _.oA+sepa, sA = eA;
-		
+		if(_.total==0){
+			V  = 1/L;
+		}
 		_.data.each(function(d, i) {
-			eA += (d.value / _.total) * PI;
+			eA += (V||(d.value / _.total)) * PI;
 			if (i == (L - 1)) {
 				eA = pi2 + _.oA;
 			}
