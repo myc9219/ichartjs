@@ -217,11 +217,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 				_.register(_.mocker);
 			}
 		}
-		
-		/**
-		 * quick config to all linesegment
-		 */
-		iChart.applyIf(_.get('sub_option'), _.get('area_opacity'));
+		_.pushIf('sub_option.area_opacity',_.get('area_opacity'));
 	}
 
 });
