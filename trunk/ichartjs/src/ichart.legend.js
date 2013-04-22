@@ -119,7 +119,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 	},
 	drawCell : function(x, y, text, color,n,_) {
 		var s = _.get('sign_size'),f = _.getPlugin('sign');
-		if(!f||!f.call(_,_.T,n,x + s / 2,y,s,color)){
+		if(!f||!f.call(_,_.T,n,{x:x + s / 2,y:y},s,color)){
 			if(n.indexOf("bar")!=-1){
 				_.T.box(x, y - s / 12, s, s / 6, 0, color);
 			}
