@@ -658,7 +658,7 @@
 				return (u -l) > v;
 			},
 			angleZInRange : function(l, u, v) {
-				return u > l?u > v && l < v:(v > l || v < u);
+				return u < l?(v > l || v < u):(u > v && l < v);
 			},
 			inRangeClosed : function(l, u, v) {
 				return u >= v && l <= v;

@@ -55,124 +55,99 @@
 		}
 	</style>
 	<script type="text/javascript">
-	var chart ;
-	$(function(){
-				var pv=[],ip=[],t;
-				//创建随机数据
-				for(var i=0;i<61;i++){
-					t = Math.floor(Math.random()*(30+((i%12)*5)))+10;
-					pv.push(t);
-					t = Math.floor(t*0.5);
-					t = t-Math.floor((Math.random()*t)/2);
-					ip.push(t);
-				}
-				
-				var data = [
-				         	{
-				         		name : 'PV',
-				         		value:pv,
-				         		color:'#aad0db',
-				         		line_width:2
-				         	},
-				         	{
-				         		name : 'IP',
-				         		value:ip,
-				         		color:'#f68f70',
-				         		line_width:2
-				         	}
-				         ];
-		         
-				//创建x轴标签文本   
-				var date = new Date()
-				date.setDate(date.getDate()-6);
-				var labels = [];
-				for(var i=0;i<6;i++){
-					date.setDate(date.getDate()+1);
-					labels.push((date.getMonth()+1)+"-"+date.getDate()+"\n"+date.getFullYear());
-				}
-				
-			chart = new iChart.LineBasic2D({
-					render : 'canvasDiv',
-					data: data,
-					align:'center',
-					title : 'A网站近5天流量趋势,按每2小时分组统计',
-					subtitle : '平均每个人访问2-3个页面(访问量单位：万)',
-					footnote : '数据来源：模拟数据',
-					width : 800,
-					height : 400,
-					background_color:'#FEFEFE',
-					tip:{
-						enable:true,
-						shadow:true,
-						move_duration:400,
-						border:{
-							 enable:true,
-							 radius : 5,
-							 width:2,
-							 color:'#3f8695'
+	var data1 = [
+					{name : '驾驶员查询1',value : 10,color : '#a5c2d5'},
+					{name : '机动车查询1',value : 12,color : '#cbab4f'},
+					{name : '简易处罚10',value : 10,color : '#76a871'},
+					{name : '一般处罚10',value : 10,color : '#9f7961'},
+					{name : '强制措施10',value : 10,color : '#a56f8f'},
+					{name : '非现场0',value : 0,color : '#6f83a5'},
+					{name : '发送消息0',value : 0,color : '#00FFFF'},
+					{name : '警情上报0',value : 0,color : '#000080'},
+					{name : '事故采集0',value : 10,color : '#FF0000'}
+				];
+		$(function() {
+			toChart('This is a sample spirit from HighCharts',data1);
+		});
+     function  toChart(titletime,data){
+	    	var chart = new iChart.Pie3D({
+				render : 'canvasDiv',
+				data: data,
+				title : {
+					offsety:-15,
+					valign:'top',
+					text : '工作统计: '+titletime,
+					fontsize : 18,
+					color : '#282828'
+				},
+				tip:{
+					enable:true
+				},
+				border:{
+					enable:false
+				},
+				legend : {
+					offsetx:0,
+					offsety:2,
+					valign:'top',
+					enable : true,
+					//shadow:true,
+					background_color:null,
+					border:false,
+					legend_space:30,//图例间距
+					line_height:15,//设置行高
+					sign_space:10,//小图标与文本间距
+					sign_size:12,//小图标大小
+					color:'#6f6f6f',
+					fontsize:12//文本大小
+				},
+				sub_option:{
+					border:{
+							enable:false
+						},
+					label : {
+							background_color:null,
+							sign:false,//设置禁用label的小图标
+							padding:'0 4',
+							border:{
+								enable:false,
+								color:'#666666'
+							},
+							fontsize:11,
+							//fontweight:600,
+							color : '#444444'
 						},
 						listeners:{
-							 //tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
-							parseText:function(tip,name,value,text,i){
-								return name+"访问量:"+value+"万";
+							parseText:function(d, t){
+								return d.get('value');
 							}
-						}
-					},
-					tipMocker:function(tips,i){
-						return "<div style='font-weight:600'>"+
-								labels[Math.floor(i/12)]+" "+//日期
-								(((i%12)*2<10?"0":"")+(i%12)*2)+":00"+//时间
-								"</div>"+tips.join("<br/>");
-					},
-					legend : {
-						enable : true,
-						row:'max',
-						column : 1,
-						sign:'bar',
-						background_color:null,//设置透明背景
-						border : true
-					},
-					crosshair:{
-						enable:true,
-						line_color:'#62bce9'//十字线的颜色
-					},
-					sub_option : {
-						label:false,
-						point_size:10
-					},
-					coordinate:{
-						width:'80%',
-						height:'78%',
-						axis:{
-							color:'#dcdcdc',
-							width:1
 						},
-						scale:[{
-							 position:'left',	
-							 start_scale:0,
-							 end_scale:100,
-							 scale_space:10,
-							 scale_size:2,
-							 scale_color:'#9f9f9f'
-						},{
-							 position:'bottom',	
-							 labels:labels
-						}]
-					}
-				});
+					color_factor : 0.3
+				},
+				//animation : true,//开启过渡动画
+				animation_duration:1200,//1200ms完成动画 
+				offsetx:-60,
+				offsety:-32,
+				valign:'top',
+				//shadow:true,
+				//separate_angle:10,//分离角度
+				legend_space:30,//图例间距
+				showpercent:true,
+				decimalsnum:2,
+				width : 800,
+				height : 400,
+				zRotate:25,
+				radius:'75%'
+			});
+			//利用自定义组件构造右侧说明文本
 			
-			//开始画图
+			
 			chart.draw();
-		});
-	var W = window.innerWidth;
-	function change(w,h){
-		var r = Math.random();
-		chart.resize(w||400+Math.ceil(r*(W-400)),h||200+Math.ceil(r*(W*0.5-200)));
-	}
+			
+		}
 	</script>
 	</head>
 	<body>
 		<div id='canvasDiv'></div>
-		<input type="button" onclick="change();" value="改变1">
 	</body>
 </html>
