@@ -676,7 +676,7 @@
 					Registry[id] = c;
 				}
 			},
-			Template:function(C){
+			create:function(C){
 				if(!C.type||!Repository[C.type]){
 					throw new Error("TypeNotFoundException["+C.type+"]");
 				}
