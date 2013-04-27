@@ -66,6 +66,7 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 		}, this);
 	}
 });
+iChart.register('LineBasic2D');
 /**
  * @end
  */

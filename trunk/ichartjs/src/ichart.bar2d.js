@@ -38,8 +38,8 @@ iChart.Bar2D = iChart.extend(iChart.Bar, {
 		 */
 		this.engine(this);
 	}
-
 });
+iChart.register('Bar2D');
 /**
  * @end
  */

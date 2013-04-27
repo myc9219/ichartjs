@@ -46,8 +46,8 @@ iChart.BarMulti2D = iChart.extend(iChart.Bar, {
 		 */
 		this.engine(this);
 	}
-
 });
+iChart.register('BarMulti2D');
 /**
  * @end
  */
