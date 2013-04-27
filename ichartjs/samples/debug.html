@@ -83,7 +83,8 @@
 		         	}
 		         ];
         
-		var chart = new iChart.LineBasic2D({
+		var chart = iChart.Template({
+			type:'linebasic2d',
 			render : 'canvasDiv',
 			data: data,
 			align:'center',
