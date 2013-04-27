@@ -286,7 +286,7 @@
 		}();
 
 		var sin = Math.sin, cos = Math.cos, atan = Math.atan, tan = Math.tan, acos = Math.acos, sqrt = Math.sqrt, abs = Math.abs, pi = Math.PI, pi2 = 2 * pi, ceil = Math.ceil, round = Math.round, floor = Math.floor, max = Math.max, min = Math.min, pF = parseFloat,
-		Registry={},
+		Registry={},Repository={},
 		factor = function(v, w) {
 			if (v == 0)
 				return v;
@@ -306,50 +306,13 @@
 				return round(v*f+w)/f;
 			}
 		}, colors = {
-			navy : 'rgb(0,0,128)',
-			olive : 'rgb(128,128,0)',
-			orange : 'rgb(255,165,0)',
-			silver : 'rgb(192,192,192)',
 			white : 'rgb(255,255,255)',
-			gold : 'rgb(255,215,0)',
-			lime : 'rgb(0,255,0)',
-			fuchsia : 'rgb(255,0,255)',
-			aqua : 'rgb(0,255,255)',
 			green : 'rgb(0,128,0)',
 			gray : 'rgb(80,80,80)',
 			red : 'rgb(255,0,0)',
 			blue : 'rgb(0,0,255)',
-			pink : 'rgb(255,192,203)',
-			purple : 'rgb(128,0,128)',
 			yellow : 'rgb(255,255,0)',
-			maroon : 'rgb(128,0,0)',
-			black : 'rgb(0,0,0)',
-			azure : 'rgb(240,255,255)',
-			beige : 'rgb(245,245,220)',
-			brown : 'rgb(165,42,42)',
-			cyan : 'rgb(0,255,255)',
-			darkblue : 'rgb(0,0,139)',
-			darkcyan : 'rgb(0,139,139)',
-			darkgrey : 'rgb(169,169,169)',
-			darkgreen : 'rgb(0,100,0)',
-			darkkhaki : 'rgb(189,183,107)',
-			darkmagenta : 'rgb(139,0,139)',
-			darkolivegreen : 'rgb(85,107,47)',
-			darkorange : 'rgb(255,140,0)',
-			darkorchid : 'rgb(153,50,204)',
-			darkred : 'rgb(139,0,0)',
-			darksalmon : 'rgb(233,150,122)',
-			darkviolet : 'rgb(148,0,211)',
-			indigo : 'rgb(75,0,130)',
-			khaki : 'rgb(240,230,140)',
-			lightblue : 'rgb(173,216,230)',
-			lightcyan : 'rgb(224,255,255)',
-			lightgreen : 'rgb(144,238,144)',
-			lightgrey : 'rgb(211,211,211)',
-			lightpink : 'rgb(255,182,193)',
-			lightyellow : 'rgb(255,255,224)',
-			magenta : 'rgb(255,0,255)',
-			violet : 'rgb(128,0,128)'
+			black : 'rgb(0,0,0)'
 		}, hex2Rgb = function(hex) {
 			hex = hex.replace(/#/g, "").replace(/^(\w)(\w)(\w)$/, "$1$1$2$2$3$3");
 			return  (hex.length==7?'rgba(':'rgb(') + parseInt(hex.substring(0, 2), 16) + ',' + parseInt(hex.substring(2, 4), 16) + ',' + parseInt(hex.substring(4, 6), 16) + (hex.length==7?',0.'+hex.substring(6,7)+')':')');
@@ -695,19 +658,29 @@
 				return (k || 'ichartjs') + '_' + ceil(Math.random()*10000)+new Date().getTime().toString().substring(4);
 			},
 			register:function(c){
-				var id = c.get('id');
-				if(!id||id==''){
-					id = _.uid(c.type);
-					while(Registry[id]){
+				if (_.isString(c)) {
+					Repository[c.toLowerCase()] = c;
+				}else{
+					var id = c.get('id');
+					if(!id||id==''){
 						id = _.uid(c.type);
+						while(Registry[id]){
+							id = _.uid(c.type);
+						}
+						c.push('id',id);
 					}
-					c.push('id',id);
+					if(Registry[id]){
+						throw new Error("exist reduplicate id :"+id);
+					}
+					c.id = id;
+					Registry[id] = c;
 				}
-				if(Registry[id]){
-					throw new Error("exist reduplicate id :"+id);
+			},
+			Template:function(C){
+				if(!C.type||!Repository[C.type]){
+					throw new Error("TypeNotFoundException["+C.type+"]");
 				}
-				c.id = id;
-				Registry[id] = c;
+				return new _[Repository[C.type]](C);
 			},
 			get:function(id){
 				return Registry[id];
@@ -3504,11 +3477,11 @@ $.Label = $.extend($.Component, {
 			}
 			
 			_.segmentRect();
-			
+			//order?
 			_.components.eachAll(function(c) {
 				c.draw(e);
 			});
-			
+			//order?
 			_.oneways.each(function(o) {o.draw()});
 			
 			_.show = true;
@@ -4487,13 +4460,13 @@ $.Coordinate2D = $.extend($.Component, {
 			 */
 			scale : [],
 			/**
-			 * @cfg {String/Number} Here,specify as '80%' relative to client width.(default to '80%')
+			 * @cfg {String/Number} Here,specify as '85%' relative to client width.(default to '85%')
 			 */
-			width:'80%',
+			width:'85%',
 			/**
-			 * @cfg {String/Number} Here,specify as '80%' relative to client height.(default to '80%')
+			 * @cfg {String/Number} Here,specify as '85%' relative to client height.(default to '85%')
 			 */
-			height:'80%',
+			height:'85%',
 			/**
 			 * @cfg {String/Number} Specifies the valid width,less than the width of coordinate.you can applies a percent value relative to width.(default to '100%')
 			 */
@@ -4588,14 +4561,6 @@ $.Coordinate2D = $.extend($.Component, {
 			crosshair : {
 				enable : false
 			},
-			/**
-			 * @cfg {Number} Required,Specifies the width of this coordinate.(default to undefined)
-			 */
-			width : undefined,
-			/**
-			 * @cfg {Number} Required,Specifies the height of this coordinate.(default to undefined)
-			 */
-			height : undefined,
 			/**
 			 * @cfg {Number}Override the default as -1 to make sure it at the bottom.(default to -1)
 			 */
@@ -6105,6 +6070,7 @@ $.Pie2D = $.extend($.Pie, {
 		
 	}
 });
+$.register('Pie2D');
 /**
  * @end
  */
@@ -6259,6 +6225,7 @@ $.Pie3D = $.extend($.Pie, {
 		_.components.push(_.proxy);
 	}
 });
+$.register('Pie3D');
 /**
  * @end
  */
@@ -6332,6 +6299,7 @@ $.Donut2D = $.extend($.Pie, {
 		_.parse(_);
 	}
 });
+$.register('Donut2D');
 /**
  * @end
  */
@@ -6532,6 +6500,7 @@ $.Column2D = $.extend($.Column, {
 		
 	}
 });
+$.register('Column2D');
 /**
  *@end 
  */
@@ -6579,8 +6548,8 @@ $.Column3D = $.extend($.Column2D, {
 	doConfig : function() {
 		$.Column3D.superclass.doConfig.call(this);
 	}
-
 });
+$.register('Column3D');
 /**
  *@end 
  */
@@ -6637,6 +6606,7 @@ $.ColumnMulti2D = $.extend($.Column, {
 		this.engine(this);
 	}
 });
+$.register('ColumnMulti2D');
 /**
  * @end
  */
@@ -6683,10 +6653,10 @@ $.ColumnMulti3D = $.extend($.ColumnMulti2D, {
 	doConfig : function() {
 		$.ColumnMulti3D.superclass.doConfig.call(this);
 
-		
 
 	}
 });
+$.register('ColumnMulti3D');
 /**
  * @end
  */
@@ -6756,6 +6726,7 @@ $.ColumnStacked2D = $.extend($.Column, {
 		this.engine(this);
 	}
 });
+$.register('ColumnStacked2D');
 /**
  *@end 
  */
@@ -6819,6 +6790,7 @@ $.ColumnStacked3D = $.extend($.ColumnStacked2D, {
 		$.ColumnStacked3D.superclass.doConfig.call(this);
 	}
 });
+$.register('ColumnStacked3D');
 /**
  *@end 
  */
@@ -7008,8 +6980,8 @@ $.Bar2D = $.extend($.Bar, {
 		 */
 		this.engine(this);
 	}
-
 });
+$.register('Bar2D');
 /**
  * @end
  */
@@ -7062,8 +7034,8 @@ $.BarMulti2D = $.extend($.Bar, {
 		 */
 		this.engine(this);
 	}
-
 });
+$.register('BarMulti2D');
 /**
  * @end
  */
@@ -7671,6 +7643,7 @@ $.LineBasic2D = $.extend($.Line, {
 		}, this);
 	}
 });
+$.register('LineBasic2D');
 /**
  * @end
  */
@@ -7708,6 +7681,7 @@ $.Area2D = $.extend($.LineBasic2D, {
 		$.Area2D.superclass.doConfig.call(this);
 	}
 });
+$.register('Area2D');
 /**
  * @end
  */

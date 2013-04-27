@@ -423,13 +423,13 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			 */
 			scale : [],
 			/**
-			 * @cfg {String/Number} Here,specify as '80%' relative to client width.(default to '80%')
+			 * @cfg {String/Number} Here,specify as '85%' relative to client width.(default to '85%')
 			 */
-			width:'80%',
+			width:'85%',
 			/**
-			 * @cfg {String/Number} Here,specify as '80%' relative to client height.(default to '80%')
+			 * @cfg {String/Number} Here,specify as '85%' relative to client height.(default to '85%')
 			 */
-			height:'80%',
+			height:'85%',
 			/**
 			 * @cfg {String/Number} Specifies the valid width,less than the width of coordinate.you can applies a percent value relative to width.(default to '100%')
 			 */
@@ -524,14 +524,6 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			crosshair : {
 				enable : false
 			},
-			/**
-			 * @cfg {Number} Required,Specifies the width of this coordinate.(default to undefined)
-			 */
-			width : undefined,
-			/**
-			 * @cfg {Number} Required,Specifies the height of this coordinate.(default to undefined)
-			 */
-			height : undefined,
 			/**
 			 * @cfg {Number}Override the default as -1 to make sure it at the bottom.(default to -1)
 			 */

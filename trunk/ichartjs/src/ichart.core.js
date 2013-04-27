@@ -676,8 +676,11 @@
 					Registry[id] = c;
 				}
 			},
-			get123:function(T){
-				return _[Repository[T]];
+			Template:function(C){
+				if(!C.type||!Repository[C.type]){
+					throw new Error("TypeNotFoundException["+C.type+"]");
+				}
+				return new _[Repository[C.type]](C);
 			},
 			get:function(id){
 				return Registry[id];
