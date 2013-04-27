@@ -286,7 +286,7 @@
 		}();
 
 		var sin = Math.sin, cos = Math.cos, atan = Math.atan, tan = Math.tan, acos = Math.acos, sqrt = Math.sqrt, abs = Math.abs, pi = Math.PI, pi2 = 2 * pi, ceil = Math.ceil, round = Math.round, floor = Math.floor, max = Math.max, min = Math.min, pF = parseFloat,
-		Registry={},
+		Registry={},Repository={},
 		factor = function(v, w) {
 			if (v == 0)
 				return v;
@@ -306,50 +306,13 @@
 				return round(v*f+w)/f;
 			}
 		}, colors = {
-			navy : 'rgb(0,0,128)',
-			olive : 'rgb(128,128,0)',
-			orange : 'rgb(255,165,0)',
-			silver : 'rgb(192,192,192)',
 			white : 'rgb(255,255,255)',
-			gold : 'rgb(255,215,0)',
-			lime : 'rgb(0,255,0)',
-			fuchsia : 'rgb(255,0,255)',
-			aqua : 'rgb(0,255,255)',
 			green : 'rgb(0,128,0)',
 			gray : 'rgb(80,80,80)',
 			red : 'rgb(255,0,0)',
 			blue : 'rgb(0,0,255)',
-			pink : 'rgb(255,192,203)',
-			purple : 'rgb(128,0,128)',
 			yellow : 'rgb(255,255,0)',
-			maroon : 'rgb(128,0,0)',
-			black : 'rgb(0,0,0)',
-			azure : 'rgb(240,255,255)',
-			beige : 'rgb(245,245,220)',
-			brown : 'rgb(165,42,42)',
-			cyan : 'rgb(0,255,255)',
-			darkblue : 'rgb(0,0,139)',
-			darkcyan : 'rgb(0,139,139)',
-			darkgrey : 'rgb(169,169,169)',
-			darkgreen : 'rgb(0,100,0)',
-			darkkhaki : 'rgb(189,183,107)',
-			darkmagenta : 'rgb(139,0,139)',
-			darkolivegreen : 'rgb(85,107,47)',
-			darkorange : 'rgb(255,140,0)',
-			darkorchid : 'rgb(153,50,204)',
-			darkred : 'rgb(139,0,0)',
-			darksalmon : 'rgb(233,150,122)',
-			darkviolet : 'rgb(148,0,211)',
-			indigo : 'rgb(75,0,130)',
-			khaki : 'rgb(240,230,140)',
-			lightblue : 'rgb(173,216,230)',
-			lightcyan : 'rgb(224,255,255)',
-			lightgreen : 'rgb(144,238,144)',
-			lightgrey : 'rgb(211,211,211)',
-			lightpink : 'rgb(255,182,193)',
-			lightyellow : 'rgb(255,255,224)',
-			magenta : 'rgb(255,0,255)',
-			violet : 'rgb(128,0,128)'
+			black : 'rgb(0,0,0)'
 		}, hex2Rgb = function(hex) {
 			hex = hex.replace(/#/g, "").replace(/^(\w)(\w)(\w)$/, "$1$1$2$2$3$3");
 			return  (hex.length==7?'rgba(':'rgb(') + parseInt(hex.substring(0, 2), 16) + ',' + parseInt(hex.substring(2, 4), 16) + ',' + parseInt(hex.substring(4, 6), 16) + (hex.length==7?',0.'+hex.substring(6,7)+')':')');
@@ -695,19 +658,26 @@
 				return (k || 'ichartjs') + '_' + ceil(Math.random()*10000)+new Date().getTime().toString().substring(4);
 			},
 			register:function(c){
-				var id = c.get('id');
-				if(!id||id==''){
-					id = _.uid(c.type);
-					while(Registry[id]){
+				if (_.isString(c)) {
+					Repository[c.toLowerCase()] = c;
+				}else{
+					var id = c.get('id');
+					if(!id||id==''){
 						id = _.uid(c.type);
+						while(Registry[id]){
+							id = _.uid(c.type);
+						}
+						c.push('id',id);
 					}
-					c.push('id',id);
+					if(Registry[id]){
+						throw new Error("exist reduplicate id :"+id);
+					}
+					c.id = id;
+					Registry[id] = c;
 				}
-				if(Registry[id]){
-					throw new Error("exist reduplicate id :"+id);
-				}
-				c.id = id;
-				Registry[id] = c;
+			},
+			get123:function(T){
+				return _[Repository[T]];
 			},
 			get:function(id){
 				return Registry[id];

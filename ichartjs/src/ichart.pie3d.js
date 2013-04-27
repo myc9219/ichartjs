@@ -149,6 +149,7 @@ iChart.Pie3D = iChart.extend(iChart.Pie, {
 		_.components.push(_.proxy);
 	}
 });
+iChart.register('Pie3D');
 /**
  * @end
  */

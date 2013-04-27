@@ -1039,11 +1039,11 @@
 			}
 			
 			_.segmentRect();
-			
+			//order?
 			_.components.eachAll(function(c) {
 				c.draw(e);
 			});
-			
+			//order?
 			_.oneways.each(function(o) {o.draw()});
 			
 			_.show = true;
