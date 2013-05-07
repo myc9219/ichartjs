@@ -52,7 +52,7 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 					value : v,
 					text : d.name+' '+v
 				};
-				iChart.merge(p, _.fireEvent(_, 'parsePoint', [d, v, x, y, j]));
+				iChart.merge(p, _.fireEvent(_, 'parsePoint', [d, v, x, y, j,S]));
 				points.push(p);
 			}, _);
 			/**

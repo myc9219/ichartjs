@@ -7468,7 +7468,7 @@ $.Line = $.extend($.Chart, {
 		
 		var k = _.pushIf('sub_option.keep_with_coordinate',s);
 		if (_.get('crosshair.enable')) {
-			_.push('crosshair.hcross', s);
+			_.pushIf('crosshair.hcross', s);
 			_.push('crosshair.invokeOffset', function(e, m) {
 				/**
 				 * TODO how fire muti line?now fire by first line
@@ -7629,7 +7629,7 @@ $.LineBasic2D = $.extend($.Line, {
 					value : v,
 					text : d.name+' '+v
 				};
-				$.merge(p, _.fireEvent(_, 'parsePoint', [d, v, x, y, j]));
+				$.merge(p, _.fireEvent(_, 'parsePoint', [d, v, x, y, j,S]));
 				points.push(p);
 			}, _);
 			/**
