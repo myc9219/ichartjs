@@ -212,6 +212,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		} else {
 			_.y = g.get('centery') - h / 2;
 		}
+		
 		if (_.get('align') == _.L) {
 			_.x = g.get('l_originx');
 		} else if (_.get('align') == _.C) {

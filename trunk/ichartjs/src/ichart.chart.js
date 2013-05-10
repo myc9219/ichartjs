@@ -1463,7 +1463,7 @@
 			if(!_.Combination){
 				_.oneways.push(_.bg);
 				_.push('r_originx', _.width - _.get('padding_right'));
-				_.push('b_originy', _.height - _.get('padding_bottom')-_.footnote?_.footnote.get(_.H):0);
+				_.push('b_originy', _.height - _.get('padding_bottom')-(_.footnote?_.footnote.get(_.H):0));
 				
 				_.applyGradient();
 				
