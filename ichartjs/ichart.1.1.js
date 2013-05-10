@@ -2092,6 +2092,7 @@ $.Legend = $.extend($.Component, {
 		} else {
 			_.y = g.get('centery') - h / 2;
 		}
+		
 		if (_.get('align') == _.L) {
 			_.x = g.get('l_originx');
 		} else if (_.get('align') == _.C) {
@@ -3901,7 +3902,7 @@ $.Label = $.extend($.Component, {
 			if(!_.Combination){
 				_.oneways.push(_.bg);
 				_.push('r_originx', _.width - _.get('padding_right'));
-				_.push('b_originy', _.height - _.get('padding_bottom')-_.footnote?_.footnote.get(_.H):0);
+				_.push('b_originy', _.height - _.get('padding_bottom')-(_.footnote?_.footnote.get(_.H):0));
 				
 				_.applyGradient();
 				
