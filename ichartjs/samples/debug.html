@@ -44,125 +44,74 @@
 		<script type="text/javascript" src="../src/ichart.area2d.js"></script>
 		<script type="text/javascript" src="../plugin/ichart.gauge2d.js"></script>
 		<script type="text/javascript" src="../plugin/ichart.slider.js"></script>
-	<style type="text/css">
-		body{
-			text-align: center;
-			background-repeat: repeat;
-		}
-		#canvasDiv{
-			margin:0px auto;
-			text-align: center;
-		}
-	</style>
-	<script type="text/javascript">
-	var mWidth = 400; //Width
-	var mHeight = 200;//Height 
-	var labelSign = false;
-	$(function() {
-		
-		//定义数据
+		<style type="text/css">
+body {
+	text-align: center;
+	background-repeat: repeat;
+}
+
+#canvasDiv {
+	margin: 0px auto;
+	text-align: center;
+}
+</style>
+		<script type="text/javascript">
+	$(function(){
 		var data = [
-			{name : '第一季度',value : 20,color:'#a5c2d5'},
-			{name : '第二季度',value : 30,color:'#cbab4f'},
-			{name : '第三季度',value : 10,color:'#76a871'},
-			{name : '第四季度',value : 40,color:'#76a871'}
-		 ];
-		 
-		var chart = new iChart.Pie3D({
+				{name:'湖南双汇赛鸽中心100公里幼鸽赛幼鸽赛幼鸽赛幼鸽赛',color:'#98D0B9',value:['62.02']},
+				{name:'湖南双汇赛鸽75公里训放幼鸽赛',color:'#009298',value:['804.60']},
+				{name:'湖南双汇赛鸽75公里训放',color:'#6EC3C9',value:['592.45']},
+				{name:'湖南双汇赛鸽75公里训放',color:'#184785',value:['587.10']},
+				{name:'湖南双汇赛鸽75公里训放',color:'#426EB4',value:['578.74']},
+				{name:'湖南双汇赛鸽75公里训放',color:'#211551',value:['577.75']}
+				];
+    	
+		new iChart.Column2D({
 			render : 'canvasDiv',
-			data : data,
-			title : { //大标题
-				text : 'Title',//设置标题
-				font : 'sans-serif',
-				fontsize : 30,
-				fontweight : 100,
-				color : '#bcd'
-
+			data: data,
+			title : {
+			text : '2013年2月国内浏览器市场份额',
+			color : '#3e576f'
 			},
-			subtitle : { //副标题
-				text : 'SubTitle',
-				fontsize : 15,
-				color : '#cba'
-			},
-			footnote : {
-				text : 'imoonx',
-				color : '#486c8f',
-				fontsize : 12,
-				padding : '0 38'
-			},
-			sub_option : {
-				mini_label_threshold_angle : 40,//迷你label的阀值,单位:角度
-				mini_label : {//迷你label配置项
-					fontsize : 20,
-					fontweight : 600,
-					color : '#ffffff'
-				},
-				label : {
-					background_color : null,
-					sign : labelSign,//设置禁用label的小图标
-					padding : '0 4',
-					border : {
-						enable : false,
-						color : '#666666'
-					},
-					fontsize : 11,
-					fontweight : 600,
-					color : '#4572a7'
-				},
-				border : {
-					width : 2,
-					color : '#ffffff'
-				},
-				listeners : {
-					parseText : function(d, t) {
-						return d.get('value') + "%";//自定义label文本
-					},
-					click : function(p, e, m) {
-						//此处实现联动效果,需调用java,重新绘制图表
-						//先调用java,判断是否需要联动 先判断是否需要联动
-						if (!labelSign) {
-							chart.subtitle.push('text', p.get('name') + ":"
-									+ p.get('value'));
-							chart.draw();
-						}
-					}
-				}
-			},
-			legend : {
-				offsety:-100,
-				enable : true,
-				padding : 0,
-				offsety : 10,
-				color : '#3e576f',
-				fontsize : 14,//文本大小
-				sign_size : 14,//小图标大小
-				line_height : 18,//设置行高
-				sign_space : 6,//小图标与文本间距
-				border : false,
-				background_color : false,//透明背景
-				row : 1,//设置在一行上显示，与column配合使用
-				column : 'max',
-				valign : 'bottom',
-				align : 'center'
-
-			},
-			animation : true,//开启过渡动画
-			animation_duration : 800,//800ms完成动画 
-			shadow : true,
-			shadow_blur : 6,
-			shadow_color : '#aaaaaa',
-			border : null,
-			background_color : '#aaaaaa',
-			shadow_offsetx : 0,
-			shadow_offsety : 0,
-			offset_angle : -90,//逆时针偏移120度
-			width : 400,
+			width : 800,
 			height : 400,
-			radius : 150
-		});
-
-		chart.draw();
-
+			padding: 20,
+			shadow: true,
+			shadow_color:'#080808',
+			background_color:'#eceeef',
+			sub_option:{
+			label : {
+			color : '#2c2e2a',
+			padding : 10
+			}
+			},
+			coordinate:{
+			left_board:false,
+			scale:[{
+			 position:'left',
+			 start_scale:0,
+			 listeners:{
+			parseText:function(t,x,y){
+			return {text:t+"%  "}
+			}
+			}
+			}],
+			},
+			legend: {
+				background_color:iChart.toRgba('#213e49',0.6),
+				border:{radius:5},
+				enable: true,
+				align: 'center',
+				valign: 'top',
+				row: 'max',
+				color:'#fefefe',
+				column: 6,
+				line_height: 15
+			},
+			tip : {
+				enable : true
+			}
+		}).draw();
 	});
 	</script>
 	</head>

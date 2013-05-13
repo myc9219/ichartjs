@@ -1136,7 +1136,10 @@
 			H.push("' style='padding:0px;margin:0px;overflow:hidden;position:relative;'>");
 			H.push("<canvas id= '");
 			H.push(_.canvasid);
-			H.push("'><p>Your browser does not support the canvas element</p></canvas></div>");
+			H.push("' style='-webkit-text-size-adjust: none;'>");
+			H.push("<p>Your browser does not support the canvas element</p></canvas>");
+			H.push("</div>");
+			
 			/**
 			 * also use appendChild()
 			 */
