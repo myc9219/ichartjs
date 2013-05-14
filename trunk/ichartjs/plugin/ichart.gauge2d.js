@@ -329,14 +329,14 @@ iChart.Gauge2D = iChart.extend(iChart.Chart, {
 			return true;
 		});
 		
-		if ($.isString(_.get('text'))) {
-			_.push('text', $.applyIf({
+		if (iChart.isString(_.get('text'))) {
+			_.push('text', iChart.applyIf({
 				text : _.get('text')
 			}, _.default_.text));
 		}
 		
 		if (_.get('text.text') != '') {
-			_.text = new $.Text(iChart.apply(_.get('text'),{
+			_.text = new iChart.Text(iChart.apply(_.get('text'),{
 				z_index:_.get('z_index')-8,
 				originx:_.x,
 				originy:_.y-r/3,
