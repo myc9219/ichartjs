@@ -58,60 +58,56 @@ body {
 		<script type="text/javascript">
 	$(function(){
 		var data = [
-				{name:'湖南双汇赛鸽中心100公里幼鸽赛幼鸽赛幼鸽赛幼鸽赛',color:'#98D0B9',value:['62.02']},
-				{name:'湖南双汇赛鸽75公里训放幼鸽赛',color:'#009298',value:['804.60']},
-				{name:'湖南双汇赛鸽75公里训放',color:'#6EC3C9',value:['592.45']},
-				{name:'湖南双汇赛鸽75公里训放',color:'#184785',value:['587.10']},
-				{name:'湖南双汇赛鸽75公里训放',color:'#426EB4',value:['578.74']},
-				{name:'湖南双汇赛鸽75公里训放',color:'#211551',value:['577.75']}
-				];
-    	
-		new iChart.Column2D({
+		    		{
+			    		"value":[1,2,3,4,5,6],
+			    		"color":"#b5bcc5",
+			    		"extra":[{"who":"1月"},{"who":"2月"},{"who":"3月"},{"who":"4月"},{"who":"5月"},{"who":"6月"}],
+			    		"name":"DPS01A"
+				    },
+		    		{
+			    		"value":[1,2,3,4,5,6],
+			    		"color":"#b5bcc5",
+			    		"extra":[{"who":"1月"},{"who":"2月"},{"who":"3月"},{"who":"4月"},{"who":"5月"},{"who":"6月"}],
+			    		"name":"DPS01B"
+				    }
+		    	];
+		var labels = ["一月","二月","三月","四月","五月","六月"];
+		var chart = new iChart.ColumnMulti2D({
 			render : 'canvasDiv',
 			data: data,
-			title : {
-			text : '2013年2月国内浏览器市场份额',
-			color : '#3e576f'
-			},
+			labels:labels,
+			title : 'DPS01A型号比DPS01B型号的产品更受用户喜欢',
+			subtitle : '2012上半年DPS01A型号与DPS01B型号的鼠标销售比较,单位:万台',
+			footnote : '数据来源：销售中心',
 			width : 800,
 			height : 400,
-			padding: 20,
-			shadow: true,
-			shadow_color:'#080808',
-			background_color:'#eceeef',
+			background_color : '#ffffff',
 			sub_option:{
-			label : {
-			color : '#2c2e2a',
-			padding : 10
-			}
+				listeners : {
+					click:function(r,e,m){
+						alert(r.get('name')+':'+r.get('who'));
+					}
+				}
+			},
+			legend:{
+				enable:true,
+				background_color : null,
+				border : {
+					enable : false
+				}
 			},
 			coordinate:{
-			left_board:false,
-			scale:[{
-			 position:'left',
-			 start_scale:0,
-			 listeners:{
-			parseText:function(t,x,y){
-			return {text:t+"%  "}
+				background_color : '#f1f1f1',
+				scale:[{
+					 position:'left',	
+					 start_scale:0,
+					 end_scale:10
+				}],
+				width:600,
+				height:260
 			}
-			}
-			}],
-			},
-			legend: {
-				background_color:iChart.toRgba('#213e49',0.6),
-				border:{radius:5},
-				enable: true,
-				align: 'center',
-				valign: 'top',
-				row: 'max',
-				color:'#fefefe',
-				column: 6,
-				line_height: 15
-			},
-			tip : {
-				enable : true
-			}
-		}).draw();
+		});
+		chart.draw();
 	});
 	</script>
 	</head>
