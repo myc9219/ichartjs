@@ -56,59 +56,50 @@ body {
 }
 </style>
 		<script type="text/javascript">
-	$(function(){
-		var data = [
-		    		{
-			    		"value":[1,2,3,4,5,6],
-			    		"color":"#b5bcc5",
-			    		"extra":[{"who":"1月"},{"who":"2月"},{"who":"3月"},{"who":"4月"},{"who":"5月"},{"who":"6月"}],
-			    		"name":"DPS01A"
-				    },
-		    		{
-			    		"value":[1,2,3,4,5,6],
-			    		"color":"#b5bcc5",
-			    		"extra":[{"who":"1月"},{"who":"2月"},{"who":"3月"},{"who":"4月"},{"who":"5月"},{"who":"6月"}],
-			    		"name":"DPS01B"
-				    }
-		    	];
-		var labels = ["一月","二月","三月","四月","五月","六月"];
-		var chart = new iChart.ColumnMulti2D({
-			render : 'canvasDiv',
-			data: data,
-			labels:labels,
-			title : 'DPS01A型号比DPS01B型号的产品更受用户喜欢',
-			subtitle : '2012上半年DPS01A型号与DPS01B型号的鼠标销售比较,单位:万台',
-			footnote : '数据来源：销售中心',
-			width : 800,
-			height : 400,
-			background_color : '#ffffff',
-			sub_option:{
-				listeners : {
-					click:function(r,e,m){
-						alert(r.get('name')+':'+r.get('who'));
+		$(function(){
+			var data = [
+			        	{name : 'Other',value : 0.73,color:'#6f83a5'},
+			        	{name : 'IE',value : 35.75,color:'#a5c2d5'},
+			        	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
+			        	{name : 'Firefox',value : 24.88,color:'#76a871'},
+			        	{name : 'Safari',value : 6.77,color:'#9f7961'},
+			        	{name : 'Opera',value : 2.02,color:'#a56f8f'}
+		        	];
+        	
+			new iChart.Donut2D({
+				render : 'canvasDiv',
+				data: data,
+				title : 'Top 5 Browsers from 1 to 29 Feb 2012',
+				legend : {
+					enable : true
+				},
+				sub_option : {
+					label : {
+						background_color:null,
+						sign:false,//设置禁用label的小图标
+						padding:'0 4',
+						border:{
+							enable:false,
+							color:'#666666'
+						},
+						fontsize:11,
+						fontweight:600,
+						color : '#4572a7'
+					},
+					border : {
+						width : 2,
+						color : '#ffffff'
 					}
-				}
-			},
-			legend:{
-				enable:true,
-				background_color : null,
-				border : {
-					enable : false
-				}
-			},
-			coordinate:{
-				background_color : '#f1f1f1',
-				scale:[{
-					 position:'left',	
-					 start_scale:0,
-					 end_scale:10
-				}],
-				width:600,
-				height:260
-			}
+				},
+				separate_angle:20,
+				animation:true,
+				showpercent:true,
+				decimalsnum:2,
+				width : 800,
+				height : 400,
+				radius:140
+			}).draw();
 		});
-		chart.draw();
-	});
 	</script>
 	</head>
 	<body>
