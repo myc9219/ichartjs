@@ -61,7 +61,7 @@ iChart.LineBasic2D = iChart.extend(iChart.Line, {
 			iChart.merge(_.get('sub_option'),d);
 			
 			_.push('sub_option.points', points);
-			_.push('sub_option.brushsize', d.linewidth || d.line_width || 1);
+			_.push('sub_option.brushsize', d.linewidth || d.line_width);
 			_.lines.push(new iChart.LineSegment(_.get('sub_option'), _));
 		}, this);
 	}

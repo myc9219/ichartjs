@@ -556,6 +556,7 @@
 			return this.closePath().stroke(b).fill(bg).restore();
 		},
 		lines : function(p, w, c, last) {
+			if(!w)return this;
 			this.save().gCo(last).beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0]), fd(w, p[1]));
 			for ( var i = 2; i < p.length - 1; i += 2) {
 				this.lineTo(fd(w, p[i]), fd(w, p[i + 1]));
@@ -576,6 +577,7 @@
 				.restore();
 		},
 		lineArray : function(p, w, c, smooth, smo) {
+			if(!w)return this;
 			this.save().beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
 			for ( var i = 1; i < p.length; i++){
 				if (smooth) {
