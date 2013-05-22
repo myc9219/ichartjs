@@ -318,6 +318,8 @@ iChart.Coordinate = {
 		var _ = this._(),coo = _.get('coordinate');
 		
 		if(coo.ICHARTJS_OBJECT){
+			_.x = _.push(_.X, coo.x);
+			_.y = _.push(_.Y, coo.y);
 			/**
 			 * Imply it was illusive
 			 */
@@ -337,6 +339,7 @@ iChart.Coordinate = {
 			_.push('coordinate.valid_width_value',parse(_.get('coordinate.valid_width'),w));
 			
 		_.originXY(_,[_.get('l_originx'),_.get('r_originx') - w,_.get('centerx') - w / 2],[_.get('centery') - h / 2]);
+		
 		_.push('coordinate.originx', _.x);
 		_.push('coordinate.originy', _.y);
 		

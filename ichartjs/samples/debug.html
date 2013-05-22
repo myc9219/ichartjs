@@ -56,49 +56,79 @@ body {
 }
 </style>
 		<script type="text/javascript">
-		$(function(){
+		$(function() {
 			var data = [
-			        	{name : 'Other',value : 0.73,color:'#6f83a5'},
-			        	{name : 'IE',value : 35.75,color:'#a5c2d5'},
-			        	{name : 'Chrome',value : 29.84,color:'#cbab4f'},
-			        	{name : 'Firefox',value : 24.88,color:'#76a871'},
-			        	{name : 'Safari',value : 6.77,color:'#9f7961'},
-			        	{name : 'Opera',value : 2.02,color:'#a56f8f'}
-		        	];
-        	
-			new iChart.Donut2D({
+						{name : '南京',value : 0.4,color : '#2cbbc3'},
+						{name : '无锡',value : 0.6,color : '#2cbbc3'},
+						{name : '泰州',value : 1,color : '#2cbbc3'},
+						{name : '南通',value : 1.2,color : '#2cbbc3'},
+						{name : '连云港',value : 2,color : '#2cbbc3'},
+						{name : '淮安',value : 3.2,color : '#2cbbc3'},
+						{name : '苏州',value : 4.8,color : '#2cbbc3'},
+						{name : '宿迁',value : 7.8,color : '#2cbbc3'},
+						{name : '盐城',value : 11.8,color : '#2cbbc3'},
+						{name : '扬州',value : 3.2,color : '#2cbbc3'},
+						{name : '徐州',value : 4.8,color : '#2cbbc3'},
+						{name : '镇江',value : 7.8,color : '#2cbbc3'},
+						{name : '常州',value : 11.8,color : '#2cbbc3'}
+					];
+		    var r0;    
+			var chart = new iChart.Column2D({
 				render : 'canvasDiv',
-				data: data,
-				title : 'Top 5 Browsers from 1 to 29 Feb 2012',
-				legend : {
-					enable : true
-				},
-				sub_option : {
-					label : {
-						background_color:null,
-						sign:false,//设置禁用label的小图标
-						padding:'0 4',
-						border:{
-							enable:false,
-							color:'#666666'
-						},
-						fontsize:11,
-						fontweight:600,
-						color : '#4572a7'
-					},
-					border : {
-						width : 2,
-						color : '#ffffff'
-					}
-				},
-				separate_angle:20,
-				animation:true,
-				showpercent:true,
-				decimalsnum:2,
+				data : data,
+				title:'The Rise of Pinterest',
 				width : 800,
 				height : 400,
-				radius:140
-			}).draw();
+				sub_option : {
+					label : false,
+					border : {
+						width : 0,
+						radius : '5 5 0 0',//上圆角设置
+						color : '#ffffff'
+					},
+					listeners: {
+	                    click: function (r, e, m) {
+	                        var name = r.get("name");
+	                        var color = r.get("color");
+	                        var mapcode = r.get("mapid");
+	                        if (r0)
+	                        {
+	                            r0.push("f_color_", "#2cbbc3");
+	                            r0.push("light_color", "#b5cab7");
+	                        }
+	                        if(r!=r0){
+		                        r.push("f_color_","red");
+		                        r.push("light_color", "red");
+		                    }
+	                        r0 = r;
+	                        chart.draw();
+	                    }
+	                }
+				},
+				coordinate : {
+					background_color : null,
+					grid_color : '#c0c0c0',
+					width : 720,
+					height:300,
+					axis : {
+						color : '#c0d0e0',
+						width : [0, 0, 1, 0]
+					},
+					scale : [{
+						position : 'left',
+						start_scale : 0,
+						end_scale : 12,
+						scale_space : 2,
+						scale_enable : false,
+						label : {
+							fontsize:11,
+							fontweight:600,
+							color : '#6d7588'
+						}}]
+				}
+			});
+			
+			chart.draw();
 		});
 	</script>
 	</head>
