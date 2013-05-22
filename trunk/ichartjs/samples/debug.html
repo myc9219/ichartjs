@@ -56,80 +56,88 @@ body {
 }
 </style>
 		<script type="text/javascript">
-		$(function() {
-			var data = [
-						{name : '南京',value : 0.4,color : '#2cbbc3'},
-						{name : '无锡',value : 0.6,color : '#2cbbc3'},
-						{name : '泰州',value : 1,color : '#2cbbc3'},
-						{name : '南通',value : 1.2,color : '#2cbbc3'},
-						{name : '连云港',value : 2,color : '#2cbbc3'},
-						{name : '淮安',value : 3.2,color : '#2cbbc3'},
-						{name : '苏州',value : 4.8,color : '#2cbbc3'},
-						{name : '宿迁',value : 7.8,color : '#2cbbc3'},
-						{name : '盐城',value : 11.8,color : '#2cbbc3'},
-						{name : '扬州',value : 3.2,color : '#2cbbc3'},
-						{name : '徐州',value : 4.8,color : '#2cbbc3'},
-						{name : '镇江',value : 7.8,color : '#2cbbc3'},
-						{name : '常州',value : 11.8,color : '#2cbbc3'}
-					];
-		    var r0;    
-			var chart = new iChart.Column2D({
-				render : 'canvasDiv',
-				data : data,
-				title:'The Rise of Pinterest',
-				width : 800,
-				height : 400,
-				sub_option : {
-					label : false,
-					border : {
-						width : 0,
-						radius : '5 5 0 0',//上圆角设置
-						color : '#ffffff'
-					},
-					listeners: {
-	                    click: function (r, e, m) {
-	                        var name = r.get("name");
-	                        var color = r.get("color");
-	                        var mapcode = r.get("mapid");
-	                        if (r0)
-	                        {
-	                            r0.push("f_color_", "#2cbbc3");
-	                            r0.push("light_color", "#b5cab7");
-	                        }
-	                        if(r!=r0){
-		                        r.push("f_color_","red");
-		                        r.push("light_color", "red");
-		                    }
-	                        r0 = r;
-	                        chart.draw();
-	                    }
-	                }
-				},
-				coordinate : {
-					background_color : null,
-					grid_color : '#c0c0c0',
-					width : 720,
-					height:300,
-					axis : {
-						color : '#c0d0e0',
-						width : [0, 0, 1, 0]
-					},
-					scale : [{
-						position : 'left',
-						start_scale : 0,
-						end_scale : 12,
-						scale_space : 2,
-						scale_enable : false,
-						label : {
-							fontsize:11,
-							fontweight:600,
-							color : '#6d7588'
-						}}]
-				}
-			});
-			
-			chart.draw();
-		});
+		$(function () {
+	           var data = [
+	                           { name: '天语', value: 2.83, color: '#4572a7', va: true },
+	                           { name: '苹果', value: 3.44, color: '#4572a7', va: true },
+	                           { name: 'HTC', value: 3.66, color: '#4572a7', va: true },
+	                           { name: '金立', value: 4.58, color: '#4572a7', va: true },
+	                           { name: '中兴', value: 6.56, color: '#4572a7', va: true },
+	                           { name: '酷派', value: 6.85, color: '#4572a7', va: true },
+	                           { name: '诺基亚', value: 9.42, color: '#4572a7', va: true },
+	                           { name: '华为', value: 9.54, color: '#4572a7', va: true },
+	                           { name: '联想', value: 11.00, color: '#4572a7', va: true },
+	                           { name: '三星', value: 15.73, color: '#4572a7', va: true }
+	           ];
+	           var chart = new iChart.Bar2D({
+	               render: 'canvasDiv',
+	               data: data,
+	               title: '2012年6月中国手机市场份额TOP10',
+	               subtitle: '联想手机超越诺基亚，以11%市场份额，成为中国市场第二',
+	               footnote: '数据来源：赛诺',
+	               width: 800,
+	               height: 500,
+	               coordinate: {
+	                   width: 640,
+	                   height: 260,
+	                   axis: {
+	                       width: [0, 0, 1, 1]
+	                   },
+	                   scale: [{
+	                       position: 'bottom',
+	                       start_scale: 0,
+	                       end_scale: 18,
+	                       scale_space: 2
+	                   }]
+	               },
+	               shadow: true,
+	               background_color: '#fcfcfc',
+	               sub_option: {
+	                   border: {
+	                       enable: true,
+	                       color: '#fcfcfc'
+	                   },
+	                   listeners: {
+	                       beforedraw: function (s) {
+	                           if (data[s.options.id].va) {
+	                               return true;
+	                           }
+	                           return false;
+	                       }
+	                   }
+	               },
+	               label: {
+	                   listeners: {
+	                       beforedraw: function (s) {
+	                           if (data[s.options.id].va) {
+	                               return true;
+	                           }
+	                           return false;
+	                       }
+	                   }
+	               },
+	               legend: {
+	                   enable: true,
+	                   height: 500,
+	                   listeners: {
+	                       click: function (s, e, m) {
+                       			console.log(m);
+	                           if (data[m.index].va == true) {
+	                               data[m.index].va = false;
+	                               s.data[m.index].color = '#E0E0E0';
+	                           }
+	                           else {
+	                               data[m.index].va = true;
+	                               s.data[m.index].color = '#4572a7';
+	                           }
+	                           chart.draw();
+	                       }
+	                   }
+	               }
+	           });
+	           chart.draw();
+
+	       });
 	</script>
 	</head>
 	<body>

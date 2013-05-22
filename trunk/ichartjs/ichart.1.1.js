@@ -2996,6 +2996,7 @@ $.Label = $.extend($.Component, {
 			return this.closePath().stroke(b).fill(bg).restore();
 		},
 		lines : function(p, w, c, last) {
+			if(!w)return this;
 			this.save().gCo(last).beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0]), fd(w, p[1]));
 			for ( var i = 2; i < p.length - 1; i += 2) {
 				this.lineTo(fd(w, p[i]), fd(w, p[i + 1]));
@@ -3016,6 +3017,7 @@ $.Label = $.extend($.Component, {
 				.restore();
 		},
 		lineArray : function(p, w, c, smooth, smo) {
+			if(!w)return this;
 			this.save().beginPath().strokeStyle(true,w, c).moveTo(fd(w, p[0].x), fd(w, p[0].y));
 			for ( var i = 1; i < p.length; i++){
 				if (smooth) {
@@ -4360,6 +4362,8 @@ $.Coordinate = {
 		var _ = this._(),coo = _.get('coordinate');
 		
 		if(coo.ICHARTJS_OBJECT){
+			_.x = _.push(_.X, coo.x);
+			_.y = _.push(_.Y, coo.y);
 			/**
 			 * Imply it was illusive
 			 */
@@ -4379,6 +4383,7 @@ $.Coordinate = {
 			_.push('coordinate.valid_width_value',parse(_.get('coordinate.valid_width'),w));
 			
 		_.originXY(_,[_.get('l_originx'),_.get('r_originx') - w,_.get('centerx') - w / 2],[_.get('centery') - h / 2]);
+		
 		_.push('coordinate.originx', _.x);
 		_.push('coordinate.originy', _.y);
 		
@@ -7162,7 +7167,7 @@ $.LineSegment = $.extend($.Component, {
 		this.tip = null;
 	},
 	drawSegment : function() {
-		var _ = this._(),p = _.get('points'),b=_.get('f_color'),h=_.get('brushsize');
+		var _ = this._();
 		
 		_.polygons.each(function(P){
 			_.T.polygon.apply(_.T,P);
@@ -7643,7 +7648,7 @@ $.LineBasic2D = $.extend($.Line, {
 			$.merge(_.get('sub_option'),d);
 			
 			_.push('sub_option.points', points);
-			_.push('sub_option.brushsize', d.linewidth || d.line_width || 1);
+			_.push('sub_option.brushsize', d.linewidth || d.line_width);
 			_.lines.push(new $.LineSegment(_.get('sub_option'), _));
 		}, this);
 	}

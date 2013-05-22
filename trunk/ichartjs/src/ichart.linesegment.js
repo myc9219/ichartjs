@@ -115,7 +115,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 		this.tip = null;
 	},
 	drawSegment : function() {
-		var _ = this._(),p = _.get('points'),b=_.get('f_color'),h=_.get('brushsize');
+		var _ = this._();
 		
 		_.polygons.each(function(P){
 			_.T.polygon.apply(_.T,P);
