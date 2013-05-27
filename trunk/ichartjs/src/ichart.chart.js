@@ -1172,6 +1172,17 @@
 			_.initialize();
 		},
 		/**
+		 * @method load the new data
+		 * @paramter array#data 
+		 * @return void
+		 */
+		load:function(d){
+			var _ = this._();
+			_.push('data', d||[]);
+			_.setUp();
+			(_.Combination?_.root:_).draw();
+		},
+		/**
 		 * @method resize the chart
 		 * @paramter int#width 
 		 * @paramter int#height 
@@ -1182,8 +1193,6 @@
 			if(!_.Combination){
 				_.width = _.push(_.W, w);
 				_.height = _.push(_.H, h);
-				_.push(_.X, null);
-				_.push(_.Y, null);
 				_.size(_);
 			}
 			_.set(_.fireEvent(_,'resize',[w,h]));
@@ -1205,6 +1214,10 @@
 		},
 		initialize : function() {
 			var _ = this._(),d = _.get('data'),r = _.get('render');
+			
+			_.push(_.X, null);
+			_.push(_.Y, null);
+			
 			if(_.Combination){
 				$.apply(_.options, $.clone([_.W,_.H,'padding','border','client_height','client_width',
 				                                      'minDistance','maxDistance','centerx', 'centery',

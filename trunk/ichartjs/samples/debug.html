@@ -56,91 +56,205 @@ body {
 }
 </style>
 		<script type="text/javascript">
-		$(function () {
-	           var data = [
-	                           { name: '天语', value: 2.83, color: '#4572a7', va: true },
-	                           { name: '苹果', value: 3.44, color: '#4572a7', va: true },
-	                           { name: 'HTC', value: 3.66, color: '#4572a7', va: true },
-	                           { name: '金立', value: 4.58, color: '#4572a7', va: true },
-	                           { name: '中兴', value: 6.56, color: '#4572a7', va: true },
-	                           { name: '酷派', value: 6.85, color: '#4572a7', va: true },
-	                           { name: '诺基亚', value: 9.42, color: '#4572a7', va: true },
-	                           { name: '华为', value: 9.54, color: '#4572a7', va: true },
-	                           { name: '联想', value: 11.00, color: '#4572a7', va: true },
-	                           { name: '三星', value: 15.73, color: '#4572a7', va: true }
-	           ];
-	           var chart = new iChart.Bar2D({
-	               render: 'canvasDiv',
-	               data: data,
-	               title: '2012年6月中国手机市场份额TOP10',
-	               subtitle: '联想手机超越诺基亚，以11%市场份额，成为中国市场第二',
-	               footnote: '数据来源：赛诺',
-	               width: 800,
-	               height: 500,
-	               coordinate: {
-	                   width: 640,
-	                   height: 260,
-	                   axis: {
-	                       width: [0, 0, 1, 1]
-	                   },
-	                   scale: [{
-	                       position: 'bottom',
-	                       start_scale: 0,
-	                       end_scale: 18,
-	                       scale_space: 2
-	                   }]
-	               },
-	               shadow: true,
-	               background_color: '#fcfcfc',
-	               sub_option: {
-	                   border: {
-	                       enable: true,
-	                       color: '#fcfcfc'
-	                   },
-	                   listeners: {
-	                       beforedraw: function (s) {
-	                           if (data[s.options.id].va) {
-	                               return true;
-	                           }
-	                           return false;
-	                       }
-	                   }
-	               },
-	               label: {
-	                   listeners: {
-	                       beforedraw: function (s) {
-	                           if (data[s.options.id].va) {
-	                               return true;
-	                           }
-	                           return false;
-	                       }
-	                   }
-	               },
-	               legend: {
-	                   enable: true,
-	                   height: 500,
-	                   listeners: {
-	                       click: function (s, e, m) {
-                       			console.log(m);
-	                           if (data[m.index].va == true) {
-	                               data[m.index].va = false;
-	                               s.data[m.index].color = '#E0E0E0';
-	                           }
-	                           else {
-	                               data[m.index].va = true;
-	                               s.data[m.index].color = '#4572a7';
-	                           }
-	                           chart.draw();
-	                       }
-	                   }
-	               }
-	           });
-	           chart.draw();
+		$(function(){	
+			var data = [
+			        	{name : 'Alex',value : 10,color:'#849fb4'},
+			        	{name : 'Mark',value : 30,color:'#bf9d32'},
+			        	{name : 'David',value : 40,color:'#728f1b'},
+			        	{name : 'Graham',value : 55,color:'#bf784c'},
+			        	{name : 'John',value : 70,color:'#2f8586'}
+		        	];
+	    	
+	    	//是否启用动画
+			var animation = false;
+	    	
+			chart = new iChart.Column2D({
+				render : 'canvasDiv',
+				data: data,
+				title : {
+					text : 'This is a sample test for Combination',
+					color : '#3e576f'
+				},
+				subtitle : {
+					text : 'Top 5 Sales Person,2011',
+					color : '#6d869f'
+				},
+				footnote : {
+					text : 'ichartjs.com',
+					color : '#909090',
+					fontsize : 11,
+					padding : '0 38'
+				},
+				width : 1000,
+				height : 460,
+				animation : animation,
+				animation_duration:600,
+				shadow : true,
+				shadow_blur : 2,
+				shadow_color : '#aaaaaa',
+				shadow_offsetx : 1,
+				shadow_offsety : 0,
+				column_width : 68,
+				zScale:0.5,
+				xAngle : 50,
+				bottom_scale:1.1,
+				label:{
+					color:'#4c4f48'
+				},
+				sub_option:{
+					label : {
+						color : '#4c4f48'
+					},
+					listeners:{
+						parseText:function(r,t){
+							//自定义柱形图上方label的格式。
+							return '$'+t+'k';
+						}
+					}
+				},
+				coordinate:{
+					background_color : '#d5d8d1',
+					grid_color : '#a4ad96',
+					color_factor : 0.24,
+					board_deep:10,//背面厚度
+					pedestal_height:10,//底座高度
+					left_board:false,//取消左侧面板
+					height:'88%',
+					width:'84%',
+					valid_width:'90%',
+					scale:[{
+						 position:'left',	
+						 start_scale:0,
+						 scale_space:10,
+						 label:{
+							color:'#4c4f48'
+						 },
+						 listeners:{
+							parseText:function(t,x,y){
+							//自定义左侧坐标系刻度文本的格式。
+								return {text:'$'+t+'k'}
+							}
+						 }
+					}]
+				}
+			});
+			pie = new iChart.Pie2D({
+				data: data,
+				label:{
+					color:'#4c4f48'
+				},
+				sub_option:{
+					mini_label_threshold_angle : 30,//迷你label的阀值,单位:角度
+					mini_label:{//迷你label配置项
+						fontsize:10,
+						fontweight:600,
+						color : '#ffffff'
+					},
+					label : {
+						background_color:null,
+						sign:false,//设置禁用label的小图标
+						padding:'0 4',
+						border:{
+							enable:false,
+							color:'#666666'
+						},
+						fontsize:10,
+						fontweight:600,
+						color : '#4572a7'
+					},
+					listeners:{
+						parseText:function(d, t){
+							return d.get('value')+"%";//自定义label文本
+						}
+					} 
+				},
+				text_space : 16,
+				align : 'left',
+				offsetx:chart.coo.get('originx')+60,
+				animation : animation,
+				offsety:-(chart.get('centery')-chart.coo.get('originy')-90),
+				radius:70
+			});
+			
+			var bar = new iChart.Bar2D({
+				data: data,
+				label:{
+					color:'#4c4f48'
+				},
+				align : 'left',
+				animation : animation,
+				offsetx:chart.coo.get('originx')+80,
+				offsety:-(chart.get('centery')-chart.coo.get('originy')-90),
+				coordinate:{
+					background_color : null,
+					grid_color : 'red',
+					axis:{width:0,color:'red'},
+					height:100,
+					width:200,
+					scale:[{
+						 position:'bottom',	
+						 label:{
+							color:'#4c4f48'
+						 }
+					}]
+				}
+			});
 
-	       });
+			//chart.plugin(bar);
+			
+			chart.plugin(pie);
+			
+			 //利用自定义组件构造左侧说明文本。
+			chart.plugin(new iChart.Custom({
+					drawFn:function(){
+						 //计算位置
+						var coo = chart.getCoordinate(),
+							x = coo.get('originx'),
+							y = coo.get('originy'),
+							H = coo.get('height');
+						//在左侧的位置，渲染说明文字。
+						chart.target.textAlign('center')
+						.textBaseline('middle')
+						.textFont('600 13px Verdana')
+						.fillText('Sales Figure',x-50,y+H/2,false,'#6d869f', false,false,false,-90);
+						
+					}
+			}));
+
+			chart.on('beforedraw',function(e){
+				chart.START_RUN_TIME = new Date().getTime();
+				return true;
+			});
+			
+			chart.on('draw',function(e){
+				chart.END_RUN_TIME = new Date().getTime();
+				chart.RUN_TIME_COST = chart.END_RUN_TIME - chart.START_RUN_TIME;
+				//console.log('cost:'+chart.RUN_TIME_COST+'ms');
+			});
+			
+			chart.draw();
+		});
+		
+		function f(){
+			return Math.floor(Math.random()*100);
+		}
+		function getData(){
+			return [
+			        	{name : 'Alex',value : 10,color:'#849fb4'},
+			        	{name : 'Mark',value : f(),color:'#bf9d32'},
+			        	{name : 'David',value : f(),color:'#728f1b'},
+			        	{name : 'Graham',value : f(),color:'#bf784c'},
+			        	{name : 'John',value : f(),color:'#2f8586'}
+		        	];
+		}	
+		function test(){
+			pie.load(getData());
+			chart.load(getData());
+		}
 	</script>
 	</head>
 	<body>
 		<div id='canvasDiv'></div>
+		<input type="button" onclick="test()" value="test" />
 	</body>
 </html>

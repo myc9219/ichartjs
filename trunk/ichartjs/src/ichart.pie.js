@@ -178,9 +178,6 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 			});
 			
 			unlayout.each(function(la) {
-				if(la.get('text')=='Opera'){
-					console.log(la.get('text')+","+Math.sin(la.get('angle')));
-				}
 				layouted.each(function(l) {
 					x = l.labelx, y = l.labely;
 					if ((la.labely <= y && (y - la.labely-1) < la.get(_.H)) || (la.labely > y && (la.labely - y-1) < l.get(_.H))) {
