@@ -962,12 +962,6 @@
 			/**
 			 * draw plugins
 			 */
-			if(_.legend)
-			_.legend.draw();
-			
-			/**
-			 * draw plugins
-			 */
 			_.plugins.each(function(p){
 				if(p.A_draw){
 					p.variable.animation.animating =true;
@@ -1069,11 +1063,11 @@
 			_.register(c);
 			_.plugins.push(c);
 		},
-		destroy:function(){
-			this.components.eachAll(function(C){
+		destroy:function(_){
+			_.components.eachAll(function(C){
 				C.destroy();
 			});
-			this.oneways.each(function(O){
+			_.oneways.each(function(O){
 				O.destroy();
 			});
 		},
@@ -1467,7 +1461,7 @@
 			$.Chart.superclass.doConfig.call(this);
 			var _ = this._();
 			
-			_.destroy();
+			_.destroy(_);
 			
 			_.oneways.length =0;
 			
@@ -1481,7 +1475,7 @@
 			if(!_.Combination){
 				_.oneways.push(_.bg);
 				_.push('r_originx', _.width - _.get('padding_right'));
-				_.push('b_originy', _.height - _.get('padding_bottom')-(_.footnote?_.footnote.get(_.H):0));
+				_.push('b_originy', _.height - _.get('padding_bottom'));
 				
 				_.applyGradient();
 				
@@ -1542,12 +1536,12 @@
 			/**
 			 * TODO legend dosize?
 			 */
-			if (_.get('legend.enable')) {
+			if (_.get('legend.enable')){
 				_.legend = new $.Legend($.apply({
 					maxwidth : _.get('client_width'),
 					data : _.data
 				}, _.get('legend')), _);
-				_.register(_.legend);
+				_.oneways.push(_.legend);
 			}
 			
 			_.push('sub_option.tip.wrap',_.push('tip.wrap', _.shell));

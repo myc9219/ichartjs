@@ -119,8 +119,7 @@ iChart.Pie = iChart.extend(iChart.Chart, {
 		_.sectors.each(function(s, i) {
 			si = _.animationArithmetic(t, 0, s.get('totalAngle'), d);
 			s.push('startAngle', cs);
-			s.push('endAngle', cs + si);
-			cs += si;
+			s.push('endAngle', cs+=si);
 			if (!_.is3D())
 				s.drawSector();
 		});
