@@ -3402,12 +3402,6 @@ $.Label = $.extend($.Component, {
 			/**
 			 * draw plugins
 			 */
-			if(_.legend)
-			_.legend.draw();
-			
-			/**
-			 * draw plugins
-			 */
 			_.plugins.each(function(p){
 				if(p.A_draw){
 					p.variable.animation.animating =true;
@@ -3509,11 +3503,11 @@ $.Label = $.extend($.Component, {
 			_.register(c);
 			_.plugins.push(c);
 		},
-		destroy:function(){
-			this.components.eachAll(function(C){
+		destroy:function(_){
+			_.components.eachAll(function(C){
 				C.destroy();
 			});
-			this.oneways.each(function(O){
+			_.oneways.each(function(O){
 				O.destroy();
 			});
 		},
@@ -3612,6 +3606,17 @@ $.Label = $.extend($.Component, {
 			_.initialize();
 		},
 		/**
+		 * @method load the new data
+		 * @paramter array#data 
+		 * @return void
+		 */
+		load:function(d){
+			var _ = this._();
+			_.push('data', d||[]);
+			_.setUp();
+			(_.Combination?_.root:_).draw();
+		},
+		/**
 		 * @method resize the chart
 		 * @paramter int#width 
 		 * @paramter int#height 
@@ -3622,8 +3627,6 @@ $.Label = $.extend($.Component, {
 			if(!_.Combination){
 				_.width = _.push(_.W, w);
 				_.height = _.push(_.H, h);
-				_.push(_.X, null);
-				_.push(_.Y, null);
 				_.size(_);
 			}
 			_.set(_.fireEvent(_,'resize',[w,h]));
@@ -3645,6 +3648,10 @@ $.Label = $.extend($.Component, {
 		},
 		initialize : function() {
 			var _ = this._(),d = _.get('data'),r = _.get('render');
+			
+			_.push(_.X, null);
+			_.push(_.Y, null);
+			
 			if(_.Combination){
 				$.apply(_.options, $.clone([_.W,_.H,'padding','border','client_height','client_width',
 				                                      'minDistance','maxDistance','centerx', 'centery',
@@ -3894,7 +3901,7 @@ $.Label = $.extend($.Component, {
 			$.Chart.superclass.doConfig.call(this);
 			var _ = this._();
 			
-			_.destroy();
+			_.destroy(_);
 			
 			_.oneways.length =0;
 			
@@ -3908,7 +3915,7 @@ $.Label = $.extend($.Component, {
 			if(!_.Combination){
 				_.oneways.push(_.bg);
 				_.push('r_originx', _.width - _.get('padding_right'));
-				_.push('b_originy', _.height - _.get('padding_bottom')-(_.footnote?_.footnote.get(_.H):0));
+				_.push('b_originy', _.height - _.get('padding_bottom'));
 				
 				_.applyGradient();
 				
@@ -3969,12 +3976,12 @@ $.Label = $.extend($.Component, {
 			/**
 			 * TODO legend dosize?
 			 */
-			if (_.get('legend.enable')) {
+			if (_.get('legend.enable')){
 				_.legend = new $.Legend($.apply({
 					maxwidth : _.get('client_width'),
 					data : _.data
 				}, _.get('legend')), _);
-				_.register(_.legend);
+				_.oneways.push(_.legend);
 			}
 			
 			_.push('sub_option.tip.wrap',_.push('tip.wrap', _.shell));
@@ -5935,8 +5942,7 @@ $.Pie = $.extend($.Chart, {
 		_.sectors.each(function(s, i) {
 			si = _.animationArithmetic(t, 0, s.get('totalAngle'), d);
 			s.push('startAngle', cs);
-			s.push('endAngle', cs + si);
-			cs += si;
+			s.push('endAngle', cs+=si);
 			if (!_.is3D())
 				s.drawSector();
 		});
@@ -5994,9 +6000,6 @@ $.Pie = $.extend($.Chart, {
 			});
 			
 			unlayout.each(function(la) {
-				if(la.get('text')=='Opera'){
-					console.log(la.get('text')+","+Math.sin(la.get('angle')));
-				}
 				layouted.each(function(l) {
 					x = l.labelx, y = l.labely;
 					if ((la.labely <= y && (y - la.labely-1) < la.get(_.H)) || (la.labely > y && (la.labely - y-1) < l.get(_.H))) {
