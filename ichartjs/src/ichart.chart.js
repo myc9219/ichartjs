@@ -172,11 +172,10 @@
 		 * arc
 		 */
 		arc : function(x, y, r, dw, s, e, c, b, bw, bc, sw, ccw, a2r, last) {
-			if(!r)return this;
-			this.save().gCo(last).strokeStyle(b,bw,bc).fillStyle(c).beginPath();
 			if(b)
-				r-=floor(bw/2);
-			
+			r-=floor(bw/2);
+			if(r<=0)return this;
+			this.save().gCo(last).strokeStyle(b,bw,bc).fillStyle(c).beginPath();
 			if(dw){
 				this.moveTo(x+cos(s)*(r-dw),y+sin(s)*(r-dw)).lineTo(x+cos(s)*r,y+sin(s)*r);
 				this.c.arc(x, y, r, s, e,ccw);
