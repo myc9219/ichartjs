@@ -385,7 +385,7 @@
 			this.save().fillStyle(color).translate(x,y).rotate(inc2*ro).shadowOn(sw);
 			T.each(function(t,i) {
 				try {
-					if (max)
+					if (max&&max>0)
 						this.c.fillText(t, 0,i*h, max);
 					else
 						this.c.fillText(t, 0, i*h);
@@ -851,7 +851,7 @@
 					 * Specifies the font-color of footnote.(default to '#5d7f97')
 					 */
 					color : '#5d7f97',
-					textAlign : 'right',
+					align : 'right',
 					/**
 					 * Specifies the height of title will be take.(default to 20)
 					 */
@@ -1502,13 +1502,15 @@
 					t = _.push('t_originy', t + H);
 					_.push('title.originx', l);
 					_.push('title.originy', _.get('padding_top'));
-					_.push('title.width', w);
+					_.push('title.maxwidth', w);
+					_.pushIf('title.width', w);
 					_.title = new $.Text(_.get('title'), _);
 					_.oneways.push(_.title);
 					if (st) {
 						_.push('subtitle.originx', l);
 						_.push('subtitle.originy', _.get('padding_top') + _.get('title.height'));
-						_.push('subtitle.width', w);
+						_.pushIf('subtitle.width', w);
+						_.push('subtitle.maxwidth', w);
 						_.subtitle = new $.Text(_.get('subtitle'), _);
 						_.oneways.push(_.subtitle);
 					}
@@ -1520,7 +1522,8 @@
 					_.push('b_originy', _.get('b_originy') - g);
 					_.push('footnote.originx', l);
 					_.push('footnote.originy', _.get('b_originy'));
-					_.push('footnote.width', w);
+					_.push('footnote.maxwidth', w);
+					_.pushIf('footnote.width', w);
 					_.footnote = new $.Text(_.get('footnote'), _);
 					_.oneways.push(_.footnote);
 				}

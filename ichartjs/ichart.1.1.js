@@ -1553,9 +1553,24 @@ $.Component = $.extend($.Painter, {
 	},
 	doConfig : function() {
 		$.Component.superclass.doConfig.call(this);
-		var _ = this._();
-
-		_.x = _.push(_.X, _.get(_.X) + _.get('offsetx'));
+		var _ = this._(),w = _.get(_.W),W = _.get('maxwidth'),x = _.get(_.X);
+		
+		if(w&&W){
+			w = _.push(_.W,$.parsePercent(w,W));
+			if(w>W){
+				w = _.push('width',W);
+			}
+			if(W>w){
+				var C = _.get('align')||_.C;
+				if(C == _.C){
+					x +=(W-w)/2;
+				}else if(C == _.R){
+					x += (W-w);
+				}
+			}
+		}
+		
+		_.x = _.push(_.X, x + _.get('offsetx'));
 		_.y = _.push(_.Y, _.get(_.Y) + _.get('offsety'));
 		
 		_.push('fontStyle', $.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
@@ -2355,6 +2370,13 @@ $.Label = $.extend($.Component, {
 				 */
 				textAlign:'center',
 				/**
+				 * @cfg {String} Specifies the alignment in box.(default to 'center')
+				 * @Option left
+				 * @Option right
+				 * @Option center
+				 */
+				align:'center',
+				/**
 				 * @cfg {String} Here,specify as false to make background transparent.(default to null)
 				 */
 				background_color : 0,
@@ -2410,7 +2432,7 @@ $.Label = $.extend($.Component, {
 		doDraw:function(_){
 			if(_.get('box_feature'))
 			_.T.box(_.x,_.y,_.get(_.W),_.get(_.H),_.get('border'),_.get('f_color'));
-			_.T.text(_.get('text'),_.get('textx'),_.get('texty'),_.get(_.W),_.get('color'),_.get('textAlign'),_.get('textBaseline'),_.get('fontStyle'),_.get('writingmode'),_.get('line_height'),_.get('shadow'),_.get('rotate'));
+			_.T.text(_.get('text'),_.get('textx'),_.get('texty'),_.get(_.W)-_.get('hpadding'),_.get('color'),_.get('textAlign'),_.get('textBaseline'),_.get('fontStyle'),_.get('writingmode'),_.get('line_height'),_.get('shadow'),_.get('rotate'));
 		},
 		isEventValid:function(){
 			return {valid:false};
@@ -2825,7 +2847,7 @@ $.Label = $.extend($.Component, {
 			this.save().fillStyle(color).translate(x,y).rotate(inc2*ro).shadowOn(sw);
 			T.each(function(t,i) {
 				try {
-					if (max)
+					if (max&&max>0)
 						this.c.fillText(t, 0,i*h, max);
 					else
 						this.c.fillText(t, 0, i*h);
@@ -3291,7 +3313,7 @@ $.Label = $.extend($.Component, {
 					 * Specifies the font-color of footnote.(default to '#5d7f97')
 					 */
 					color : '#5d7f97',
-					textAlign : 'right',
+					align : 'right',
 					/**
 					 * Specifies the height of title will be take.(default to 20)
 					 */
@@ -3942,13 +3964,15 @@ $.Label = $.extend($.Component, {
 					t = _.push('t_originy', t + H);
 					_.push('title.originx', l);
 					_.push('title.originy', _.get('padding_top'));
-					_.push('title.width', w);
+					_.push('title.maxwidth', w);
+					_.pushIf('title.width', w);
 					_.title = new $.Text(_.get('title'), _);
 					_.oneways.push(_.title);
 					if (st) {
 						_.push('subtitle.originx', l);
 						_.push('subtitle.originy', _.get('padding_top') + _.get('title.height'));
-						_.push('subtitle.width', w);
+						_.pushIf('subtitle.width', w);
+						_.push('subtitle.maxwidth', w);
 						_.subtitle = new $.Text(_.get('subtitle'), _);
 						_.oneways.push(_.subtitle);
 					}
@@ -3960,7 +3984,8 @@ $.Label = $.extend($.Component, {
 					_.push('b_originy', _.get('b_originy') - g);
 					_.push('footnote.originx', l);
 					_.push('footnote.originy', _.get('b_originy'));
-					_.push('footnote.width', w);
+					_.push('footnote.maxwidth', w);
+					_.pushIf('footnote.width', w);
 					_.footnote = new $.Text(_.get('footnote'), _);
 					_.oneways.push(_.footnote);
 				}
