@@ -374,6 +374,8 @@
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
+			x = fd(0, x);
+			y = fd(0, y);
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			if(T.length>1){
 				if(this.c.textBaseline=='middle'){

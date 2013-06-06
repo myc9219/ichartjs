@@ -81,7 +81,6 @@ iChart.Component = iChart.extend(iChart.Painter, {
 	doConfig : function() {
 		iChart.Component.superclass.doConfig.call(this);
 		var _ = this._(),w = _.get(_.W),W = _.get('maxwidth'),x = _.get(_.X);
-		
 		if(w&&W){
 			w = _.push(_.W,iChart.parsePercent(w,W));
 			if(w>W){

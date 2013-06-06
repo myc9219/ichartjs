@@ -1554,7 +1554,6 @@ $.Component = $.extend($.Painter, {
 	doConfig : function() {
 		$.Component.superclass.doConfig.call(this);
 		var _ = this._(),w = _.get(_.W),W = _.get('maxwidth'),x = _.get(_.X);
-		
 		if(w&&W){
 			w = _.push(_.W,$.parsePercent(w,W));
 			if(w>W){
@@ -2454,6 +2453,7 @@ $.Label = $.extend($.Component, {
 			}
 			_.push('textx',x);
 			_.push('texty',y);
+			_.push('texty_',y);
 			_.push('box_feature',w&&h);
 			_.applyGradient();
 		}
@@ -2837,6 +2837,8 @@ $.Label = $.extend($.Component, {
 			max = max || false;
 			mode = mode || 'lr';
 			h = h || 16;
+			x = fd(0, x);
+			y = fd(0, y);
 			var T = t.split(mode == 'tb' ? "" : "\n");
 			if(T.length>1){
 				if(this.c.textBaseline=='middle'){
@@ -5188,7 +5190,6 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				b = 'middle',
 				s=_.get('value_space');
 			
-			_.push('value',_.fireString(_, 'parseText', [_, _.get('value')], _.get('value')));
 			
 			if(vA==_.L){
 				a = _.R;
@@ -5207,7 +5208,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			if(_.get('label')){
 				_.push('label.originx', x);
 				_.push('label.originy', y);
-				_.push('label.text',_.get('value'));
+				_.push('label.text',_.push('value',_.fireString(_, 'parseText', [_, _.get('value')], _.get('value'))));
 				$.applyIf(_.get('label'),{
 					textAlign : a,
 					textBaseline : b,
@@ -5380,7 +5381,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			_.pushIf("zHeight",_.get(_.W));
 			
 			_.topCenterX=_.x+(_.get(_.W)+_.get(_.W)*_.get('xAngle_'))/2;
-			_.topCenterY=_.y-_.get(_.W)*_.get('yAngle_')/2;
+			_.topCenterY=_.y-_.get(_.W)*_.get('yAngle_')/2-_.get('value_space');
 			
 			if(_.get('valueAlign')==_.O&&_.label){
 				_.label.push('textx',_.topCenterX);
