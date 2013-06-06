@@ -1600,6 +1600,7 @@ $.Component = $.extend($.Painter, {
 	redraw : function(e) {
 		this.root.draw(e,this.root.Combination);
 	},
+	last:$.emptyFn,
 	commonDraw : function(_) {
 		/**
 		 * execute the doDraw() that the subClass implement
@@ -3500,6 +3501,9 @@ $.Label = $.extend($.Component, {
 			_.components.eachAll(function(c) {
 				c.draw(e);
 			});
+			_.components.eachAll(function(c) {
+				c.last(c);
+			});
 			//order?
 			_.oneways.each(function(o) {o.draw()});
 			
@@ -5159,10 +5163,12 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			
 			this.label = null;
 		},
-		doDraw:function(_){
-			_.drawRectangle();
+		last:function(_){
 			if(_.label)
 				_.label.draw();
+		},
+		doDraw:function(_){
+			_.drawRectangle();
 		},
 		doConfig:function(){
 			$.Rectangle.superclass.doConfig.call(this);
@@ -7326,7 +7332,7 @@ $.LineSegment = $.extend($.Component, {
 			_.push('tip.invokeOffsetDynamic', true);
 			_.tip = new $.Tip(_.get('tip'), _);
 		}
-
+		
 		var c = _.get('coordinate'), ly = _.get('limit_y'), k = _.get('keep_with_coordinate'), valid = function(p0, x, y) {
 			if (!p0.ignored&&Math.abs(x - (p0.x)) < rx && (!ly || (ly && Math.abs(y - (p0.y)) < ry))) {
 				return true;

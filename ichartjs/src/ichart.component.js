@@ -127,6 +127,7 @@ iChart.Component = iChart.extend(iChart.Painter, {
 	redraw : function(e) {
 		this.root.draw(e,this.root.Combination);
 	},
+	last:iChart.emptyFn,
 	commonDraw : function(_) {
 		/**
 		 * execute the doDraw() that the subClass implement
