@@ -56,34 +56,70 @@ body {
 }
 </style>
 		<script type="text/javascript">
-		$(function(){
+		$(function() {
 			var data = [
-			        	{
-			        		name : '北京',
-			        		value:[-9,1,12,20,26,30,32,29,22,12,0,-6],
-			        		color:'#1f7e92',
-			        		line_width:3
-			        	}
-			       ];
-			var chart = new iChart.LineBasic2D({
-						render : 'canvasDiv',
-						data: data,
-						title : '北京2012年平均温度情况',
-						width : 800,
-						height : 400,
-						coordinate:{height:'90%',background_color:'#f6f9fa'},
-						listeners:{
-							parsePoint:function(d,v,x,y,j){
-								if(v>28)
-								return {color:'#da0000'}
+			        	{name : 'IE8',value : 40.59,color:'#3A68D3'},
+			        	{name : 'IE6',value : 19.1,color:'#3895BF'},
+			        	{name : 'Chrome',value : 13.68,color:'#2A962A'},
+			        	{name : 'IE9',value : 10.91,color:'#4267BE'},
+			        	{name : '搜狗高速',value : 6.19,color:'#9F2626'},
+			        	{name : 'IE7',value : 1.48,color:'#4F7DE7'},
+			        	{name : '奇虎360',value : 1.35,color:'#7A3C9C'},
+			        	{name : 'Maxthon',value : 1.27,color:'#B97944'},
+			        	{name : 'Firefox',value : 1.18,color:'#782A56'},
+			        	{name : '其他',value : 4.26,color:'#484848'}
+		        	];
+
+
+			var chart = new iChart.Column3D({
+				render : 'canvasDiv',
+				data: data,
+				title : {
+					text : '2013年2月国内浏览器市场份额',
+					color : '#3e576f'
+				},
+				width : 800,
+				height : 400,
+				padding: 20,
+				shadow: true,
+				shadow_color:'#080808',
+				background_color:'#eceeef',
+				sub_option:{
+					value_space:20,
+					label : {
+						color : '#2c2e2a',
+						padding : 10
+					}
+				},
+				coordinate:{
+					left_board:false,
+					scale:[{
+						 position:'left',
+						 start_scale:0,
+						 end_scale:50,
+						 scale_space:5,
+						 listeners:{
+								parseText:function(t,x,y){
+									return {text:t+"%  "}
+								}
 							}
-						},
-						sub_option:{
-							hollow_inside:false,//设置一个点的亮色在外环的效果
-							point_size:16
-						},
-						labels:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]
-					});
+					}],
+				},
+				legend: {
+					background_color:iChart.toRgba('#213e49',0.6),
+					border:{radius:5},
+					enable: true,
+					align: 'right',
+					valign: 'top',
+					row: 'max',
+					color:'#fefefe',
+					column: 1,
+					line_height: 15
+				},
+				tip : {
+					enable : true
+				}
+			});
 			chart.draw();
 		});
 	</script>
