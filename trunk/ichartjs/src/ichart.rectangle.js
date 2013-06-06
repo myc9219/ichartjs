@@ -82,10 +82,12 @@
 			
 			this.label = null;
 		},
-		doDraw:function(_){
-			_.drawRectangle();
+		last:function(_){
 			if(_.label)
 				_.label.draw();
+		},
+		doDraw:function(_){
+			_.drawRectangle();
 		},
 		doConfig:function(){
 			iChart.Rectangle.superclass.doConfig.call(this);

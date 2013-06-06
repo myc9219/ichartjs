@@ -247,7 +247,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 			_.push('tip.invokeOffsetDynamic', true);
 			_.tip = new iChart.Tip(_.get('tip'), _);
 		}
-
+		
 		var c = _.get('coordinate'), ly = _.get('limit_y'), k = _.get('keep_with_coordinate'), valid = function(p0, x, y) {
 			if (!p0.ignored&&Math.abs(x - (p0.x)) < rx && (!ly || (ly && Math.abs(y - (p0.y)) < ry))) {
 				return true;

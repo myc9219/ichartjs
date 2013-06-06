@@ -1038,6 +1038,9 @@
 			_.components.eachAll(function(c) {
 				c.draw(e);
 			});
+			_.components.eachAll(function(c) {
+				c.last(c);
+			});
 			//order?
 			_.oneways.each(function(o) {o.draw()});
 			
