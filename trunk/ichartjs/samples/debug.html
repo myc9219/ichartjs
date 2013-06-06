@@ -56,111 +56,34 @@ body {
 }
 </style>
 		<script type="text/javascript">
-		$(function() {
+		$(function(){
 			var data = [
-						{name : 'MISE',value : 5,color : '#4572a7'},
-						{name : 'Firefox',value : 20,color : '#aa4643'},
-						{name : 'Chrome',value : 20,color : '#89a54e'},
-						{name : 'Safari',value : 50,color : '#80699b'},
-						{name : 'Opera',value : 50,color : '#3d96ae'},
-						{name : 'MISE',value : 20,color : '#4572a7'},
-						{name : 'Firefox',value : 50,color : '#aa4643'},
-						{name : 'Chrome',value : 60,color : '#89a54e'},
-						{name : 'Safari',value : 10,color : '#80699b'},
-						{name : 'Opera',value : 90,color : '#3d96ae'}
-					];
-	
-			var chart = new iChart.Column2D({
-				render : 'canvasDiv',
-				data : data,
-				title : {
-					text : 'This is a sample spirit from HighCharts',
-					color : '#3e576f'
-				},
-				subtitle : {
-					text : 'Browser market share,April,2011 from 1 to 29 Feb 2012',
-					color : '#6d869f'
-				},
-				footnote : {
-					text : 'ichartjs.com',
-					color : '#909090',
-					fontsize : 11,
-					padding : '0 38'
-				},
-				width : 800,
-				height : 400,
-				label : {
-					fontsize:11,
-					color : '#666666'
-				},
-				shadow : true,
-				shadow_blur : 2,
-				shadow_color : '#aaaaaa',
-				shadow_offsetx : 1,
-				shadow_offsety : 0,
-				column_width : 62,
-				sub_option : {
-					listeners : {
-						parseText : function(r, t) {
-							return t + "abcdefgTAYLOR%";
-						}
-					},
-					label : {
-						fontsize:11,
-						fontweight:600,
-						color : 'red'
-					},
-					border : {
-						width : 2,
-						//radius : '5 5 0 0',//上圆角设置
-						color : '#ffffff'
-					}
-				},
-				coordinate : {
-					background_color : null,
-					grid_color : '#c0c0c0',
-					width : 680,
-					axis : {
-						color : '#c0d0e0',
-						width : [0, 0, 1, 0]
-					},
-					scale : [{
-						position : 'left',
-						start_scale : 0,
-						end_scale : 60,
-						scale_space : 10,
-						scale_enable : false,
-						label : {
-							fontsize:11,
-							color : '#666666'
-						}
-					}]
-				}
-			});
-			
-			/**
-			 *利用自定义组件构造左侧说明文本。
-			 */
-			chart.plugin(new iChart.Custom({
-					drawFn:function(){
-						/**
-						 *计算位置
-						 */	
-						var coo = chart.getCoordinate(),
-							x = coo.get('originx'),
-							y = coo.get('originy'),
-							H = coo.height;
-						/**
-						 *在左侧的位置，设置逆时针90度的旋转，渲染文字。
-						 */
-						chart.target.textAlign('center')
-						.textBaseline('middle')
-						.textFont('600 13px Verdana')
-						.fillText('Total percent market share',x-40,y+H/2,false,'#6d869f', false,false,false,-90);
-						
-					}
-			}));
-			
+			        	{
+			        		name : '北京',
+			        		value:[-9,1,12,20,26,30,32,29,22,12,0,-6],
+			        		color:'#1f7e92',
+			        		line_width:3
+			        	}
+			       ];
+			var chart = new iChart.LineBasic2D({
+						render : 'canvasDiv',
+						data: data,
+						title : '北京2012年平均温度情况',
+						width : 800,
+						height : 400,
+						coordinate:{height:'90%',background_color:'#f6f9fa'},
+						listeners:{
+							parsePoint:function(d,v,x,y,j){
+								if(v>28)
+								return {color:'#da0000'}
+							}
+						},
+						sub_option:{
+							hollow_inside:false,//设置一个点的亮色在外环的效果
+							point_size:16
+						},
+						labels:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]
+					});
 			chart.draw();
 		});
 	</script>

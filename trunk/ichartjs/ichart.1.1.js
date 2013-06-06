@@ -7292,7 +7292,7 @@ $.LineSegment = $.extend($.Component, {
 			}
 			
 			if(I&&!q.ignored){
-				_.intersections.push(_.sign_plugin?[_.T,_.get('sign'),q,ps,g,j]:_.get('hollow')?[q, ps/2-h+1,g,h+1,j]:[q,ps/2,g]);
+				_.intersections.push(_.sign_plugin?[_.T,_.get('sign'),q,ps,q.color||g,q.hollow_color||j]:_.get('hollow')?[q, ps/2-h+1,q.color||g,h+1,q.hollow_color||j]:[q,ps/2,q.color||g]);
 			}
 			
 		});
