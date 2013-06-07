@@ -24,6 +24,7 @@
 		<script type="text/javascript" src="../src/ichart.column2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.bar.js"></script>
 		<script type="text/javascript" src="../src/ichart.bar2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.barstacked2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.columnmulti2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.columnstacked2d.js"></script>
 		<script type="text/javascript" src="../src/ichart.columnstacked3d.js"></script>
@@ -56,70 +57,88 @@ body {
 }
 </style>
 		<script type="text/javascript">
-		$(function() {
+		$(function(){
 			var data = [
-			        	{name : 'IE8',value : 40.59,color:'#3A68D3'},
-			        	{name : 'IE6',value : 19.1,color:'#3895BF'},
-			        	{name : 'Chrome',value : 13.68,color:'#2A962A'},
-			        	{name : 'IE9',value : 10.91,color:'#4267BE'},
-			        	{name : '搜狗高速',value : 6.19,color:'#9F2626'},
-			        	{name : 'IE7',value : 1.48,color:'#4F7DE7'},
-			        	{name : '奇虎360',value : 1.35,color:'#7A3C9C'},
-			        	{name : 'Maxthon',value : 1.27,color:'#B97944'},
-			        	{name : 'Firefox',value : 1.18,color:'#782A56'},
-			        	{name : '其他',value : 4.26,color:'#484848'}
-		        	];
-
-
-			var chart = new iChart.Column3D({
-				render : 'canvasDiv',
-				data: data,
-				title : {
-					text : '2013年2月国内浏览器市场份额',
-					color : '#3e576f'
-				},
-				width : 800,
-				height : 400,
-				padding: 20,
-				shadow: true,
-				shadow_color:'#080808',
-				background_color:'#eceeef',
-				sub_option:{
-					value_space:20,
-					label : {
-						color : '#2c2e2a',
-						padding : 10
+			         	{
+			         		name : '直营店',
+			         		value:[54841,72400,76776,83361],
+			         		color:'#32bdbc'
+			         	},
+			         	{
+			         		name : '加盟店',
+			         		value:[22790,33284,52148,68333],
+			         		color:'#d75a5e'
+			         	}
+			         ];
+	        
+			var chart = new iChart.BarStacked2D({
+					render : 'canvasDiv',
+					data: data,
+					labels:["2004年","2005年","2006年","2007年"],
+					title : {
+						text:'全国限额以上连锁零售业情况',
+						color:'#dcd6cb',
+						textAlign:'left',
+						padding:'0 40',
+						font:'微软雅黑',
+						border:{
+							enable:true,
+							width:[0,0,4,0],
+							color:'#698389'
+						},
+						height:40
+					},
+					footnote : {
+						text:'数据来源：中华人民共和国国家统计局',
+						font:'微软雅黑',
+						padding:'0 8',
+						color:'#dcd6cb'
+					},
+					padding:'8 0',
+					width : 800,
+					height : 400,
+					bar_height:70,
+					gradient : true,//应用背景渐变
+					gradient_mode:'LinearGradientDownUp',//渐变类型
+					color_factor : 0.1,//渐变因子
+					background_color : '#425154',
+					sub_option:{
+						label:{color:'#f9f9f9',fontsize:12,fontweight:600},
+						border : false
+					},
+					label:{color:'#dcd6cb',font:'微软雅黑',fontsize:12,fontweight:600},
+					legend:{
+						enable:true,
+						background_color : null,
+						line_height:25,
+						color:'#dcd6cb',
+						fontsize:12,
+						font:'微软雅黑',
+						fontweight:600,
+						border : {
+							enable : false
+						}
+					},
+					coordinate:{
+						background_color : 0,
+						grid_color:'#888888',
+						axis : {
+							color : '#c0d0e0',
+							width : 0
+						}, 
+						scale:[{
+							 position:'bottom',	
+							 scale_enable : false,
+							 start_scale:0,
+							 scale_space:20000,
+							 end_scale:160000,
+							 label:{color:'#dcd6cb',fontsize:11,fontweight:600}
+						}],
+						width:'80%',
+						height:'76%'
 					}
-				},
-				coordinate:{
-					left_board:false,
-					scale:[{
-						 position:'left',
-						 start_scale:0,
-						 end_scale:50,
-						 scale_space:5,
-						 listeners:{
-								parseText:function(t,x,y){
-									return {text:t+"%  "}
-								}
-							}
-					}],
-				},
-				legend: {
-					background_color:iChart.toRgba('#213e49',0.6),
-					border:{radius:5},
-					enable: true,
-					align: 'right',
-					valign: 'top',
-					row: 'max',
-					color:'#fefefe',
-					column: 1,
-					line_height: 15
-				},
-				tip : {
-					enable : true
-				}
 			});
+			
 			chart.draw();
 		});
 	</script>
