@@ -3315,7 +3315,7 @@ $.Label = $.extend($.Component, {
 					 * Specifies the font-color of footnote.(default to '#5d7f97')
 					 */
 					color : '#5d7f97',
-					align : 'right',
+					textAlign : 'right',
 					/**
 					 * Specifies the height of title will be take.(default to 20)
 					 */
@@ -6895,22 +6895,21 @@ $.Bar = $.extend($.Chart, {
 	getCoordinate : function() {
 		return this.coo;
 	},
-	doLabel : function(id, text, x, y) {
-		this.labels.push(new $.Text($.apply(this.get('label'), {
+	doLabel : function(_,id, text, x, y) {
+		_.labels.push(new $.Text($.apply(_.get('label'), {
 			id : id,
 			text : text,
 			textAlign : 'right',
 			textBaseline : 'middle',
 			originx : x,
 			originy : y
-		}), this));
+		}), _));
 	},
 	doParse : function(_, d, i, o) {
 		_.doActing(_, d, o,i);
 	},
 	engine:function(_){
-		var 
-		bh = _.get('bar_height'),
+		var bh = _.get('bar_height'),
 		s = _.get('bar_space'),
 		S = _.coo.getScale(_.get('scaleAlign')),
 		W = _.coo.valid_width,
@@ -6936,45 +6935,48 @@ $.Bar = $.extend($.Chart, {
 
 		var _ = this._(), b = 'bar_height', z = 'z_index';
 		
-		/**
-		 * use option create a coordinate
-		 */
-		_.coo = $.Coordinate.coordinate_.call(_);
-		
 		_.rectangles = [];
 		_.labels = [];
 		_.rectangles.zIndex = _.get(z);
 		_.labels.zIndex = _.get(z) + 1;
 		_.components.push(_.labels);
 		_.components.push(_.rectangles);
-
-		var L = _.data.length, H = _.coo.valid_height,h_,bh,KL;
 		
-		if (_.dataType == 'simple') {
-			h_= Math.floor(H*2 / (L * 3 + 1));
-			bh = _.pushIf(b, h_);
-			KL = L+1;
-		}else{
-			KL = _.get('labels').length;
-			L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
-			h_= Math.floor(H / (KL + 1 + L));
-			bh = _.pushIf(b,h_);
-			KL +=1;
-		}
-		
-		if (bh * L > H) {
-			bh = _.push(b, h_);
-		}
 		/**
-		 * the space of two bar
+		 * use option create a coordinate
 		 */
-		_.push('bar_space', (H - bh * L) / KL);
-
-
+		_.coo = $.Coordinate.coordinate_.call(_,function(){
+			var L = _.data.length, H = _.get('coordinate.valid_height_value'),h_,bh,KL;
+			
+			if (_.dataType == 'complex') {
+				KL = _.get('labels').length;
+				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
+				h_= Math.floor(H / (KL + 1 + L));
+				bh = _.pushIf(b,h_);
+				KL +=1;
+			}else{
+				if(_.dataType == 'stacked'){
+					L = _.get('labels').length;
+				}
+				h_= Math.floor(H*2 / (L * 3 + 1));
+				bh = _.pushIf(b, h_);
+				KL = L+1;
+			}
+			
+			if (bh * L > H) {
+				bh = _.push(b, h_);
+			}
+			/**
+			 * the space of two bar
+			 */
+			_.push('bar_space', (H - bh * L) / KL);
+			
+		});
+		
 		/**
 		 * quick config to all rectangle
 		 */
-		_.push('sub_option.height', bh);
+		_.push('sub_option.height', _.get(b));
 		_.push('sub_option.valueAlign', _.R);
 		_.push('sub_option.tipAlign', _.R);
 	}
@@ -7014,7 +7016,7 @@ $.Bar2D = $.extend($.Bar, {
 			});
 
 			_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
-			_.doLabel(i, d.name, x0, y0 + i * gw + h2);
+			_.doLabel(_,i, d.name, x0, y0 + i * gw + h2);
 		}, _);
 	},
 	doConfig : function() {
@@ -7068,7 +7070,7 @@ $.BarMulti2D = $.extend($.Bar, {
 				});
 				_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
 			}, _);
-			_.doLabel(i, c.name, x0, y0 - s * 0.5 + (i + 0.5) * gw);
+			_.doLabel(_,i, c.name, x0, y0 - s * 0.5 + (i + 0.5) * gw);
 		}, _);
 	},
 	doConfig : function() {
@@ -7084,6 +7086,77 @@ $.register('BarMulti2D');
  * @end
  */
 
+/**
+ * @overview the stacked bar2d componment
+ * @component#@chart#$.BarStacked2D
+ * @extend#$.Bar
+ */
+$.BarStacked2D = $.extend($.Bar, {
+	/**
+	 * initialize the context for the BarStacked2D
+	 */
+	configure : function() {
+		/**
+		 * invoked the super class's configuration
+		 */
+		$.BarStacked2D.superclass.configure.call(this);
+
+		this.type = 'barstacked2d';
+		/**
+		 * indicate the data structure
+		 */
+		this.dataType = 'stacked';
+		
+		this.set({
+			/**
+			 * @cfg {Boolean} Specifies as true to display with percent.(default to false)
+			 */
+			percent : false,
+			/**
+			 * @cfg {Array} the array of labels close to the axis
+			 */
+			labels : [],
+			sub_option:{
+				label:{color:'#ffffff'},
+				valueAlign:'middle'
+			}
+		});
+		
+	},
+	doEngine:function(_,bh,s,S,W,h2,gw,x,x0,y0){
+		var w0,w,v,p = _.get('percent');
+		_.columns.each(function(c, i) {
+			w0 = 0;
+			v = p?100/c.total:1;
+			c.item.each(function(d, j) {
+				w = (d.value*v - S.start) * W / S.distance;
+				d.total = c.total;
+				_.doParse(_, d, j, {
+					id : i + '_' + j,
+					originy : y0 + i * gw,
+					originx : x + (w > 0 ? 0 : -Math.abs(w))+w0,
+					width : Math.abs(w)
+				});
+				w0 += w;
+				_.rectangles.push(new $.Rectangle2D(_.get('sub_option'), _));
+			}, _);
+			_.doLabel(_, i, c.name,x0, y0 - s * 0.5 + (i + 0.5) * gw);
+		}, _);
+	},
+	doConfig : function() {
+		$.BarStacked2D.superclass.doConfig.call(this);
+		
+		this.push('sub_option.valueAlign', this.C);
+		/**
+		 * start up engine
+		 */
+		this.engine(this);
+	}
+});
+$.register('BarStacked2D');
+/**
+ *@end 
+ */
 /**
  * @overview the line segment componment
  * @component#$.LineSegment

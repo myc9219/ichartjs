@@ -36,7 +36,6 @@ iChart.BarStacked2D = iChart.extend(iChart.Bar, {
 		
 	},
 	doEngine:function(_,bh,s,S,W,h2,gw,x,x0,y0){
-		//TODO 一步一步跟踪一下
 		var w0,w,v,p = _.get('percent');
 		_.columns.each(function(c, i) {
 			w0 = 0;
@@ -47,17 +46,19 @@ iChart.BarStacked2D = iChart.extend(iChart.Bar, {
 				_.doParse(_, d, j, {
 					id : i + '_' + j,
 					originy : y0 + i * gw,
-					originx : x + (w > 0 ? 0 : -Math.abs(w)),
+					originx : x + (w > 0 ? 0 : -Math.abs(w))+w0,
 					width : Math.abs(w)
 				});
 				w0 += w;
 				_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), _));
 			}, _);
-			_.doLabel(_, i, c.name, x - s * 0.5 + (i + 0.5) * gw, y0);
+			_.doLabel(_, i, c.name,x0, y0 - s * 0.5 + (i + 0.5) * gw);
 		}, _);
 	},
 	doConfig : function() {
 		iChart.BarStacked2D.superclass.doConfig.call(this);
+		
+		this.push('sub_option.valueAlign', this.C);
 		/**
 		 * start up engine
 		 */

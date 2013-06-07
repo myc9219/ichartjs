@@ -28,7 +28,7 @@ iChart.Bar2D = iChart.extend(iChart.Bar, {
 			});
 
 			_.rectangles.push(new iChart.Rectangle2D(_.get('sub_option'), _));
-			_.doLabel(i, d.name, x0, y0 + i * gw + h2);
+			_.doLabel(_,i, d.name, x0, y0 + i * gw + h2);
 		}, _);
 	},
 	doConfig : function() {
