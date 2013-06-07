@@ -2453,7 +2453,6 @@ $.Label = $.extend($.Component, {
 			}
 			_.push('textx',x);
 			_.push('texty',y);
-			_.push('texty_',y);
 			_.push('box_feature',w&&h);
 			_.applyGradient();
 		}
@@ -3901,6 +3900,7 @@ $.Label = $.extend($.Component, {
 			$.merge(_.get('sub_option'),o);
 			
 			_.push('sub_option.value',v);
+			_.push('sub_option.value_',d.value);
 			
 			if (_.get('sub_option.tip.enable')){
 				_.push('sub_option.tip.text',t || (d.name + ' ' +v));
