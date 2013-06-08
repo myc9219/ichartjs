@@ -57,89 +57,173 @@ body {
 }
 </style>
 		<script type="text/javascript">
-		$(function(){
+		$(function() {
 			var data = [
-			         	{
-			         		name : '直营店',
-			         		value:[54841,72400,76776,83361],
-			         		color:'#32bdbc'
-			         	},
-			         	{
-			         		name : '加盟店',
-			         		value:[22790,33284,52148,68333],
-			         		color:'#d75a5e'
-			         	}
-			         ];
-	        
-			var chart = new iChart.BarStacked2D({
-					render : 'canvasDiv',
-					data: data,
-					labels:["2004年","2005年","2006年","2007年"],
-					title : {
-						text:'全国限额以上连锁零售业情况',
-						color:'#dcd6cb',
-						textAlign:'left',
-						padding:'0 40',
-						font:'微软雅黑',
-						border:{
-							enable:true,
-							width:[0,0,4,0],
-							color:'#698389'
-						},
-						height:40
-					},
-					footnote : {
-						text:'数据来源：中华人民共和国国家统计局',
-						font:'微软雅黑',
-						padding:'0 8',
-						color:'#dcd6cb'
-					},
-					padding:'8 0',
-					width : 800,
-					height : 400,
-					bar_height:70,
-					percent : true,
-					//showpercent:true,
-					gradient : true,//应用背景渐变
-					gradient_mode:'LinearGradientDownUp',//渐变类型
-					color_factor : 0.1,//渐变因子
-					background_color : '#425154',
-					sub_option:{
-						label:{color:'#f9f9f9',fontsize:12,fontweight:600},
-						border : false
-					},
-					label:{color:'#dcd6cb',font:'微软雅黑',fontsize:12,fontweight:600},
-					legend:{
+						{name : 'MAY\n2011',value : 0.4,color : '#c52120'},
+						{name : 'JUN\n2011',value : 0.6,color : '#c52120'},
+						{name : 'JUL\n2011',value : 1,color : '#c52120'},
+						{name : 'AUG\n2011',value : 1.2,color : '#c52120'},
+						{name : 'SEP\n2011',value : 2,color : '#c52120'},
+						{name : 'OCT\n2011',value : 3.2,color : '#c52120'},
+						{name : 'NOV\n2011',value : 4.8,color : '#c52120'},
+						{name : 'DEC\n2011',value : 7.8,color : '#c52120'},
+						{name : 'JAN\n2012',value : 11.8,color : '#c52120'}
+					];
+			var data1 = [
+				        	{
+				        		name : '',
+				        		value:[16,20,38,52,92,81,88,78,96],
+				        		color:'#34a1d9',
+				        		line_width:5
+				        	}
+				       ];
+		       
+			var chart = new iChart.Column2D({
+				render : 'canvasDiv',
+				data : data,
+				title:{
+					text:'The Rise of Pinterest',
+					color:'#4572a7',
+					textAlign:'left',
+					padding:'0 40',
+					border:{
 						enable:true,
-						background_color : null,
-						line_height:25,
-						color:'#dcd6cb',
-						fontsize:12,
-						font:'微软雅黑',
-						fontweight:600,
-						border : {
-							enable : false
-						}
+						width:[0,0,4,0],
+						color:'#4572a7'
 					},
-					coordinate:{
-						background_color : 0,
-						grid_color:'#888888',
-						axis : {
-							color : '#c0d0e0',
-							width : 0
-						}, 
-						scale:[{
-							 position:'bottom',	
-							 scale_enable : false,
-							 start_scale:0,
-							 scale_space:20000,
-							 end_scale:160000,
-							 label:{color:'#dcd6cb',fontsize:11,fontweight:600}
-						}],
-						width:'80%',
-						height:'76%'
+					height:40
+				},
+				footnote : {
+					text : 'source:comScore',
+					height:30,
+					color:'#c52120',
+					fontweight : 600,
+					padding : '0 40'
+				},
+				width : 800,
+				height : 400,
+				padding:0,
+				label : {
+					fontsize:11,
+					fontweight:600,
+					color : '#666666'
+				},
+				shadow : true,
+				shadow_blur : 2,
+				shadow_color : '#aaaaaa',
+				shadow_offsetx : 1,
+				shadow_offsety : 0,
+				background_color : '#f7f7f7',
+				column_width : 62,
+				sub_option : {
+					label : false,
+					border : {
+						width : 2,
+						radius : '5 5 0 0',//上圆角设置
+						color : '#ffffff'
 					}
+				},
+				legend:{
+					enable:true,
+					sign_size:20,
+					background_color : null,
+					border:false,
+					align:'left',
+					valign : 'top',
+					padding:18,
+					offsetx:30,
+					data:[{color:'#c52120'}]
+				},
+				coordinate : {
+					background_color : null,
+					grid_color : '#c0c0c0',
+					width : 680,
+					height:220,
+					axis : {
+						color : '#c0d0e0',
+						width : [0, 0, 1, 0]
+					},
+					scale : [{
+						position : 'left',
+						start_scale : 0,
+						end_scale : 12,
+						scale_space : 2,
+						scale_enable : false,
+						label : {
+							fontsize:11,
+							fontweight:600,
+							color : '#666666'
+						}
+					},{
+						 position:'right',	
+						 start_scale:0,
+						 scale_space:20,
+						 end_scale:120,
+						 scale_enable : false,
+						 scaleAlign:'right',
+						 label:{
+							fontsize:11,
+							fontweight:600,
+							color:'#666666'
+						 }
+					}]
+				}
 			});
+			//构造折线图
+			var line = new iChart.LineBasic2D({
+				z_index:1000,
+				data: data1,
+				legend:{
+					enable:true,
+					sign_size:20,
+					background_color : null,
+					border:false,
+					align:'right',
+					sign : 'bar',
+					valign : 'top',
+					padding:18,
+					offsetx:-10,
+					data:[{color:'#34a1d9'}]
+				},
+				label:{
+					color:'#4c4f48'
+				},
+				point_space:chart.get('column_width')+chart.get('column_space'),
+				scaleAlign : 'right',
+				sub_option : {
+					label:false,
+					point_size:22
+				},
+				coordinate:chart.coo//共用坐标系
+			});
+			
+			chart.plugin(line);
+			
+			
+			//利用自定义组件构造左侧说明文本
+			chart.plugin(new iChart.Custom({
+					drawFn:function(){
+						//计算位置
+						var coo = chart.getCoordinate(),
+							x = coo.get('originx'),
+							y = coo.get('originy');
+						//在左上侧的位置，渲染一个单位的文字
+						chart.target.textAlign('start')
+						.textBaseline('bottom')
+						.textFont('600 16px Verdana')
+						.fillText('U.S UNIQUE VISITORS',x+16,y-20,false,'#c52120')
+						.textFont('600 11px Verdana')
+						.fillText('in millions',x+16,y-10,false,'#c52120');
+
+						//在右上侧的位置，渲染一个单位的文字
+						chart.target.textAlign('end')
+						.textBaseline('bottom')
+						.textFont('600 16px Verdana')
+						.fillText('AVERAGE MINUTES PRE VISITOR',x+coo.width,y-20,false,'#34a1d9')
+						.textFont('600 11px Verdana')
+						.fillText('in thousands',x+coo.width,y-10,false,'#34a1d9');
+					}
+			}));
 			
 			chart.draw();
 		});

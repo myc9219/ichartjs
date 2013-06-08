@@ -269,7 +269,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 		 */
 		_.data.each(function(d, i) {
 			iChart.merge(d, _.fireEvent(_, 'parse', [_, d.name, i]));
-			d.text = d.text || d.name;
+			d.text = d.text || d.name ||'';
 			d.sign = d.sign || _.get('sign')
 		}, _);
 		

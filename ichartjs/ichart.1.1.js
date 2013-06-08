@@ -2164,7 +2164,7 @@ $.Legend = $.extend($.Component, {
 		 */
 		_.data.each(function(d, i) {
 			$.merge(d, _.fireEvent(_, 'parse', [_, d.name, i]));
-			d.text = d.text || d.name;
+			d.text = d.text || d.name ||'';
 			d.sign = d.sign || _.get('sign')
 		}, _);
 		
@@ -3503,7 +3503,7 @@ $.Label = $.extend($.Component, {
 				c.draw(e);
 			});
 			_.components.eachAll(function(c) {
-				c.last(c);
+				if(c.last)c.last(c);
 			});
 			//order?
 			_.oneways.each(function(o) {o.draw()});
