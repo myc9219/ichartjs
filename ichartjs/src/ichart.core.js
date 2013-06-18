@@ -470,8 +470,8 @@
 		};
 
 		_.apply(_, {
-			getFont : function(w, s, f) {
-				return w + " " + s + "px " + f;
+			getFont : function(w, s, f, u) {
+				return w + " " + s + (u||"px")+" " + f;
 			},
 			/**
 			 * obtain the Dom Document*/

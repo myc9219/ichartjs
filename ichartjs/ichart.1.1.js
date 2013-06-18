@@ -470,8 +470,8 @@
 		};
 
 		_.apply(_, {
-			getFont : function(w, s, f) {
-				return w + " " + s + "px " + f;
+			getFont : function(w, s, f, u) {
+				return w + " " + s + (u||"px")+" " + f;
 			},
 			/**
 			 * obtain the Dom Document*/
@@ -1502,6 +1502,10 @@ $.Component = $.extend($.Painter, {
 			 */
 			fontweight : 'normal',
 			/**
+			 * @cfg {String} Specifies the unit of font-size.(default to 'px')
+			 */
+			fontunit:'px',
+			/**
 			 * @inner {Boolean} Specifies the config of Tip.For details see <link>$.Tip</link> Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 			 */
 			tip : {
@@ -1572,7 +1576,7 @@ $.Component = $.extend($.Painter, {
 		_.x = _.push(_.X, x + _.get('offsetx'));
 		_.y = _.push(_.Y, _.get(_.Y) + _.get('offsety'));
 		
-		_.push('fontStyle', $.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
+		_.push('fontStyle', $.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font'),_.get('fontunit')));
 		
 		/**
 		 * if have evaluate it

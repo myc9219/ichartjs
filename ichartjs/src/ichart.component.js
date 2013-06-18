@@ -29,6 +29,10 @@ iChart.Component = iChart.extend(iChart.Painter, {
 			 */
 			fontweight : 'normal',
 			/**
+			 * @cfg {String} Specifies the unit of font-size.(default to 'px')
+			 */
+			fontunit:'px',
+			/**
 			 * @inner {Boolean} Specifies the config of Tip.For details see <link>iChart.Tip</link> Note:this has a extra property named 'enable',indicate whether tip available(default to false)
 			 */
 			tip : {
@@ -99,7 +103,7 @@ iChart.Component = iChart.extend(iChart.Painter, {
 		_.x = _.push(_.X, x + _.get('offsetx'));
 		_.y = _.push(_.Y, _.get(_.Y) + _.get('offsety'));
 		
-		_.push('fontStyle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font')));
+		_.push('fontStyle', iChart.getFont(_.get('fontweight'), _.get('fontsize'), _.get('font'),_.get('fontunit')));
 		
 		/**
 		 * if have evaluate it
