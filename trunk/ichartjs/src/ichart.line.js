@@ -153,16 +153,20 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			_.coo.doCrosshair(_.coo);
 		}
 		
-		var vw = _.coo.valid_width,M=vw / (_.get('maxItemSize') - 1);
+		var vw = _.coo.valid_width,nw=vw,size=_.get('maxItemSize') - 1,M=vw / (size),ps=_.get('point_space');
 		
 		if (_.get('proportional_spacing')){
-			_.push('point_space',M);
+			if(ps&&ps<M){
+				nw = size*ps;
+			}else{
+				_.push('point_space',M);
+			}
 		}
 		
-		_.push('sub_option.width', vw);
+		_.push('sub_option.width', nw);
 		_.push('sub_option.height', _.coo.valid_height);
 		
-		_.push('sub_option.originx', _.coo.get('x_start'));
+		_.push('sub_option.originx', _.coo.get('x_start')+(vw-nw)/2);
 		_.push('sub_option.originy', _.coo.get('y_end'));
 		
 		if (_.get('tip.enable')){
