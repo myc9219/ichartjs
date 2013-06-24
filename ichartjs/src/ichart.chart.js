@@ -1034,7 +1034,6 @@
 				_.runAnimation(_);
 				return;
 			}
-			
 			_.segmentRect();
 			//order?
 			_.components.eachAll(function(c) {
@@ -1187,6 +1186,8 @@
 		 * @return void
 		 */
 		resize:function(w,h){
+			w = $.parseFloat(w);
+			h = $.parseFloat(h);
 			var _ = this._();
 			if(!_.Combination){
 				_.width = _.push(_.W, w);
