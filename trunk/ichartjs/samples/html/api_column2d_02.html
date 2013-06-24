@@ -9,18 +9,11 @@
 		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
 		<script type="text/javascript">
 				$(function(){
-					var opacity = 0.8;
-					var data = [
-					        	{name : 'overall',value : 34,color:$.toRgba('#827fbf',opacity)},
-					        	{name : '18-24',value : 33,color:$.toRgba('#e4be4d',opacity)},
-					        	{name : '25-34',value : 37,color:$.toRgba('#91aa51',opacity)},
-					        	{name : '45-54',value : 38,color:$.toRgba('#a14545',opacity)}
-				        	];
 		        	
 					var chart = new iChart.Column2D({
 						id:'ichartjs2013',
 						render : 'canvasDiv',
-						data: data,
+						data: create(),
 						title : {
 							text:'2012年度商城季度销售额情况',
 							color:'#4e5665',
@@ -29,28 +22,29 @@
 							height:40
 						},
 						subtitle : {
-							text:'单位:万元',
+							text:'单位:百万元',
 							color:'#4e5665',
 							padding:'0 40',
 							font:'微软雅黑',
 							height:30
 						},
 						footnote : {
-							text:'数据来源：互联网',
+							text:'数据来源：模拟数据',
 							font:'微软雅黑',
 							padding:'0 8',
-							background_color : $.toRgba('#609fad',0.6),
-							width:110,
+							background_color : $.toRgba('#666791',0.6),
+							width:120,
 							offsetx:-10,
 							align:'right',
-							color:'#d84b45'
+							color:'#4e5665'
 						},
-						background_color : '#fefefe',
+						background_color : '#fdfdfd',
 						padding:'4 0',
 						width : 800,
 						height : 400,
 						label : {
-							fontsize:12,
+							fontsize:13,
+							fontweight:600,
 							font:'微软雅黑',
 							color : '#4572a7'
 						},
@@ -62,7 +56,7 @@
 						sub_option:{
 							listeners : {
 								parseText : function(r, t) {
-									return t + "%";
+									return "$"+t;
 								}
 							},
 							border:{
@@ -70,7 +64,7 @@
 								color:'#666666'
 							},
 							label : {
-								fontsize:12,
+								fontsize:16,
 								fontweight:600,
 								font:'微软雅黑',
 								color : '#4572a7'
@@ -88,6 +82,11 @@
 								 start_scale:0,
 								 end_scale:50,
 								 scale_enable : false,
+								 label : {
+									fontsize:12,
+									font:'微软雅黑',
+									color : '#4572a7'
+								 },
 								 listeners:{
 									parseText:function(t,x,y){
 										return {text:"$"+t}
@@ -98,20 +97,30 @@
 					});
 					chart.draw();
 			});
+
+			//创建随机数据源				
+			var create = function (){
+					var f = function(){return Math.floor(Math.random()*40)+10;},opacity = 0.8	
+					return function(){
+						return [
+					        	{name : 'Jan-Mar',value : f(),color:$.toRgba('#827fbf',opacity)},
+					        	{name : 'Apr-Jun',value : f(),color:$.toRgba('#e4be4d',opacity)},
+					        	{name : 'Jul-Sep',value : f(),color:$.toRgba('#91aa51',opacity)},
+					        	{name : 'Oct-Dec',value : f(),color:$.toRgba('#a14545',opacity)}
+				  	 	]
+				}
+			}();	
 				
-			function dosize(){
+			function load(){
 				var chart = $.get('ichartjs2013');//根据ID获取图表对象
-				chart.push("column_width",null);//设置为null则每次重新计算柱子宽度
-				var w = $("width").value;
-				var h = $("height").value;
-				chart.resize(w,h);
+				chart.load(create());//载入新数据
 			}
 			</script>
 		</head>
 		<body>
 			<div id='canvasDiv'></div>
 			<div class='ichartjs_info'>
-				<input type="button" value="载入数据"/>
+				<input type="button" onclick="load()" value="载入数据"/>
 			</div>
 			<div class='ichartjs_info'>
 				<span class='ichartjs_author'>writen by <a title="示例的贡献者" href="mailto:taylor@ichartjs.com">taylor</a></span>
