@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>test</title>
+		<meta name="Description" content="" />
+		<meta name="Keywords" content="" />
+		<script type="text/javascript" src="../src/ichart.core.js"></script>
+		<script type="text/javascript" src="../src/ichart.element.js"></script>
+		<script type="text/javascript" src="../src/ichart.html.js"></script>
+		<script type="text/javascript" src="../src/ichart.painter.js"></script>
+		<script type="text/javascript" src="../src/ichart.component.js"></script>
+		<script type="text/javascript" src="../src/ichart.legend.js"></script>
+		<script type="text/javascript" src="../src/ichart.label.js"></script>
+		<script type="text/javascript" src="../src/ichart.chart.js"></script>
+		<script type="text/javascript" src="../src/ichart.custom.js"></script>
+		<script type="text/javascript" src="../src/ichart.sector.js"></script>
+		<script type="text/javascript" src="../src/ichart.sector2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.sector3d.js"></script>
+		<script type="text/javascript" src="../src/ichart.rectangle.js"></script>
+		<script type="text/javascript" src="../src/ichart.rectangle2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.rectangle3d.js"></script>
+		<script type="text/javascript" src="../src/ichart.column.js"></script>
+		<script type="text/javascript" src="../src/ichart.column2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.bar.js"></script>
+		<script type="text/javascript" src="../src/ichart.bar2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.barstacked2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.columnmulti2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.columnstacked2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.columnstacked3d.js"></script>
+		<script type="text/javascript" src="../src/ichart.columnmulti3d.js"></script>
+		<script type="text/javascript" src="../src/ichart.barmulti2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.column3d.js"></script>
+		<script type="text/javascript" src="../src/ichart.tip.js"></script>
+		<script type="text/javascript" src="../src/ichart.text.js"></script>
+		<script type="text/javascript" src="../src/ichart.pie.js"></script>
+		<script type="text/javascript" src="../src/ichart.pie2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.donut2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.pie3d.js"></script>
+		<script type="text/javascript" src="../src/ichart.coordinate.js"></script>
+		<script type="text/javascript" src="../src/ichart.crosshair.js"></script>
+		<script type="text/javascript" src="../src/ichart.linesegment.js"></script>
+		<script type="text/javascript" src="../src/ichart.line.js"></script>
+		<script type="text/javascript" src="../src/ichart.linebasic2d.js"></script>
+		<script type="text/javascript" src="../src/ichart.area2d.js"></script>
+		<script type="text/javascript" src="../plugin/ichart.gauge2d.js"></script>
+		<script type="text/javascript" src="../plugin/ichart.slider.js"></script>
+		<style type="text/css">
+body {
+	text-align: center;
+	background-repeat: repeat;
+}
+
+#canvasDiv {
+	margin: 0px auto;
+	text-align: center;
+}
+</style>
+		<script type="text/javascript">
+		$(function(){
+			var data = [
+			        	{name : 'overall',value : 34,color:'#609fad'},
+			        	{name : '18-24',value : 33,color:'#609fad'},
+			        	{name : '25-34',value : 37,color:'#609fad'},
+			        	{name : '35-44',value : 49,color:'#609fad'},
+			        	{name : '45-54',value : 38,color:'#609fad'},
+			        	{name : '55-64',value : 28,color:'#609fad'},
+			        	{name : '65+',value : 18,color:'#609fad'}
+		        	];
+        	
+			var chart = new iChart.Column2D({
+				id:'ichartjs2013',
+				render : 'canvasDiv',
+				data: data,
+				title : {
+					text:'US Tablet Adoption Rates in May 2013',
+					color:'#d84b45',
+					textAlign:'left',
+					padding:'0 40',
+					font:'微软雅黑',
+					border:{
+						enable:true,
+						width:[0,0,4,0],
+						color:'#609fad'
+					},
+					height:40
+				},
+				subtitle : {
+					text:'% of adults aged 18+',
+					color:'#609fad',
+					textAlign:'left',
+					padding:'0 40',
+					font:'微软雅黑',
+					height:30
+				},
+				footnote : {
+					text:'数据来源：互联网',
+					font:'微软雅黑',
+					padding:'0 8',
+					background_color : '#609fad',
+					width:110,
+					offsetx:-10,
+					align:'right',
+					color:'#e7eff7'
+				},
+				background_color : '#f8f8f8',
+				padding:'8 0',
+				width : 800,
+				height : 400,
+				label : {
+					fontsize:12,
+					font:'微软雅黑',
+					color : '#4572a7'
+				},
+				sub_option:{
+					listeners : {
+						parseText : function(r, t) {
+							return t + "%";
+						}
+					},
+					label : {
+						fontsize:12,
+						fontweight:600,
+						font:'微软雅黑',
+						color : '#4572a7'
+					}
+				},
+				coordinate:{
+					width:'90%',
+					height:'78%',
+					axis : {
+						color : '#c0d0e0',
+						width : [0, 0, 2, 0]
+					},
+					scale:[{
+						 position:'left',	
+						 start_scale:0,
+						 end_scale:50,
+						 scale_enable : false,
+						 listeners:{
+							parseText:function(t,x,y){
+								return {text:""}
+							}
+						}
+					}]
+				}
+			});
+			chart.draw();
+	});
+		
+	function dosize(){
+		var chart = $.get('ichartjs2013');
+		var w = $("width").value;
+		var h = $("height").value;
+		chart.resize(w,h);
+	}
+	</script>
+	</head>
+	<body>
+		<div id='canvasDiv'></div>
+		<div class='ichartjs_info'>
+				宽度：
+				<select id="width" onchange="dosize()">
+					<option value="400">400</option>
+					<option value="600">600</option>
+					<option value="800">800</option>
+				</select>
+				&nbsp;
+				高度：
+				<select id="height" onchange="dosize()">
+					<option value="200">200</option>
+					<option value="300">300</option>
+					<option value="400">400</option>
+				</select>
+			</div>
+	</body>
+</html>
