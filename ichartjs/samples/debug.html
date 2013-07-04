@@ -50,7 +50,24 @@ body {
 	text-align: center;
 	background-repeat: repeat;
 }
-
+#some_shell{
+	width:700px;
+	height:400px;
+	padding:10px;
+	background-color: #666666;
+	position:relative;
+}
+#console{
+	width:180px;
+	height:300px;
+	color: #ffffff;
+	font-size: 13px;
+	padding-left:10px;
+	text-align:left;
+	position:absolute;
+	right:0px;
+	top:0px;
+}
 #canvasDiv {
 	margin: 0px auto;
 	text-align: center;
@@ -73,65 +90,19 @@ body {
 				render : 'canvasDiv',
 				data: data,
 				title : {
-					text:'US Tablet Adoption Rates in May 2013',
+					text:'Test ichartjs In Android',
 					color:'#d84b45',
 					textAlign:'left',
 					padding:'0 40',
-					font:'微软雅黑',
-					border:{
-						enable:true,
-						width:[0,0,4,0],
-						color:'#609fad'
-					},
 					height:40
-				},
-				subtitle : {
-					text:'% of adults aged 18+',
-					color:'#609fad',
-					textAlign:'left',
-					padding:'0 40',
-					font:'微软雅黑',
-					height:30
-				},
-				footnote : {
-					text:'数据来源：互联网',
-					font:'微软雅黑',
-					padding:'0 8',
-					background_color : '#609fad',
-					width:110,
-					offsetx:-10,
-					align:'right',
-					color:'#e7eff7'
 				},
 				background_color : '#f8f8f8',
 				padding:'8 0',
-				width : 800,
-				height : 400,
-				label : {
-					fontsize:12,
-					font:'微软雅黑',
-					color : '#4572a7'
-				},
-				sub_option:{
-					listeners : {
-						parseText : function(r, t) {
-							return t + "%";
-						}
-					},
-					label : {
-						fontsize:12,
-						fontweight:600,
-						font:'微软雅黑',
-						color : '#4572a7'
-					}
-				},
+				width : 600,
+				height : 300,
 				coordinate:{
 					width:'90%',
 					height:'78%',
-					axis : {
-						color : '#c0d0e0',
-						width : [0, 0, 2, 0]
-					},
 					scale:[{
 						 position:'left',	
 						 start_scale:0,
@@ -148,30 +119,15 @@ body {
 			chart.draw();
 	});
 		
-	function dosize(){
-		var chart = $.get('ichartjs2013');
-		var w = $("width").value;
-		var h = $("height").value;
-		chart.resize(w,h);
-	}
+	function log(t){
+		$("#console").innerHTML = $("#console").innerHTML+"<br/>"+t;
+	}	
 	</script>
 	</head>
 	<body>
-		<div id='canvasDiv'></div>
-		<div class='ichartjs_info'>
-				宽度：
-				<select id="width" onchange="dosize()">
-					<option value="400">400</option>
-					<option value="600">600</option>
-					<option value="800">800</option>
-				</select>
-				&nbsp;
-				高度：
-				<select id="height" onchange="dosize()">
-					<option value="200">200</option>
-					<option value="300">300</option>
-					<option value="400">400</option>
-				</select>
-			</div>
+		<div id='some_shell'>
+			<div id='canvasDiv'></div>
+			<div id='console'></div>
+		</div>
 	</body>
 </html>
