@@ -76,58 +76,59 @@ body {
 		<script type="text/javascript">
 		$(function(){
 			var data = [
-			        	{name : 'overall',value : 34,color:'#609fad'},
-			        	{name : '18-24',value : 33,color:'#609fad'},
-			        	{name : '25-34',value : 37,color:'#609fad'},
-			        	{name : '35-44',value : 49,color:'#609fad'},
-			        	{name : '45-54',value : 38,color:'#609fad'},
-			        	{name : '55-64',value : 28,color:'#609fad'},
-			        	{name : '65+',value : 18,color:'#609fad'}
-		        	];
-        	
-			var chart = new iChart.Column2D({
-				id:'ichartjs2013',
-				render : 'canvasDiv',
-				data: data,
-				title : {
-					text:'Test ichartjs In Android',
-					color:'#d84b45',
-					textAlign:'left',
-					padding:'0 40',
-					height:40
-				},
-				background_color : '#f8f8f8',
-				padding:'8 0',
-				width : 600,
-				height : 300,
-				coordinate:{
-					width:'90%',
-					height:'78%',
-					scale:[{
-						 position:'left',	
-						 start_scale:0,
-						 end_scale:50,
-						 scale_enable : false,
-						 listeners:{
-							parseText:function(t,x,y){
-								return {text:""}
+			         	{
+			         		name : 'DPS01A',
+			         		value:[45,52,54,74,90,84],
+			         		color:'#1385a5'
+			         	},
+			         	{
+			         		name : 'DPS01B',
+			         		value:[60,80,105,125,108,120],
+			         		color:'#c56966'
+			         	}
+			         ];
+			var chart = new iChart.ColumnMulti2D({
+					render : 'canvasDiv',
+					data: data,
+					labels:["一月","二月","三月","四月","五月","六月"],
+					title : 'DPS01A型号比DPS01B型号的产品更受用户喜欢',
+					subtitle : '2012上半年DPS01A型号与DPS01B型号的鼠标销售比较,单位:万台',
+					footnote : '数据来源：销售中心',
+					width : 800,
+					height : 400,
+					background_color : '#ffffff',
+					legend:{
+						enable:true,
+						background_color : null,
+						border : {
+							enable : false
+						}
+					},
+					sub_option:{
+						listeners:{
+							click:function(r,e,m,i){
+								console.log(r.get('id'));
 							}
 						}
-					}]
-				}
+					},
+					coordinate:{
+						background_color : '#f1f1f1',
+						scale:[{
+							 position:'left',	
+							 start_scale:0,
+							 assign_scale:true,
+							 end_scale:110,
+							 scale_space:20
+						}],
+						width:600,
+						height:260
+					}
 			});
 			chart.draw();
-	});
-		
-	function log(t){
-		$("#console").innerHTML = $("#console").innerHTML+"<br/>"+t;
-	}	
+		});
 	</script>
 	</head>
 	<body>
-		<div id='some_shell'>
-			<div id='canvasDiv'></div>
-			<div id='console'></div>
-		</div>
+		<div id='canvasDiv'></div>
 	</body>
 </html>
