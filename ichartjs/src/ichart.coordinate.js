@@ -369,9 +369,9 @@ iChart.Coordinate = {
 						 }
 					});
 				}
-				if(!s.start_scale||(ST&&s.start_scale>_.get('minValue')))
+				if(!s.start_scale||(ST&&!s.assign_scale&&s.start_scale>_.get('minValue')))
 					s.min_scale = _.get('minValue');
-				if(!s.end_scale||(ST&&s.end_scale<_.get('maxValue')))
+				if(!s.end_scale||(ST&&!s.assign_scale&&s.end_scale<_.get('maxValue')))
 					s.max_scale = _.get('maxValue');
 			});
 		}else{

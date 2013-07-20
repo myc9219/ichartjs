@@ -1132,7 +1132,7 @@
 			var H = [];
 			H.push("<div id='");
 			H.push(_.shellid);
-			H.push("' style='padding:0px;margin:0px;overflow:hidden;position:relative;'>");
+			H.push("' style='padding:0px;margin:0px auto;overflow:hidden;position:relative;'>");
 			H.push("<canvas id= '");
 			H.push(_.canvasid);
 			H.push("' style='-webkit-text-size-adjust: none;'>");
@@ -1379,10 +1379,6 @@
 					});
 				}
 			}
-			/**
-			 * clone config to sub_option
-			 */
-			$.applyIf(_.get('sub_option'), $.clone(['shadow','tip'], _.options,true));
 			
 			if(!_.Combination){
 				/**
@@ -1472,6 +1468,20 @@
 			_.oneways.length =0;
 			
 			_.oneWay(_);
+			
+
+			if (_.get('shadow')!==false) {
+				_.push('shadow', {
+					color : _.get('shadow_color'),
+					blur : _.get('shadow_blur'),
+					offsetx : _.get('shadow_offsetx'),
+					offsety : _.get('shadow_offsety')
+				});
+			}
+			/**
+			 * clone config to sub_option
+			 */
+			$.apply(_.get('sub_option'), $.clone(['shadow','tip'], _.options,true));
 			
 			/**
 			 * for store the option of each item in chart

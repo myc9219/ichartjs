@@ -1301,15 +1301,6 @@ $.Painter = $.extend($.Element, {
 			vpadding:p[0] + p[2] + b[0] + b[2]
 		});	
 		
-		if (_.get('shadow')===true) {
-			_.push('shadow', {
-				color : _.get('shadow_color'),
-				blur : _.get('shadow_blur'),
-				offsetx : _.get('shadow_offsetx'),
-				offsety : _.get('shadow_offsety')
-			});
-		}
-		
 		_.push('f_color', bg);
 		_.push('f_color_', bg);
 		_.push("light_color", $.light(bg, f,g));
@@ -3598,7 +3589,7 @@ $.Label = $.extend($.Component, {
 			var H = [];
 			H.push("<div id='");
 			H.push(_.shellid);
-			H.push("' style='padding:0px;margin:0px;overflow:hidden;position:relative;'>");
+			H.push("' style='padding:0px;margin:0px auto;overflow:hidden;position:relative;'>");
 			H.push("<canvas id= '");
 			H.push(_.canvasid);
 			H.push("' style='-webkit-text-size-adjust: none;'>");
@@ -3845,10 +3836,6 @@ $.Label = $.extend($.Component, {
 					});
 				}
 			}
-			/**
-			 * clone config to sub_option
-			 */
-			$.applyIf(_.get('sub_option'), $.clone(['shadow','tip'], _.options,true));
 			
 			if(!_.Combination){
 				/**
@@ -3938,6 +3925,20 @@ $.Label = $.extend($.Component, {
 			_.oneways.length =0;
 			
 			_.oneWay(_);
+			
+
+			if (_.get('shadow')!==false) {
+				_.push('shadow', {
+					color : _.get('shadow_color'),
+					blur : _.get('shadow_blur'),
+					offsetx : _.get('shadow_offsetx'),
+					offsety : _.get('shadow_offsety')
+				});
+			}
+			/**
+			 * clone config to sub_option
+			 */
+			$.apply(_.get('sub_option'), $.clone(['shadow','tip'], _.options,true));
 			
 			/**
 			 * for store the option of each item in chart
@@ -4455,9 +4456,9 @@ $.Coordinate = {
 						 }
 					});
 				}
-				if(!s.start_scale||(ST&&s.start_scale>_.get('minValue')))
+				if(!s.start_scale||(ST&&!s.assign_scale&&s.start_scale>_.get('minValue')))
 					s.min_scale = _.get('minValue');
-				if(!s.end_scale||(ST&&s.end_scale<_.get('maxValue')))
+				if(!s.end_scale||(ST&&!s.assign_scale&&s.end_scale<_.get('maxValue')))
 					s.max_scale = _.get('maxValue');
 			});
 		}else{
