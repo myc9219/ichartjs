@@ -76,56 +76,57 @@ body {
 		<script type="text/javascript">
 		$(function(){
 			var data = [
-			         	{
-			         		name : 'DPS01A',
-			         		value:[45,52,54,74,90,84],
-			         		color:'#1385a5'
-			         	},
-			         	{
-			         		name : 'DPS01B',
-			         		value:[60,80,105,125,108,120],
-			         		color:'#c56966'
-			         	}
-			         ];
-			var chart = new iChart.ColumnMulti2D({
-					render : 'canvasDiv',
-					data: data,
-					labels:["一月","二月","三月","四月","五月","六月"],
-					title : 'DPS01A型号比DPS01B型号的产品更受用户喜欢',
-					subtitle : '2012上半年DPS01A型号与DPS01B型号的鼠标销售比较,单位:万台',
-					footnote : '数据来源：销售中心',
-					width : 800,
-					height : 400,
-					background_color : '#ffffff',
-					legend:{
-						enable:true,
-						background_color : null,
-						border : {
-							enable : false
-						}
-					},
-					sub_option:{
-						listeners:{
-							click:function(r,e,m,i){
-								console.log(r.get('id'));
-							}
-						}
-					},
-					coordinate:{
-						background_color : '#f1f1f1',
-						scale:[{
-							 position:'left',	
-							 start_scale:0,
-							 assign_scale:true,
-							 end_scale:110,
-							 scale_space:20
-						}],
-						width:600,
-						height:260
-					}
+			        	{name : '广州',value : 400,color:'#a5c2d5'},
+			        	{name : '上海',value : -200,color:'#cbab4f'},
+			        	{name : '南昌',value : 350,color:'#76a871'},
+			        	{name : '哈尔滨',value : 360,color:'#9f7961'},
+			        	{name : '北京',value : 415,color:'#a56f8f'}
+		        	];
+        	
+			var chart = new iChart.Column2D({
+				render : 'canvasDiv',
+				data: data,
+				title : '2012年5个城市平均工资的情况',
+				width : 800,
+				height : 400,
+				coordinate:{
+					width:580,
+					height:260,
+					scale:[{
+						 position:'left',	
+						 end_scale:500,
+						 scale_space:50
+					}]
+				}
 			});
+
+			/**
+			 *自定义组件,画平均线。
+			 */
+			chart.plugin(new iChart.Custom({
+					drawFn:function(){
+						/**
+						 *计算平均值的高度(坐标Y值)
+						 */	
+						var avg = chart.total/5,
+							coo = chart.getCoordinate(),
+							x = coo.get('originx'),
+							W = coo.width,
+							S = coo.getScale('left'),
+							H = coo.height,
+							h = (avg - (S.end-S.distance)) * H / S.distance,
+							y = chart.y + H - h;
+						//用(S.end-S.distance)进行修正
+						//S.end是最大值,S.distance是间距,(S.end-S.distance)则是最小值
+						chart.target.line(x,y,x+W,y,2,'#b32c0d')
+						.textAlign('start')
+						.textBaseline('middle')
+						.textFont('600 12px Verdana')
+						.fillText('平均:$'+avg,x+W+5,y,false,'#b32c0d');
+					}
+			}));	
 			chart.draw();
-		});
+	});
 	</script>
 	</head>
 	<body>

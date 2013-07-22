@@ -61,7 +61,8 @@ iChart.Donut2D = iChart.extend(iChart.Pie, {
 			_.push('center.originy',_.get(_.Y));
 			_.push('center.textBaseline','middle');
 			_.center = new $.Text(_.get('center'), _);
-			_.components.push(_.center);
+			
+			_.oneways.push(_.center);
 		}
 		
 		_.parse(_);
