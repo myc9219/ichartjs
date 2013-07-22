@@ -366,7 +366,7 @@
 			}
 
 			// Look for rgba(255,255,255,0.3)
-			if (/^rgba\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3},(0(\.[0-9])?|1(\.0)?)\)$/.exec(color)) {
+			if (/^rgba\([0-9]{1,3},[0-9]{1,3},[0-9]{1,3},(0(\.\d*)?|1(\.0)?)\)$/.exec(color)) {
 				return color;
 			}
 
@@ -2040,7 +2040,7 @@ $.Legend = $.extend($.Component, {
 			c = _.get('column'),
 			r = _.get('row'),
 			L = _.data.length;
-		
+			c = c>L?L:c;
 		_.T.textFont(_.get('fontStyle'));
 		
 		if (_.get('line_height') < ss) {
@@ -4313,7 +4313,6 @@ $.Scale = $.extend($.Component, {
 				_.push('decimalsnum',(s_space+"").substring((s_space+"").indexOf('.')+1).length);
 			}
 		}
-		
 		/**
 		 * the real distance of each scale
 		 */
@@ -6343,7 +6342,8 @@ $.Donut2D = $.extend($.Pie, {
 			_.push('center.originy',_.get(_.Y));
 			_.push('center.textBaseline','middle');
 			_.center = new $.Text(_.get('center'), _);
-			_.components.push(_.center);
+			
+			_.oneways.push(_.center);
 		}
 		
 		_.parse(_);

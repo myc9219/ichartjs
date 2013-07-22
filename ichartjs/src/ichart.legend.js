@@ -150,7 +150,7 @@ iChart.Legend = iChart.extend(iChart.Component, {
 			c = _.get('column'),
 			r = _.get('row'),
 			L = _.data.length;
-		
+			c = c>L?L:c;
 		_.T.textFont(_.get('fontStyle'));
 		
 		if (_.get('line_height') < ss) {

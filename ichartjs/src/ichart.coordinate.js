@@ -226,7 +226,6 @@ iChart.Scale = iChart.extend(iChart.Component, {
 				_.push('decimalsnum',(s_space+"").substring((s_space+"").indexOf('.')+1).length);
 			}
 		}
-		
 		/**
 		 * the real distance of each scale
 		 */
