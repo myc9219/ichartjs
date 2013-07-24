@@ -840,7 +840,7 @@
 		return _;
 
 	})(window);
-
+	
 	/**
 	 * Add useful method,need to optimized
 	 */

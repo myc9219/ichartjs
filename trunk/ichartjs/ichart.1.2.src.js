@@ -840,7 +840,7 @@
 		return _;
 
 	})(window);
-
+	
 	/**
 	 * Add useful method,need to optimized
 	 */
@@ -3493,6 +3493,7 @@ $.Label = $.extend($.Component, {
 			}
 			_.segmentRect();
 			//order?
+			var i=0;
 			_.components.eachAll(function(c) {
 				c.draw(e);
 			});
@@ -6254,6 +6255,7 @@ $.Pie3D = $.extend($.Pie, {
 				_.T.ellipse(s.x, s.y, s.a, s.b, s.get(t), s.get(d), s.get('f_color'), s.get('border.enable'), s.get('border.width'), s.get('border.color'), false, false, true);
 			}, _);
 		}
+		_.components.push(_.proxy);
 		_.one = $.emptyFn;
 	},
 	doConfig : function() {
@@ -6270,8 +6272,6 @@ $.Pie3D = $.extend($.Pie, {
 		_.parse(_);
 		
 		_.one(_);
-		
-		_.components.push(_.proxy);
 	}
 });
 $.register('Pie3D');
