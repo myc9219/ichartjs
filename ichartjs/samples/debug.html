@@ -74,62 +74,106 @@ body {
 }
 </style>
 		<script type="text/javascript">
-		$(function(){
-			var data = [
-			        	{name : '广州',value : 400,color:'#a5c2d5'},
-			        	{name : '上海',value : -200,color:'#cbab4f'},
-			        	{name : '南昌',value : 350,color:'#76a871'},
-			        	{name : '哈尔滨',value : 360,color:'#9f7961'},
-			        	{name : '北京',value : 415,color:'#a56f8f'}
-		        	];
-        	
-			var chart = new iChart.Column2D({
-				render : 'canvasDiv',
-				data: data,
-				title : '2012年5个城市平均工资的情况',
-				width : 800,
-				height : 400,
-				coordinate:{
-					width:580,
-					height:260,
-					scale:[{
-						 position:'left',	
-						 end_scale:500,
-						 scale_space:50
-					}]
-				}
-			});
+	
+	var chart;
+	$(function(){
+		var data = [
+		        	{name : 'Android',value : 50,color:'#4572a7'},
+		        	{name : 'IOS',value : 30,color:'#aa4643'},
+		        	{name : 'RIM',value : 15,color:'#89a54e'},
+		        	{name : 'Microsoft',value : 10,color:'#80699b'},
+		        	{name : 'Other',value : 5,color:'#3d96ae'}
+	        	];
 
-			/**
-			 *自定义组件,画平均线。
-			 */
-			chart.plugin(new iChart.Custom({
-					drawFn:function(){
-						/**
-						 *计算平均值的高度(坐标Y值)
-						 */	
-						var avg = chart.total/5,
-							coo = chart.getCoordinate(),
-							x = coo.get('originx'),
-							W = coo.width,
-							S = coo.getScale('left'),
-							H = coo.height,
-							h = (avg - (S.end-S.distance)) * H / S.distance,
-							y = chart.y + H - h;
-						//用(S.end-S.distance)进行修正
-						//S.end是最大值,S.distance是间距,(S.end-S.distance)则是最小值
-						chart.target.line(x,y,x+W,y,2,'#b32c0d')
-						.textAlign('start')
-						.textBaseline('middle')
-						.textFont('600 12px Verdana')
-						.fillText('平均:$'+avg,x+W+5,y,false,'#b32c0d');
+    	
+		chart = new iChart.Pie3D({
+			render : 'canvasDiv',
+			data: data,
+			title : {
+				text : 'Mobile-Friendly Distribution',
+				height:40,
+				fontsize : 30,
+				color : '#282828'
+			},
+			footnote : {
+				text : 'ichartjs.com',
+				color : '#486c8f',
+				fontsize : 12,
+				padding : '0 38'
+			},
+			sub_option : {
+				mini_label_threshold_angle : 40,//迷你label的阀值,单位:角度
+				mini_label:{//迷你label配置项
+					fontsize:16,
+					fontweight:600,
+					color : '#ffffff'
+				},
+				label : {
+					background_color:null,
+					sign:false,//设置禁用label的小图标
+					padding:'0 4',
+					border:{
+						enable:false,
+						color:'#666666'
+					},
+					fontsize:11,
+					fontweight:600,
+					color : '#4572a7'
+				},
+				border : {
+					width : 2,
+					color : '#ffffff'
+				},
+				listeners:{
+					parseText:function(d, t){
+						return d.get('value')+"%";//自定义label文本
 					}
-			}));	
-			chart.draw();
+				} 
+			},
+			zRotate:30,
+			//shadow : true,
+			shadow_blur : 6,
+			shadow_color : '#aaaaaa',
+			shadow_offsetx : 0,
+			shadow_offsety : 0,
+			background_color:'#f1f1f1',
+			align:'center',//右对齐
+			offset_angle:-90,//逆时针偏移120度
+			width : 800,
+			height : 400,
+			radius:120
+		});
+		
+		chart.draw();
 	});
+	var zRotate=30,time0;
+	function refreshdata1(){
+		zRotate+=10;
+        chart.push("zRotate",zRotate);
+        chart.setUp();
+        chart.draw();
+	}
+	function refreshdata2(){
+		zRotate-=10;
+        chart.push("zRotate",zRotate);
+        chart.setUp();
+        chart.draw();
+	}
+	function refreshdata3(){
+		zRotate+=5;
+        chart.push("zRotate",zRotate);
+        chart.setUp();
+        chart.draw();
+        time0 = setTimeout(refreshdata3,20);
+	}
 	</script>
 	</head>
 	<body>
-		<div id='canvasDiv'></div>
+		<div id='canvasDiv' ></div>
+		<div style='width:360px;'>
+			<input type="button" onclick="refreshdata1();" value="正向">
+			<input type="button" onclick="refreshdata2();" value="反向">
+			<input type="button" onclick="refreshdata3();" value="荡秋千">
+		</div>
 	</body>
 </html>

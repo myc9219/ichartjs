@@ -1036,6 +1036,7 @@
 			}
 			_.segmentRect();
 			//order?
+			var i=0;
 			_.components.eachAll(function(c) {
 				c.draw(e);
 			});
