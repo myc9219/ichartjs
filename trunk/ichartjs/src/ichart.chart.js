@@ -1267,7 +1267,7 @@
 			}
 			_.animationArithmetic = $.getAA(_.get('animation_timing_function'));
 			
-			var E = _.variable.event,comb=_.Combination,tot=!_.get('turn_off_touchmove')&&!comb, mCSS = !$.touch&&_.get('default_mouseover_css')&&!comb, O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
+			var CO = [_.components,_.oneways],E = _.variable.event,comb=_.Combination,tot=!_.get('turn_off_touchmove')&&!comb, mCSS = !$.touch&&_.get('default_mouseover_css')&&!comb, O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
 			_.stopEvent = false;
 			_.A_draw = comb&&_.processAnimation;
 			
@@ -1293,7 +1293,7 @@
 			}
 			
 			_.on(events[0], function(_, e) {
-				_.components.eachAll(function(C) {
+				CO.eachAll(function(C) {
 					if(C.ICHARTJS_CHART){
 						/**
 						 * meaning this component is a Combination Chart
@@ -1325,7 +1325,7 @@
 			if(!$.touch||tot){
 				_.on(events[1], function(_, e) {
 					O = AO = false;
-					_.components.eachAll(function(C) {
+					CO.eachAll(function(C){
 						if(C.ICHARTJS_CHART){
 							/**
 							 * meaning this component is a Combination Chart
