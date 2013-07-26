@@ -75,7 +75,6 @@ body {
 </style>
 		<script type="text/javascript">
 	
-	var chart;
 	$(function(){
 		var data = [
 		        	{name : 'Android',value : 50,color:'#4572a7'},
@@ -86,7 +85,7 @@ body {
 	        	];
 
     	
-		chart = new iChart.Pie3D({
+		var chart = new iChart.Pie2D({
 			render : 'canvasDiv',
 			data: data,
 			title : {
@@ -100,6 +99,22 @@ body {
 				color : '#486c8f',
 				fontsize : 12,
 				padding : '0 38'
+			},
+			legend:{
+				enable:true,
+				background_color : null,
+				line_height:25,
+				color:'#254d70',
+				fontsize:12,
+				fontweight:600,
+				border : {
+					enable : false
+				},
+				listeners:{
+					click:function(l,e,m){
+						chart.toggle(m.index);
+					}
+				} 
 			},
 			sub_option : {
 				mini_label_threshold_angle : 40,//迷你label的阀值,单位:角度
@@ -146,34 +161,9 @@ body {
 		
 		chart.draw();
 	});
-	var zRotate=30,time0;
-	function refreshdata1(){
-		zRotate+=10;
-        chart.push("zRotate",zRotate);
-        chart.setUp();
-        chart.draw();
-	}
-	function refreshdata2(){
-		zRotate-=10;
-        chart.push("zRotate",zRotate);
-        chart.setUp();
-        chart.draw();
-	}
-	function refreshdata3(){
-		zRotate+=5;
-        chart.push("zRotate",zRotate);
-        chart.setUp();
-        chart.draw();
-        time0 = setTimeout(refreshdata3,20);
-	}
 	</script>
 	</head>
 	<body>
 		<div id='canvasDiv' ></div>
-		<div style='width:360px;'>
-			<input type="button" onclick="refreshdata1();" value="正向">
-			<input type="button" onclick="refreshdata2();" value="反向">
-			<input type="button" onclick="refreshdata3();" value="荡秋千">
-		</div>
 	</body>
 </html>

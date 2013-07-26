@@ -1992,10 +1992,11 @@ $.Legend = $.extend($.Component, {
 	isEventValid : function(e,_) {
 		var r = {
 			valid : false
-		};
+		},
+		h=_.get('line_height');
 		if (e.x > this.x && e.x < (_.x + _.width) && e.y > _.y && e.y < (_.y + _.height)) {
 			_.data.each(function(d, i) {
-				if (e.x > d.x && e.x < (d.x + d.width_ + _.get('signwidth')) && e.y > d.y && e.y < (d.y + _.get('line_height'))) {
+				if (e.x > d.x && e.x < (d.x + d.width_ + _.get('signwidth')) && e.y > (d.y -h/2) && e.y < (d.y + h/2)) {
 					r = {
 						valid : true,
 						index : i,
@@ -3724,7 +3725,7 @@ $.Label = $.extend($.Component, {
 			}
 			_.animationArithmetic = $.getAA(_.get('animation_timing_function'));
 			
-			var E = _.variable.event,comb=_.Combination,tot=!_.get('turn_off_touchmove')&&!comb, mCSS = !$.touch&&_.get('default_mouseover_css')&&!comb, O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
+			var CO = [_.components,_.oneways],E = _.variable.event,comb=_.Combination,tot=!_.get('turn_off_touchmove')&&!comb, mCSS = !$.touch&&_.get('default_mouseover_css')&&!comb, O, AO,events = $.touch?['touchstart','touchmove']:['click','mousemove'];
 			_.stopEvent = false;
 			_.A_draw = comb&&_.processAnimation;
 			
@@ -3750,7 +3751,7 @@ $.Label = $.extend($.Component, {
 			}
 			
 			_.on(events[0], function(_, e) {
-				_.components.eachAll(function(C) {
+				CO.eachAll(function(C) {
 					if(C.ICHARTJS_CHART){
 						/**
 						 * meaning this component is a Combination Chart
@@ -3782,7 +3783,7 @@ $.Label = $.extend($.Component, {
 			if(!$.touch||tot){
 				_.on(events[1], function(_, e) {
 					O = AO = false;
-					_.components.eachAll(function(C) {
+					CO.eachAll(function(C){
 						if(C.ICHARTJS_CHART){
 							/**
 							 * meaning this component is a Combination Chart
