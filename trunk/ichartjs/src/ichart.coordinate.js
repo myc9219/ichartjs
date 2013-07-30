@@ -339,8 +339,13 @@ iChart.Coordinate = {
 			
 		_.originXY(_,[_.get('l_originx'),_.get('r_originx') - w,_.get('centerx') - w / 2],[_.get('centery') - h / 2]);
 		
-		_.push('coordinate.originx', _.x);
-		_.push('coordinate.originy', _.y);
+		_.set({
+			coordinate : {
+				originx: _.x,
+				originy: _.y,
+				id:'coordinate'
+			}
+		});
 		
 		/**
 		 * invoke call back
@@ -383,14 +388,19 @@ iChart.Coordinate = {
 		}
 		
 		if (_.is3D()) {
-			_.push('coordinate.xAngle_', _.get('xAngle_'));
-			_.push('coordinate.yAngle_', _.get('yAngle_'));
-			/**
-			 * the Coordinate' Z is same as long as the column's
-			 */
-			_.push('coordinate.zHeight', _.get('zHeight') * _.get('bottom_scale'));
+			_.set({
+				coordinate : {
+					xAngle_: _.get('xAngle_'),
+					yAngle_: _.get('yAngle_'),
+					/**
+					 * the Coordinate' Z is same as long as the column's
+					 */
+					zHeight:_.get('zHeight') * _.get('bottom_scale')
+				}
+			});
 		}
 		_.remove(_,_.coo);
+		if(!_.isE())
 		return _.register(new iChart[_.is3D()?'Coordinate3D':'Coordinate2D'](_.get('coordinate'), _));;
 	}
 }

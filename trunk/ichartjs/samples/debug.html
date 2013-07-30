@@ -74,18 +74,17 @@ body {
 }
 </style>
 		<script type="text/javascript">
-	
 	$(function(){
 		var data = [
-		        	{name : 'Android',value : 50,color:'#4572a7'},
-		        	{name : 'IOS',value : 30,color:'#aa4643'},
-		        	{name : 'RIM',value : 15,color:'#89a54e'},
-		        	{name : 'Microsoft',value : 10,color:'#80699b'},
-		        	{name : 'Other',value : 5,color:'#3d96ae'}
+		        	{name : 'Android',value : 0.06,color:'#4572a7'},
+		        	{name : 'IOS',value : 0.04,color:'#aa4643'},
+		        	{name : 'RIM',value : 0.02,color:'#89a54e'},
+		        	{name : 'Microsoft',value : 0.03,color:'#80699b'},
+		        	{name : 'Other',value : 0.06,color:'#3d96ae'}
 	        	];
-
+		
     	
-		var chart = new iChart.Pie2D({
+		var chart = new iChart.Column2D({
 			render : 'canvasDiv',
 			data: data,
 			title : {
@@ -100,40 +99,12 @@ body {
 				fontsize : 12,
 				padding : '0 38'
 			},
-			legend:{
-				enable:true,
-				background_color : null,
-				line_height:25,
-				color:'#254d70',
-				fontsize:12,
-				fontweight:600,
-				border : {
-					enable : false
-				},
-				listeners:{
-					click:function(l,e,m){
-						chart.toggle(m.index);
-					}
-				} 
-			},
 			sub_option : {
 				mini_label_threshold_angle : 40,//迷你label的阀值,单位:角度
 				mini_label:{//迷你label配置项
 					fontsize:16,
 					fontweight:600,
 					color : '#ffffff'
-				},
-				label : {
-					background_color:null,
-					sign:false,//设置禁用label的小图标
-					padding:'0 4',
-					border:{
-						enable:false,
-						color:'#666666'
-					},
-					fontsize:11,
-					fontweight:600,
-					color : '#4572a7'
 				},
 				border : {
 					width : 2,
@@ -145,12 +116,6 @@ body {
 					}
 				} 
 			},
-			zRotate:30,
-			//shadow : true,
-			shadow_blur : 6,
-			shadow_color : '#aaaaaa',
-			shadow_offsetx : 0,
-			shadow_offsety : 0,
 			background_color:'#f1f1f1',
 			align:'center',//右对齐
 			offset_angle:-90,//逆时针偏移120度
@@ -158,7 +123,6 @@ body {
 			height : 400,
 			radius:120
 		});
-		
 		chart.draw();
 	});
 	</script>

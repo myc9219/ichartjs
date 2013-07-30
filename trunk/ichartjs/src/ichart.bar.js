@@ -69,6 +69,7 @@ iChart.Bar = iChart.extend(iChart.Chart, {
 		_.doActing(_, d, o,i);
 	},
 	engine:function(_){
+		if(_.isE())return;
 		var bh = _.get('bar_height'),
 		s = _.get('bar_space'),
 		S = _.coo.getScale(_.get('scaleAlign')),
