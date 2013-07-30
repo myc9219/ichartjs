@@ -85,6 +85,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 		_.doActing(_,d,o,i);
 	},
 	engine:function(_){
+		if(_.isE())return;
 		var cw = _.get('column_width'),
 		s = _.get('column_space'),
 		S = _.coo.getScale(_.get('scaleAlign')),
@@ -147,6 +148,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 				_.push('sub_option.yAngle_', _.get('yAngle_'));
 			}
 		});
+		
 		_.push('sub_option.width', _.get(c));
 	}
 

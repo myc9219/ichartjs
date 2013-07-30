@@ -152,6 +152,7 @@ iChart.Line = iChart.extend(iChart.Chart, {
 			_.coo.push('crosshair', _.get('crosshair'));
 			_.coo.doCrosshair(_.coo);
 		}
+		if(_.isE())return;
 		
 		var vw = _.coo.valid_width,nw=vw,size=_.get('maxItemSize') - 1,M=vw / (size),ps=_.get('point_space');
 		

@@ -40,7 +40,7 @@
 	},
 	parse = function(c,_){
 		var M,V=0,MI,ML=0,init=false,g = _.get('labels');
-		_.data = c;
+		_.data = c || [];
 		if(_.dataType=='simple'){
 			_.total = 0;
 			c.each(function(d,i){
@@ -126,19 +126,13 @@
 		_.push('minValue',MI); 
 		_.push('maxValue',M);
 		_.doConfig();
-		_.initialization = true;
 	};
 	
 	/**
 	 * @private support an improved API for drawing in canvas
 	 */
 	function Cans(c) {
-		if (typeof c === "string")
-			c = $(c);
-		if (!c || !c['tagName'] || c['tagName'].toLowerCase() != 'canvas')
-			throw new Error("there not a canvas element");
-
-		this.canvas = c;
+		this.canvas = typeof c === "string"?$(c):c;
 		this.c = this.canvas.getContext("2d");
 	}
 
@@ -815,7 +809,14 @@
 				 */
 				decimalsnum : 1,
 				/**
-				 * @cfg {Object/String} Specifies the config of Title details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
+				 * @cfg {Object/String} Specifies the text when data is empty.details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display(text defaults to 'No data found')
+				 */
+				empty : {
+					text :'No data found',
+					fontsize : 16
+				},
+				/**
+				 * @cfg {Object/String} Specifies the config of Title details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display(text defaults to '')
 				 */
 				title : {
 					text : '',
@@ -830,7 +831,7 @@
 					height : 30
 				},
 				/**
-				 * @cfg {Object/String}Specifies the config of subtitle details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the title or subtitle'text is empty,then will not display
+				 * @cfg {Object/String}Specifies the config of subtitle details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the title or subtitle'text is empty,then will not display(text defaults to '')
 				 */
 				subtitle : {
 					text : '',
@@ -845,7 +846,7 @@
 					height : 20
 				},
 				/**
-				 * @cfg {Object/String}Specifies the config of footnote details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
+				 * @cfg {Object/String}Specifies the config of footnote details see <link>iChart.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display(text defaults to '')
 				 */
 				footnote : {
 					text : '',
@@ -1023,8 +1024,6 @@
 			
 			if (!_.redraw) {
 				$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
-				$.Assert.isTrue(_.data&&_.data.length>0,_.type + '\'s data is empty');
-				$.Assert.isTrue(_.initialization, _.type + ' Failed to initialize');
 				_.doSort();
 			}
 			
@@ -1166,7 +1165,6 @@
 			var _ = this._();
 			_.redraw = false;
 			_.T.clearRect();
-			_.initialization = false;
 			_.initialize();
 		},
 		/**
@@ -1231,15 +1229,15 @@
 				_.create(_,$(r));
 			}
 			
-			if(_.Rendered && !_.initialization){
-				if(d&&d.length>0){
-					parse.call(_,d,_);
-				}else if($.isString(_.get('url'))){
+			if(_.Rendered){
+				if($.isString(_.get('url'))){
 					_.ajax.call(_,_.get('url'),function(D){
 						_.push('data',D);
 						_.initialize();
 						_.draw();
 					});
+				}else{
+					parse.call(_,d,_);
 				}
 			}
 		},
@@ -1451,6 +1449,9 @@
 			this.components.push(c);
 			return c;
 		},
+		isE:function(){
+			return !this.data.length;
+		},
 		remove:function(_,c){
 			if(c)
 			_.components.each(function(C,i){
@@ -1459,6 +1460,15 @@
 					return false;
 				}
 			});
+		},
+		merge:function(d,f){
+			var _ = this._();
+			if ($.isString(_.get(d))) {
+				_.push(d, $.applyIf({
+					text : _.get(d)
+				}, _.default_[d]));
+			}
+			if(f&&_.get(d).text != '')f(_);
 		},
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
@@ -1469,7 +1479,6 @@
 			_.oneways.length =0;
 			
 			_.oneWay(_);
-			
 
 			if (_.get('shadow')!==false) {
 				_.push('shadow', {
@@ -1496,25 +1505,12 @@
 				
 				_.applyGradient();
 				
-				if ($.isString(_.get('title'))) {
-					_.push('title', $.applyIf({
-						text : _.get('title')
-					}, _.default_.title));
-				}
-				if ($.isString(_.get('subtitle'))) {
-					_.push('subtitle', $.applyIf({
-						text : _.get('subtitle')
-					}, _.default_.subtitle));
-				}
 				
-				if ($.isString(_.get('footnote'))) {
-					_.push('footnote', $.applyIf({
-						text : _.get('footnote')
-					}, _.default_.footnote));
-				}
 				var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.width - _.get('hpadding'))), h;
 				
-				if (_.get('title.text') != ''){
+				_.merge('subtitle');
+				
+				_.merge('title',function(){
 					var st = _.get('subtitle.text') != '';
 					H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
 					t = _.push('t_originy', t + H);
@@ -1532,9 +1528,10 @@
 						_.subtitle = new $.Text(_.get('subtitle'), _);
 						_.oneways.push(_.subtitle);
 					}
-				}
-					
-				if (_.get('footnote.text') != '') {
+				});
+				
+				
+				_.merge('footnote',function(){
 					var g = _.get('footnote.height');
 					H += g;
 					_.push('b_originy', _.get('b_originy') - g);
@@ -1544,13 +1541,24 @@
 					_.pushIf('footnote.width', w);
 					_.footnote = new $.Text(_.get('footnote'), _);
 					_.oneways.push(_.footnote);
-				}
+				});
+				
 				h = _.push('client_height', (_.get(_.H) - _.get('vpadding') - _.pushIf('other_height',H)));
 				
 				_.push('minDistance', min(w, h));
 				_.push('maxDistance', max(w, h));
 				_.push('centerx', l + w / 2);
 				_.push('centery', t + h / 2);
+			}
+			
+			if(_.isE()){
+				_.merge('empty',function (){
+					_.push('empty.originx',_.get('centerx'));
+					_.push('empty.originy',_.get('centery'));
+					_.push('empty.textBaseline','middle');
+					_.empty = new $.Text(_.get('empty'), _);
+					_.oneways.push(_.empty);
+				});
 			}
 			
 			/**

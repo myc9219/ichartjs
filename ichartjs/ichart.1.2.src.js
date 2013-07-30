@@ -682,6 +682,9 @@
 				}
 				return new _[Repository[C.type]](C);
 			},
+			remove:function(id){
+				delete Registry[id];
+			},
 			get:function(id){
 				return Registry[id];
 			},
@@ -987,8 +990,6 @@ $.Element = function(config) {
 			 */
 			'initialize');
 			
-	_.initialization = false;
-	
 	/**
 	 * inititalize configure
 	 */
@@ -1238,6 +1239,10 @@ $.Painter = $.extend($.Element, {
 	},
 	is3D : function() {
 		return this.dimension == $._3D;
+	},
+	tf:function(k){
+		var _ = this._();
+		return $.isFunction(_.get(k))?_.get(k).apply(_,[_.T,k]):_.get(k);
 	},
 	applyGradient:function(x,y,w,h){
 		var _ = this._();
@@ -1523,7 +1528,6 @@ $.Component = $.extend($.Painter, {
 		$.DefineAbstract('doDraw', this);
 		
 		this.doConfig();
-		this.initialization = true;
 	},
 	/**
 	 * @method return the component's dimension,return hold following property
@@ -2498,7 +2502,7 @@ $.Label = $.extend($.Component, {
 	},
 	parse = function(c,_){
 		var M,V=0,MI,ML=0,init=false,g = _.get('labels');
-		_.data = c;
+		_.data = c || [];
 		if(_.dataType=='simple'){
 			_.total = 0;
 			c.each(function(d,i){
@@ -2584,19 +2588,13 @@ $.Label = $.extend($.Component, {
 		_.push('minValue',MI); 
 		_.push('maxValue',M);
 		_.doConfig();
-		_.initialization = true;
 	};
 	
 	/**
 	 * @private support an improved API for drawing in canvas
 	 */
 	function Cans(c) {
-		if (typeof c === "string")
-			c = $(c);
-		if (!c || !c['tagName'] || c['tagName'].toLowerCase() != 'canvas')
-			throw new Error("there not a canvas element");
-
-		this.canvas = c;
+		this.canvas = typeof c === "string"?$(c):c;
 		this.c = this.canvas.getContext("2d");
 	}
 
@@ -3273,7 +3271,14 @@ $.Label = $.extend($.Component, {
 				 */
 				decimalsnum : 1,
 				/**
-				 * @cfg {Object/String} Specifies the config of Title details see <link>$.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
+				 * @cfg {Object/String} Specifies the text when data is empty.details see <link>$.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display(text defaults to 'No data found')
+				 */
+				empty : {
+					text :'No data found',
+					fontsize : 16
+				},
+				/**
+				 * @cfg {Object/String} Specifies the config of Title details see <link>$.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display(text defaults to '')
 				 */
 				title : {
 					text : '',
@@ -3288,7 +3293,7 @@ $.Label = $.extend($.Component, {
 					height : 30
 				},
 				/**
-				 * @cfg {Object/String}Specifies the config of subtitle details see <link>$.Text</link>,If given a string,it will only apply the text.note:If the title or subtitle'text is empty,then will not display
+				 * @cfg {Object/String}Specifies the config of subtitle details see <link>$.Text</link>,If given a string,it will only apply the text.note:If the title or subtitle'text is empty,then will not display(text defaults to '')
 				 */
 				subtitle : {
 					text : '',
@@ -3303,7 +3308,7 @@ $.Label = $.extend($.Component, {
 					height : 20
 				},
 				/**
-				 * @cfg {Object/String}Specifies the config of footnote details see <link>$.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display
+				 * @cfg {Object/String}Specifies the config of footnote details see <link>$.Text</link>,If given a string,it will only apply the text.note:If the text is empty,then will not display(text defaults to '')
 				 */
 				footnote : {
 					text : '',
@@ -3481,8 +3486,6 @@ $.Label = $.extend($.Component, {
 			
 			if (!_.redraw) {
 				$.Assert.isTrue(_.Rendered, _.type + ' has not rendered');
-				$.Assert.isTrue(_.data&&_.data.length>0,_.type + '\'s data is empty');
-				$.Assert.isTrue(_.initialization, _.type + ' Failed to initialize');
 				_.doSort();
 			}
 			
@@ -3624,7 +3627,6 @@ $.Label = $.extend($.Component, {
 			var _ = this._();
 			_.redraw = false;
 			_.T.clearRect();
-			_.initialization = false;
 			_.initialize();
 		},
 		/**
@@ -3689,15 +3691,15 @@ $.Label = $.extend($.Component, {
 				_.create(_,$(r));
 			}
 			
-			if(_.Rendered && !_.initialization){
-				if(d&&d.length>0){
-					parse.call(_,d,_);
-				}else if($.isString(_.get('url'))){
+			if(_.Rendered){
+				if($.isString(_.get('url'))){
 					_.ajax.call(_,_.get('url'),function(D){
 						_.push('data',D);
 						_.initialize();
 						_.draw();
 					});
+				}else{
+					parse.call(_,d,_);
 				}
 			}
 		},
@@ -3909,6 +3911,9 @@ $.Label = $.extend($.Component, {
 			this.components.push(c);
 			return c;
 		},
+		isE:function(){
+			return !this.data.length;
+		},
 		remove:function(_,c){
 			if(c)
 			_.components.each(function(C,i){
@@ -3917,6 +3922,15 @@ $.Label = $.extend($.Component, {
 					return false;
 				}
 			});
+		},
+		merge:function(d,f){
+			var _ = this._();
+			if ($.isString(_.get(d))) {
+				_.push(d, $.applyIf({
+					text : _.get(d)
+				}, _.default_[d]));
+			}
+			if(f&&_.get(d).text != '')f(_);
 		},
 		doConfig : function() {
 			$.Chart.superclass.doConfig.call(this);
@@ -3927,7 +3941,6 @@ $.Label = $.extend($.Component, {
 			_.oneways.length =0;
 			
 			_.oneWay(_);
-			
 
 			if (_.get('shadow')!==false) {
 				_.push('shadow', {
@@ -3954,25 +3967,12 @@ $.Label = $.extend($.Component, {
 				
 				_.applyGradient();
 				
-				if ($.isString(_.get('title'))) {
-					_.push('title', $.applyIf({
-						text : _.get('title')
-					}, _.default_.title));
-				}
-				if ($.isString(_.get('subtitle'))) {
-					_.push('subtitle', $.applyIf({
-						text : _.get('subtitle')
-					}, _.default_.subtitle));
-				}
 				
-				if ($.isString(_.get('footnote'))) {
-					_.push('footnote', $.applyIf({
-						text : _.get('footnote')
-					}, _.default_.footnote));
-				}
 				var H = 0, l = _.push('l_originx', _.get('padding_left')), t = _.push('t_originy', _.get('padding_top')), w = _.push('client_width', (_.width - _.get('hpadding'))), h;
 				
-				if (_.get('title.text') != ''){
+				_.merge('subtitle');
+				
+				_.merge('title',function(){
 					var st = _.get('subtitle.text') != '';
 					H = st ? _.get('title.height') + _.get('subtitle.height') : _.get('title.height');
 					t = _.push('t_originy', t + H);
@@ -3990,9 +3990,10 @@ $.Label = $.extend($.Component, {
 						_.subtitle = new $.Text(_.get('subtitle'), _);
 						_.oneways.push(_.subtitle);
 					}
-				}
-					
-				if (_.get('footnote.text') != '') {
+				});
+				
+				
+				_.merge('footnote',function(){
 					var g = _.get('footnote.height');
 					H += g;
 					_.push('b_originy', _.get('b_originy') - g);
@@ -4002,13 +4003,24 @@ $.Label = $.extend($.Component, {
 					_.pushIf('footnote.width', w);
 					_.footnote = new $.Text(_.get('footnote'), _);
 					_.oneways.push(_.footnote);
-				}
+				});
+				
 				h = _.push('client_height', (_.get(_.H) - _.get('vpadding') - _.pushIf('other_height',H)));
 				
 				_.push('minDistance', min(w, h));
 				_.push('maxDistance', max(w, h));
 				_.push('centerx', l + w / 2);
 				_.push('centery', t + h / 2);
+			}
+			
+			if(_.isE()){
+				_.merge('empty',function (){
+					_.push('empty.originx',_.get('centerx'));
+					_.push('empty.originy',_.get('centery'));
+					_.push('empty.textBaseline','middle');
+					_.empty = new $.Text(_.get('empty'), _);
+					_.oneways.push(_.empty);
+				});
 			}
 			
 			/**
@@ -4428,8 +4440,13 @@ $.Coordinate = {
 			
 		_.originXY(_,[_.get('l_originx'),_.get('r_originx') - w,_.get('centerx') - w / 2],[_.get('centery') - h / 2]);
 		
-		_.push('coordinate.originx', _.x);
-		_.push('coordinate.originy', _.y);
+		_.set({
+			coordinate : {
+				originx: _.x,
+				originy: _.y,
+				id:'coordinate'
+			}
+		});
 		
 		/**
 		 * invoke call back
@@ -4472,14 +4489,19 @@ $.Coordinate = {
 		}
 		
 		if (_.is3D()) {
-			_.push('coordinate.xAngle_', _.get('xAngle_'));
-			_.push('coordinate.yAngle_', _.get('yAngle_'));
-			/**
-			 * the Coordinate' Z is same as long as the column's
-			 */
-			_.push('coordinate.zHeight', _.get('zHeight') * _.get('bottom_scale'));
+			_.set({
+				coordinate : {
+					xAngle_: _.get('xAngle_'),
+					yAngle_: _.get('yAngle_'),
+					/**
+					 * the Coordinate' Z is same as long as the column's
+					 */
+					zHeight:_.get('zHeight') * _.get('bottom_scale')
+				}
+			});
 		}
 		_.remove(_,_.coo);
+		if(!_.isE())
 		return _.register(new $[_.is3D()?'Coordinate3D':'Coordinate2D'](_.get('coordinate'), _));;
 	}
 }
@@ -6319,24 +6341,19 @@ $.Donut2D = $.extend($.Pie, {
 	doConfig : function() {
 		$.Donut2D.superclass.doConfig.call(this);
 		
-		var _ = this._(),d='donutwidth',r = _.r;
+		var _ = this._(),d='donutwidth',e = _.get(d),r = _.r;
 		/**
 		 * quick config to all rectangle
 		 */
 		_.push('sub_option.radius',r)
-		if(_.get(d)>0){
-			if(_.get(d)<1){
-				_.push(d,Math.floor(r*_.get(d)));
-			}else if(_.get(d)>=r){
-				_.push(d,0);
-			}
-			_.push('sub_option.donutwidth',_.get(d));
-		}
-		if ($.isString(_.get('center'))) {
-			_.push('center', $.applyIf({
-				text : _.get('center')
-			}, _.default_.center));
-		}
+		if(e>=r){
+			e = 0;
+		}else if(e<1){
+			e = Math.floor(r*e);
+		} 
+		_.push('sub_option.donutwidth',_.push(d,e));
+		
+		_.merge('center');
 		
 		if (_.get('center.text') != '') {
 			_.push('center.originx',_.get(_.X));
@@ -6441,6 +6458,7 @@ $.Column = $.extend($.Chart, {
 		_.doActing(_,d,o,i);
 	},
 	engine:function(_){
+		if(_.isE())return;
 		var cw = _.get('column_width'),
 		s = _.get('column_space'),
 		S = _.coo.getScale(_.get('scaleAlign')),
@@ -6503,6 +6521,7 @@ $.Column = $.extend($.Chart, {
 				_.push('sub_option.yAngle_', _.get('yAngle_'));
 			}
 		});
+		
 		_.push('sub_option.width', _.get(c));
 	}
 
@@ -6636,7 +6655,7 @@ $.ColumnMulti2D = $.extend($.Column, {
 		_.columns.each(function(c, i) {
 			c.item.each(function(d, j) {
 				h = (d.value - S.start) * H / S.distance;
-				_.doParse(_, d, j, {
+				_.doParse(_, d, i + '_' + j, {
 					id : i + '_' + j,
 					originx : x + j * (cw + q) + i * gw,
 					originy : y - (h > 0 ? h : 0),
@@ -6757,7 +6776,7 @@ $.ColumnStacked2D = $.extend($.Column, {
 			c.item.each(function(d, j) {
 				h = (d.value*v - S.start) * H / S.distance;
 				d.total = c.total;
-				_.doParse(_, d, j, {
+				_.doParse(_, d, i + '_' + j, {
 					id : i + '_' + j,
 					originx : x + i * gw,
 					originy : y - (h > 0 ? h : 0)-h0,
@@ -6916,6 +6935,7 @@ $.Bar = $.extend($.Chart, {
 		_.doActing(_, d, o,i);
 	},
 	engine:function(_){
+		if(_.isE())return;
 		var bh = _.get('bar_height'),
 		s = _.get('bar_space'),
 		S = _.coo.getScale(_.get('scaleAlign')),
@@ -7328,7 +7348,7 @@ $.LineSegment = $.extend($.Component, {
 	},
 	PP:function(_,p,x1,y1,x2,y2){
 		if(_.get('area')){
-			_.polygons.push([_.get('area_color')||_.get('light_color2'),0,_.get('brushsize'),0,0,_.get('area_opacity'),_.get('smooth')?p:[{x:x1,y:y1}].concat(p.concat([{x:x2,y:y2}])),_.get('smooth'),_.get('smoothing') || 1.5,[{x:x1,y:y1},{x:x2,y:y2}]]);
+			_.polygons.push([_.tf('area_color')||_.get('light_color2'),0,_.get('brushsize'),0,0,_.get('area_opacity'),_.get('smooth')?p:[{x:x1,y:y1}].concat(p.concat([{x:x2,y:y2}])),_.get('smooth'),_.get('smoothing') || 1.5,[{x:x1,y:y1},{x:x2,y:y2}]]);
 		}
 	},
 	parse:function(_){
@@ -7626,6 +7646,7 @@ $.Line = $.extend($.Chart, {
 			_.coo.push('crosshair', _.get('crosshair'));
 			_.coo.doCrosshair(_.coo);
 		}
+		if(_.isE())return;
 		
 		var vw = _.coo.valid_width,nw=vw,size=_.get('maxItemSize') - 1,M=vw / (size),ps=_.get('point_space');
 		
@@ -7733,7 +7754,7 @@ $.LineBasic2D = $.extend($.Line, {
 	doConfig : function() {
 		$.LineBasic2D.superclass.doConfig.call(this);
 		var _ = this._();
-		
+		if(_.isE())return;
 		/**
 		 * get the max/min scale of this coordinate for calculated the height
 		 */

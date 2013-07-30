@@ -59,7 +59,6 @@ iChart.Component = iChart.extend(iChart.Painter, {
 		iChart.DefineAbstract('doDraw', this);
 		
 		this.doConfig();
-		this.initialization = true;
 	},
 	/**
 	 * @method return the component's dimension,return hold following property

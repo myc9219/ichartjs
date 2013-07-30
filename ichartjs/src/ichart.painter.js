@@ -140,6 +140,10 @@ iChart.Painter = iChart.extend(iChart.Element, {
 	is3D : function() {
 		return this.dimension == iChart._3D;
 	},
+	tf:function(k){
+		var _ = this._();
+		return iChart.isFunction(_.get(k))?_.get(k).apply(_,[_.T,k]):_.get(k);
+	},
 	applyGradient:function(x,y,w,h){
 		var _ = this._();
 		if(_.get('gradient')&&_.get('f_color')){

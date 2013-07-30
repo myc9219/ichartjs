@@ -682,6 +682,9 @@
 				}
 				return new _[Repository[C.type]](C);
 			},
+			remove:function(id){
+				delete Registry[id];
+			},
 			get:function(id){
 				return Registry[id];
 			},
