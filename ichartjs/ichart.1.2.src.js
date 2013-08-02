@@ -6913,6 +6913,10 @@ $.Bar = $.extend($.Chart, {
 			 */
 			label : {}
 		});
+		this.rectangles = [];
+		this.labels = [];
+		this.components.push(this.labels);
+		this.components.push(this.rectangles);
 	},
 	/**
 	 * @method Returns the coordinate of this element.
@@ -6962,12 +6966,11 @@ $.Bar = $.extend($.Chart, {
 
 		var _ = this._(), b = 'bar_height', z = 'z_index';
 		
-		_.rectangles = [];
-		_.labels = [];
+		_.rectangles.length = 0;
+		_.labels.length = 0;
+		
 		_.rectangles.zIndex = _.get(z);
 		_.labels.zIndex = _.get(z) + 1;
-		_.components.push(_.labels);
-		_.components.push(_.rectangles);
 		
 		/**
 		 * use option create a coordinate
