@@ -1194,7 +1194,6 @@
 				_.height = _.push(_.H, h);
 				_.size(_);
 			}
-			_.set(_.fireEvent(_,'resize',[w,h]));
 			_.setUp();
 			_.plugins.eachAll(function(P) {
 				if(P.Combination){
@@ -1204,6 +1203,7 @@
 			if(!_.Combination){
 				_.draw();
 			}
+			_.set(_.fireEvent(_,'resize',[w,h]));
 		},
 		size:function(_){
 			_.T.canvas.width = _.width = _.pushIf(_.W, 400);
