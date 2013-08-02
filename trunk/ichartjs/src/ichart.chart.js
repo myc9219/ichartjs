@@ -40,7 +40,7 @@
 	},
 	parse = function(c,_){
 		var M,V=0,MI,ML=0,init=false,g = _.get('labels');
-		_.data = c || [];
+		_.data = c;
 		if(_.dataType=='simple'){
 			_.total = 0;
 			c.each(function(d,i){
@@ -1119,6 +1119,7 @@
 				var w = window.innerWidth,
 			    	h = window.innerHeight,
 			    	style = $.getDoc().body.style;
+				//clientHeight
 			    style.padding = "0px";
 			    style.margin = "0px";
 			    style.overflow = "hidden";
@@ -1228,16 +1229,15 @@
 				if(r)
 				_.create(_,$(r));
 			}
-			
 			if(_.Rendered){
-				if($.isString(_.get('url'))){
+				if($.isString(_.get('url'))&&!d){
 					_.ajax.call(_,_.get('url'),function(D){
 						_.push('data',D);
 						_.initialize();
 						_.draw();
 					});
 				}else{
-					parse.call(_,d,_);
+					parse.call(_,d||[],_);
 				}
 			}
 		},

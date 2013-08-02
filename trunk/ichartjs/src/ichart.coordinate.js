@@ -706,6 +706,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 				kd['distance'] = h;
 				kd['valid_distance'] = vh;
 			}
+			kd.label =$.applyIf(kd.label||{},_.get('label'));
 			_.scale.push(new iChart.Scale(kd, _.root));
 		}, _);
 
