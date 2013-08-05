@@ -2502,7 +2502,7 @@ $.Label = $.extend($.Component, {
 	},
 	parse = function(c,_){
 		var M,V=0,MI,ML=0,init=false,g = _.get('labels');
-		_.data = c || [];
+		_.data = c;
 		if(_.dataType=='simple'){
 			_.total = 0;
 			c.each(function(d,i){
@@ -3581,6 +3581,7 @@ $.Label = $.extend($.Component, {
 				var w = window.innerWidth,
 			    	h = window.innerHeight,
 			    	style = $.getDoc().body.style;
+				//clientHeight
 			    style.padding = "0px";
 			    style.margin = "0px";
 			    style.overflow = "hidden";
@@ -3655,7 +3656,6 @@ $.Label = $.extend($.Component, {
 				_.height = _.push(_.H, h);
 				_.size(_);
 			}
-			_.set(_.fireEvent(_,'resize',[w,h]));
 			_.setUp();
 			_.plugins.eachAll(function(P) {
 				if(P.Combination){
@@ -3665,6 +3665,7 @@ $.Label = $.extend($.Component, {
 			if(!_.Combination){
 				_.draw();
 			}
+			_.set(_.fireEvent(_,'resize',[w,h]));
 		},
 		size:function(_){
 			_.T.canvas.width = _.width = _.pushIf(_.W, 400);
@@ -3690,16 +3691,15 @@ $.Label = $.extend($.Component, {
 				if(r)
 				_.create(_,$(r));
 			}
-			
 			if(_.Rendered){
-				if($.isString(_.get('url'))){
+				if($.isString(_.get('url'))&&!d){
 					_.ajax.call(_,_.get('url'),function(D){
 						_.push('data',D);
 						_.initialize();
 						_.draw();
 					});
 				}else{
-					parse.call(_,d,_);
+					parse.call(_,d||[],_);
 				}
 			}
 		},
@@ -4807,6 +4807,7 @@ $.Coordinate2D = $.extend($.Component, {
 				kd['distance'] = h;
 				kd['valid_distance'] = vh;
 			}
+			kd.label =$.applyIf(kd.label||{},_.get('label'));
 			_.scale.push(new $.Scale(kd, _.root));
 		}, _);
 
@@ -6394,9 +6395,9 @@ $.Column = $.extend($.Chart, {
 			 */
 			coordinate : {},
 			/**
-			 * @cfg {Number} By default,if a width is not specified the chart will attempt to distribution in horizontally.(default to undefined)
+			 * @cfg {Number} By default,if a width is not specified the chart will attempt to distribution in horizontally.(default to '80%')
 			 */
-			column_width : undefined,
+			column_width : '66%',
 			/**
 			 * @cfg {Number} the space of each column.this option is readOnly.(default to undefined)
 			 */
@@ -6459,7 +6460,7 @@ $.Column = $.extend($.Chart, {
 	},
 	engine:function(_){
 		if(_.isE())return;
-		var cw = _.get('column_width'),
+		var cw = _.get('_column_width'),
 		s = _.get('column_space'),
 		S = _.coo.getScale(_.get('scaleAlign')),
 		H = _.coo.valid_height, 
@@ -6489,30 +6490,22 @@ $.Column = $.extend($.Chart, {
 		 * use option create a coordinate
 		 */
 		_.coo = $.Coordinate.coordinate_.call(_,function(){
-			var L = _.data.length, W = _.get('coordinate.valid_width_value'),w_,hw,KL;
+			var L = _.data.length, W = _.get('coordinate.valid_width_value'),w_,KL;
 			if (_.dataType == 'complex') {
 				KL = _.get('labels').length;
 				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
-				w_= Math.floor(W / (KL + 1 + L));
-				hw = _.pushIf(c,w_);
 				KL +=1;
 			}else{
 				if(_.dataType == 'stacked'){
 					L = _.get('labels').length;
 				}
-				w_= Math.floor(W*2 / (L * 3 + 1));
-				hw = _.pushIf(c, w_);
 				KL = L+1;
-			}
-			
-			if(hw * L > W){
-				hw = _.push(c, w_);
 			}
 			
 			/**
 			 * the space of two column
 			 */
-			_.push('column_space', (W - hw * L) / KL);
+			_.push('column_space', (W - _.push('sub_option.width',_.push('_column_width',$.parsePercent(_.get(c),Math.floor(W/L)))) * L) / KL);
 			
 			if (_.is3D()) {
 				_.push('zHeight', _.get(c) * _.get('zScale'));
@@ -6521,8 +6514,6 @@ $.Column = $.extend($.Chart, {
 				_.push('sub_option.yAngle_', _.get('yAngle_'));
 			}
 		});
-		
-		_.push('sub_option.width', _.get(c));
 	}
 
 });
@@ -6890,7 +6881,7 @@ $.Bar = $.extend($.Chart, {
 			/**
 			 * @cfg {Number} Specifies the width of each bar(default to calculate according to coordinate's height)
 			 */
-			bar_height : undefined,
+			bar_height : '66%',
 			/**
 			 * @cfg {Number} the space of each column.this option is readOnly.(default to undefined)
 			 */
@@ -6940,7 +6931,7 @@ $.Bar = $.extend($.Chart, {
 	},
 	engine:function(_){
 		if(_.isE())return;
-		var bh = _.get('bar_height'),
+		var bh = _.get('_bar_height'),
 		s = _.get('bar_space'),
 		S = _.coo.getScale(_.get('scaleAlign')),
 		W = _.coo.valid_width,
@@ -6964,7 +6955,7 @@ $.Bar = $.extend($.Chart, {
 	doConfig : function() {
 		$.Bar.superclass.doConfig.call(this);
 
-		var _ = this._(), b = 'bar_height', z = 'z_index';
+		var _ = this._(), z = 'z_index';
 		
 		_.rectangles.length = 0;
 		_.labels.length = 0;
@@ -6981,32 +6972,24 @@ $.Bar = $.extend($.Chart, {
 			if (_.dataType == 'complex') {
 				KL = _.get('labels').length;
 				L = KL * L + (_.is3D()?(L-1)*KL*_.get('group_fator'):0);
-				h_= Math.floor(H / (KL + 1 + L));
-				bh = _.pushIf(b,h_);
 				KL +=1;
 			}else{
 				if(_.dataType == 'stacked'){
 					L = _.get('labels').length;
 				}
-				h_= Math.floor(H*2 / (L * 3 + 1));
-				bh = _.pushIf(b, h_);
 				KL = L+1;
 			}
 			
-			if (bh * L > H) {
-				bh = _.push(b, h_);
-			}
 			/**
 			 * the space of two bar
 			 */
-			_.push('bar_space', (H - bh * L) / KL);
+			_.push('bar_space', (H - _.push('sub_option.height',_.push('_bar_height',$.parsePercent(_.get('bar_height'),Math.floor(H/L)))) * L) / KL);
 			
 		});
 		
 		/**
 		 * quick config to all rectangle
 		 */
-		_.push('sub_option.height', _.get(b));
 		_.push('sub_option.valueAlign', _.R);
 		_.push('sub_option.tipAlign', _.R);
 	}
