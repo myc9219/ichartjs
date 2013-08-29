@@ -182,7 +182,7 @@ iChart.LineSegment = iChart.extend(iChart.Component, {
 				j = b;
 			}
 		}
-		
+		//parseText 统一修复为返回{}
 		p.each(function(q){
 			q.x_ = q.x;
 			q.y_ = q.y;
