@@ -6460,7 +6460,7 @@ $.Column = $.extend($.Chart, {
 	},
 	engine:function(_){
 		if(_.isE())return;
-		var cw = _.get('_column_width'),
+		var cw = _.get('column_width_'),
 		s = _.get('column_space'),
 		S = _.coo.getScale(_.get('scaleAlign')),
 		H = _.coo.valid_height, 
@@ -6505,11 +6505,10 @@ $.Column = $.extend($.Chart, {
 			/**
 			 * the space of two column
 			 */
-			_.push('column_space', (W - _.push('sub_option.width',_.push('_column_width',$.parsePercent(_.get(c),Math.floor(W/L)))) * L) / KL);
+			_.push('column_space', (W - _.push('sub_option.width',_.push('column_width_',$.parsePercent(_.get(c),Math.floor(W/L)))) * L) / KL);
 			
 			if (_.is3D()) {
-				_.push('zHeight', _.get(c) * _.get('zScale'));
-				_.push('sub_option.zHeight', _.get('zHeight'));
+				_.push('sub_option.zHeight', _.push('zHeight', _.get('column_width_') * _.get('zScale')));
 				_.push('sub_option.xAngle_', _.get('xAngle_'));
 				_.push('sub_option.yAngle_', _.get('yAngle_'));
 			}
@@ -6979,12 +6978,10 @@ $.Bar = $.extend($.Chart, {
 				}
 				KL = L+1;
 			}
-			
 			/**
 			 * the space of two bar
 			 */
 			_.push('bar_space', (H - _.push('sub_option.height',_.push('_bar_height',$.parsePercent(_.get('bar_height'),Math.floor(H/L)))) * L) / KL);
-			
 		});
 		
 		/**
@@ -7354,7 +7351,7 @@ $.LineSegment = $.extend($.Component, {
 				j = b;
 			}
 		}
-		
+		//parseText 统一修复为返回{}
 		p.each(function(q){
 			q.x_ = q.x;
 			q.y_ = q.y;

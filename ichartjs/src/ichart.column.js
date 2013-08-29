@@ -86,7 +86,7 @@ iChart.Column = iChart.extend(iChart.Chart, {
 	},
 	engine:function(_){
 		if(_.isE())return;
-		var cw = _.get('_column_width'),
+		var cw = _.get('column_width_'),
 		s = _.get('column_space'),
 		S = _.coo.getScale(_.get('scaleAlign')),
 		H = _.coo.valid_height, 
@@ -131,10 +131,10 @@ iChart.Column = iChart.extend(iChart.Chart, {
 			/**
 			 * the space of two column
 			 */
-			_.push('column_space', (W - _.push('sub_option.width',_.push('_column_width',iChart.parsePercent(_.get(c),Math.floor(W/L)))) * L) / KL);
+			_.push('column_space', (W - _.push('sub_option.width',_.push('column_width_',iChart.parsePercent(_.get(c),Math.floor(W/L)))) * L) / KL);
 			
 			if (_.is3D()) {
-				_.push('sub_option.zHeight', _.push('zHeight', _.get(c) * _.get('zScale')));
+				_.push('sub_option.zHeight', _.push('zHeight', _.get('column_width_') * _.get('zScale')));
 				_.push('sub_option.xAngle_', _.get('xAngle_'));
 				_.push('sub_option.yAngle_', _.get('yAngle_'));
 			}
