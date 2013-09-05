@@ -314,7 +314,7 @@ iChart.Scale = iChart.extend(iChart.Component, {
  */
 iChart.Coordinate = {
 	coordinate_ : function(g) {
-		var _ = this._(),coo = _.get('coordinate');
+		var _ = this._(),coo = _.get('coordinate'),li=_.get('scaleAlign');
 		
 		if(coo.ICHARTJS_OBJECT){
 			_.x = _.push(_.X, coo.x);
@@ -323,6 +323,9 @@ iChart.Coordinate = {
 			 * Imply it was illusive
 			 */
 			_.ILLUSIVE_COO = true;
+			
+			coo.refresh(_.get('minValue'),_.get('maxValue'),li);
+			
 			return coo;
 		}
 		/**
@@ -331,7 +334,6 @@ iChart.Coordinate = {
 		var f = '85%',
 			parse=iChart.parsePercent, 
 			scale = _.get('coordinate.scale'),
-			li=_.get('scaleAlign'),
 			w = _.push('coordinate._width',parse(_.get('coordinate.width')||f,Math.floor(_.get('client_width'))));
 			h = _.push('coordinate._height',parse(_.get('coordinate.height')||f,Math.floor(_.get('client_height')))-(_.is3D()?((_.get('coordinate.pedestal_height')||22) + (_.get('coordinate.board_deep')||20)):0));
 			_.push('coordinate.valid_height_value',parse(_.get('coordinate.valid_height'),h));
@@ -386,7 +388,7 @@ iChart.Coordinate = {
 				min_scale : _.get('minValue')
 			});
 		}
-		
+		 
 		if (_.is3D()) {
 			_.set({
 				coordinate : {
@@ -556,6 +558,21 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 		this.scale = [];
 		this.gridlines = [];
 	},
+	refresh:function(n,x,p){
+		this.scale.each(function(s){
+			if(s.get('position')==p){
+				if (s.get('end_scale') < x) {
+					s.push('end_scale',x);
+					s.doConfig();
+				}
+				if (s.get('start_scale') > n) {
+					s.push('start_scale',n);
+					s.doConfig();
+				}
+				return false;
+			}
+		});
+	},
 	getScale : function(p,L) {
 		var _ = this._(),r;
 		for(var i=0;i<_.scale.length;i++){
@@ -575,7 +592,7 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 			}
 			return _.getScale(p,true);
 		}
-		throw new Error("there no valid scale");
+		throw new Error("No_Valid_Scale");
 	},
 	isEventValid : function(e,_) {
 		return {
