@@ -561,12 +561,16 @@ iChart.Coordinate2D = iChart.extend(iChart.Component, {
 	refresh:function(n,x,p){
 		this.scale.each(function(s){
 			if(s.get('position')==p){
-				if (s.get('end_scale') < x) {
-					s.push('end_scale',x);
-					s.doConfig();
+				var U;
+				if (!s.get('assign_scale')||s.get('end_scale') < x) {
+					s.push('max_scale',s.push('end_scale',x));
+					U = true;
 				}
-				if (s.get('start_scale') > n) {
-					s.push('start_scale',n);
+				if (!s.get('assign_scale')||s.get('start_scale') > n) {
+					s.push('min_scale',s.push('start_scale',n));
+					U = true;
+				}
+				if(U){
 					s.doConfig();
 				}
 				return false;

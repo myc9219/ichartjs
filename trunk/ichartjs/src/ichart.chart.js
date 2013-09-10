@@ -1068,10 +1068,10 @@
 		},
 		destroy:function(_){
 			_.components.eachAll(function(C){
-				C.destroy();
+				C.destroy(C);
 			});
 			_.oneways.each(function(O){
-				O.destroy();
+				O.destroy(O);
 			});
 		},
 		/**
