@@ -87,7 +87,7 @@
 				item = [],T = 0;
 				c.each(function(d,j){
 					V = d.value[i];
-					if(!V)return;
+					if(!V&&V!=0)return;
 					d.value[i] = V =  pF(V,V);
 					T+=V;
 					if(stack){
