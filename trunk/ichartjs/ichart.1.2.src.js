@@ -476,8 +476,7 @@
 			/**
 			 * obtain the Dom Document*/
 			getDoc : function() {
-				var doc = window.contentWindow ? window.contentWindow.document : window.contentDocument ? window.contentDocument : window.document;
-				return doc;
+				return window.contentWindow ? window.contentWindow.document : window.contentDocument ? window.contentDocument : window.document;
 			},
 			/**
 			 * define the interface,the subclass must implement it
@@ -711,7 +710,7 @@
 			ceil : function(max) {
 				return factor(max,1);
 			},
-			floor : function(max, f) {
+			floor : function(max) {
 				return factor(max,-1);
 			},
 			_2D : '2d',
@@ -854,7 +853,7 @@
 			if (typeof r === "boolean" && !r) {
 				break
 			}
-		};
+		}
 		return this;
 	};
 
@@ -865,7 +864,7 @@
 			} else {
 				return s ? f.call(s, d, i) : f(d, i);
 			}
-		}, s);
+		}, s)
 	};
 	
 	Array.prototype.sor = function(f) {
@@ -2549,7 +2548,7 @@ $.Label = $.extend($.Component, {
 				item = [],T = 0;
 				c.each(function(d,j){
 					V = d.value[i];
-					if(!V)return;
+                    if(!V&&V!=0)return;
 					d.value[i] = V =  pF(V,V);
 					T+=V;
 					if(stack){
