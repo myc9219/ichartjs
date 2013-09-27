@@ -476,7 +476,8 @@
 			/**
 			 * obtain the Dom Document*/
 			getDoc : function() {
-				return window.contentWindow ? window.contentWindow.document : window.contentDocument ? window.contentDocument : window.document;
+				var doc = window.contentWindow ? window.contentWindow.document : window.contentDocument ? window.contentDocument : window.document;
+				return doc;
 			},
 			/**
 			 * define the interface,the subclass must implement it
@@ -710,7 +711,7 @@
 			ceil : function(max) {
 				return factor(max,1);
 			},
-			floor : function(max) {
+			floor : function(max, f) {
 				return factor(max,-1);
 			},
 			_2D : '2d',
@@ -792,35 +793,48 @@
 				 * This is mainly for FF which doesn't provide offsetX
 				 */
 				if (typeof (e.offsetX) == 'undefined') {
+
+                    var doc = document.documentElement||{},
+                        body = document.body,
+                        left=(doc.scrollLeft || body.scrollLeft || 0) - (doc.clientLeft || body.clientLeft || 0),
+                        top=(doc.scrollTop || body.scrollTop || 0) - (doc.clientTop || body.clientTop || 0),
+                        t = e.targetTouches;
+
 					/**
 					 * Fix target property, if necessary
 					 */
 					if (!e.target) {
-						E.target = e.srcElement || document;
+						E.target = e.srcElement || (t?t[0].target:doc||body);
 					}
 					
-					if(e.targetTouches){
-						E.pageX = e.targetTouches[0].pageX;
-						E.pageY = e.targetTouches[0].pageY;
+					if(t){
+						E.pageX = t[0].pageX;
+						E.pageY = t[0].pageY;
 					}
+
 					/**
 					 * Calculate pageX/Y if missing and clientX/Y available
 					 */
 					if (E.pageX == null && e.clientX != null) {
-						var doc = document.documentElement, body = document.body;
-						E.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
-						E.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
+						E.pageX = e.clientX + left;
+						E.pageY = e.clientY + top;
 					}
-					
 					/**
 					 * Browser not with offsetX and offsetY
 					 */
-					var x = 0, y = 0, obj = e.target;
-					while (obj != document.body && obj) {
-						x += obj.offsetLeft-(obj.scrollLeft||0);
-						y += obj.offsetTop;
-						obj = obj.offsetParent;
-					}
+					var x = 0, y = 0, obj = E.target,bcr=obj.getBoundingClientRect;
+
+                    if (bcr) {
+                        var box = bcr();
+                        x = box.left + (window.pageXOffset || left);
+                        y  = box.top +  (window.pageYOffset || top);
+                    } else {
+                        while (obj != document.body && obj) {
+                            x += obj.offsetLeft-(obj.scrollLeft||0);
+                            y += obj.offsetTop;
+                            obj = obj.offsetParent;
+                        }
+                    }
 					E.offsetX = E.pageX - x;
 					E.offsetY = E.pageY - y;
 				}
@@ -853,7 +867,7 @@
 			if (typeof r === "boolean" && !r) {
 				break
 			}
-		}
+		};
 		return this;
 	};
 
@@ -864,7 +878,7 @@
 			} else {
 				return s ? f.call(s, d, i) : f(d, i);
 			}
-		}, s)
+		}, s);
 	};
 	
 	Array.prototype.sor = function(f) {
@@ -2548,7 +2562,7 @@ $.Label = $.extend($.Component, {
 				item = [],T = 0;
 				c.each(function(d,j){
 					V = d.value[i];
-                    if(!V&&V!=0)return;
+					if(!V&&V!=0)return;
 					d.value[i] = V =  pF(V,V);
 					T+=V;
 					if(stack){
@@ -5339,11 +5353,11 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 			}
 			
 			if(tipAlign==_.L){
-				_.tipX = function(w,h){return _.x - _.get('value_space') -w;};
+				_.tipX = function(w){return _.x - _.get('value_space') -w;};
 			}else if(tipAlign==_.R){
-				_.tipX = function(w,h){return _.x + _.width + _.get('value_space');};
+				_.tipX = function(w){return _.x + _.width + _.get('value_space');};
 			}else if(tipAlign==_.B){
-				_.tipY = function(w,h){return _.y  +_.height+3;};
+				_.tipY = function(){return _.y  +_.height+3;};
 			}else{
 				_.tipY = function(w,h){return _.y  - h -3;};
 			}
