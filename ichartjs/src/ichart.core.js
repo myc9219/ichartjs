@@ -793,35 +793,48 @@
 				 * This is mainly for FF which doesn't provide offsetX
 				 */
 				if (typeof (e.offsetX) == 'undefined') {
+
+                    var doc = document.documentElement||{},
+                        body = document.body,
+                        left=(doc.scrollLeft || body.scrollLeft || 0) - (doc.clientLeft || body.clientLeft || 0),
+                        top=(doc.scrollTop || body.scrollTop || 0) - (doc.clientTop || body.clientTop || 0),
+                        t = e.targetTouches;
+
 					/**
 					 * Fix target property, if necessary
 					 */
 					if (!e.target) {
-						E.target = e.srcElement || document;
+						E.target = e.srcElement || (t?t[0].target:doc||body);
 					}
 					
-					if(e.targetTouches){
-						E.pageX = e.targetTouches[0].pageX;
-						E.pageY = e.targetTouches[0].pageY;
+					if(t){
+						E.pageX = t[0].pageX;
+						E.pageY = t[0].pageY;
 					}
+
 					/**
 					 * Calculate pageX/Y if missing and clientX/Y available
 					 */
 					if (E.pageX == null && e.clientX != null) {
-						var doc = document.documentElement, body = document.body;
-						E.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
-						E.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
+						E.pageX = e.clientX + left;
+						E.pageY = e.clientY + top;
 					}
-					
 					/**
 					 * Browser not with offsetX and offsetY
 					 */
-					var x = 0, y = 0, obj = e.target;
-					while (obj != document.body && obj) {
-						x += obj.offsetLeft-(obj.scrollLeft||0);
-						y += obj.offsetTop;
-						obj = obj.offsetParent;
-					}
+					var x = 0, y = 0, obj = E.target,bcr=obj.getBoundingClientRect;
+
+                    if (bcr) {
+                        var box = bcr();
+                        x = box.left + (window.pageXOffset || left);
+                        y  = box.top +  (window.pageYOffset || top);
+                    } else {
+                        while (obj != document.body && obj) {
+                            x += obj.offsetLeft-(obj.scrollLeft||0);
+                            y += obj.offsetTop;
+                            obj = obj.offsetParent;
+                        }
+                    }
 					E.offsetX = E.pageX - x;
 					E.offsetY = E.pageY - y;
 				}
