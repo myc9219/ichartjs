@@ -121,7 +121,7 @@
 				y = _.y  - s;
 				b = _.B;
 			}
-			
+
 			if(_.get('label')){
 				_.push('label.originx', x);
 				_.push('label.originy', y);
