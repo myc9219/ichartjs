@@ -1206,10 +1206,16 @@
 			_.set(_.fireEvent(_,'resize',[w,h]));
 		},
 		size:function(_){
-			_.T.canvas.width = _.width = _.pushIf(_.W, 400);
-			_.T.canvas.height = _.height = _.pushIf(_.H, 300);
-			_.shell.style.width = _.width+'px';
-			_.shell.style.height = _.height+'px';
+            var r = $.ratio,w=_.pushIf(_.W, 400),h=_.pushIf(_.H, 300),c=_.T.canvas;
+
+            _.shell.style.width = c.style.width =  w+'px';
+            _.shell.style.height = c.style.height =  h+'px';
+
+            c.width = (_.width = w)*r;
+            c.height = (_.height = h)*r;
+
+            if(r>1)
+            _.T.c.scale(r, r);
 		},
 		initialize : function() {
 			var _ = this._(),d = _.get('data'),r = _.get('render');

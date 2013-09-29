@@ -731,6 +731,7 @@
 			emptyFn : function() {
 				return true;
 			},
+            ratio:window.devicePixelRatio || 1,
 			supportCanvas : supportCanvas,
 			isOpera : isOpera,
 			isWebKit : isWebKit,
@@ -819,13 +820,13 @@
 						E.pageX = e.clientX + left;
 						E.pageY = e.clientY + top;
 					}
-					/**
-					 * Browser not with offsetX and offsetY
-					 */
-					var x = 0, y = 0, obj = E.target,bcr=obj.getBoundingClientRect;
+                    /**
+                     * Browser not with offsetX and offsetY
+                     */
+                    var x = 0, y = 0, obj = E.target;
 
-                    if (bcr) {
-                        var box = bcr();
+                    if (obj.getBoundingClientRect) {
+                        var box = obj.getBoundingClientRect();
                         x = box.left + (window.pageXOffset || left);
                         y  = box.top +  (window.pageYOffset || top);
                     } else {
