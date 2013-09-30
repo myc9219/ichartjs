@@ -731,6 +731,7 @@
 			emptyFn : function() {
 				return true;
 			},
+            ratio:window.devicePixelRatio || 1,
 			supportCanvas : supportCanvas,
 			isOpera : isOpera,
 			isWebKit : isWebKit,
@@ -819,13 +820,13 @@
 						E.pageX = e.clientX + left;
 						E.pageY = e.clientY + top;
 					}
-					/**
-					 * Browser not with offsetX and offsetY
-					 */
-					var x = 0, y = 0, obj = E.target,bcr=obj.getBoundingClientRect;
+                    /**
+                     * Browser not with offsetX and offsetY
+                     */
+                    var x = 0, y = 0, obj = E.target;
 
-                    if (bcr) {
-                        var box = bcr();
+                    if (obj.getBoundingClientRect) {
+                        var box = obj.getBoundingClientRect();
                         x = box.left + (window.pageXOffset || left);
                         y  = box.top +  (window.pageYOffset || top);
                     } else {
@@ -3681,10 +3682,16 @@ $.Label = $.extend($.Component, {
 			_.set(_.fireEvent(_,'resize',[w,h]));
 		},
 		size:function(_){
-			_.T.canvas.width = _.width = _.pushIf(_.W, 400);
-			_.T.canvas.height = _.height = _.pushIf(_.H, 300);
-			_.shell.style.width = _.width+'px';
-			_.shell.style.height = _.height+'px';
+            var r = $.ratio,w=_.pushIf(_.W, 400),h=_.pushIf(_.H, 300),c=_.T.canvas;
+
+            _.shell.style.width = c.style.width =  w+'px';
+            _.shell.style.height = c.style.height =  h+'px';
+
+            c.width = (_.width = w)*r;
+            c.height = (_.height = h)*r;
+
+            if(r>1)
+            _.T.c.scale(r, r);
 		},
 		initialize : function() {
 			var _ = this._(),d = _.get('data'),r = _.get('render');
@@ -5268,7 +5275,7 @@ $.Coordinate3D = $.extend($.Coordinate2D, {
 				y = _.y  - s;
 				b = _.B;
 			}
-			
+
 			if(_.get('label')){
 				_.push('label.originx', x);
 				_.push('label.originy', y);
