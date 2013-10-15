@@ -51,7 +51,7 @@ iChart.Component = iChart.extend(iChart.Painter, {
 		 * If method draw be proxy.(default to false)
 		 */
 		this.proxy = false;
-		this.ICHARTJS_CHART = false;
+		this._chart = false;
 		this.inject(c);
 	},
 	initialize : function() {

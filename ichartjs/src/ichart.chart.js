@@ -931,7 +931,7 @@
 			this.components = [];
 			this.oneways = [];
 			this.total = 0;
-			this.ICHARTJS_CHART = true;
+			this._chart = true;
 		},
 		toDataURL : function(g) {
 			return this.T.toDataURL(g);
@@ -1055,7 +1055,7 @@
 		plugin : function(c) {
 			var _ = this._();
 			c.inject(_);
-			if(c.ICHARTJS_CHART){
+			if(c._chart){
 				c.Combination = true;
 				c.setUp();
 			}
@@ -1063,11 +1063,13 @@
 				c.push('animation',false);
 			}
 			c.duration =_.duration;
-			_.register(c);
+            c._plugin =true;
+            _.register(c);
 			_.plugins.push(c);
 		},
 		destroy:function(_){
 			_.components.eachAll(function(C){
+                if(!C._plugin)
 				C.destroy(C);
 			});
 			_.oneways.each(function(O){
@@ -1298,7 +1300,7 @@
 			
 			_.on(events[0], function(_, e) {
 				CO.eachAll(function(C) {
-					if(C.ICHARTJS_CHART){
+					if(C._chart){
 						/**
 						 * meaning this component is a Combination Chart
 						 */
@@ -1330,7 +1332,7 @@
 				_.on(events[1], function(_, e) {
 					O = AO = false;
 					CO.eachAll(function(C){
-						if(C.ICHARTJS_CHART){
+						if(C._chart){
 							/**
 							 * meaning this component is a Combination Chart
 							 */
