@@ -656,12 +656,12 @@
 			},
 			uid : function() {
                 var s4 = function () {
-                    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+                    return floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
                 };
                 return function(k){
-                    return (k || 'ijs') + '_' +s4() + s4() + s4() + s4();
+                    return (k || 'ijs') + '_' +s4() + s4() + s4();
                 }
-			},
+			}(),
 			register:function(c){
 				if (_.isString(c)) {
 					Repository[c.toLowerCase()] = c;
