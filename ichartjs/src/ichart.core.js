@@ -654,8 +654,13 @@
 					y : y * cos(x)
 				}
 			},
-			uid : function(k) {
-				return (k || 'ichartjs') + '_' + ceil(Math.random()*10000)+new Date().getTime().toString().substring(4);
+			uid : function() {
+                var s4 = function () {
+                    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+                };
+                return function(k){
+                    return (k || 'ijs') + '_' +s4() + s4() + s4() + s4();
+                }
 			},
 			register:function(c){
 				if (_.isString(c)) {
@@ -663,14 +668,10 @@
 				}else{
 					var id = c.get('id');
 					if(!id||id==''){
-						id = _.uid(c.type);
-						while(Registry[id]){
-							id = _.uid(c.type);
-						}
-						c.push('id',id);
+						id = c.push('id',_.uid(c.type));
 					}
 					if(Registry[id]){
-						throw new Error("exist reduplicate id :"+id);
+						throw new Error("Exist Reduplicate id :"+id);
 					}
 					c.id = id;
 					Registry[id] = c;
