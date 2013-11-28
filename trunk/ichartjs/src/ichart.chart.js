@@ -1140,9 +1140,10 @@
             /**
              * push the background on div,fixed some android 4.2 can not render bg?
              */
-            if(_.get('background_color')){
+            if(_.get('background_wrap')){
                 H.push(";background-color:");
                 H.push(_.get('background_color'));
+                _.push('background_color',null);
             }
 
 			H.push(";'>");
