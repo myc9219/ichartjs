@@ -1130,12 +1130,22 @@
 			}
 			
 			_.canvasid = $.uid(_.type);
-			_.shellid = "shell-"+_.canvasid;
+			_.shellid = "shell_"+_.canvasid;
 			
 			var H = [];
 			H.push("<div id='");
 			H.push(_.shellid);
-			H.push("' style='padding:0px;margin:0px auto;overflow:hidden;position:relative;'>");
+			H.push("' style='padding:0px;margin:0px auto;overflow:hidden;position:relative");
+
+            /**
+             * push the background on div,fixed some android 4.2 can not render bg?
+             */
+            if(_.get('background_color')){
+                H.push(";background-color:");
+                H.push(_.get('background_color'));
+            }
+
+			H.push(";'>");
 			H.push("<canvas id= '");
 			H.push(_.canvasid);
 			H.push("' style='-webkit-text-size-adjust: none;'>");
@@ -1146,7 +1156,7 @@
 			 * also use appendChild()
 			 */
 			shell.innerHTML = H.join("");
-			
+
 			_.shell = $(_.shellid);
 			
 			/**
@@ -1422,11 +1432,11 @@
 				y:_.y
 			}
 		},
-		getPercent:function(v,T){
+		percent:function(v,T){
 			return this.get('showpercent') ? (v / (T||this.total||1) * 100).toFixed(this.get('decimalsnum')) + '%' : v;
 		},
 		doActing:function(_,d,o,i,t){
-			var f=!!_.get('communal_acting'),v=_.getPercent(d.value,d.total);
+			var f=!!_.get('communal_acting'),v=_.percent(d.value,d.total);
 			/**
 			 * store or restore the option
 			 */
